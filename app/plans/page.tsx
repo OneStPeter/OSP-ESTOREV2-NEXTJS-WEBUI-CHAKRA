@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import ProductCard from "@/components/ui/card";
 import { GrLinkNext } from "react-icons/gr";
 import { GrLinkPrevious } from "react-icons/gr";
@@ -23,6 +23,7 @@ const Products = () => {
   const [atEnd, setAtEnd] = useState(false);
   const [plans, setPlans] = useState<IPlans[]>([]);
 
+  // console.log("Plans loaded:", plans);
   const checkScroll = () => {
     const el = scrollRef.current;
     if (!el) return;
@@ -69,6 +70,62 @@ const Products = () => {
     setTimeout(checkScroll, 0);
   }, [plans]);
 
+  const traditionalGroups = useMemo(() => {
+    const lp = plans.filter((plan) => plan.productCode === "LP");
+    const map = new Map<string, any>();
+    lp.forEach((p) => {
+      const key = p.planDesc;
+      if (!map.has(key)) {
+        map.set(key, {
+          planDesc: p.planDesc,
+          casketDesc: p.casketDesc,
+          img: `/images/plan-images/${p.planDesc}.jpg`,
+          terms: [{ planTerm: p.planTerm, price: p.ipInstAmt }],
+        });
+      } else {
+        const entry = map.get(key);
+        const exists = entry.terms.some(
+          (t: any) => t.planTerm === p.planTerm && t.price === p.ipInstAmt
+        );
+        if (!exists)
+          entry.terms.push({
+            planTerm: p.planTerm,
+            price: p.ipInstAmt,
+          });
+      }
+    });
+
+    return Array.from(map.values());
+  }, [plans]);
+
+  const cremationGroups = useMemo(() => {
+    const cp = plans.filter((plan) => plan.productCode === "CP");
+    const map = new Map<string, any>();
+    cp.forEach((p) => {
+      const key = p.planDesc;
+      if (!map.has(key)) {
+        map.set(key, {
+          planDesc: p.planDesc,
+          casketDesc: p.casketDesc,
+          img: `/images/plan-images/${p.planDesc}.jpg`,
+          terms: [{ planTerm: p.planTerm, price: p.ipInstAmt }],
+        });
+      } else {
+        const entry = map.get(key);
+        const exists = entry.terms.some(
+          (t: any) => t.planTerm === p.planTerm && t.price === p.ipInstAmt
+        );
+        if (!exists)
+          entry.terms.push({
+            planTerm: p.planTerm,
+            price: p.ipInstAmt,
+          });
+      }
+    });
+
+    return Array.from(map.values());
+  }, [plans]);
+
   const showBackButton = useBreakpointValue({ base: true, md: false });
 
   return (
@@ -81,11 +138,7 @@ const Products = () => {
       >
         {showBackButton && (
           <Box px={4} mb={8}>
-            <Button
-              onClick={() => router.push("/")}
-              variant="ghost"
-              // leftIcon={<BackButton />}
-            >
+            <Button onClick={() => router.push("/")} variant="ghost">
               Back
             </Button>
           </Box>
@@ -106,8 +159,8 @@ const Products = () => {
             scrollBehavior="smooth"
             css={{
               "&::-webkit-scrollbar": { display: "none" },
-              scrollbarWidth: "none", // Firefox
-              msOverflowStyle: "none", // IE and Edge
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
             }}
           >
             {plans.length === 0
@@ -122,33 +175,23 @@ const Products = () => {
                     animation="pulse 1.5s infinite"
                   />
                 ))
-              : plans
-                  .filter((plan) => plan.productCode === "LP")
-                  .map((plan, index) => (
-                    <Box
-                      as="a"
-                      onClick={() => {
-                        console.log(
-                          "Navigating to:",
-                          `/product/${plan.planDesc}`
-                        );
-
-                        console.log("Plan clicked:", plan);
-                        router.push(`/plan-details/${plan.planDesc}`);
-                      }}
-                      key={index}
-                      flexShrink={0}
-                    >
-                      <ProductCard
-                        variant="plan"
-                        image={`/images/plan-images/${plan.planDesc}.jpg`}
-                        title={plan.planDesc}
-                        description={plan.casketDesc}
-                        price={plan.ipInstAmt}
-                        planTerm={plan.planTerm}
-                      />
-                    </Box>
-                  ))}
+              : traditionalGroups.map((g, index) => (
+                  <Box
+                    as="a"
+                    onClick={() => router.push(`/plan-details/${g.planDesc}`)}
+                    key={index}
+                    flexShrink={0}
+                  >
+                    <ProductCard
+                      variant="plan"
+                      image={g.img}
+                      title={g.planDesc}
+                      description={g.casketDesc}
+                      terms={g.terms}
+                      priority={index === 0}
+                    />
+                  </Box>
+                ))}
           </Flex>
 
           <Flex justify="end" align="center" gap={4} mt={8}>
@@ -209,19 +252,16 @@ const Products = () => {
                     animation="pulse 1.5s infinite"
                   />
                 ))
-              : plans
-                  .filter((plan) => plan.productCode === "CP")
-                  .map((plan, index) => (
-                    <ProductCard
-                      variant="plan"
-                      key={index}
-                      image={`images/plan-images/${plan.planDesc}.jpg`}
-                      title={plan.planDesc}
-                      description={plan.casketDesc}
-                      price={plan.ipInstAmt}
-                      planTerm={plan.planTerm}
-                    />
-                  ))}
+              : cremationGroups.map((g, index) => (
+                  <ProductCard
+                    variant="plan"
+                    key={index}
+                    image={g.img}
+                    title={g.planDesc}
+                    description={g.casketDesc}
+                    terms={g.terms}
+                  />
+                ))}
           </Flex>
         </Box>
       </Box>

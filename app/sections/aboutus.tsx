@@ -49,14 +49,14 @@ const testimonials = [
 const AboutUs = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.3 });
   return (
-    <section className="h-screen mt-16 md:mt-0 mb-24 md:mb-0 overflow-hidden">
+    <section className="overflow-hidden">
       <Box w="full">
         <Flex
           ref={ref}
           direction={{ base: "column", md: "row" }}
           justify="center"
           align="center"
-          gap={{ base: 8, md: 32 }} // ✅ smaller gap on mobile
+          gap={{ base: 8, md: 32 }}
           mb={8}
           bg="gray.50"
           px={{ base: 4, md: 8 }}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { IPlans } from "@/types/product";
 import {
   Text,
@@ -11,6 +11,9 @@ import {
   GridItem,
   Container,
   HStack,
+  Select,
+  Portal,
+  createListCollection,
 } from "@chakra-ui/react";
 import {
   ProductCarousel,
@@ -21,16 +24,17 @@ import {
   CarouselPrevious,
 } from "./ui/product-carousel";
 import { PrimaryMdButton } from "st-peter-ui";
-import { sub } from "motion/react-client";
 
 const ProductView = ({ plans }: { plans: IPlans[] }) => {
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slideCount, setSlideCount] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
+  const [selectedTerm, setSelectedTerm] = useState<number | null>(null);
 
   const hasPlans = plans && plans.length > 0;
   const plan = hasPlans ? plans[0] : null;
+  const total = Number(plan?.contractPrice ?? 0) - Number(plan?.discount ?? 0);
 
   const carouselImages = plan
     ? [
@@ -71,8 +75,31 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
     };
   }, [carouselApi, carouselImages.length]);
 
+  const terms = useMemo(() => {
+    if (!plans) return [] as number[];
+    return Array.from(
+      new Set(plans.map((p) => p.planTerm).filter((t) => t != null))
+    ).sort((a, b) => Number(a) - Number(b));
+  }, [plans]);
+
+  const termCollection = useMemo(() => {
+    return createListCollection({
+      items: terms.map((t) => ({
+        value: String(t),
+        label: `${t} ${Number(t) === 1 ? "year" : "years"}`,
+      })),
+    });
+  }, [terms]);
+
+  useEffect(() => {
+    if (terms.length > 0 && selectedTerm == null) {
+      setSelectedTerm(plan?.planTerm ?? terms[0]);
+    }
+  }, [terms, plan, selectedTerm]);
+
   const paymentOptions = useMemo(() => {
-    if (!plans) return [];
+    if (!plans || selectedTerm == null) return [] as any[];
+
     const mapModeLabel = (mode?: string) =>
       mode === "C"
         ? "Spot Cash"
@@ -94,22 +121,39 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
             maximumFractionDigits: 2,
           })}`;
 
-    return plans.map((p) => ({
-      mode: p.mode,
-      label: mapModeLabel(p.mode),
-      amount: formatAmount(p.ipInstAmt ?? p.contractPrice),
-    }));
-  }, [plans]);
+    return plans
+      .filter((p) => Number(p.planTerm) === Number(selectedTerm))
+      .map((p) => {
+        const isSpotCash = p.mode === "C";
+        const amountValue = isSpotCash
+          ? Number(total)
+          : p.ipInstAmt ?? p.contractPrice;
+
+        return {
+          mode: p.mode,
+          term: p.planTerm,
+          label: mapModeLabel(p.mode),
+          amount: formatAmount(amountValue),
+        };
+      });
+  }, [plans, selectedTerm]);
 
   useEffect(() => {
-    if (paymentOptions.length > 0 && !selected) {
-      setSelected(paymentOptions[0].mode ?? null);
+    if (paymentOptions.length === 0) {
+      setSelected(null);
+      return;
     }
+
+    // preserve current selection if it still exists for the selected term
+    if (selected && paymentOptions.some((opt) => opt.mode === selected)) {
+      return;
+    }
+
+    setSelected(paymentOptions[0].mode ?? null);
   }, [paymentOptions, selected]);
 
   return (
     <>
-      {/* Empty State */}
       {!hasPlans ? (
         <section className="h-screen flex items-center justify-center">
           <Text fontSize="xl" color="gray.500">
@@ -186,31 +230,45 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
           <section id="paymentDetails" className="bg-gray-50">
             <Box padding="8" textAlign="center">
               <Text fontSize="2xl">Choose your payment plan</Text>
-              {(() => {
-                const terms = Array.from(
-                  new Set(plans.map((p) => p.planTerm).filter((t) => t != null))
-                ).sort((a, b) => Number(a) - Number(b));
+              <Box
+                mb={4}
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+              >
+                <Text fontSize="sm" opacity={0.7} mb={2} textAlign="center">
+                  Plan term
+                </Text>
 
-                return (
-                  <Box textAlign="center" mb={4}>
-                    <Text fontSize="sm" opacity={0.7} mb={2}>
-                      Plan term
-                    </Text>
-
-                    <select
-                      defaultValue={String(plan?.planTerm ?? terms[0] ?? "")}
-                      aria-label="Select plan term"
-                      className="px-3 py-2 rounded-md border"
-                    >
-                      {terms.map((t) => (
-                        <option key={t} value={t}>
-                          {t} {Number(t) === 1 ? "year" : "years"}
-                        </option>
-                      ))}
-                    </select>
-                  </Box>
-                );
-              })()}
+                <Select.Root collection={termCollection} size="sm" w="200px">
+                  <Select.HiddenSelect />
+                  {/* <Select.Label>Plan term</Select.Label> */}
+                  <Select.Control>
+                    <Select.Trigger>
+                      <Select.ValueText placeholder="Select term" />
+                    </Select.Trigger>
+                    <Select.IndicatorGroup>
+                      <Select.Indicator />
+                    </Select.IndicatorGroup>
+                  </Select.Control>
+                  <Portal>
+                    <Select.Positioner>
+                      <Select.Content>
+                        {termCollection.items.map((item: any) => (
+                          <Select.Item
+                            item={item}
+                            key={item.value}
+                            onClick={() => setSelectedTerm(Number(item.value))}
+                          >
+                            {item.label}
+                            <Select.ItemIndicator />
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Positioner>
+                  </Portal>
+                </Select.Root>
+              </Box>
 
               <Grid
                 p="8"
@@ -224,8 +282,9 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
               >
                 {paymentOptions.map((opt) => {
                   const isSelected = selected === opt.mode;
+                  const key = `${opt.mode ?? "mode"}-${opt.term ?? "term"}`;
                   return (
-                    <GridItem key={opt.mode} colSpan={1}>
+                    <GridItem key={key} colSpan={1}>
                       <Box
                         as="button"
                         onClick={() => setSelected(opt.mode ?? null)}

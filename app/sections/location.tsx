@@ -57,7 +57,7 @@ const Location = () => {
               </Text>
             </Flex>
 
-            <Text maxW={{ base: "sm", md: "lg" }} textAlign="start">
+            <Text w={{ base: "fit-content", md: "lg" }} textAlign="start">
               Visit us at our convenient location, easily accessible for all
               your needs. Our chapel is situated in the heart of the city,
               providing a peaceful and welcoming environment for families and
@@ -66,7 +66,9 @@ const Location = () => {
             </Text>
 
             <Box mt={8}>
-              <PrimaryMdButton>Go to Map</PrimaryMdButton>
+              <PrimaryMdButton w={{ base: "full", md: "fit-content" }}>
+                Go to Map
+              </PrimaryMdButton>
             </Box>
           </Box>
         </Flex>

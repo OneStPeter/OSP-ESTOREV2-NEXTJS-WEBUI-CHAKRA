@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Box, Text, Grid } from "@chakra-ui/react";
+import { Box, Text, Grid, Image } from "@chakra-ui/react";
 import { WobbleCard } from "@/components/ui/wobble-card";
 import { useRouter } from "next/navigation";
 
@@ -33,12 +33,18 @@ const Services = () => {
                 your branch of account for more information.
               </Text>
             </Box>
-            <img
+            <Image
               src="/images/services/claim-benefits.jpg"
+              alt="claim benefits"
               width={250}
-              height={500}
-              alt="linear demo image"
-              className="absolute right-0 lg:right-[0%] bottom-0 object-contain rounded-2xl hidden lg:block"
+              top="0"
+              height="auto"
+              position="absolute"
+              right={{ base: 0, lg: "0%" }}
+              bottom="0"
+              objectFit="cover"
+              borderRadius="2xl"
+              display={{ base: "none", lg: "block" }}
             />
           </WobbleCard>
           <WobbleCard
@@ -79,12 +85,18 @@ const Services = () => {
                 </Text>
               </Box>
             </div>
-            <img
+            <Image
               src="/images/services/request-service.jpg"
+              alt="request service"
               width={250}
-              height={500}
-              alt="linear demo image"
-              className="absolute -top-2 right-0 lg:right-[0%] bottom-0 object-contain rounded-2xl hidden lg:block"
+              height="auto"
+              position="absolute"
+              top="0"
+              right={{ base: 0, lg: "0%" }}
+              bottom="0"
+              objectFit="cover"
+              borderRadius="2xl"
+              display={{ base: "none", lg: "block" }}
             />
           </WobbleCard>
         </Grid>

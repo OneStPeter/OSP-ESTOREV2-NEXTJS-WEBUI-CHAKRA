@@ -7,6 +7,7 @@ import { StPeterProvider } from "st-peter-ui";
 import "./globals.css";
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
+import BottomNav from "@/components/ui/bottom-nav";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -41,6 +42,7 @@ export default function RootLayout({
         <StPeterProvider theme="green">
           <Navbar />
           {children}
+          <BottomNav />
           <Footer />
         </StPeterProvider>
       </body>

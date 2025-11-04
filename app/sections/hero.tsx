@@ -39,7 +39,12 @@ const Hero = () => {
         />
       </div> */}
       <div className="absolute inset-0 bg-black/60 h-screen" />
-      <Box zIndex={2} maxWidth={"7xl"} w={{ base: "100%" }}>
+      <Box
+        zIndex={2}
+        maxWidth={"7xl"}
+        w={{ base: "100%" }}
+        mt={{ base: 24, md: 0 }}
+      >
         <VStack alignItems={"start"} gap={8} padding={8} className="text-white">
           <Text textStyle={{ base: "2xl", md: "6xl" }} fontWeight="bold">
             Para sa Magandang Kinabukasan: Bawat Pilipino, Dapat may{" "}

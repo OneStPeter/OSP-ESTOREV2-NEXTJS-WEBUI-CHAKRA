@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Card, Image, Text } from "@chakra-ui/react";
+import { Button, Card, Text } from "@chakra-ui/react";
+import NextImage from "next/image";
 import { IoMdAdd } from "react-icons/io";
 import { PrimaryMdButton } from "st-peter-ui";
 import { useRouter } from "next/navigation";
@@ -10,8 +11,11 @@ interface ProductCardProps {
   description?: string;
   price?: number;
   planTerm?: number;
+  terms?: { planTerm?: number; price?: number }[];
   address?: string;
   variant: "plan" | "memorial";
+  /** If true, mark this image as priority for LCP (eager) */
+  priority?: boolean;
 }
 const ProductCard: React.FC<ProductCardProps> = ({
   image,
@@ -20,7 +24,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   price,
   address,
   planTerm,
+  terms,
   variant,
+  priority,
 }) => {
   const router = useRouter();
 
@@ -38,16 +44,25 @@ const ProductCard: React.FC<ProductCardProps> = ({
         transition="all 0.3s"
         _hover={{ transform: "scale(1.05)", shadow: "xl" }}
       >
-        <Image
-          src={image}
-          alt={title}
-          position="absolute"
-          inset="0"
-          width="100%"
-          height="100%"
-          objectFit="cover"
-          objectPosition="center 40%"
-        />
+        {image ? (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <NextImage
+              src={image}
+              alt={title || "plan image"}
+              fill
+              sizes="(max-width: 768px) 90vw, 33vw"
+              style={{ objectFit: "cover", objectPosition: "center 40%" }}
+              priority={!!priority}
+            />
+          </div>
+        ) : null}
 
         <div
           style={{
@@ -83,24 +98,64 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </Card.Description>
           ) : null}
 
-          {variant === "plan" && Number.isFinite(price as number) ? (
+          {variant === "plan" &&
+          (Array.isArray(terms)
+            ? terms.length > 0
+            : Number.isFinite(price as number)) ? (
             <div
               style={{
                 display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                flexDirection: "column",
+                gap: "0.25rem",
                 marginTop: "0.5rem",
               }}
             >
               <Text fontSize={{ base: "xs", sm: "sm" }}>Installments:</Text>
-              <Text fontSize={{ base: "xs", sm: "sm" }} fontWeight="semibold">
-                ₱
-                {(price as number).toLocaleString("en-PH", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}{" "}
-                / month
-              </Text>
+              {Array.isArray(terms) && terms.length > 0 ? (
+                terms.map((t, i) => (
+                  <div
+                    key={i}
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <Text fontSize={{ base: "xs", sm: "sm" }}>
+                      ₱
+                      {(t.price as number).toLocaleString("en-PH", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}{" "}
+                      / month
+                    </Text>
+                    <Text
+                      fontSize={{ base: "xs", sm: "sm" }}
+                      fontWeight="semibold"
+                    >
+                      ({t.planTerm} years)
+                    </Text>
+                  </div>
+                ))
+              ) : (
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <Text
+                    fontSize={{ base: "xs", sm: "sm" }}
+                    fontWeight="semibold"
+                  >
+                    ₱
+                    {(price as number).toLocaleString("en-PH", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}{" "}
+                    / month
+                  </Text>
+                  <Text
+                    fontSize={{ base: "xs", sm: "sm" }}
+                    fontWeight="semibold"
+                  >
+                    ({planTerm} years)
+                  </Text>
+                </div>
+              )}
             </div>
           ) : variant === "memorial" && address ? (
             <div

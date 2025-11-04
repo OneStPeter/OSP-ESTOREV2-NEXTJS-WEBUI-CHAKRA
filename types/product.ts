@@ -9,4 +9,5 @@ export interface IPlans {
   planTerm: number;        
   active: boolean;
   casketDesc: string;
+  discount: number;
 }

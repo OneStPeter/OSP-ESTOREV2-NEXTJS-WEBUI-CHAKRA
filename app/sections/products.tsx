@@ -41,22 +41,48 @@ const Products = () => {
           scrollBehavior="smooth"
           justifyContent={{ base: "start", lg: "center" }}
         >
-          {plans.slice(0, 3).map((plan, index) => (
-            <div
-              key={index}
-              className="transition-transform duration-300 hover:-translate-y-2"
-              //   style={fadeInStyle}
-            >
-              <ProductCard
-                variant="plan"
-                image={`images/plan-images/${plan.planDesc}.jpg`}
-                title={plan.planDesc}
-                description={plan.casketDesc}
-                price={plan.ipInstAmt}
-                planTerm={plan.planTerm}
-              />
-            </div>
-          ))}
+          {(() => {
+            const map = new Map<string, any>();
+            plans.forEach((p) => {
+              const key = p.planDesc;
+              if (!map.has(key)) {
+                map.set(key, {
+                  planDesc: p.planDesc,
+                  casketDesc: p.casketDesc,
+                  img: `/images/plan-images/${p.planDesc}.jpg`,
+                  terms: [{ planTerm: p.planTerm, price: p.ipInstAmt }],
+                });
+              } else {
+                const entry = map.get(key);
+                const exists = entry.terms.some(
+                  (t: any) =>
+                    t.planTerm === p.planTerm && t.price === p.ipInstAmt
+                );
+                if (!exists)
+                  entry.terms.push({
+                    planTerm: p.planTerm,
+                    price: p.ipInstAmt,
+                  });
+              }
+            });
+
+            const grouped = Array.from(map.values()).slice(0, 3);
+
+            return grouped.map((g, index) => (
+              <div
+                key={index}
+                className="transition-transform duration-300 hover:-translate-y-2"
+              >
+                <ProductCard
+                  variant="plan"
+                  image={g.img}
+                  title={g.planDesc}
+                  description={g.casketDesc}
+                  terms={g.terms}
+                />
+              </div>
+            ));
+          })()}
         </Flex>
 
         {/* Memorial Park Cards */}
@@ -77,13 +103,13 @@ const Products = () => {
           <ProductCard
             variant="memorial"
             title="Guiguinto, Bulacan"
-            image="images/memorial-park/memorial-park-1.jpg"
+            image="/images/memorial-park/memorial-park-1.jpg"
             address="Guiguinto Memorial Gardens - St. Peter Memorial Gardens, Ilang-Ilang, Guiguinto, Bulacan"
           />
           <ProductCard
             variant="memorial"
             title="Legaspi City, Albay"
-            image="images/memorial-park/memorial-park-2.jpg"
+            image="/images/memorial-park/memorial-park-2.jpg"
             address="Taysan Hills, Brgy. 56-Taysan, Legaspi City, 4500 Taysan Hills, Brgy. 56-Taysan, Legaspi City"
           />
         </Flex>

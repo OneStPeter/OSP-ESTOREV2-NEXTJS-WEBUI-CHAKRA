@@ -35,6 +35,7 @@ const Navbar = () => {
           src="https://www.stpeter.com.ph/images/logo2gold.png"
           alt="E-Store Logo"
           onClick={() => router.push("/")}
+          cursor="pointer"
           width={{ base: 24, sm: 32, md: 48, lg: 56 }}
         />
         <div className="w-xl justify-center hidden md:hidden lg:flex">
