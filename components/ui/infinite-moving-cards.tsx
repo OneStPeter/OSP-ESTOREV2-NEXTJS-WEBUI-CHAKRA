@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/plan";
 import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 

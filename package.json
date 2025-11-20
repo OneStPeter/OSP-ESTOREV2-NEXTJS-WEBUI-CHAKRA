@@ -21,7 +21,7 @@
     "react-dom": "19.2.0",
     "react-icons": "^5.5.0",
     "react-intersection-observer": "^9.16.0",
-    "st-peter-ui": "^0.0.9",
+    "st-peter-ui": "^0.1.1",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {

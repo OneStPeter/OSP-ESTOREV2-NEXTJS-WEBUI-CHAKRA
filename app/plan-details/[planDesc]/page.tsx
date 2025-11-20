@@ -1,6 +1,6 @@
 import React from "react";
 import ProductView from "@/components/product-view";
-import { getProductByName } from "@/lib/utils";
+import { getProductByName } from "@/lib/utils/plan";
 
 interface PageProps {
   params: Promise<{ planDesc: string }>;

@@ -222,7 +222,7 @@ export function Carousel({ slides }: CarouselProps) {
     <Box
       position="relative"
       w="70vmin"
-      h="80vmin"
+      h={{ base: "85vmin", md: "80vmin" }}
       mx="auto"
       aria-labelledby={`carousel-heading-${id}`}
       display="flex"

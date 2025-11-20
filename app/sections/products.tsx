@@ -1,17 +1,38 @@
 "use client";
 
 import ProductCard from "@/components/ui/card";
+import ComparisonBanner from "@/components/ui/comparison-banner";
 import { IPlans } from "@/types/product";
-import { Box, Flex, Text } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import Error from "@/components/ui/error";
+import { useEffect, useRef, useState } from "react";
 
 const Products = () => {
   const [plans, setPlans] = useState<IPlans[]>([]);
+  const [compareList, setCompareList] = useState<string[]>([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const alertRef = useRef<HTMLDivElement>(null);
 
+  const toggleCompare = (planDesc: string) => {
+    setCompareList((prev) => {
+      if (prev.includes(planDesc)) {
+        return prev.filter((p) => p !== planDesc);
+      }
+      return [...prev, planDesc];
+    });
+  };
+  useEffect(() => {
+    if (showAlert) {
+      alertRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      const timer = setTimeout(() => setShowAlert(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert]);
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const res = await fetch("/api/get-plans");
+        const res = await fetch("/api/get-plans-card");
         const data = await res.json();
         setPlans(data.result);
       } catch (error) {
@@ -23,10 +44,28 @@ const Products = () => {
   }, []);
   return (
     <section className="bg-gray-50">
+      {showAlert && (
+        <Box
+          ref={alertRef}
+          position="fixed"
+          top={4}
+          left="50%"
+          transform="translateX(-50%)"
+          zIndex={1000}
+          w={{ base: "90%", md: "50%" }}
+        >
+          <Error title="Please select at least 2 plans to compare" />
+        </Box>
+      )}
       <Box padding="8">
-        <Text fontSize="3xl" fontWeight="bold" textAlign="center">
+        <Heading
+          size="2xl"
+          textTransform="uppercase"
+          fontWeight="semibold"
+          textAlign="center"
+        >
           Popular Plans
-        </Text>
+        </Heading>
         <Text fontSize="md" textAlign="center">
           Choose a plan that fits your needs. Flexible terms and affordable
           prices.
@@ -74,11 +113,14 @@ const Products = () => {
                 className="transition-transform duration-300 hover:-translate-y-2"
               >
                 <ProductCard
+                  compareList={compareList}
+                  toggleCompare={toggleCompare}
                   variant="plan"
                   image={g.img}
                   title={g.planDesc}
                   description={g.casketDesc}
                   terms={g.terms}
+                  onCompare={() => toggleCompare(g.planDesc)}
                 />
               </div>
             ));
@@ -86,9 +128,15 @@ const Products = () => {
         </Flex>
 
         {/* Memorial Park Cards */}
-        <Text fontSize="3xl" mt="8" fontWeight="bold" textAlign="center">
+        <Heading
+          size="2xl"
+          mt="8"
+          fontWeight="semibold"
+          textTransform="uppercase"
+          textAlign="center"
+        >
           Memorial Parks
-        </Text>
+        </Heading>
         <Text fontSize="md" textAlign="center">
           Beautiful locations for lasting memories.
         </Text>
@@ -113,6 +161,11 @@ const Products = () => {
             address="Taysan Hills, Brgy. 56-Taysan, Legaspi City, 4500 Taysan Hills, Brgy. 56-Taysan, Legaspi City"
           />
         </Flex>
+        <ComparisonBanner
+          compareList={compareList}
+          setCompareList={setCompareList}
+          setShowAlert={setShowAlert}
+        />
       </Box>
     </section>
   );

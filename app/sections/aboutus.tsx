@@ -1,7 +1,8 @@
 "use client";
 
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import Head from "next/head";
 // import { base } from "motion/react-client";
 import React from "react";
 import CountUp from "react-countup";
@@ -111,9 +112,9 @@ const AboutUs = () => {
         {/* Testimonials */}
         <Box p={8}>
           <Flex direction="column" align="center" textAlign="center" mb={8}>
-            <Text fontSize="3xl" fontWeight="bold">
+            <Heading size="2xl" textTransform="uppercase" fontWeight="semibold">
               Testimonials
-            </Text>
+            </Heading>
             <Box
               h="3px"
               w="100px"

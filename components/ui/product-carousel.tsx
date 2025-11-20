@@ -7,7 +7,7 @@ import useEmblaCarousel, {
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 
 import { Box, Flex, Button, IconButton } from "@chakra-ui/react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/plan";
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -188,8 +188,14 @@ function CarouselPrevious({
       size={size as any}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
+      display={{ base: "none", md: "block" }}
       {...(orientation === "horizontal"
-        ? { ...commonPos, top: "50%", left: -48, transform: "translateY(-50%)" }
+        ? {
+            ...commonPos,
+            top: "50%",
+            left: { base: -4, md: -6 },
+            transform: "translateY(-50%)",
+          }
         : {
             ...commonPos,
             top: -48,
@@ -226,11 +232,12 @@ function CarouselNext({
       size={size as any}
       disabled={!canScrollNext}
       onClick={scrollNext}
+      display={{ base: "none", md: "block" }}
       {...(orientation === "horizontal"
         ? {
             ...commonPos,
             top: "50%",
-            right: -48,
+            right: { base: -4, md: -6 },
             transform: "translateY(-50%)",
           }
         : {

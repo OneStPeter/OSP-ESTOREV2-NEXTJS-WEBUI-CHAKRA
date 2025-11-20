@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Box, Text, Grid, Image } from "@chakra-ui/react";
+import { Box, Text, Grid, Image, Heading } from "@chakra-ui/react";
 import { WobbleCard } from "@/components/ui/wobble-card";
 import { useRouter } from "next/navigation";
 
@@ -10,9 +10,15 @@ const Services = () => {
   return (
     <section>
       <Box padding="8">
-        <Text textStyle="3xl" fontWeight="bold" mb="8" textAlign="center">
+        <Heading
+          size="2xl"
+          fontWeight="semibold"
+          textTransform="uppercase"
+          mb="8"
+          textAlign="center"
+        >
           Get instant access to online services
-        </Text>
+        </Heading>
         <Grid
           templateColumns={{ base: "1fr", lg: "repeat(3, 1fr)" }}
           gap={4}

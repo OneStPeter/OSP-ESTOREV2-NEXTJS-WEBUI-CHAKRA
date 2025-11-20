@@ -16,28 +16,40 @@ import {
   Heading,
   Flex,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
+import { PrimaryMdButton, DeleteButton } from "st-peter-ui";
 
 interface ShoppingCartProps {
   open: boolean;
   onClose: () => void;
 }
 
+interface CartItem {
+  planDesc?: string;
+  image?: string;
+  mode?: string;
+  quantity: number;
+  price: number;
+  total: number;
+}
+
 const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
-  // Mock cart state for demonstration
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      image: "/images/plan-images/ST. ANNE.jpg",
-      title: "ST .ANNE",
-      mode: "Annually",
-      qty: 1,
-      price: 31500,
-    },
-  ]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [removeIdx, setRemoveIdx] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (open) {
+      const stored = sessionStorage.getItem("Cart");
+      if (stored) {
+        setCartItems(JSON.parse(stored));
+      } else {
+        setCartItems([]);
+      }
+    }
+  }, [open]);
 
   if (!open) return null; // hide when not open
 
@@ -48,7 +60,11 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
 
   const confirmRemove = () => {
     if (removeIdx !== null) {
-      setCartItems((items) => items.filter((_, idx) => idx !== removeIdx));
+      setCartItems((items) => {
+        const updated = items.filter((_, idx) => idx !== removeIdx);
+        sessionStorage.setItem("Cart", JSON.stringify(updated)); // sync to session
+        return updated;
+      });
       setShowModal(false);
       setRemoveIdx(null);
     }
@@ -58,6 +74,8 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
     setShowModal(false);
     setRemoveIdx(null);
   };
+  const router = useRouter();
+  const grandTotal = cartItems.reduce((s, item) => s + Number(item.total), 0);
 
   return (
     <Box
@@ -87,6 +105,28 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
         transition="transform 0.3s"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Confirmation Modal */}
+        <DialogRoot
+          open={showModal}
+          onOpenChange={(details) => setShowModal(details.open)}
+        >
+          <DialogContent>
+            <DialogHeader>Remove item from cart?</DialogHeader>
+            <DialogBody>
+              Are you sure you want to remove this item from your cart?
+            </DialogBody>
+            <DialogFooter>
+              <DialogActionTrigger asChild>
+                <Button variant="outline" onClick={cancelRemove}>
+                  Cancel
+                </Button>
+              </DialogActionTrigger>
+              <Button colorScheme="red" onClick={confirmRemove}>
+                Remove
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </DialogRoot>
         {/* Close button */}
         <Icon
           as={IoClose}
@@ -110,40 +150,49 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
           ) : (
             cartItems.map((item, idx) => (
               <Box
-                key={item.id}
-                borderBottom={idx < cartItems.length - 1 ? "1px" : "none"}
+                key={idx}
+                borderBottom={cartItems.length > 1 ? "1px" : "none"}
                 borderColor="gray.200"
               >
                 <HStack gap={4} mt={8}>
                   <Image
-                    src={item.image}
-                    alt="Product"
-                    boxSize="64px"
+                    src={`/images/plan-images/${item.planDesc}.jpg`}
+                    alt={item.planDesc}
+                    boxSize="128px"
                     objectFit="cover"
                     rounded="md"
                   />
-                  <Box ml={4} flex={1}>
-                    <Text fontWeight="semibold">{item.title}</Text>
+                  <VStack flex={1} ml={4} alignItems="start">
+                    <Text fontWeight="semibold">{item.planDesc}</Text>
                     <Text color="gray.500" fontSize="sm">
-                      Mode: {item.mode}
+                      Mode:{" "}
+                      {item.mode == "C"
+                        ? "Cash"
+                        : item.mode == "M"
+                        ? "Monthly"
+                        : item.mode == "Q"
+                        ? "Quarterly"
+                        : item.mode == "S"
+                        ? "Semi-Annual"
+                        : item.mode == "A"
+                        ? "Annual"
+                        : ""}
                     </Text>
                     <Text color="gray.500" fontSize="sm">
-                      Qty: {item.qty}
+                      Quantity: {item.quantity}
                     </Text>
-                  </Box>
-                  <Text fontWeight="bold" mr={2}>
-                    ₱{" "}
-                    {item.price
-                      .toLocaleString("en-PH", { minimumFractionDigits: 2 })
-                      .replace(/\.00$/, "")}
-                  </Text>
-                  <Button
-                    color="white"
-                    bg="red.500"
+                    <Text fontSize="sm" color="gray.500" mr={2}>
+                      Price: ₱{" "}
+                      {item.price
+                        .toLocaleString("en-PH", { minimumFractionDigits: 2 })
+                        .replace(/\.00$/, "")}
+                    </Text>
+                  </VStack>
+
+                  <DeleteButton
+                    colorPalette="red"
                     onClick={() => handleRemove(idx)}
-                  >
-                    Remove
-                  </Button>
+                  />
                 </HStack>
               </Box>
             ))
@@ -157,45 +206,19 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
           </Text>
           <Text>
             ₱{" "}
-            {cartItems
-              .reduce((sum, item) => sum + item.price * item.qty, 0)
+            {grandTotal
               .toLocaleString("en-PH", { minimumFractionDigits: 2 })
               .replace(/\.00$/, "")}
           </Text>
         </HStack>
-
-        <Button
-          bg="green.600"
-          color="white"
+        <PrimaryMdButton
           mt={8}
           w="full"
           disabled={cartItems.length === 0}
+          onClick={() => router.push("/order-summary/")}
         >
           Checkout
-        </Button>
-
-        {/* Confirmation Modal */}
-        <DialogRoot
-          open={showModal}
-          onOpenChange={(details) => setShowModal(details.open)}
-        >
-          <DialogContent>
-            <DialogHeader>Remove item from cart?</DialogHeader>
-            <DialogBody>
-              Are you sure you want to remove this item from your cart?
-            </DialogBody>
-            <DialogFooter>
-              <DialogActionTrigger asChild>
-                <Button variant="outline" onClick={cancelRemove}>
-                  Cancel
-                </Button>
-              </DialogActionTrigger>
-              <Button colorScheme="red" onClick={confirmRemove}>
-                Remove
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </DialogRoot>
+        </PrimaryMdButton>
       </Box>
     </Box>
   );

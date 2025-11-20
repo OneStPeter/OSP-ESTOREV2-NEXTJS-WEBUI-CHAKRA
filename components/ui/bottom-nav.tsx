@@ -59,6 +59,7 @@ const BottomNav = () => {
             onClick={onOpen}
             display="flex"
             flexDir="column"
+            color="gray.600"
             alignItems="center"
           >
             <Icon as={IoMenuOutline} boxSize={6} />
@@ -98,9 +99,7 @@ const BottomNav = () => {
           align="center"
           borderBottomWidth="1px"
         >
-          <Text fontSize="lg" fontWeight="semibold">
-            Menu
-          </Text>
+          <Text>Menu</Text>
           <Button variant="ghost" onClick={onClose}>
             ✕
           </Button>

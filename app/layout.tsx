@@ -39,7 +39,7 @@ export default function RootLayout({
         />
       </head>
       <body style={{ overflowX: "hidden" }}>
-        <StPeterProvider theme="green">
+        <StPeterProvider theme="green" font="Open Sans">
           <Navbar />
           {children}
           <BottomNav />

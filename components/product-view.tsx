@@ -14,6 +14,7 @@ import {
   Select,
   Portal,
   createListCollection,
+  Stack,
 } from "@chakra-ui/react";
 import {
   ProductCarousel,
@@ -23,14 +24,18 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "./ui/product-carousel";
-import { PrimaryMdButton } from "st-peter-ui";
+import { PrimaryMdButton, SecondaryMdButton } from "st-peter-ui";
+import { useRouter } from "next/navigation";
+import { addToCart } from "@/lib/utils/cart";
 
 const ProductView = ({ plans }: { plans: IPlans[] }) => {
+  const router = useRouter();
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slideCount, setSlideCount] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [selectedTerm, setSelectedTerm] = useState<number | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
   const hasPlans = plans && plans.length > 0;
   const plan = hasPlans ? plans[0] : null;
@@ -90,6 +95,13 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
       })),
     });
   }, [terms]);
+  const quantityCollection = useMemo(() => {
+    return createListCollection({
+      items: [1, 2, 3].map((q) => ({
+        value: String(q),
+      })),
+    });
+  }, []);
 
   useEffect(() => {
     if (terms.length > 0 && selectedTerm == null) {
@@ -125,9 +137,22 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
       .filter((p) => Number(p.planTerm) === Number(selectedTerm))
       .map((p) => {
         const isSpotCash = p.mode === "C";
-        const amountValue = isSpotCash
-          ? Number(total)
-          : p.ipInstAmt ?? p.contractPrice;
+        let amountValue;
+        if (isSpotCash) {
+          amountValue = Number(total);
+        } else {
+          const paymentsPerYear =
+            p.mode === "A"
+              ? 1
+              : p.mode === "S"
+              ? 2
+              : p.mode === "Q"
+              ? 4
+              : p.mode === "M"
+              ? 12
+              : 1;
+          amountValue = Number(p.ipInstAmt);
+        }
 
         return {
           mode: p.mode,
@@ -144,13 +169,19 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
       return;
     }
 
-    // preserve current selection if it still exists for the selected term
     if (selected && paymentOptions.some((opt) => opt.mode === selected)) {
       return;
     }
 
-    setSelected(paymentOptions[0].mode ?? null);
+    setSelected(null);
   }, [paymentOptions, selected]);
+
+  const [quantity, setQuantity] = useState<number | null>(null);
+  useEffect(() => {
+    if (quantity == null) {
+      setQuantity(1);
+    }
+  }, [quantity]);
 
   return (
     <>
@@ -163,9 +194,18 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
       ) : (
         <>
           {/* Product Header */}
-          <section id="productHeader" className="h-screen">
-            <VStack textAlign="center" mt="48">
-              <Text fontSize="2xl">{plan?.planDesc}</Text>
+          <section id="productHeader" className="min-h-screen">
+            <VStack
+              mt={{ base: 24, md: 48 }}
+              textAlign="center"
+              alignItems="center"
+              gap={{ base: 8, md: 4 }}
+              justifyContent="center"
+              minH="100vh"
+            >
+              <Text fontSize="2xl" fontWeight="semibold">
+                {plan?.planDesc}
+              </Text>
               <Text>{plan?.casketDesc}</Text>
               <Text>
                 Contract Price: ₱
@@ -229,20 +269,18 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
           {/* Payment Section */}
           <section id="paymentDetails" className="bg-gray-50">
             <Box padding="8" textAlign="center">
-              <Text fontSize="2xl">Choose your payment plan</Text>
+              <Text fontSize="2xl" fontWeight="semibold">
+                Choose your payment plan
+              </Text>
               <Box
                 mb={4}
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
               >
-                <Text fontSize="sm" opacity={0.7} mb={2} textAlign="center">
-                  Plan term
-                </Text>
-
-                <Select.Root collection={termCollection} size="sm" w="200px">
-                  <Select.HiddenSelect />
-                  {/* <Select.Label>Plan term</Select.Label> */}
+                <Select.Root collection={termCollection} w="200px" mb={8}>
+                  <Select.HiddenSelect required />
+                  <Select.Label>Plan term</Select.Label>
                   <Select.Control>
                     <Select.Trigger>
                       <Select.ValueText placeholder="Select term" />
@@ -268,11 +306,42 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                     </Select.Positioner>
                   </Portal>
                 </Select.Root>
+
+                <Select.Root collection={quantityCollection} w="200px">
+                  <Select.HiddenSelect required />
+                  <Select.Label>Quantity</Select.Label>
+                  <Select.Control>
+                    <Select.Trigger>
+                      <Select.ValueText placeholder="Select Quantity" />
+                    </Select.Trigger>
+                    <Select.IndicatorGroup>
+                      <Select.Indicator />
+                    </Select.IndicatorGroup>
+                  </Select.Control>
+                  <Portal>
+                    <Select.Positioner>
+                      <Select.Content>
+                        {quantityCollection.items.map((item: any) => (
+                          <Select.Item
+                            item={item}
+                            key={item.value}
+                            onClick={() => {
+                              setQuantity(Number(item.value));
+                            }}
+                          >
+                            {item.value}
+                            <Select.ItemIndicator />
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Positioner>
+                  </Portal>
+                </Select.Root>
               </Box>
 
               <Grid
                 p="8"
-                w="xl"
+                w={{ base: "full", md: "3xl" }}
                 margin="0 auto"
                 templateColumns={{
                   base: "repeat(1, 1fr)",
@@ -287,8 +356,12 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                     <GridItem key={key} colSpan={1}>
                       <Box
                         as="button"
-                        onClick={() => setSelected(opt.mode ?? null)}
-                        w="full"
+                        onClick={() => {
+                          setSelected(opt.mode ?? null);
+                          setSelectedPlan(opt.mode ?? null);
+                        }}
+                        m={{ base: "auto", md: "0" }}
+                        w={{ base: "xs", md: "full" }}
                         textAlign="left"
                         borderRadius="xl"
                         p={6}
@@ -309,8 +382,33 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                 })}
               </Grid>
               <HStack justify="center" gap={8}>
-                <PrimaryMdButton>BUY NOW</PrimaryMdButton>
-                <PrimaryMdButton>ADD TO CART</PrimaryMdButton>
+                <SecondaryMdButton
+                  disabled={!selectedPlan}
+                  onClick={() =>
+                    addToCart(
+                      plan!.planDesc,
+                      selectedPlan!,
+                      plan!.planTerm.toString(),
+                      quantity!,
+                      paymentOptions
+                        .find((opt) => opt.mode === selectedPlan)!
+                        .amount.replace(/[^0-9.-]+/g, ""),
+                      total
+                    )
+                  }
+                >
+                  ADD TO CART
+                </SecondaryMdButton>
+                <PrimaryMdButton
+                  disabled={!selectedPlan}
+                  onClick={() =>
+                    router.push(
+                      `/order-summary/${plan?.planDesc}/${selectedPlan}`
+                    )
+                  }
+                >
+                  BUY NOW
+                </PrimaryMdButton>
               </HStack>
             </Box>
           </section>
@@ -319,7 +417,9 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
           <section id="productBenefits">
             <Box padding="8" textAlign="center">
               <VStack mb={6} gap={4}>
-                <Text fontSize="2xl">Plan Benefits</Text>
+                <Text fontSize="2xl" fontWeight="semibold">
+                  Plan Benefits
+                </Text>
                 <Text fontSize="sm" opacity={0.7}>
                   If you avail of this plan, you or your beneficiaries will be
                   entitled to:
@@ -395,7 +495,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                         justifyContent={{ base: "center", md: "flex-start" }}
                       >
                         <Box
-                          w="220px"
+                          w={{ base: "full", md: "220px" }}
                           h="140px"
                           overflow="hidden"
                           display="flex"
@@ -441,7 +541,12 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                         )}
 
                         {card.details && (
-                          <HStack gap={8} align="stretch" pt={2}>
+                          <Stack
+                            direction={{ base: "column", md: "row" }}
+                            gap={8}
+                            align="stretch"
+                            pt={2}
+                          >
                             {card.details.map((d) => (
                               <Grid key={d.title} textAlign="start">
                                 <Text
@@ -460,7 +565,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                                 </Text>
                               </Grid>
                             ))}
-                          </HStack>
+                          </Stack>
                         )}
                       </VStack>
                     </Grid>
@@ -474,10 +579,10 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
           <section id="productFeatures" className="bg-gray-50">
             <Box padding="8" textAlign="center">
               <VStack mb={6} gap={4}>
-                <Text fontSize="2xl">Plan Features</Text>
-                <Text fontSize="sm" opacity={0.7}>
-                  The following features are available for this plan:
+                <Text fontSize="2xl" fontWeight="semibold">
+                  Plan Features
                 </Text>
+                <Text>The following features are available for this plan:</Text>
               </VStack>
 
               <Grid

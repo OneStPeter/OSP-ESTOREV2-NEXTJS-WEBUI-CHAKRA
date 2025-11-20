@@ -1,34 +1,41 @@
 import React from "react";
-import { Button, Card, Text } from "@chakra-ui/react";
+import { Button, Card, Text, Image } from "@chakra-ui/react";
 import NextImage from "next/image";
 import { IoMdAdd } from "react-icons/io";
 import { PrimaryMdButton } from "st-peter-ui";
 import { useRouter } from "next/navigation";
+import { FaCheck } from "react-icons/fa";
 
 interface ProductCardProps {
   image?: string;
   title?: string;
   description?: string;
-  price?: number;
+  ipInstAmt?: number;
   planTerm?: number;
   terms?: { planTerm?: number; price?: number }[];
   address?: string;
   variant: "plan" | "memorial";
-  /** If true, mark this image as priority for LCP (eager) */
   priority?: boolean;
+  onCompare?: () => void;
+  compareList?: string[];
+  toggleCompare?: (title: string) => void;
 }
 const ProductCard: React.FC<ProductCardProps> = ({
   image,
   title,
   description,
-  price,
+  ipInstAmt,
   address,
   planTerm,
   terms,
   variant,
   priority,
+  onCompare,
+  compareList = [],
+  toggleCompare,
 }) => {
   const router = useRouter();
+  const isInCompare = compareList.includes(title || "");
 
   return (
     <>
@@ -60,7 +67,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
               sizes="(max-width: 768px) 90vw, 33vw"
               style={{ objectFit: "cover", objectPosition: "center 40%" }}
               priority={!!priority}
+              unoptimized
             />
+            {/* <Image
+              src={image}
+              alt={title || "plan image"}
+              sizes="(max-width: 768px) 90vw, 33vw"
+              style={{ objectFit: "cover", objectPosition: "center 40%" }}
+            /> */}
           </div>
         ) : null}
 
@@ -101,7 +115,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           {variant === "plan" &&
           (Array.isArray(terms)
             ? terms.length > 0
-            : Number.isFinite(price as number)) ? (
+            : Number.isFinite(ipInstAmt as number)) ? (
             <div
               style={{
                 display: "flex",
@@ -142,7 +156,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     fontWeight="semibold"
                   >
                     ₱
-                    {(price as number).toLocaleString("en-PH", {
+                    {(ipInstAmt as number).toLocaleString("en-PH", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}{" "}
@@ -182,12 +196,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
         >
           {variant === "plan" ? (
             <>
-              <PrimaryMdButton>
-                <div className="flex justify-center items-center md:gap-2 ">
+              {isInCompare ? (
+                <PrimaryMdButton onClick={() => toggleCompare?.(title || "")}>
+                  <FaCheck />
+                  <span>ADDED TO COMPARE</span>
+                </PrimaryMdButton>
+              ) : (
+                <PrimaryMdButton
+                  onClick={() => toggleCompare?.(title || "")}
+                  disabled={compareList.length >= 3}
+                >
                   <IoMdAdd />
-                  <span className="text-xs sm:text-sm">Compare</span>
-                </div>
-              </PrimaryMdButton>
+                  <span>COMPARE PLAN</span>
+                </PrimaryMdButton>
+              )}
               <PrimaryMdButton
                 cursor="pointer"
                 onClick={() => router.push(`/plan-details/${title}`)}
