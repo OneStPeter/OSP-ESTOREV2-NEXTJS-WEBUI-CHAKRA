@@ -122,7 +122,7 @@ const Section: React.FC<SectionProps> = ({
 
                     {items.map((term, index) => (
                       <HStack gap={4} key={index} mt={4}>
-                        <Badge colorPalette="green" color="black" size="md">
+                        <Badge color="black" size="md">
                           {term.mode == "M"
                             ? "Monthly"
                             : term.mode == "C"
