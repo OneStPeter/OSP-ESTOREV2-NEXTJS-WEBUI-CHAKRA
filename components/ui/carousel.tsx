@@ -221,7 +221,7 @@ export function Carousel({ slides }: CarouselProps) {
   return (
     <Box
       position="relative"
-      w="70vmin"
+      w={{ base: "95vmin", md: "full" }}
       h={{ base: "85vmin", md: "80vmin" }}
       mx="auto"
       aria-labelledby={`carousel-heading-${id}`}
@@ -234,7 +234,6 @@ export function Carousel({ slides }: CarouselProps) {
         <Flex
           as="ul"
           position="absolute"
-          mx="-4vmin"
           transition="transform 1s ease-in-out"
           style={{
             transform: `translateX(-${current * (100 / slides.length)}%)`,
@@ -251,7 +250,7 @@ export function Carousel({ slides }: CarouselProps) {
           ))}
         </Flex>
       </Box>
-      <Flex justifyContent="center" w="full" mt={16} zIndex={20}>
+      <Flex justifyContent="center" w="100%" mt={16} zIndex={20}>
         <CarouselControl
           type="previous"
           title="Go to previous slide"

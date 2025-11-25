@@ -21,11 +21,11 @@ const LifePlanApplicationWrapper = () => {
         </Tabs.Trigger>
         <Tabs.Trigger value="step2">
           <FaRegAddressCard />
-          Address Info
+          Residential Address
         </Tabs.Trigger>
         <Tabs.Trigger value="step3">
           <IoIosInformationCircleOutline />
-          Other Info
+          Employment
         </Tabs.Trigger>
       </Tabs.List>
       <Tabs.Content value="step1">

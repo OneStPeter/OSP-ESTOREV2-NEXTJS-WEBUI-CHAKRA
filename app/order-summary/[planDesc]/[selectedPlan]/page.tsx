@@ -35,10 +35,7 @@ const Page = ({
     };
     fetchPlan();
   }, [planDesc]);
-  //   console.log("Plan Title:", planDesc);
-  //   console.log("Plan Mode:", selectedPlan);
-
-  //   console.log("Order Summary Page:", plans);
+  console.log("plans", plans);
 
   if (!plans || plans.length === 0) {
     return (

@@ -53,6 +53,15 @@ const Section: React.FC<SectionProps> = ({
     return acc;
   }, {} as Record<number, typeof terms>);
 
+  const modeOrder: Record<string, number> = { C: 0, A: 1, S: 2, Q: 3, M: 4 };
+  Object.values(groups).forEach((arr) =>
+    arr.sort(
+      (a, b) =>
+        (modeOrder[a.mode] ?? Number.POSITIVE_INFINITY) -
+        (modeOrder[b.mode] ?? Number.POSITIVE_INFINITY)
+    )
+  );
+
   const sorted = Object.entries(groups).sort(
     ([a], [b]) => Number(a) - Number(b)
   );
@@ -104,11 +113,11 @@ const Section: React.FC<SectionProps> = ({
             w={{ base: "full", lg: "500px" }}
           >
             <Box display="flex" flexDirection="column" gap={4} flex={1}>
-              <Text fontWeight="bold" color="black">
+              <Text fontWeight="semibold" color="black" fontSize="2xl">
                 {planDesc}
               </Text>
               <Text color="black">{description}</Text>
-              <Text fontWeight="semibold" color="black">
+              <Text fontWeight="semibold" color="black" fontSize="lg">
                 Contract Price: {contractPrice}
               </Text>
 
@@ -121,8 +130,16 @@ const Section: React.FC<SectionProps> = ({
                     </Text>
 
                     {items.map((term, index) => (
-                      <HStack gap={4} key={index} mt={4}>
-                        <Badge color="black" size="md">
+                      <HStack
+                        gap={4}
+                        key={index}
+                        bg="gray.50"
+                        p={2}
+                        mt={4}
+                        rounded="md"
+                        justify="space-between"
+                      >
+                        <Text color="black" px={2} py={1} rounded="md">
                           {term.mode == "M"
                             ? "Monthly"
                             : term.mode == "C"
@@ -134,11 +151,8 @@ const Section: React.FC<SectionProps> = ({
                             : term.mode == "A"
                             ? "Annual"
                             : "Unknown"}{" "}
-                          - ₱{term.price}
-                        </Badge>
-                        {/* <Text color="black" fontWeight="semibold">
-                          ₱{term.price}
-                        </Text> */}
+                        </Text>
+                        <Text color="black">{term.price}</Text>
                       </HStack>
                     ))}
                   </Box>

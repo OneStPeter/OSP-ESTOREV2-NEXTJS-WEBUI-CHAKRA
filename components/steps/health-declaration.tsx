@@ -10,10 +10,20 @@ import {
   Stack,
   Text,
   Checkbox,
+  Separator,
 } from "@chakra-ui/react";
-import { Button, FileUpload } from "@chakra-ui/react";
-import { HiUpload } from "react-icons/hi";
-import { SecondaryMdButton } from "st-peter-ui";
+import {
+  Button,
+  FileUpload,
+  Icon,
+  useFileUploadContext,
+} from "@chakra-ui/react";
+import { LuUpload } from "react-icons/lu";
+import {
+  PrimaryMdButton,
+  PrimarySmButton,
+  SecondaryMdButton,
+} from "st-peter-ui";
 const HealthDeclaration = () => {
   const [value, setValue] = useState(["second-item"]);
   const items = [
@@ -90,12 +100,34 @@ const HealthDeclaration = () => {
       ),
     },
   ];
+  const MAX_MEDICAL_FILES = 1;
+
+  const ConditionalMedicalDropzone = () => {
+    const ctx = useFileUploadContext();
+    const count = ctx.acceptedFiles.length;
+    if (count >= MAX_MEDICAL_FILES) return null;
+    return (
+      <FileUpload.Dropzone>
+        <Icon size="md" color="fg.muted">
+          <LuUpload />
+        </Icon>
+        <FileUpload.DropzoneContent>
+          <Box>Drag and drop file here</Box>
+          <Box color="fg.muted">PNG / JPG / PDF</Box>
+          <FileUpload.Trigger asChild>
+            <PrimarySmButton mt={2}>Browse File</PrimarySmButton>
+          </FileUpload.Trigger>
+        </FileUpload.DropzoneContent>
+      </FileUpload.Dropzone>
+    );
+  };
+
   return (
     <>
       <VStack align="stretch" gap={4} mb={4}>
-        <Heading as="h4" size="md" textAlign="start">
+        <Text fontWeight="semibold" fontSize="lg" textAlign="start">
           Health Declaration
-        </Heading>
+        </Text>
         <Text textAlign="start">
           Please check all the boxes that apply to you and skip the boxes that
           do not apply.
@@ -145,17 +177,16 @@ const HealthDeclaration = () => {
         <Text textAlign="start" mt={4}>
           Please attach medical results here:
         </Text>
-        <Box w={{ base: "100%", md: "50%" }}>
-          <FileUpload.Root>
-            <FileUpload.HiddenInput />
-            <FileUpload.Trigger asChild>
-              <SecondaryMdButton>
-                <HiUpload /> Upload file
-              </SecondaryMdButton>
-            </FileUpload.Trigger>
-            <FileUpload.List />
-          </FileUpload.Root>
-        </Box>
+        <FileUpload.Root
+          maxW="xl"
+          alignItems="stretch"
+          maxFiles={MAX_MEDICAL_FILES}
+          accept=".png,.jpg,.jpeg,.pdf"
+        >
+          <FileUpload.HiddenInput />
+          <ConditionalMedicalDropzone />
+          <FileUpload.List clearable />
+        </FileUpload.Root>
         <VStack align="stretch" gap={2} mt={6}>
           <Text textAlign="start">
             I also understand and agree that the issuance of the Life Plan and
@@ -174,9 +205,10 @@ const HealthDeclaration = () => {
             the Life Plan Contract.
           </Text>
         </VStack>
-        <Heading as="h4" size="md" textAlign="start">
+        <Separator />
+        <Text fontWeight="semibold" fontSize="lg" textAlign="start">
           Terms and Conditions
-        </Heading>
+        </Text>
         <Text textAlign="start">
           Please read the terms and conditions of St .Peter Life Plan and upload
           the necessary documents to proceed with the purchase.
@@ -189,7 +221,7 @@ const HealthDeclaration = () => {
           {items.map((item, index) => (
             <Accordion.Item key={index} value={item.value}>
               <Accordion.ItemTrigger>
-                <Span flex="1" fontWeight="semibold">
+                <Span flex="1" fontWeight="semibold" textAlign="start">
                   {item.title}
                 </Span>
                 <Accordion.ItemIndicator />

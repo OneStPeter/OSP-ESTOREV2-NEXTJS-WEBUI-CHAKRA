@@ -13,7 +13,8 @@ import { MdOutlineShoppingCart, MdArrowDropDown } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ShoppingCart from "./shopping-cart";
-import { useCartCount } from "@/lib/utils/cart";
+import { useCartCount } from "@/hooks/useCartCount";
+import { BaseButton, PrimaryMdButton, PrimarySmButton } from "st-peter-ui";
 
 const Navbar = () => {
   const [cartOpen, setCartOpen] = useState(false);
@@ -22,9 +23,9 @@ const Navbar = () => {
   return (
     <>
       <HStack
+        display={{ base: "none", md: "inline-flex" }}
         padding={8}
         insetX={0}
-        display="flex"
         margin="auto"
         justify="space-between"
         alignItems="center"
@@ -59,20 +60,32 @@ const Navbar = () => {
         >
           <Menu.Root>
             <Menu.Trigger asChild>
-              <Button variant="ghost" gap={1}>
+              <BaseButton
+                backgroundColor="transparent"
+                textDecoration="none"
+                variant="ghost"
+                fontWeight="semibold"
+                gap={1}
+                _active={{ bg: "transparent" }}
+                _focusVisible={{ boxShadow: "none", bg: "transparent" }}
+              >
                 Products <MdArrowDropDown />
-              </Button>
+              </BaseButton>
             </Menu.Trigger>
             <Portal>
               <Menu.Positioner>
                 <Menu.Content>
                   <Menu.Item
                     value="life-plan"
+                    textDecoration="none"
                     onClick={() => router.push("/plans")}
+                    fontWeight="semibold"
                   >
                     Life Plan
                   </Menu.Item>
-                  <Menu.Item value="memorial-park">Memorial Park</Menu.Item>
+                  <Menu.Item value="memorial-park" fontWeight="semibold">
+                    Memorial Park
+                  </Menu.Item>
                 </Menu.Content>
               </Menu.Positioner>
             </Portal>
@@ -80,29 +93,56 @@ const Navbar = () => {
 
           <Menu.Root>
             <Menu.Trigger asChild>
-              <Button variant="ghost" gap={1}>
+              <BaseButton
+                fontWeight="semibold"
+                variant="ghost"
+                textDecoration="none"
+                gap={1}
+                backgroundColor="transparent"
+                _active={{ bg: "transparent" }}
+                _focusVisible={{ boxShadow: "none", bg: "transparent" }}
+              >
                 E-Services <MdArrowDropDown />
-              </Button>
+              </BaseButton>
             </Menu.Trigger>
             <Portal>
               <Menu.Positioner>
                 <Menu.Content>
-                  <Menu.Item value="pay-my-plan">Pay My Plan</Menu.Item>
-                  <Menu.Item value="file-a-claim">File A Claim</Menu.Item>
+                  <Menu.Item
+                    value="pay-my-plan"
+                    fontWeight="semibold"
+                    textDecoration="none"
+                  >
+                    Pay My Plan
+                  </Menu.Item>
+                  <Menu.Item
+                    value="file-a-claim"
+                    fontWeight="semibold"
+                    textDecoration="none"
+                  >
+                    File A Claim
+                  </Menu.Item>
                 </Menu.Content>
               </Menu.Positioner>
             </Portal>
           </Menu.Root>
 
-          <Button variant="ghost" onClick={() => router.push("/news")}>
+          <BaseButton
+            variant="ghost"
+            fontWeight="semibold"
+            textDecoration="none"
+            onClick={() => router.push("/news")}
+          >
             News & Blog
-          </Button>
-          <Button variant="ghost" onClick={() => router.push("/about-us")}>
+          </BaseButton>
+          <BaseButton
+            variant="ghost"
+            textDecoration="none"
+            fontWeight="semibold"
+            onClick={() => router.push("/about-us")}
+          >
             About Us
-          </Button>
-          <Button variant="ghost" onClick={() => router.push("/contact-us")}>
-            Contact Us
-          </Button>
+          </BaseButton>
         </HStack>
 
         {/* Right actions */}
@@ -139,14 +179,23 @@ const Navbar = () => {
               </Box>
             )}
           </Box>
-
-          <Button
+          <BaseButton
+            size="sm"
+            textDecoration="none"
             display={{ base: "none", md: "inline-flex" }}
-            colorPalette="purple"
+            variant="outline"
+            fontWeight="semibold"
+            onClick={() => router.push("/contact-us")}
+          >
+            Contact Us
+          </BaseButton>
+          <PrimarySmButton
+            textDecoration="none"
+            display={{ base: "none", md: "inline-flex" }}
             onClick={() => router.push("/login")}
           >
             LOG IN
-          </Button>
+          </PrimarySmButton>
         </HStack>
       </HStack>
 

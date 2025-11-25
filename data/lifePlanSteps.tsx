@@ -6,32 +6,37 @@ import Requirements from "@/components/steps/upload-requirements";
 export const steps = [
   {
     id: "1",
-    title: "Life Plan Application",
+    header: "Life Plan Application",
+    title: "Application",
     description: "Complete the application form",
     component: <LifePlanApplicationWrapper />,
   },
 
   {
     id: "2",
+    header: "Beneficiary Details",
     title: "Beneficiary",
     description: "Add Beneficiary Details",
     component: <Beneficiary />,
   },
   {
     id: "3",
-    title: "Health Declaration",
+    header: "Health Declaration & Terms and Conditions",
+    title: "Terms",
     description: "Health Declaration & Terms and Conditions",
     component: <HealthDeclaration />,
   },
   {
     id: "4",
+    header: "Upload Requirements",
     title: "Requirements",
     description: "Upload Requirements",
     component: <Requirements />,
   },
   {
     id: "5",
-    title: "Confirmation",
+    header: "Review Summary",
+    title: "Summary",
     description: "Review and confirm your application",
     component: <Confirmation />,
   },

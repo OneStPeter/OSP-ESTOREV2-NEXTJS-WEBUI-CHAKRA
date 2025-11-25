@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, ButtonGroup, Steps } from "@chakra-ui/react";
 import { PrimaryMdButton, SecondaryMdButton } from "st-peter-ui";
 import Completed from "./completed";
@@ -9,13 +9,20 @@ interface HorizontalStepperProps {
     description: React.ReactNode;
     component?: React.ReactNode;
   }[];
+  onStepChange?: (index: number) => void;
 }
 
-const HorizontalStepper = ({ steps }: HorizontalStepperProps) => {
+const HorizontalStepper = ({ steps, onStepChange }: HorizontalStepperProps) => {
+  const [activeStep, setActiveStep] = useState(0);
+
   return (
     <div>
       <Steps.Root
-        defaultStep={0}
+        step={activeStep}
+        onStepChange={(index) => {
+          setActiveStep(index.step);
+          onStepChange?.(index.step);
+        }}
         count={steps.length}
         colorPalette="green"
         m="auto "

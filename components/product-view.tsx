@@ -207,7 +207,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                 {plan?.planDesc}
               </Text>
               <Text>{plan?.casketDesc}</Text>
-              <Text>
+              <Text fontSize="lg" fontWeight="semibold">
                 Contract Price: ₱
                 {Number(plan?.contractPrice).toLocaleString("en-PH")}
               </Text>

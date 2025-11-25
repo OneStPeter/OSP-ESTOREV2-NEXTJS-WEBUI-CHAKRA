@@ -6,7 +6,7 @@ const page = () => {
   return (
     <Flex
       w="full"
-      mt={{ base: "24", md: "0" }}
+      mt={{ base: "24", md: "8" }}
       justify="center"
       align="center"
       minH={{ base: "auto", md: "100vh" }}

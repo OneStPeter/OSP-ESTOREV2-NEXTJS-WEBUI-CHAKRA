@@ -11,8 +11,8 @@ const Services = () => {
     <section>
       <Box padding="8">
         <Heading
-          size="2xl"
-          fontWeight="semibold"
+          size="xl"
+          fontWeight="bold"
           textTransform="uppercase"
           mb="8"
           textAlign="center"
@@ -29,14 +29,15 @@ const Services = () => {
           <WobbleCard
             containerClassName="col-span-1 lg:col-span-2 h-full bg-gray-200 min-h-[300px] lg:min-h-[300px]"
             className=""
-            onClick={() => router.push("/cab-claim")}
+            onClick={() => router.push("/claims")}
           >
             <Box p={8}>
-              <Text fontWeight="bold">Apply for a Claim Benefits</Text>
+              <Text fontWeight="semibold" fontSize="xl" mb={4}>
+                Apply for a Claim Benefits
+              </Text>
               <Text w={"70%"}>
-                Disclaimer: Not all plans are eligible for benefits. Please
-                check your policy details, or contact a Sales Agent, or visit
-                your branch of account for more information.
+                Please check your policy details, or contact a Sales Agent, or
+                visit your branch of account for more information.
               </Text>
             </Box>
             <Image
@@ -58,9 +59,10 @@ const Services = () => {
             onClick={() => router.push("/login")}
           >
             <Box p={8}>
-              <Text fontWeight="bold">Apply for Return of Premium</Text>
+              <Text fontWeight="semibold" fontSize="xl" mb={4}>
+                Apply for Return of Premium
+              </Text>
               <Text w={"100%"}>
-                Disclaimer: Not all plans include a Return of Premium benefit.
                 Please check your policy details, contact a Sales Agent, or
                 visit your branch of account for more information.
               </Text>
@@ -71,10 +73,11 @@ const Services = () => {
             onClick={() => router.push("/Transaction")}
           >
             <Box p={8}>
-              <Text fontWeight="bold">Track your request</Text>
+              <Text fontWeight="semibold" fontSize="xl" mb={4}>
+                Track your request
+              </Text>
               <Text className="mt-4">
-                Disclaimer: To track your request, please have your reference
-                number ready.
+                To track your request, please have your reference number ready.
               </Text>
             </Box>
           </WobbleCard>
@@ -82,12 +85,13 @@ const Services = () => {
             containerClassName="col-span-1 lg:col-span-2 h-full bg-gray-200 min-h-[300px] lg:min-h-[300px]"
             onClick={() => router.push("/Booking")}
           >
-            <div className="max-w-md">
+            <div className="max-w-full">
               <Box p={8}>
-                <Text fontWeight="bold">Request Service Assistance</Text>
+                <Text fontWeight="semibold" fontSize="xl" mb={4}>
+                  Memorial Service Booking Assistance
+                </Text>
                 <Text className="mt-4">
-                  Disclaimer: To proceed, please have your life plan contact
-                  details ready...
+                  To proceed, please have your life plan contact details ready.
                 </Text>
               </Box>
             </div>

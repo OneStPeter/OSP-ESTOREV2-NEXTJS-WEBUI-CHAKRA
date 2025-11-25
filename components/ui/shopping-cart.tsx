@@ -51,8 +51,6 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
     }
   }, [open]);
 
-  if (!open) return null; // hide when not open
-
   const handleRemove = (idx: number) => {
     setRemoveIdx(idx);
     setShowModal(true);
@@ -79,13 +77,13 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
 
   return (
     <Box
+      display={open ? "flex" : "none"}
       position="fixed"
       top={0}
       left={0}
       right={0}
       bottom={0}
       bg="blackAlpha.400"
-      display="flex"
       justifyContent="end"
       zIndex={50}
       opacity={open ? 1 : 0}
@@ -215,7 +213,11 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
           mt={8}
           w="full"
           disabled={cartItems.length === 0}
-          onClick={() => router.push("/order-summary/")}
+          onClick={() =>
+            router.push(
+              `/order-summary/${cartItems[0]?.planDesc}/${cartItems[0]?.mode}`
+            )
+          }
         >
           Checkout
         </PrimaryMdButton>

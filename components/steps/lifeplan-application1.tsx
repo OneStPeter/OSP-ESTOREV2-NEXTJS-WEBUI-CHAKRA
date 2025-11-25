@@ -5,16 +5,14 @@ import {
   Box,
   VStack,
   Grid,
-  GridItem,
   createListCollection,
-  Button,
   FileUpload,
   Field,
+  Separator,
 } from "@chakra-ui/react";
-import React from "react";
-import { HiUpload } from "react-icons/hi";
-import HorizontalStepper from "../ui/horizontal-stepper";
-import { steps } from "@/data/lifePlanSteps";
+import FloatingLabelInput from "../ui/floating-label-input";
+// Removed FloatingLabelSelect usage in favor of placeholder Selects
+
 const LifePlanApplication1 = () => {
   const idCollection = createListCollection({
     items: [
@@ -26,35 +24,135 @@ const LifePlanApplication1 = () => {
 
   return (
     <>
-      <VStack gap={4} mb={4} align="stretch">
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          w="17rem"
-        >
-          <Text textAlign="start" fontWeight="semibold">
-            Lifeplan Application
-          </Text>
-        </Box>
-        <Text textAlign="start">
-          Please provide us with the planholder's personal information.
+      <VStack mb={4} align="stretch">
+        <Text fontWeight="semibold" fontSize="lg">
+          Identification
         </Text>
-        <Box>
-          <Text textAlign="start" fontWeight="semibold">
-            Personal Information
-          </Text>
-        </Box>
       </VStack>
-      <VStack gap={8} align="stretch">
+
+      <VStack gap={6} align="stretch">
+        {/* Identification Section */}
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
-          <VStack gap={4} align="stretch">
-            <Select.Root collection={idCollection}>
-              <Select.HiddenSelect />
-              <Select.Label>ID Type</Select.Label>
+          <Select.Root collection={idCollection}>
+            <Select.HiddenSelect />
+            <Select.Control>
+              <Select.Trigger>
+                <Select.ValueText placeholder="Select ID Type" />
+              </Select.Trigger>
+              <Select.IndicatorGroup>
+                <Select.Indicator />
+              </Select.IndicatorGroup>
+            </Select.Control>
+            <Select.Positioner>
+              <Select.Content>
+                {idCollection.items.map((item) => (
+                  <Select.Item key={item.value} item={item}>
+                    {item.label}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Select.Root>
+
+          <FileUpload.Root>
+            <FileUpload.HiddenInput />
+            <Input asChild>
+              <FileUpload.Trigger>
+                <FileUpload.FileText />
+              </FileUpload.Trigger>
+            </Input>
+          </FileUpload.Root>
+        </Grid>
+
+        <Separator />
+
+        {/* Full Name Section */}
+        <Text fontWeight="semibold" fontSize="md">
+          Full Name
+        </Text>
+
+        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
+          <Field.Root>
+            <FloatingLabelInput id="lastName" type="text" label="Last Name" />
+            <Field.ErrorText>This field is required</Field.ErrorText>
+          </Field.Root>
+          <Field.Root>
+            <FloatingLabelInput id="firstName" type="text" label="First Name" />
+            <Field.ErrorText>This field is required</Field.ErrorText>
+          </Field.Root>
+        </Grid>
+
+        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
+          <Field.Root>
+            <FloatingLabelInput
+              id="middleName"
+              type="text"
+              label="Middle Name"
+            />
+            <Field.ErrorText>This field is required</Field.ErrorText>
+          </Field.Root>
+          <Field.Root>
+            <FloatingLabelInput
+              id="suffix"
+              type="text"
+              label="Suffix (Optional)"
+            />
+          </Field.Root>
+        </Grid>
+
+        <Separator />
+
+        {/* Personal Data Section */}
+        <Text fontWeight="semibold" fontSize="md">
+          Personal Details
+        </Text>
+
+        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
+          <Field.Root>
+            <FloatingLabelInput
+              id="dateOfBirth"
+              type="date"
+              label="Date of Birth"
+            />
+            <Field.ErrorText>This field is required</Field.ErrorText>
+          </Field.Root>
+          <Field.Root>
+            <FloatingLabelInput
+              id="dateOfNeutralization"
+              type="date"
+              label="Date of Neutralization"
+            />
+            <Field.ErrorText>This field is required</Field.ErrorText>
+          </Field.Root>
+
+          <Field.Root>
+            <FloatingLabelInput id="height" label="Height (inches)" />
+          </Field.Root>
+          <Field.Root>
+            <FloatingLabelInput id="weight" label="Weight (lbs)" />
+          </Field.Root>
+        </Grid>
+
+        <Separator />
+
+        {/* Demographics Section (using placeholder Select) */}
+        <Text fontWeight="semibold" fontSize="md">
+          Demographics
+        </Text>
+        <Grid templateColumns={{ base: "1fr", md: "repeat(2 , 1fr)" }} gap={8}>
+          <Field.Root>
+            <Select.Root
+              collection={createListCollection({
+                items: [
+                  { label: "Male", value: "male" },
+                  { label: "Female", value: "female" },
+                ],
+              })}
+            >
+              <Select.HiddenSelect id="gender" />
               <Select.Control>
                 <Select.Trigger>
-                  <Select.ValueText placeholder="Select ID Type" />
+                  <Select.ValueText placeholder="Gender" />
                 </Select.Trigger>
                 <Select.IndicatorGroup>
                   <Select.Indicator />
@@ -62,7 +160,12 @@ const LifePlanApplication1 = () => {
               </Select.Control>
               <Select.Positioner>
                 <Select.Content>
-                  {idCollection.items.map((item) => (
+                  {createListCollection({
+                    items: [
+                      { label: "Male", value: "male" },
+                      { label: "Female", value: "female" },
+                    ],
+                  }).items.map((item) => (
                     <Select.Item key={item.value} item={item}>
                       {item.label}
                     </Select.Item>
@@ -70,79 +173,117 @@ const LifePlanApplication1 = () => {
                 </Select.Content>
               </Select.Positioner>
             </Select.Root>
-          </VStack>
-          <VStack>
-            <FileUpload.Root gap="1">
-              <FileUpload.HiddenInput />
-              <FileUpload.Label>Upload file</FileUpload.Label>
-              <Input asChild>
-                <FileUpload.Trigger>
-                  <FileUpload.FileText />
-                </FileUpload.Trigger>
-              </Input>
-            </FileUpload.Root>
-          </VStack>
-        </Grid>
-
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
-          <Field.Root>
-            <Field.Label>Last Name</Field.Label>
-            <Input id="lastName" type="text" placeholder="Enter Last Name" />
             <Field.ErrorText>This field is required</Field.ErrorText>
           </Field.Root>
           <Field.Root>
-            <Field.Label>First Name</Field.Label>
-            <Input id="firstName" type="text" placeholder="Enter First Name" />
+            <Select.Root
+              collection={createListCollection({
+                items: [
+                  { label: "Single", value: "single" },
+                  { label: "Married", value: "married" },
+                  { label: "Widowed", value: "widowed" },
+                  { label: "Divorced", value: "divorced" },
+                  { label: "Separated", value: "separated" },
+                  { label: "Annulled", value: "annulled" },
+                ],
+              })}
+            >
+              <Select.HiddenSelect id="civilStatus" />
+              <Select.Control>
+                <Select.Trigger>
+                  <Select.ValueText placeholder="Civil Status" />
+                </Select.Trigger>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+              </Select.Control>
+              <Select.Positioner>
+                <Select.Content>
+                  {createListCollection({
+                    items: [
+                      { label: "Single", value: "single" },
+                      { label: "Married", value: "married" },
+                      { label: "Widowed", value: "widowed" },
+                      { label: "Divorced", value: "divorced" },
+                      { label: "Separated", value: "separated" },
+                      { label: "Annulled", value: "annulled" },
+                    ],
+                  }).items.map((item) => (
+                    <Select.Item key={item.value} item={item}>
+                      {item.label}
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Positioner>
+            </Select.Root>
             <Field.ErrorText>This field is required</Field.ErrorText>
           </Field.Root>
-        </Grid>
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
           <Field.Root>
-            <Field.Label>Middle Name</Field.Label>
-            <Input
-              id="middleName"
-              type="text"
-              placeholder="Enter Middle Name"
-            />
-            <Field.ErrorText>This field is required</Field.ErrorText>
-          </Field.Root>
-          <Field.Root>
-            <Field.Label>Mobile Number</Field.Label>
-            <Input
-              id="mobileNumber"
-              type="text"
-              placeholder="Enter Mobile Number"
-            />
-            <Field.ErrorText>This field is required</Field.ErrorText>
-          </Field.Root>
-        </Grid>
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
-          <Field.Root>
-            <Field.Label>Nationality</Field.Label>
-            <Input
+            <FloatingLabelInput
               id="nationality"
               type="text"
-              placeholder="Enter Nationality"
+              label="Nationality"
+            />
+            <Field.ErrorText>This field is required</Field.ErrorText>
+          </Field.Root>
+        </Grid>
+
+        <Separator />
+
+        {/* Basic Contact Info */}
+        <Text fontWeight="semibold" fontSize="md">
+          Contact Information
+        </Text>
+
+        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
+          <Field.Root>
+            <FloatingLabelInput
+              id="mobileNumber"
+              type="text"
+              label="Mobile Number"
             />
             <Field.ErrorText>This field is required</Field.ErrorText>
           </Field.Root>
           <Field.Root>
-            <Field.Label>Date of Birth</Field.Label>
-            <Input id="dateOfBirth" type="date" />
-            <Field.ErrorText>This field is required</Field.ErrorText>
+            <FloatingLabelInput
+              id="landlineNumber"
+              type="text"
+              label="Landline Number"
+            />
           </Field.Root>
         </Grid>
 
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
           <Field.Root>
-            <Field.Label>Date of Neutralization</Field.Label>
-            <Input id="dateOfNeutralization" type="date" />
-            <Field.ErrorText>This field is required</Field.ErrorText>
+            <FloatingLabelInput id="email" type="email" label="Email Address" />
+            <Field.ErrorText>Enter a valid email</Field.ErrorText>
           </Field.Root>
           <Field.Root>
-            <Field.Label>Insurability</Field.Label>
-            <Input id="insurability" type="text" value="Insurable" readOnly />
+            <FloatingLabelInput
+              id="mailingAddress"
+              type="text"
+              label="Mailing Address"
+            />
             <Field.ErrorText>This field is required</Field.ErrorText>
+          </Field.Root>
+        </Grid>
+
+        <Separator />
+
+        {/* Insurability */}
+        {/* <Text fontWeight="semibold" fontSize="md">
+          Insurability
+        </Text> */}
+
+        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
+          <Field.Root>
+            <FloatingLabelInput
+              id="insurability"
+              type="text"
+              label="Insurability"
+              value="Insurable"
+              readOnly
+            />
           </Field.Root>
         </Grid>
       </VStack>

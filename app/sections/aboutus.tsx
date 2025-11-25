@@ -112,7 +112,7 @@ const AboutUs = () => {
         {/* Testimonials */}
         <Box p={8}>
           <Flex direction="column" align="center" textAlign="center" mb={8}>
-            <Heading size="2xl" textTransform="uppercase" fontWeight="semibold">
+            <Heading size="2xl" textTransform="uppercase" fontWeight="bold">
               Testimonials
             </Heading>
             <Box

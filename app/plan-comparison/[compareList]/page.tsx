@@ -1,7 +1,7 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import { IPlans } from "@/types/product";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getProductByName } from "@/lib/utils/plan";
 import Comparison from "@/components/comparison";
 
@@ -9,8 +9,14 @@ const PlanComparisonPage = () => {
   const router = useRouter();
   const [plans, setPlans] = useState<IPlans[]>([]);
   const params = useParams();
+
   const compareListParam = decodeURIComponent(params.compareList as string);
-  const compareList = compareListParam.split(",");
+
+  // FIX: Memoize so it doesn't change every render
+  const compareList = useMemo(
+    () => compareListParam.split(","),
+    [compareListParam]
+  );
 
   const removeItem = (itemToRemove: string) => {
     const newList = compareList.filter((item) => item !== itemToRemove);
@@ -18,15 +24,17 @@ const PlanComparisonPage = () => {
       newList.length > 0 ? `/plan-comparison/${newList.join(",")}` : "/plans";
     router.push(newUrl);
   };
+
   useEffect(() => {
     const fetchPlans = async () => {
       try {
         const fetchedPlans: IPlans[] = [];
+
         for (const planDesc of compareList) {
-          const res = getProductByName(planDesc);
-          const data = await res;
-          fetchedPlans.push(data[0]);
+          const res = await getProductByName(planDesc);
+          fetchedPlans.push(res[0]);
         }
+
         setPlans(fetchedPlans);
       } catch (error) {
         console.error("Error fetching plans:", error);

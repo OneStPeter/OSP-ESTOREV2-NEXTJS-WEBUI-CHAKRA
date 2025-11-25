@@ -61,7 +61,7 @@ const Products = () => {
         <Heading
           size="2xl"
           textTransform="uppercase"
-          fontWeight="semibold"
+          fontWeight="bold"
           textAlign="center"
         >
           Popular Plans
@@ -131,7 +131,7 @@ const Products = () => {
         <Heading
           size="2xl"
           mt="8"
-          fontWeight="semibold"
+          fontWeight="bold"
           textTransform="uppercase"
           textAlign="center"
         >

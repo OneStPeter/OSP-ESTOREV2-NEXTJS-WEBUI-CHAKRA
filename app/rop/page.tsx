@@ -1,0 +1,17 @@
+"use client";
+
+import { Box, Flex } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { RopPage } from "osp-chakra-reusable-components";
+import React from "react";
+
+const page = () => {
+  const router = useRouter();
+  return (
+    <Flex p={8} mt={40} alignItems="center" justifyContent="center">
+      <RopPage onClick={() => router.push("/rop-payout")} />
+    </Flex>
+  );
+};
+
+export default page;

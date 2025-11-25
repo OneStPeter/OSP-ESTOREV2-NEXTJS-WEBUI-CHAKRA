@@ -5,12 +5,12 @@ import {
   SimpleGrid,
   Box,
   Text,
-  Input,
   Portal,
   Select,
   Field,
   createListCollection,
 } from "@chakra-ui/react";
+import FloatingLabelInput from "../ui/floating-label-input";
 
 const genderOptions = [
   { value: "male", label: "Male" },
@@ -31,35 +31,26 @@ const LifePlanApplication3 = () => {
   return (
     <>
       <VStack align="stretch" gap={4} mb={4}>
-        <HStack justify="space-between" align="center" w="17rem">
-          <Text fontWeight="semibold">Lifeplan Application</Text>
-        </HStack>
-        <Text textAlign="start">
-          Please provide us with the planholder's personal information.
-        </Text>
         <Box>
-          <Text fontWeight="semibold" textAlign="start">
-            Other Information
+          <Text fontWeight="semibold" textAlign="start" fontSize="lg">
+            Employment
           </Text>
         </Box>
       </VStack>
 
-      <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
+      {/* <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
         <Field.Root>
-          <Field.Label>Landline Number</Field.Label>
-          <Input placeholder="Enter Landline Number" />
+          <FloatingLabelInput id="landlineNumber" label="Landline Number" />
         </Field.Root>
         <Field.Root>
-          <Field.Label>Mail to Collect</Field.Label>
-          <Input placeholder="Enter Mail to Collect" />
+          <FloatingLabelInput id="mailToCollect" label="Mail to Collect" />
         </Field.Root>
-      </SimpleGrid>
+      </SimpleGrid> */}
 
-      <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
-        <VStack align="stretch" gap={4} mb={4}>
+      <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
+        {/* <VStack align="stretch" gap={4} mb={4}>
           <Select.Root collection={genderCollection} width="100%">
             <Select.HiddenSelect />
-            <Select.Label>Gender</Select.Label>
             <Select.Control>
               <Select.Trigger>
                 <Select.ValueText placeholder="Select Gender" />
@@ -81,11 +72,10 @@ const LifePlanApplication3 = () => {
               </Select.Positioner>
             </Portal>
           </Select.Root>
-        </VStack>
-        <VStack align="stretch" gap={4} mb={4}>
+        </VStack> */}
+        {/* <VStack align="stretch" gap={4}>
           <Select.Root collection={civilStatusCollection} width="100%">
             <Select.HiddenSelect />
-            <Select.Label>Civil Status</Select.Label>
             <Select.Control>
               <Select.Trigger>
                 <Select.ValueText placeholder="Select Civil Status" />
@@ -107,57 +97,52 @@ const LifePlanApplication3 = () => {
               </Select.Positioner>
             </Portal>
           </Select.Root>
-        </VStack>
+        </VStack> */}
       </SimpleGrid>
+
+      {/* <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
+        <Field.Root>
+          <FloatingLabelInput id="height" label="Height (inches)" />
+        </Field.Root>
+        <Field.Root>
+          <FloatingLabelInput id="weight" label="Weight (lbs)" />
+        </Field.Root>
+      </SimpleGrid> */}
 
       <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
         <Field.Root>
-          <Field.Label>Height (inches)</Field.Label>
-          <Input placeholder="Enter Height" />
+          <FloatingLabelInput id="occupation" label="Occupation" />
         </Field.Root>
         <Field.Root>
-          <Field.Label>Weight (lbs)</Field.Label>
-          <Input placeholder="Enter Weight" />
-        </Field.Root>
-      </SimpleGrid>
-
-      <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
-        <Field.Root>
-          <Field.Label>Occupation</Field.Label>
-          <Input placeholder="Enter Occupation" />
-        </Field.Root>
-        <Field.Root>
-          <Field.Label>Employer Name</Field.Label>
-          <Input placeholder="Enter Employer Name" />
+          <FloatingLabelInput id="employerName" label="Employer Name" />
         </Field.Root>
       </SimpleGrid>
 
       <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
         <Field.Root>
-          <Field.Label>Employment Status</Field.Label>
-          <Input placeholder="Enter Employment Status" />
+          <FloatingLabelInput id="employmentStatus" label="Employment Status" />
         </Field.Root>
         <Field.Root>
-          <Field.Label>Office Address</Field.Label>
-          <Input placeholder="Enter Office Address" />
+          <FloatingLabelInput id="officeAddress" label="Office Address" />
         </Field.Root>
       </SimpleGrid>
 
       <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
         <Field.Root>
-          <Field.Label>TIN</Field.Label>
-          <Input placeholder="Enter TIN" />
+          <FloatingLabelInput id="tin" label="TIN" />
         </Field.Root>
         <Field.Root>
-          <Field.Label>SSS/GSIS</Field.Label>
-          <Input placeholder="Enter SSS/GSIS" />
+          <FloatingLabelInput id="sssGsis" label="SSS/GSIS" />
         </Field.Root>
       </SimpleGrid>
-
-      <Field.Root>
-        <Field.Label>Other Source of Fund</Field.Label>
-        <Input placeholder="Enter Other Source of Fund" />
-      </Field.Root>
+      <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
+        <Field.Root w="100%">
+          <FloatingLabelInput
+            id="otherSourceOfFund"
+            label="Other Source of Fund"
+          />
+        </Field.Root>
+      </SimpleGrid>
     </>
   );
 };

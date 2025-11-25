@@ -82,7 +82,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           style={{
             position: "absolute",
             inset: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.2)",
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
           }}
         />
 

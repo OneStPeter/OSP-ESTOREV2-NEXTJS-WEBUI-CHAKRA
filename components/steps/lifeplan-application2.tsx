@@ -10,8 +10,8 @@ import {
   createListCollection,
   Portal,
   Field,
-  Input,
 } from "@chakra-ui/react";
+import FloatingLabelInput from "../ui/floating-label-input";
 const provinceOptions = [
   "Abra",
   "Agusan del Norte",
@@ -219,34 +219,24 @@ const LifePlanApplication2 = () => {
   return (
     <>
       <VStack align="stretch" gap={4} mb={4}>
-        <HStack justify="space-between" align="center" w="17rem">
-          <Text textAlign="start" fontWeight="semibold">
-            Lifeplan Application
-          </Text>
-        </HStack>
-        <Text textAlign="start">
-          Please provide us with the planholder's personal information.
-        </Text>
         <Box>
-          <Text fontWeight="semibold" textAlign="start">
-            Residential Information
+          <Text fontWeight="semibold" textAlign="start" fontSize="lg">
+            Residential Address
           </Text>
         </Box>
       </VStack>
 
       <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
         <Field.Root>
-          <Field.Label>Lot #</Field.Label>
-          <Input placeholder="Enter your lot number" />
+          <FloatingLabelInput id="lotNumber" label="Lot #" />
         </Field.Root>
         <Field.Root>
-          <Field.Label>Street</Field.Label>
-          <Input placeholder="Enter your street" />
+          <FloatingLabelInput id="street" label="Street" />
         </Field.Root>
         <VStack align="stretch" gap={4}>
           <Select.Root collection={provinceCollection} width="100%">
             <Select.HiddenSelect />
-            <Select.Label>Province</Select.Label>
+            {/* <Select.Label>Province</Select.Label> */}
             <Select.Control>
               <Select.Trigger>
                 <Select.ValueText placeholder="Select Province" />
@@ -272,7 +262,7 @@ const LifePlanApplication2 = () => {
         <VStack align="stretch" gap={4}>
           <Select.Root collection={cityCollection} width="100%">
             <Select.HiddenSelect />
-            <Select.Label>City</Select.Label>
+            {/* <Select.Label>City</Select.Label> */}
             <Select.Control>
               <Select.Trigger>
                 <Select.ValueText placeholder="Select City" />
@@ -301,7 +291,7 @@ const LifePlanApplication2 = () => {
         <VStack align="stretch" gap={4} mb={4}>
           <Select.Root collection={districtCollection} width="100%">
             <Select.HiddenSelect />
-            <Select.Label>District</Select.Label>
+            {/* <Select.Label>District</Select.Label> */}
             <Select.Control>
               <Select.Trigger>
                 <Select.ValueText placeholder="Select District" />
@@ -327,7 +317,7 @@ const LifePlanApplication2 = () => {
         <VStack align="stretch" gap={4} mb={4}>
           <Select.Root collection={barangayCollection} width="100%">
             <Select.HiddenSelect />
-            <Select.Label>Barangay</Select.Label>
+            {/* <Select.Label>Barangay</Select.Label> */}
             <Select.Control>
               <Select.Trigger>
                 <Select.ValueText placeholder="Select Barangay" />

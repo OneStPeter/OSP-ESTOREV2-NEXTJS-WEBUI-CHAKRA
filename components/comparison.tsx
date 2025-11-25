@@ -133,7 +133,13 @@ const Comparison = ({ compareList, plans, removeItem }: ComparisonProps) => {
                   </Text>
 
                   <Box w="full" textAlign="start">
-                    <Badge variant="solid" colorPalette="green" mt={4} mb={4}>
+                    <Badge
+                      variant="solid"
+                      colorPalette="green"
+                      mt={4}
+                      mb={4}
+                      size="lg"
+                    >
                       ₱{plan?.contractPrice?.toLocaleString?.()}
                     </Badge>
                   </Box>

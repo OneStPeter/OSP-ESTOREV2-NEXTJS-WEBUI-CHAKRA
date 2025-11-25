@@ -1,22 +1,21 @@
-import React from "react";
-import { VStack, HStack, Box, Text, Button } from "@chakra-ui/react";
-import { PrimaryMdButton, SecondaryMdButton } from "st-peter-ui";
+import { VStack, HStack, Box, Text } from "@chakra-ui/react";
+import { PrimaryMdButton } from "st-peter-ui";
 
 const Beneficiary = () => {
   return (
     <>
       <VStack align="stretch" gap={4} mb={4}>
-        <Text fontWeight="semibold" textAlign="start">
+        <Text fontWeight="semibold" textAlign="start" fontSize="lg">
           Add your Beneficiaries
         </Text>
         <Text textAlign="start">
           Protect your loved ones by adding beneficiaries to your plan.
         </Text>
         <HStack justify="space-between" align="center" w="full">
-          <Text fontWeight="semibold" textAlign="start">
+          <Text fontWeight="semibold" textAlign="start" fontSize="lg">
             Principal Beneficiaries
           </Text>
-          <SecondaryMdButton>Add</SecondaryMdButton>
+          <PrimaryMdButton>Add</PrimaryMdButton>
         </HStack>
       </VStack>
 
