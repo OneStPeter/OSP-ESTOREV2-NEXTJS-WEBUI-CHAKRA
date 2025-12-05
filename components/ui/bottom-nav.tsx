@@ -65,6 +65,7 @@ const BottomNav = () => {
               <Flex
                 direction="column"
                 align="center"
+                gap={2}
                 color={isActive(it.href) ? "green.600" : "gray.600"}
                 _hover={{ color: "green.600" }}
                 fontWeight={isActive(it.href) ? "semibold" : "normal"}

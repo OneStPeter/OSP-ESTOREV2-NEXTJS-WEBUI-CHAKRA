@@ -10,8 +10,10 @@ import {
   createListCollection,
   Portal,
   Field,
+  Span,
 } from "@chakra-ui/react";
 import FloatingLabelInput from "../ui/floating-label-input";
+import { Body, H4 } from "st-peter-ui";
 const provinceOptions = [
   "Abra",
   "Agusan del Norte",
@@ -220,9 +222,9 @@ const LifePlanApplication2 = () => {
     <>
       <VStack align="stretch" gap={4} mb={4}>
         <Box>
-          <Text fontWeight="semibold" textAlign="start" fontSize="lg">
-            Residential Address
-          </Text>
+          <Body>
+            <Span fontWeight="bold">Residential Address</Span>
+          </Body>
         </Box>
       </VStack>
 

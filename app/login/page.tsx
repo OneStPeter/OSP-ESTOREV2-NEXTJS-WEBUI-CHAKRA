@@ -1,17 +1,17 @@
 "use client";
 
 import { Box } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 import { LoginPage } from "osp-chakra-reusable-components";
 import React from "react";
 import { LoginButton } from "st-peter-ui";
 
 const page = () => {
+  const router = useRouter();
   return (
     <Box p={8} mt={8}>
       <LoginPage
-        onLogin={function (email: string, password: string): void {
-          throw new Error("Function not implemented.");
-        }}
+        onLogin={() => router.push("/account-management")}
         onSignUp={function (
           email: string,
           password: string,

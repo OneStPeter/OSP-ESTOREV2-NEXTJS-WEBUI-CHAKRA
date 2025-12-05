@@ -15,6 +15,7 @@ import {
   Portal,
   createListCollection,
   Stack,
+  Flex,
 } from "@chakra-ui/react";
 import {
   ProductCarousel,
@@ -24,7 +25,14 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "./ui/product-carousel";
-import { PrimaryMdButton, SecondaryMdButton } from "st-peter-ui";
+import {
+  Body,
+  H3,
+  H4,
+  PrimaryMdButton,
+  SecondaryMdButton,
+  Small,
+} from "st-peter-ui";
 import { useRouter } from "next/navigation";
 import { addToCart } from "@/lib/utils/cart";
 
@@ -187,9 +195,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
     <>
       {!hasPlans ? (
         <section className="h-screen flex items-center justify-center">
-          <Text fontSize="xl" color="gray.500">
-            No product data found.
-          </Text>
+          <Body>No product data found.</Body>
         </section>
       ) : (
         <>
@@ -203,14 +209,12 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
               justifyContent="center"
               minH="100vh"
             >
-              <Text fontSize="2xl" fontWeight="semibold">
-                {plan?.planDesc}
-              </Text>
-              <Text>{plan?.casketDesc}</Text>
-              <Text fontSize="lg" fontWeight="semibold">
+              <H3>{plan?.planDesc}</H3>
+              <Body>{plan?.casketDesc}</Body>
+              <H4>
                 Contract Price: ₱
                 {Number(plan?.contractPrice).toLocaleString("en-PH")}
-              </Text>
+              </H4>
 
               {/* Carousel */}
               <Container maxW="5xl" mx="auto" px={6} mb={24}>
@@ -269,9 +273,9 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
           {/* Payment Section */}
           <section id="paymentDetails" className="bg-gray-50">
             <Box padding="8" textAlign="center">
-              <Text fontSize="2xl" fontWeight="semibold">
-                Choose your payment plan
-              </Text>
+              <Box mb={4}>
+                <H3>Choose your payment plan</H3>
+              </Box>
               <Box
                 mb={4}
                 display="flex"
@@ -367,15 +371,18 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                         p={6}
                         bg={isSelected ? "green.600" : "gray.50"}
                         color={isSelected ? "white" : "black"}
-                        _hover={{ bg: isSelected ? "green.500" : "gray.100" }}
+                        _hover={{
+                          bg: isSelected ? "green.500" : "gray.100",
+                        }}
                         aria-pressed={isSelected}
                       >
-                        <Text fontSize="sm" opacity={0.7} mb={1}>
+                        <Small color={isSelected ? "white" : "black"}>
                           {opt.label}
-                        </Text>
-                        <Text fontSize="lg" fontWeight="semibold">
+                        </Small>
+
+                        <Body color={isSelected ? "white" : "black"}>
                           {opt.amount}
-                        </Text>
+                        </Body>
                       </Box>
                     </GridItem>
                   );
@@ -417,13 +424,11 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
           <section id="productBenefits">
             <Box padding="8" textAlign="center">
               <VStack mb={6} gap={4}>
-                <Text fontSize="2xl" fontWeight="semibold">
-                  Plan Benefits
-                </Text>
-                <Text fontSize="sm" opacity={0.7}>
+                <H3>Plan Benefits</H3>
+                <Body>
                   If you avail of this plan, you or your beneficiaries will be
                   entitled to:
-                </Text>
+                </Body>
               </VStack>
 
               <VStack gap={8} maxW="6xl" mx="auto" align="stretch">
@@ -514,30 +519,14 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                       </Box>
 
                       <VStack align="start" gap={4}>
-                        <Text fontSize="lg" fontWeight="semibold">
-                          {card.title}
-                        </Text>
+                        <H4>{card.title}</H4>
 
-                        {card.subtitle && (
-                          <Text
-                            textAlign="start"
-                            fontSize="sm"
-                            color="gray.600"
-                            fontWeight="semibold"
-                          >
-                            {card.subtitle}
-                          </Text>
-                        )}
+                        {card.subtitle && <Small>{card.subtitle}</Small>}
 
                         {card.desc && (
-                          <Text
-                            textAlign="start"
-                            fontSize="sm"
-                            color="gray.600"
-                            lineHeight="tall"
-                          >
-                            {card.desc}
-                          </Text>
+                          <Box textAlign="start">
+                            <Small>{card.desc}</Small>
+                          </Box>
                         )}
 
                         {card.details && (
@@ -548,21 +537,9 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                             pt={2}
                           >
                             {card.details.map((d) => (
-                              <Grid key={d.title} textAlign="start">
-                                <Text
-                                  fontSize="sm"
-                                  fontWeight="semibold"
-                                  mb={1}
-                                >
-                                  {d.title}
-                                </Text>
-                                <Text
-                                  fontSize="sm"
-                                  color="gray.600"
-                                  lineHeight="tall"
-                                >
-                                  {d.desc}
-                                </Text>
+                              <Grid key={d.title} textAlign="start" gap={4}>
+                                <Small>{d.title}</Small>
+                                <Small>{d.desc}</Small>
                               </Grid>
                             ))}
                           </Stack>
@@ -578,11 +555,9 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
           {/* Product Features */}
           <section id="productFeatures" className="bg-gray-50">
             <Box padding="8" textAlign="center">
-              <VStack mb={6} gap={4}>
-                <Text fontSize="2xl" fontWeight="semibold">
-                  Plan Features
-                </Text>
-                <Text>The following features are available for this plan:</Text>
+              <VStack mb={8} gap={4}>
+                <H3>Plan Features</H3>
+                <Body>The following features are available for this plan:</Body>
               </VStack>
 
               <Grid
@@ -626,29 +601,18 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                         <Image
                           src={card.icon}
                           alt={`${card.title} icon`}
-                          maxW="xs"
+                          w="400px"
+                          h="180px"
                           objectFit="cover"
                           borderRadius="md"
                         />
                       </Box>
 
                       <Box>
-                        <Text
-                          fontSize="lg"
-                          fontWeight="semibold"
-                          textAlign="start"
-                        >
-                          {card.title}
-                        </Text>
-                        <Text
-                          fontSize="sm"
-                          color="gray.600"
-                          mt={2}
-                          textAlign="start"
-                          lineHeight="tall"
-                        >
-                          {card.desc}
-                        </Text>
+                        <Flex textAlign="start" flexDirection="column" gap={4}>
+                          <H4>{card.title}</H4>
+                          <Body>{card.desc}</Body>
+                        </Flex>
                       </Box>
                     </VStack>
                   </Box>

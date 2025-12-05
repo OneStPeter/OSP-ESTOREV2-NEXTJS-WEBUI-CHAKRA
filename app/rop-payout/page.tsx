@@ -3,14 +3,16 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { RopStepPage } from "osp-chakra-reusable-components";
 import React from "react";
-
+import { useRouter } from "next/navigation";
 const page = () => {
+  const router = useRouter();
   return (
-    <Flex p={8} mt={40} alignItems="center" justifyContent="center">
+    <Flex p={8} mt={16} alignItems="center" justifyContent="center">
       <RopStepPage
-        onClick={function (): void {
+        onClickHome={function (): void {
           throw new Error("Function not implemented.");
         }}
+        onClickTrack={() => router.push("/transaction/PY-02910910")}
       />
     </Flex>
   );

@@ -2,18 +2,10 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { IPlans } from "@/types/product";
 import Error from "@/components/ui/error";
-import {
-  Box,
-  Flex,
-  Text,
-  Grid,
-  GridItem,
-  HStack,
-  Tabs,
-  Heading,
-} from "@chakra-ui/react";
+import { Box, Flex, Grid, GridItem, HStack, Tabs } from "@chakra-ui/react";
 import Section from "@/components/ui/section";
 import ComparisonBanner from "@/components/ui/comparison-banner";
+import { Body, H2 } from "st-peter-ui";
 
 const formatCurrency = (value: number | string) =>
   new Intl.NumberFormat("en-PH", {
@@ -132,10 +124,10 @@ const Products = () => {
         w={{ base: "full", md: "full" }}
         position="relative"
       >
-        <Tabs.Root defaultValue="traditional" variant="enclosed" color="green">
+        <Tabs.Root defaultValue="traditional" variant="enclosed">
           <Box mt={{ base: 12, md: 24 }}>
             <Box
-              backgroundColor="gray.50"
+              // backgroundColor="gray.50"
               w="100vw"
               px={{ base: 4, md: 8 }}
               py={{ base: 6, md: 8 }}
@@ -151,21 +143,10 @@ const Products = () => {
                 >
                   <GridItem>
                     <Box textAlign={{ base: "center", md: "left" }}>
-                      <Heading
-                        fontWeight="bold"
-                        textTransform="uppercase"
-                        fontSize={{ base: "2xl", md: "4xl" }}
-                        color="green.700"
-                      >
-                        Our Life Plans
-                      </Heading>
-                      <Text
-                        color="gray.800"
-                        mt={1}
-                        fontSize={{ base: "sm", md: "md" }}
-                      >
+                      <H2>Our Life Plans</H2>
+                      <Body>
                         Secure your family's future with peace of mind
-                      </Text>
+                      </Body>
                     </Box>
                   </GridItem>
                   <GridItem justifySelf={{ base: "center", md: "end" }}>

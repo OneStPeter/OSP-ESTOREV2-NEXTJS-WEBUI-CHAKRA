@@ -12,7 +12,6 @@ const PlanComparisonPage = () => {
 
   const compareListParam = decodeURIComponent(params.compareList as string);
 
-  // FIX: Memoize so it doesn't change every render
   const compareList = useMemo(
     () => compareListParam.split(","),
     [compareListParam]

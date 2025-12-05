@@ -1,10 +1,24 @@
 "use client";
 
-import { Box, Text } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import HorizontalStepper from "@/components/ui/horizontal-stepper";
 import { steps } from "@/data/lifePlanSteps";
 import { useState } from "react";
-
+import { Body, Breadcrumb, FormBox, H3 } from "st-peter-ui";
+const breadcrumbItems = [
+  {
+    label: "Home",
+    href: "/",
+  },
+  {
+    label: "Plan Management",
+    href: "/plan-management",
+  },
+  {
+    label: "Life Plan Application",
+    href: "#",
+  },
+];
 const LifePlanApplication = () => {
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -15,24 +29,26 @@ const LifePlanApplication = () => {
       justifyContent="center"
       alignItems="center"
       minH={{ base: "auto", md: "auto" }}
-      mt={32}
+      // mt={32}
     >
-      <Box
-        bg="white"
-        maxW="7xl"
-        mx="auto"
-        w={{ base: "full", md: "4/5", lg: "full" }}
-        mt={{ base: 4, lg: 8 }}
-        mb={{ base: 16, lg: 8 }}
-        p={{ base: 8, md: 8 }}
-        rounded="lg"
-        // shadow={{ base: "none", md: "md" }}
+      <FormBox
+        w="7xl"
+        // bg="white"
+        // maxW="7xl"
+        // mx="auto"
+        // w={{ base: "full", md: "4/5", lg: "full" }}
+        // // mt={{ base: 4, lg: 8 }}
+        // mb={{ base: 16, lg: 8 }}
       >
-        <Text fontWeight="semibold" fontSize="2xl" mb={8} textAlign="center">
-          {steps[currentStep]?.header}
-        </Text>
+        <Breadcrumb items={breadcrumbItems} />
+        <Box mb={8} textAlign="start" mt={4}>
+          <H3>Life Plan Application</H3>
+          <Body mt={2}>
+            Please fill out the form below to apply for a life plan.
+          </Body>
+        </Box>
         <HorizontalStepper steps={steps} onStepChange={setCurrentStep} />
-      </Box>
+      </FormBox>
     </Box>
   );
 };

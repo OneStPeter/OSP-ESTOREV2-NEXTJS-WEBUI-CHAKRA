@@ -99,6 +99,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <Card.Title
             fontSize={{ base: "base", sm: "lg", md: "xl" }}
             lineClamp={1}
+            color="white"
           >
             {title}
           </Card.Title>

@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Provider } from "@/components/ui/provider";
 import { StPeterProvider } from "st-peter-ui";
 
 //@ts-ignore

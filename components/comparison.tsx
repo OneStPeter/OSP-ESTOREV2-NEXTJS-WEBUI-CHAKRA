@@ -14,10 +14,12 @@ import {
 } from "@chakra-ui/react/";
 import { useRouter } from "next/navigation";
 import { IPlans } from "@/types/product";
-import { PrimaryMdButton } from "st-peter-ui";
+import { Breadcrumb, PrimaryMdButton } from "st-peter-ui";
 import { MdCheck, MdClose } from "react-icons/md";
 import { parseCasketDescription } from "@/lib/utils/plan";
 import { useMemo } from "react";
+import { BreadcrumbTracker } from "./ui/breadcrumb-tracker";
+import { usePathname } from "next/navigation";
 
 interface ComparisonProps {
   compareList: string[];
@@ -27,7 +29,7 @@ interface ComparisonProps {
 
 const Comparison = ({ compareList, plans, removeItem }: ComparisonProps) => {
   const router = useRouter();
-
+  const pathname = usePathname();
   const descByPlanDesc = useMemo(() => {
     const map = new Map<string, ReturnType<typeof parseCasketDescription>>();
     for (const p of plans) {
@@ -66,8 +68,17 @@ const Comparison = ({ compareList, plans, removeItem }: ComparisonProps) => {
   );
 
   return (
-    <Box mt={40} w={{ base: "full", md: "7xl" }} mx="auto" p={8}>
+    <Box mt={24} mb={16} w={{ base: "full", md: "7xl" }} mx="auto" p={8}>
       <Flex justify="center" align="start" flexDirection="column" gap={4}>
+        {/* <BreadcrumbTracker /> */}
+        <Breadcrumb
+          pathname={pathname}
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Plans", href: "/plans" },
+            { label: "Plan Comparison" },
+          ]}
+        />
         <Heading fontWeight="semibold" textTransform="uppercase">
           Plan Comparison
         </Heading>
@@ -136,6 +147,7 @@ const Comparison = ({ compareList, plans, removeItem }: ComparisonProps) => {
                     <Badge
                       variant="solid"
                       colorPalette="green"
+                      color="white"
                       mt={4}
                       mb={4}
                       size="lg"

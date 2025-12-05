@@ -9,8 +9,10 @@ import {
   FileUpload,
   Field,
   Separator,
+  Span,
 } from "@chakra-ui/react";
 import FloatingLabelInput from "../ui/floating-label-input";
+import { Body, SecondaryMdButton, SecondarySmButton } from "st-peter-ui";
 // Removed FloatingLabelSelect usage in favor of placeholder Selects
 
 const LifePlanApplication1 = () => {
@@ -25,9 +27,7 @@ const LifePlanApplication1 = () => {
   return (
     <>
       <VStack mb={4} align="stretch">
-        <Text fontWeight="semibold" fontSize="lg">
-          Identification
-        </Text>
+        <Body fontWeight="bold">Identification</Body>
       </VStack>
 
       <VStack gap={6} align="stretch">
@@ -35,6 +35,7 @@ const LifePlanApplication1 = () => {
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
           <Select.Root collection={idCollection}>
             <Select.HiddenSelect />
+            {/* <Select.Label>Select ID Type</Select.Label> */}
             <Select.Control>
               <Select.Trigger>
                 <Select.ValueText placeholder="Select ID Type" />
@@ -56,29 +57,37 @@ const LifePlanApplication1 = () => {
 
           <FileUpload.Root>
             <FileUpload.HiddenInput />
-            <Input asChild>
+            <Box
+              asChild
+              width="100%"
+              border="1px solid"
+              borderColor="gray.300"
+              borderRadius="sm"
+              textAlign="start"
+              p={2}
+              boxSizing="border-box"
+              cursor="pointer"
+              _hover={{ borderColor: "gray.400" }}
+              fontSize="sm"
+            >
               <FileUpload.Trigger>
                 <FileUpload.FileText />
               </FileUpload.Trigger>
-            </Input>
+            </Box>
           </FileUpload.Root>
         </Grid>
 
         <Separator />
 
         {/* Full Name Section */}
-        <Text fontWeight="semibold" fontSize="md">
-          Full Name
-        </Text>
+        <Body fontWeight="bold">Full Name</Body>
 
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
           <Field.Root>
             <FloatingLabelInput id="lastName" type="text" label="Last Name" />
-            <Field.ErrorText>This field is required</Field.ErrorText>
           </Field.Root>
           <Field.Root>
             <FloatingLabelInput id="firstName" type="text" label="First Name" />
-            <Field.ErrorText>This field is required</Field.ErrorText>
           </Field.Root>
         </Grid>
 
@@ -89,7 +98,6 @@ const LifePlanApplication1 = () => {
               type="text"
               label="Middle Name"
             />
-            <Field.ErrorText>This field is required</Field.ErrorText>
           </Field.Root>
           <Field.Root>
             <FloatingLabelInput
@@ -103,26 +111,19 @@ const LifePlanApplication1 = () => {
         <Separator />
 
         {/* Personal Data Section */}
-        <Text fontWeight="semibold" fontSize="md">
-          Personal Details
-        </Text>
+        <Body fontWeight="bold">Personal Details</Body>
 
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
           <Field.Root>
-            <FloatingLabelInput
-              id="dateOfBirth"
-              type="date"
-              label="Date of Birth"
-            />
-            <Field.ErrorText>This field is required</Field.ErrorText>
+            <Field.Label>Date of Birth</Field.Label>
+
+            <Input id="dateOfBirth" type="date" />
           </Field.Root>
+
           <Field.Root>
-            <FloatingLabelInput
-              id="dateOfNeutralization"
-              type="date"
-              label="Date of Neutralization"
-            />
-            <Field.ErrorText>This field is required</Field.ErrorText>
+            <Field.Label>Date of Neutralization</Field.Label>
+
+            <Input id="dateOfNeutralization" type="date" />
           </Field.Root>
 
           <Field.Root>
@@ -136,9 +137,7 @@ const LifePlanApplication1 = () => {
         <Separator />
 
         {/* Demographics Section (using placeholder Select) */}
-        <Text fontWeight="semibold" fontSize="md">
-          Demographics
-        </Text>
+        <Body fontWeight="bold">Demographics</Body>
         <Grid templateColumns={{ base: "1fr", md: "repeat(2 , 1fr)" }} gap={8}>
           <Field.Root>
             <Select.Root
@@ -173,7 +172,6 @@ const LifePlanApplication1 = () => {
                 </Select.Content>
               </Select.Positioner>
             </Select.Root>
-            <Field.ErrorText>This field is required</Field.ErrorText>
           </Field.Root>
           <Field.Root>
             <Select.Root
@@ -216,7 +214,6 @@ const LifePlanApplication1 = () => {
                 </Select.Content>
               </Select.Positioner>
             </Select.Root>
-            <Field.ErrorText>This field is required</Field.ErrorText>
           </Field.Root>
           <Field.Root>
             <FloatingLabelInput
@@ -224,16 +221,13 @@ const LifePlanApplication1 = () => {
               type="text"
               label="Nationality"
             />
-            <Field.ErrorText>This field is required</Field.ErrorText>
           </Field.Root>
         </Grid>
 
         <Separator />
 
         {/* Basic Contact Info */}
-        <Text fontWeight="semibold" fontSize="md">
-          Contact Information
-        </Text>
+        <Body fontWeight="bold">Contact Information</Body>
 
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
           <Field.Root>
@@ -242,7 +236,6 @@ const LifePlanApplication1 = () => {
               type="text"
               label="Mobile Number"
             />
-            <Field.ErrorText>This field is required</Field.ErrorText>
           </Field.Root>
           <Field.Root>
             <FloatingLabelInput
@@ -256,7 +249,6 @@ const LifePlanApplication1 = () => {
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
           <Field.Root>
             <FloatingLabelInput id="email" type="email" label="Email Address" />
-            <Field.ErrorText>Enter a valid email</Field.ErrorText>
           </Field.Root>
           <Field.Root>
             <FloatingLabelInput
@@ -264,7 +256,6 @@ const LifePlanApplication1 = () => {
               type="text"
               label="Mailing Address"
             />
-            <Field.ErrorText>This field is required</Field.ErrorText>
           </Field.Root>
         </Grid>
 

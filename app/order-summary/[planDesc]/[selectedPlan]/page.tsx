@@ -6,12 +6,15 @@ import { getModeAndName } from "@/lib/utils/plan";
 import OrderSummary from "@/components/order-summary";
 import { Box, Flex, Link, Text } from "@chakra-ui/react";
 import { ContinueButton } from "st-peter-ui";
+import { useRouter } from "next/navigation";
 
 const Page = ({
   params,
 }: {
   params: Promise<{ planDesc: string; selectedPlan: string }>;
 }) => {
+  const router = useRouter();
+
   const [planDesc, setPlanDesc] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [plans, setPlans] = useState<IPlans[] | null>(null);
@@ -35,7 +38,6 @@ const Page = ({
     };
     fetchPlan();
   }, [planDesc]);
-  console.log("plans", plans);
 
   if (!plans || plans.length === 0) {
     return (
@@ -44,7 +46,6 @@ const Page = ({
       </div>
     );
   }
-
   return (
     <Flex
       mt={{ base: "24", md: "0" }}
@@ -52,6 +53,7 @@ const Page = ({
       justify={{ base: "flex-start", md: "center" }}
       align="center"
       h={{ base: "auto", md: "100vh" }}
+      p={8}
     >
       <Box
         p={8}
@@ -69,9 +71,15 @@ const Page = ({
           ipInstAmt={plans[0].ipInstAmt}
           contractPrice={plans[0].contractPrice}
         />
-        <Link href="/get-started" w="full" mt={8}>
-          <ContinueButton mt={8} w="full" />
-        </Link>
+        <Box textAlign="end" w="full" mt={8}>
+          <ContinueButton
+            mt={8}
+            w="full"
+            onClick={() => {
+              router.push("/get-started");
+            }}
+          />
+        </Box>
       </Box>
     </Flex>
   );

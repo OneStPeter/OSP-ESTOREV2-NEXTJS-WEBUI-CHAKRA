@@ -1,8 +1,10 @@
-import { ContinueButton } from "st-peter-ui";
-import React from "react";
-import { Box, VStack, Text, Flex, Link } from "@chakra-ui/react";
+"use client";
+import { Body, ContinueButton, H3, H4 } from "st-peter-ui";
+import { Box, VStack, Flex, Span } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 
 const page = () => {
+  const router = useRouter();
   return (
     <Flex
       w="full"
@@ -22,36 +24,38 @@ const page = () => {
         w={{ base: "full", md: "80%" }}
       >
         <VStack gap={4} align="stretch">
-          <Text textAlign="center" fontSize="2xl" fontWeight="semibold">
-            Let's Get Started
-          </Text>
-          <Text>
+          <Box textAlign="center">
+            <H3>Let's Get Started</H3>
+          </Box>
+          <Body>
             We'll be needing some documents and information to proceed with the
             purchase, please prepare the following in advance to smooth out the
             next steps
-          </Text>
-          <Box bg="gray.100" p={4} rounded="md">
+          </Body>
+          <Box bg="gray.50" p={8} rounded="md">
             <VStack align="start" gap={2}>
-              <Text fontWeight="semibold">Required Information</Text>
-              <Text>1. Full Name</Text>
-              <Text>2. Nationality</Text>
-              <Text>3. Mobile Number</Text>
-              <Text>4. Email Address</Text>
-              <Text>5. Date of Birth</Text>
-              <Text>6. Complete Address</Text>
-              <Text>7. Beneficiary/ies</Text>
-              <Text fontWeight="semibold" mt={4}>
-                Required Documents
-              </Text>
-              <Text>1. Current and Valid Government-issued ID</Text>
-              <Text>2. Specimen Signature</Text>
+              <Body fontWeight="bold">Required Information</Body>
+              <Body>1. Full Name</Body>
+              <Body>2. Nationality</Body>
+              <Body>3. Mobile Number</Body>
+              <Body>4. Email Address</Body>
+              <Body>5. Date of Birth</Body>
+              <Body>6. Complete Address</Body>
+              <Body>7. Beneficiary/ies</Body>
+              <Body>
+                <Span fontWeight="bold">Required Documents</Span>
+              </Body>
+              <Body>1. Current and Valid Government-issued ID</Body>
+              <Body>2. Specimen Signature</Body>
             </VStack>
           </Box>
         </VStack>
-        <Box mt={6}>
-          <Link href="/lifeplan-application">
-            <ContinueButton />
-          </Link>
+        <Box mt={6} textAlign="end">
+          <ContinueButton
+            onClick={() => {
+              router.push("/lifeplan-application");
+            }}
+          />
         </Box>
       </Box>
     </Flex>

@@ -1,6 +1,7 @@
 import React from "react";
 import { IPlans } from "@/types/product";
 import { Text, Grid, GridItem, Image, Flex, Box } from "@chakra-ui/react";
+import { Body, H3, H4 } from "st-peter-ui";
 
 const OrderSummary = ({
   planDesc,
@@ -13,13 +14,9 @@ const OrderSummary = ({
   contractPrice: number;
   ipInstAmt: number;
 }) => {
-  console.log("Selected Plan:", planDesc);
-  console.log("Selected Mode:", mode);
   return (
     <>
-      <Text fontWeight="semibold" fontSize="2xl">
-        Order Summary
-      </Text>
+      <H3>Order Summary</H3>
       <Grid
         templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
         gap={8}
@@ -39,12 +36,10 @@ const OrderSummary = ({
           <Flex flexDirection="column" w="full" gap={4} justify="center">
             <Flex justify="space-between" w="full">
               <Box>
-                <Text fontSize="lg" fontWeight="semibold" mb={2}>
-                  {planDesc}
-                </Text>
+                <H4>{planDesc}</H4>
               </Box>
               <Box>
-                <Text fontSize="lg" fontWeight="semibold" mb={2}>
+                <H4>
                   {mode === "M"
                     ? "Monthly"
                     : mode === "Q"
@@ -56,25 +51,25 @@ const OrderSummary = ({
                     : mode === "C"
                     ? "Cash"
                     : mode}
-                </Text>
+                </H4>
               </Box>
             </Flex>
 
             {mode === "C" ? (
               <Flex justify="space-between" w="full">
-                <Text>Contract Price</Text>
-                <Text fontSize="lg" fontWeight="semibold" mb={2}>
+                <Body>Contract Price</Body>
+                <Body>
                   ₱
                   {contractPrice.toLocaleString("en-PH", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}
-                </Text>
+                </Body>
               </Flex>
             ) : ["M", "Q", "S", "A"].includes(mode) ? (
               <Flex justify="space-between" w="full">
-                <Text>Installment Amount</Text>
-                <Text fontSize="lg" fontWeight="semibold" mb={2}>
+                <Body>Installment Amount</Body>
+                <Body>
                   ₱
                   {typeof ipInstAmt === "number"
                     ? ipInstAmt.toLocaleString("en-PH", {
@@ -82,7 +77,7 @@ const OrderSummary = ({
                         maximumFractionDigits: 2,
                       })
                     : "N/A"}
-                </Text>
+                </Body>
               </Flex>
             ) : null}
           </Flex>
@@ -92,10 +87,8 @@ const OrderSummary = ({
       <Box height="1px" backgroundColor="gray.200" mt={8} />
 
       <Flex justify="space-between" align="center" mt={8}>
-        <Text fontSize="lg" fontWeight="semibold">
-          Total Amount Payable
-        </Text>
-        <Text fontSize="lg" fontWeight="semibold">
+        <Body>Total Amount Payable</Body>
+        <Body>
           ₱
           {typeof ipInstAmt === "number"
             ? ipInstAmt.toLocaleString("en-PH", {
@@ -103,7 +96,7 @@ const OrderSummary = ({
                 maximumFractionDigits: 2,
               })
             : "0.00"}
-        </Text>
+        </Body>
       </Flex>
     </>
   );

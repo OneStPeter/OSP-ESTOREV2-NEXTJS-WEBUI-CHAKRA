@@ -1,7 +1,14 @@
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button, ButtonGroup, Steps } from "@chakra-ui/react";
-import { PrimaryMdButton, SecondaryMdButton } from "st-peter-ui";
-import Completed from "./completed";
+import {
+  BackButton,
+  NextButton,
+  PreviousButton,
+  PrimaryMdButton,
+  SecondaryMdButton,
+} from "st-peter-ui";
+// Completed screen removed; navigate to checkout after last step
 
 interface HorizontalStepperProps {
   steps: {
@@ -14,6 +21,7 @@ interface HorizontalStepperProps {
 
 const HorizontalStepper = ({ steps, onStepChange }: HorizontalStepperProps) => {
   const [activeStep, setActiveStep] = useState(0);
+  const router = useRouter();
 
   return (
     <div>
@@ -48,9 +56,7 @@ const HorizontalStepper = ({ steps, onStepChange }: HorizontalStepperProps) => {
           </Steps.Content>
         ))}
 
-        <Steps.CompletedContent>
-          <Completed />
-        </Steps.CompletedContent>
+        {/* Removed completed content; we'll navigate on last step */}
 
         <ButtonGroup
           mt={4}
@@ -60,15 +66,15 @@ const HorizontalStepper = ({ steps, onStepChange }: HorizontalStepperProps) => {
           gap={{ base: 3, md: 4 }}
         >
           <Steps.PrevTrigger asChild>
-            <SecondaryMdButton w={{ base: "full", md: "auto" }}>
-              Previous
-            </SecondaryMdButton>
+            <PreviousButton />
           </Steps.PrevTrigger>
-          <Steps.NextTrigger asChild>
-            <PrimaryMdButton w={{ base: "full", md: "auto" }}>
-              Next
-            </PrimaryMdButton>
-          </Steps.NextTrigger>
+          {activeStep < steps.length - 1 ? (
+            <Steps.NextTrigger asChild>
+              <NextButton />
+            </Steps.NextTrigger>
+          ) : (
+            <NextButton onClick={() => router.push("/checkout")} />
+          )}
         </ButtonGroup>
       </Steps.Root>
     </div>

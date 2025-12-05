@@ -9,8 +9,10 @@ import {
   Select,
   Field,
   createListCollection,
+  Span,
 } from "@chakra-ui/react";
 import FloatingLabelInput from "../ui/floating-label-input";
+import { Body, H4 } from "st-peter-ui";
 
 const genderOptions = [
   { value: "male", label: "Male" },
@@ -31,11 +33,9 @@ const LifePlanApplication3 = () => {
   return (
     <>
       <VStack align="stretch" gap={4} mb={4}>
-        <Box>
-          <Text fontWeight="semibold" textAlign="start" fontSize="lg">
-            Employment
-          </Text>
-        </Box>
+        <Body>
+          <Span fontWeight="bold">Residential Address</Span>
+        </Body>
       </VStack>
 
       {/* <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>

@@ -8,7 +8,7 @@ import React from "react";
 const page = () => {
   const router = useRouter();
   return (
-    <Flex p={8} mt={40} alignItems="center" justifyContent="center">
+    <Flex p={8} mt={24} alignItems="center" justifyContent="center">
       <RopPage onClick={() => router.push("/rop-payout")} />
     </Flex>
   );

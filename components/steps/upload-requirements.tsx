@@ -7,9 +7,11 @@ import {
   Box,
   useFileUploadContext,
   Icon,
+  Span,
 } from "@chakra-ui/react";
+import { UploadFile } from "osp-chakra-reusable-components";
 import { LuUpload } from "react-icons/lu";
-import { PrimarySmButton } from "st-peter-ui";
+import { Body, H4, PrimarySmButton } from "st-peter-ui";
 const MAX_FILES = 4;
 
 const ConditionalDropzone = () => {
@@ -42,10 +44,8 @@ const ConditionalDropzone = () => {
 const Requirements = () => {
   return (
     <VStack align="stretch" gap={4} mb={4}>
-      <Text fontWeight="semibold" textAlign="start" fontSize="lg">
-        Upload Requirements
-      </Text>
-      <FileUpload.Root
+      <H4>Upload Requirements</H4>
+      {/* <FileUpload.Root
         maxW="2xl"
         alignItems="stretch"
         maxFiles={MAX_FILES}
@@ -58,9 +58,15 @@ const Requirements = () => {
         </FileUpload.Label>
         <ConditionalDropzone />
         <FileUpload.List clearable />
-      </FileUpload.Root>
+      </FileUpload.Root> */}
+      <Body>
+        Kindly upload valid{" "}
+        {/* <Span fontWeight="bold">government issued ID with signature</Span> and */}
+        <Span fontWeight="bold"> three (3) specimen signature.</Span>
+      </Body>
+      <UploadFile />
       <Field.Root w="2xl">
-        <Field.Label>Do you have an referral agent? (optional)</Field.Label>
+        <Body>Do you have an referral agent? (optional)</Body>
         <Input placeholder="Enter agent name" />
       </Field.Root>
     </VStack>

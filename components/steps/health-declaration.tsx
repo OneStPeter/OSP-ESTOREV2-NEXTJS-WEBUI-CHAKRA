@@ -8,7 +8,6 @@ import {
   Accordion,
   Span,
   Stack,
-  Text,
   Checkbox,
   Separator,
 } from "@chakra-ui/react";
@@ -20,10 +19,14 @@ import {
 } from "@chakra-ui/react";
 import { LuUpload } from "react-icons/lu";
 import {
+  Body,
+  H3,
+  H4,
   PrimaryMdButton,
   PrimarySmButton,
   SecondaryMdButton,
 } from "st-peter-ui";
+import { UploadFile } from "osp-chakra-reusable-components";
 const HealthDeclaration = () => {
   const [value, setValue] = useState(["second-item"]);
   const items = [
@@ -67,7 +70,7 @@ const HealthDeclaration = () => {
       title: "Online Purchase Authentication",
       text: (
         <>
-          <Text className="text-start">
+          <Body className="text-start">
             I fully understand that in my purchase of the Life Plan product
             which I have chosen, I am required to upload a clear specimen of my
             current and valid government issued ID and three (3) specimens of my
@@ -76,8 +79,8 @@ const HealthDeclaration = () => {
             and accountable for any misrepresentation and all other consequences
             arising from my uploading of the specimen signatures of my valid ID
             and/or electronic signature.
-          </Text>
-          <Text>
+          </Body>
+          <Body>
             However, I fully understand that by clicking the “CONTINUE” button,
             for all intents and purposes, this ultimately means that I give my
             express, final, irrevocable and unconditional consent to
@@ -89,53 +92,30 @@ const HealthDeclaration = () => {
             electronic signature. I also hereby agree to accept and comply with
             the applicable and currently prescribed electronic and digital
             payment methods in this platform.
-          </Text>
-          <Text>
+          </Body>
+          <Body>
             I understand that I am solely responsible for maintaining the
             confidentiality of my account and password and for restricting
             access to my account and I accept all responsibility for all
             activities that occur under my account and password.
-          </Text>
+          </Body>
         </>
       ),
     },
   ];
-  const MAX_MEDICAL_FILES = 1;
-
-  const ConditionalMedicalDropzone = () => {
-    const ctx = useFileUploadContext();
-    const count = ctx.acceptedFiles.length;
-    if (count >= MAX_MEDICAL_FILES) return null;
-    return (
-      <FileUpload.Dropzone>
-        <Icon size="md" color="fg.muted">
-          <LuUpload />
-        </Icon>
-        <FileUpload.DropzoneContent>
-          <Box>Drag and drop file here</Box>
-          <Box color="fg.muted">PNG / JPG / PDF</Box>
-          <FileUpload.Trigger asChild>
-            <PrimarySmButton mt={2}>Browse File</PrimarySmButton>
-          </FileUpload.Trigger>
-        </FileUpload.DropzoneContent>
-      </FileUpload.Dropzone>
-    );
-  };
 
   return (
     <>
       <VStack align="stretch" gap={4} mb={4}>
-        <Text fontWeight="semibold" fontSize="lg" textAlign="start">
-          Health Declaration
-        </Text>
-        <Text textAlign="start">
+        <H4>Health Declaration</H4>
+        <Body>
           Please check all the boxes that apply to you and skip the boxes that
           do not apply.
-        </Text>
-        <Text textAlign="start">
+        </Body>
+        <Body>
           I hereby represent and declare to the best of my knowledge that at the
           time of purchase of my Life Plan:
-        </Text>
+        </Body>
       </VStack>
 
       <VStack align="stretch" gap={4} mb={4}>
@@ -174,45 +154,39 @@ const HealthDeclaration = () => {
             representations.
           </Checkbox.Label>
         </Checkbox.Root>
-        <Text textAlign="start" mt={4}>
-          Please attach medical results here:
-        </Text>
-        <FileUpload.Root
-          maxW="xl"
-          alignItems="stretch"
-          maxFiles={MAX_MEDICAL_FILES}
-          accept=".png,.jpg,.jpeg,.pdf"
-        >
-          <FileUpload.HiddenInput />
-          <ConditionalMedicalDropzone />
-          <FileUpload.List clearable />
-        </FileUpload.Root>
+        <Box mt={4}>
+          <Body>Please attach medical results here:</Body>
+        </Box>
+
+        <UploadFile />
         <VStack align="stretch" gap={2} mt={6}>
-          <Text textAlign="start">
+          <Body>
             I also understand and agree that the issuance of the Life Plan and
             the corresponding benefits are based on the truth of my above-stated
             representations.
-          </Text>
-          <Text textAlign="start">
+          </Body>
+          <Body>
             Any false statements as regards my age or health as above-stated may
             render the Life Plan Contract rescissible.
-          </Text>
-          <Text textAlign="start">
+          </Body>
+          <Body>
             I further agree that this contract and the declarations I have given
             above shall be the basis of the Life Plan Contract between the
             company and me and shall be deemed to be an integral part of the
             Life Plan Contract, subject to the terms and conditions stated in
             the Life Plan Contract.
-          </Text>
+          </Body>
         </VStack>
         <Separator />
-        <Text fontWeight="semibold" fontSize="lg" textAlign="start">
-          Terms and Conditions
-        </Text>
-        <Text textAlign="start">
-          Please read the terms and conditions of St .Peter Life Plan and upload
-          the necessary documents to proceed with the purchase.
-        </Text>
+        <Box textAlign="start">
+          <H4>Terms and Conditions</H4>
+        </Box>
+        <Box textAlign="start">
+          <Body>
+            Please read the terms and conditions of St .Peter Life Plan and
+            upload the necessary documents to proceed with the purchase.
+          </Body>
+        </Box>
         <Accordion.Root
           value={value}
           onValueChange={(e) => setValue(e.value)}
@@ -221,9 +195,9 @@ const HealthDeclaration = () => {
           {items.map((item, index) => (
             <Accordion.Item key={index} value={item.value}>
               <Accordion.ItemTrigger>
-                <Span flex="1" fontWeight="semibold" textAlign="start">
-                  {item.title}
-                </Span>
+                <Body>
+                  <Span fontWeight="semibold">{item.title}</Span>
+                </Body>
                 <Accordion.ItemIndicator />
               </Accordion.ItemTrigger>
               <Accordion.ItemContent>

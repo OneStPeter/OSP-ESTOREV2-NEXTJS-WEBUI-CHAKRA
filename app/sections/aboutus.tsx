@@ -7,6 +7,7 @@ import Head from "next/head";
 import React from "react";
 import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
+import { Body, H2, H3 } from "st-peter-ui";
 
 const testimonials = [
   {
@@ -59,29 +60,27 @@ const AboutUs = () => {
           align="center"
           gap={{ base: 8, md: 32 }}
           mb={8}
-          bg="gray.50"
           px={{ base: 4, md: 8 }}
           py={{ base: 8, md: 12 }}
         >
           {/* Left Text */}
-          <Box p={4} textAlign={{ base: "center", md: "left" }}>
-            <Text fontSize="3xl" fontWeight="bold">
-              Serving the Filipino
-            </Text>
-            <Text fontSize="3xl" fontWeight="bold" color="#177D54">
-              Since 1975
-            </Text>
-            <Text
-              fontSize="md"
-              maxW={{ base: "90%", md: "400px" }}
-              mt={4}
-              mx="auto"
-            >
-              We are a trusted Pre-Need DeathCare company, serving the Filipino
-              public for over 30 years with professional and traditional
-              memorial services and affordable life plans for every family.
-            </Text>
-          </Box>
+          <Flex
+            p={4}
+            textAlign={{ base: "center", md: "left" }}
+            flexDirection="column"
+            gap={4}
+          >
+            <H2>Serving the Filipino</H2>
+            <H3 color="#177D54">Since 1975</H3>
+            <Box mx="auto" maxW={{ base: "90%", md: "400px" }}>
+              <Body>
+                We are a trusted Pre-Need DeathCare company, serving the
+                Filipino public for over 30 years with professional and
+                traditional memorial services and affordable life plans for
+                every family.
+              </Body>
+            </Box>
+          </Flex>
 
           {/* Right Stats */}
           <Flex
@@ -112,9 +111,7 @@ const AboutUs = () => {
         {/* Testimonials */}
         <Box p={8}>
           <Flex direction="column" align="center" textAlign="center" mb={8}>
-            <Heading size="2xl" textTransform="uppercase" fontWeight="bold">
-              Testimonials
-            </Heading>
+            <H2>Testimonials</H2>
             <Box
               h="3px"
               w="100px"

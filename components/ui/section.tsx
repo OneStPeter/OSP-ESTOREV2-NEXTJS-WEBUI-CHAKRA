@@ -18,7 +18,7 @@ import React, { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { FaCheck } from "react-icons/fa";
 
-import { PrimaryMdButton, SecondaryMdButton } from "st-peter-ui";
+import { Body, H3, H4, PrimaryMdButton, SecondaryMdButton } from "st-peter-ui";
 import { m } from "motion/react";
 import { addToCart } from "@/lib/utils/cart";
 interface SectionProps {
@@ -113,33 +113,27 @@ const Section: React.FC<SectionProps> = ({
             w={{ base: "full", lg: "500px" }}
           >
             <Box display="flex" flexDirection="column" gap={4} flex={1}>
-              <Text fontWeight="semibold" color="black" fontSize="2xl">
-                {planDesc}
-              </Text>
-              <Text color="black">{description}</Text>
-              <Text fontWeight="semibold" color="black" fontSize="lg">
-                Contract Price: {contractPrice}
-              </Text>
+              <H3>{planDesc}</H3>
+              <Body>{description}</Body>
+              <Body>Contract Price: {contractPrice}</Body>
 
               <Flex gap={8} direction={isTwo ? "row" : "column"}>
                 {sorted.map(([year, items]) => (
                   <Box key={year} flex={1}>
                     <Box h="1px" bg="green.200" />
-                    <Text fontWeight="semibold" color="black" mt={4}>
-                      {year} years
-                    </Text>
+                    <Body>{year} years</Body>
 
                     {items.map((term, index) => (
                       <HStack
                         gap={4}
                         key={index}
                         bg="gray.50"
-                        p={2}
+                        p={4}
                         mt={4}
                         rounded="md"
                         justify="space-between"
                       >
-                        <Text color="black" px={2} py={1} rounded="md">
+                        <Body>
                           {term.mode == "M"
                             ? "Monthly"
                             : term.mode == "C"
@@ -151,8 +145,8 @@ const Section: React.FC<SectionProps> = ({
                             : term.mode == "A"
                             ? "Annual"
                             : "Unknown"}{" "}
-                        </Text>
-                        <Text color="black">{term.price}</Text>
+                        </Body>
+                        <Body>{term.price}</Body>
                       </HStack>
                     ))}
                   </Box>

@@ -28,7 +28,7 @@ const Footer = () => {
                 <FaInstagram size={32} />
                 <FaXTwitter size={32} />
               </Flex>
-              <Heading as="h4" textAlign="end">
+              <Heading as="h4" textAlign="end" color="white">
                 ST. PETER LIFE PLAN, INC
               </Heading>
             </Flex>

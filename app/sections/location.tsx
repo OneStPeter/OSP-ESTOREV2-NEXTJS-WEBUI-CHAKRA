@@ -1,6 +1,6 @@
-import { Box, Button, Flex, Heading, Text } from "@chakra-ui/react";
-import React from "react";
+import { Box, Flex } from "@chakra-ui/react";
 import { Carousel } from "@/components/ui/carousel";
+import { Body, DynamicButton, H2 } from "st-peter-ui";
 
 const Location = () => {
   const slideData = [
@@ -26,7 +26,13 @@ const Location = () => {
     },
   ];
   return (
-    <Box as="section" py={{ base: 8, md: 12 }} px={{ base: 4, md: 8 }}>
+    <Box
+      as="section"
+      mt={8}
+      py={{ base: 8, md: 12 }}
+      px={{ base: 4, md: 8 }}
+      bg="gray.50"
+    >
       <Box maxW="7xl" w="full" m="auto">
         <Flex
           flexDir={{ base: "column", lg: "row" }}
@@ -50,35 +56,29 @@ const Location = () => {
               w="full"
               m="auto"
             >
-              <Heading
-                fontSize={{ base: "2xl" }}
-                fontWeight="bold"
-                textTransform="uppercase"
-                mb={8}
-              >
-                We&apos;re Near{" "}
-                <Box as="span" color="green.600">
-                  {" "}
-                  You
-                </Box>
-              </Heading>
+              <Box mb={4}>
+                <H2>
+                  We&apos;re Near{" "}
+                  <Box as="span" color="green.600">
+                    {" "}
+                    You
+                  </Box>
+                </H2>
+              </Box>
 
-              <Text w={{ base: "100%", md: "md" }} textAlign="start">
-                Visit us at our convenient location, easily accessible for all
-                your needs. Our chapel is situated in the heart of the city,
-                providing a peaceful and welcoming environment for families and
-                guests. Whether you’re planning a visit or need assistance, our
-                friendly staff is always ready to help.
-              </Text>
+              <Box w={{ base: "100%", md: "md" }}>
+                <Body>
+                  Visit us at our convenient location, easily accessible for all
+                  your needs. Our chapel is situated in the heart of the city,
+                  providing a peaceful and welcoming environment for families
+                  and guests. Whether you’re planning a visit or need
+                  assistance, our friendly staff is always ready to help.
+                </Body>
+              </Box>
             </Flex>
 
             <Box mt={8}>
-              <Button
-                w={{ base: "100%", md: "fit-content" }}
-                colorScheme="green"
-              >
-                Go to Map
-              </Button>
+              <DynamicButton label="Go to Map" />
             </Box>
           </Box>
         </Flex>
