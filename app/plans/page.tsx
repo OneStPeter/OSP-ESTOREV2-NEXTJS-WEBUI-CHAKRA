@@ -6,6 +6,8 @@ import { Box, Flex, Grid, GridItem, HStack, Tabs } from "@chakra-ui/react";
 import Section from "@/components/ui/section";
 import ComparisonBanner from "@/components/ui/comparison-banner";
 import { Body, H2 } from "st-peter-ui";
+import { useRouter } from "next/navigation";
+import { Breadcrumb } from "st-peter-ui";
 
 const formatCurrency = (value: number | string) =>
   new Intl.NumberFormat("en-PH", {
@@ -50,6 +52,8 @@ const groupPlansByProduct = (plans: IPlans[], productCode: string) => {
 };
 
 const Products = () => {
+  const router = useRouter();
+
   const [plans, setPlans] = useState<IPlans[]>([]);
   const [showAlert, setShowAlert] = useState(false);
   const alertRef = useRef<HTMLDivElement>(null);
@@ -94,6 +98,16 @@ const Products = () => {
         : [...prev, planDesc]
     );
   };
+  const breadcrumbItems = [
+    {
+      label: "Home",
+      href: "/",
+    },
+    {
+      label: "Plans",
+      href: "/plans",
+    },
+  ];
 
   return (
     <Flex
@@ -125,7 +139,7 @@ const Products = () => {
         position="relative"
       >
         <Tabs.Root defaultValue="traditional" variant="enclosed">
-          <Box mt={{ base: 12, md: 24 }}>
+          <Box mt={{ base: 12, md: 16 }}>
             <Box
               // backgroundColor="gray.50"
               w="100vw"
@@ -136,6 +150,8 @@ const Products = () => {
               ml="calc(50% - 50vw)"
             >
               <Box maxW="7xl" mx="auto">
+                <Breadcrumb items={breadcrumbItems} />
+
                 <Grid
                   templateColumns={{ base: "1fr", md: "1fr auto" }}
                   gap={4}

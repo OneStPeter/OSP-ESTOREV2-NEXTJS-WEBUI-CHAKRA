@@ -11,12 +11,8 @@ const breadcrumbItems = [
     href: "/",
   },
   {
-    label: "Plan Management",
-    href: "/plan-management",
-  },
-  {
-    label: "Reinstatement",
-    href: "#",
+    label: "Claims",
+    href: "/claims",
   },
 ];
 const page = () => {

@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { IPlans } from "@/types/product";
+import { Breadcrumb } from "st-peter-ui";
+
 import {
   Text,
   VStack,
@@ -190,6 +192,20 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
       setQuantity(1);
     }
   }, [quantity]);
+  const breadcrumbItems = [
+    {
+      label: "Home",
+      href: "/",
+    },
+    {
+      label: "Plans",
+      href: `/plans`,
+    },
+    {
+      label: "Plan Details",
+      href: `/plan-details/${plan?.planDesc}`,
+    },
+  ];
 
   return (
     <>
@@ -200,11 +216,14 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
       ) : (
         <>
           {/* Product Header */}
-          <section id="productHeader" className="min-h-screen">
+          <Box id="productHeader" w="7xl" mx="auto" mt={{ base: 24, md: 32 }}>
+            <Breadcrumb items={breadcrumbItems} />
+
             <VStack
-              mt={{ base: 24, md: 48 }}
-              textAlign="center"
-              alignItems="center"
+              // w="7xl"
+              mx="auto"
+              // textAlign="center"
+              // alignItems="center"
               gap={{ base: 8, md: 4 }}
               justifyContent="center"
               minH="100vh"
@@ -268,7 +287,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                 </Box>
               </Container>
             </VStack>
-          </section>
+          </Box>
 
           {/* Payment Section */}
           <section id="paymentDetails" className="bg-gray-50">

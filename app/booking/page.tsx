@@ -1,9 +1,21 @@
 import React from "react";
 import { BookingForm } from "osp.cis.nextjs.components";
-import { Box } from "@chakra-ui/react/";
+import { Box, Flex } from "@chakra-ui/react/";
+import { RopPage } from "osp-chakra-reusable-components";
 
 const page = () => {
-  return <BookingForm homeLink="/" trackMyRequestLink="/transaction/" />;
+  return (
+    <Flex
+      p={8}
+      mt={24}
+      alignItems="center"
+      justifyContent="center"
+      maxW="7xl"
+      mx="auto"
+    >
+      <BookingForm homeLink="/" trackMyRequestLink="/transaction/" />
+    </Flex>
+  );
 };
 
 export default page;

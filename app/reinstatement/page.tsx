@@ -12,13 +12,10 @@ export default function Reinstatement() {
       label: "Home",
       href: "/",
     },
-    {
-      label: "Plan Management",
-      href: "/plan-management",
-    },
+
     {
       label: "Reinstatement",
-      href: "#",
+      href: "/reinstatement",
     },
   ];
 
@@ -33,7 +30,7 @@ export default function Reinstatement() {
               "\n Transaction Amount: ₱ " +
               transactionAmt.toLocaleString()
           );
-          router.push("/");
+          router.push("/success");
         }}
       />
     </Box>

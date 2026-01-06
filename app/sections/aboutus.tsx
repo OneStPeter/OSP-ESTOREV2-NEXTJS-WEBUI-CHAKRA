@@ -1,6 +1,7 @@
 "use client";
 
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
+import Testimonials, { TestimonialItem } from "@/components/ui/testimonials";
 import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 import Head from "next/head";
 // import { base } from "motion/react-client";
@@ -9,45 +10,51 @@ import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
 import { Body, H2, H3 } from "st-peter-ui";
 
-const testimonials = [
+const testimonials: TestimonialItem[] = [
   {
     quote:
-      "I believe that St. Peter is a good and credible company that delivers their services with excellence and they complied with everything that they had promised to us, as their clients. I will definitely recommend St. Peter to my family and friends.",
+      "I believe that St. Peter is a good and credible company that delivers their services with excellence...",
     name: "Mrs. Anadina C. Felomino",
-    title: "Koronadal Branch · St. Peter Planholder since 1995",
+    branch: "Koronadal Branch",
+    planholderSince: "St. Peter Planholder since 1995",
   },
   {
     quote:
-      "I decided to buy a policy for me and my husband because ever since I was always interested in insurance for future purposes. The plans are worth the purchase. I have a reliable Sales Agent with good character and relationship towards me and my other colleagues who have also purchased from them. The staff & personnel are very accommodating, responsive and courteous. Thank you St Peter.",
+      "I decided to buy a policy for me and my husband because ever since I was always interested in insurance...",
     name: "Mila T. Garcia",
-    title:
-      "Butuan East and Butuan West Branches · St. Peter Planholder since 1999",
+    branch: "Butuan East and Butuan West Branches",
+    planholderSince: "St. Peter Planholder since 1999",
   },
   {
     quote:
-      "Ako po si Yolanda Laberon Eclipse, planholder ng St. Peter Life Plan ay nagsasabing naging maganda ang serbisyo ng kumpanya sa akin at sa aking pamilya. Nang matapos kong mahulugan for 5 years ang aking first plan it was assigned to my father back in 2012. The purpose of having or buying a St. Peter Life Plan is to be secured. Being a planholder feels good! Now, I got 3 St. Peter Life Plans and I will really recommend more people to be the future clients of the company.",
+      "Ako po si Yolanda Laberon Eclipse... Being a planholder feels good! Now, I got 3 St. Peter Life Plans...",
     name: "Yolanda L. Eclipse",
-    title: "Catbalogan Branch · St. Peter Planholder since 2005",
+    branch: "Catbalogan Branch",
+    planholderSince: "St. Peter Planholder since 2005",
   },
   {
     quote:
-      "I’ve been a member for almost 12 years and I already started to receive my Return of Premium. I also received cash assistance when my daughter passed away last October 2007. I’m very satisfied with the way they provide service to my daughter and even received cash assistance when my daughter passed away last year. Aside from the beautiful service, they assisted me when I it needed the most. Thank you so much and more power to the company.",
+      "I’ve been a member for almost 12 years and I already started to receive my Return of Premium...",
     name: "Juanita C. Intong",
-    title: "Mandaue Branch · St. Peter Planholder since 2007",
+    branch: "Mandaue Branch",
+    planholderSince: "St. Peter Planholder since 2007",
   },
   {
     quote:
-      "Back then, I was not a believer in pre-need plans and the thought of investing in one (no less than my own deathcare services!) was a bit morbid to me. But the future of every person is uncertain yet death will certainly come to everyone like a thief in the night. Being a planholder of St. Peter Life Plan gives me the security and assurance that at the end of my life, my family will not be burdened financially and that a good company will be assisting them in their time of grief. I am proud to say that I am a grateful and happy St. Peter planholder.",
+      "Back then, I was not a believer in pre-need plans... Being a planholder of St. Peter Life Plan gives me security...",
     name: "Jocelyn S. Ongdico",
-    title: "Meycauayan Branch · St. Peter Planholder since 2010",
+    branch: "Meycauayan Branch",
+    planholderSince: "St. Peter Planholder since 2010",
   },
   {
     quote:
-      "I decided to buy a plan because nowadays, it is very expensive to die. My experience as a planholder is very fulfilling in a sense that we have a very accommodating sales agent and our family received a very commendable service extended by their Bais Chapel during the death of my brother. With my experience with St. Peter, I even bought 2 more life plans so that I have spare plans that I can share in case one of my family or relatives need it.",
+      "I decided to buy a plan because nowadays, it is very expensive to die... I even bought 2 more life plans...",
     name: "Cristina Jumawan",
-    title: "Dumaguete Branch · St. Peter Planholder",
+    branch: "Dumaguete Branch",
+    planholderSince: "St. Peter Planholder since 2017",
   },
 ];
+
 const AboutUs = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.3 });
   return (
@@ -71,7 +78,7 @@ const AboutUs = () => {
             gap={4}
           >
             <H2>Serving the Filipino</H2>
-            <H3 color="#177D54">Since 1975</H3>
+            <H3 color="#177D54">Since 1980</H3>
             <Box mx="auto" maxW={{ base: "90%", md: "400px" }}>
               <Body>
                 We are a trusted Pre-Need DeathCare company, serving the
@@ -113,7 +120,7 @@ const AboutUs = () => {
           <Flex direction="column" align="center" textAlign="center" mb={8}>
             <H2>Testimonials</H2>
             <Box
-              h="3px"
+              h="5px"
               w="100px"
               bg="green.700"
               borderRadius="full"
@@ -123,11 +130,12 @@ const AboutUs = () => {
           </Flex>
 
           <Flex justify="center" align="center" mb={8}>
-            <InfiniteMovingCards
+            {/* <InfiniteMovingCards
               items={testimonials}
               direction="left"
               speed="slow"
-            />
+            /> */}
+            <Testimonials testimonials={testimonials} />
           </Flex>
         </Box>
       </Box>
