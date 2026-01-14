@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { IPlans } from "@/types/product";
-import { Breadcrumb } from "st-peter-ui";
+import { AddToCartButton, Breadcrumb, BuyNowButton } from "st-peter-ui";
 
 import {
   Text,
@@ -202,7 +202,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
       href: `/plans`,
     },
     {
-      label: "Plan Details",
+      label: `${plan?.planDesc}`,
       href: `/plan-details/${plan?.planDesc}`,
     },
   ];
@@ -216,17 +216,22 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
       ) : (
         <>
           {/* Product Header */}
-          <Box id="productHeader" w="7xl" mx="auto" mt={{ base: 24, md: 32 }}>
+          <Box
+            p={4}
+            id="productHeader"
+            w={{ base: "full", md: "7xl" }}
+            mx="auto"
+            mt={{ base: 8, md: 32 }}
+          >
             <Breadcrumb items={breadcrumbItems} />
 
             <VStack
-              // w="7xl"
               mx="auto"
-              // textAlign="center"
-              // alignItems="center"
+              mt={4}
               gap={{ base: 8, md: 4 }}
+              textAlign={{ base: "start", md: "center" }}
               justifyContent="center"
-              minH="100vh"
+              minH={{ base: "auto", md: "150px" }}
             >
               <H3>{plan?.planDesc}</H3>
               <Body>{plan?.casketDesc}</Body>
@@ -236,7 +241,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
               </H4>
 
               {/* Carousel */}
-              <Container maxW="5xl" mx="auto" px={6} mb={24}>
+              <Container maxW="5xl" mx="auto" px={6} mb={{ base: 12, md: 24 }}>
                 <ProductCarousel setApi={setCarouselApi} className="w-full">
                   <CarouselContent>
                     {carouselImages.map((src, index) => (
@@ -291,7 +296,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
 
           {/* Payment Section */}
           <section id="paymentDetails" className="bg-gray-50">
-            <Box padding="8" textAlign="center">
+            <Box padding={{ base: 4, md: 8 }} textAlign="center">
               <Box mb={4}>
                 <H3>Choose your payment plan</H3>
               </Box>
@@ -301,7 +306,11 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                 flexDirection="column"
                 alignItems="center"
               >
-                <Select.Root collection={termCollection} w="200px" mb={8}>
+                <Select.Root
+                  collection={termCollection}
+                  w={{ base: "full", md: "200px" }}
+                  mb={8}
+                >
                   <Select.HiddenSelect required />
                   <Select.Label>Plan term</Select.Label>
                   <Select.Control>
@@ -330,7 +339,10 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                   </Portal>
                 </Select.Root>
 
-                <Select.Root collection={quantityCollection} w="200px">
+                <Select.Root
+                  collection={quantityCollection}
+                  w={{ base: "full", md: "200px" }}
+                >
                   <Select.HiddenSelect required />
                   <Select.Label>Quantity</Select.Label>
                   <Select.Control>
@@ -363,7 +375,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
               </Box>
 
               <Grid
-                p="8"
+                p={{ base: 4, md: 8 }}
                 w={{ base: "full", md: "3xl" }}
                 margin="0 auto"
                 templateColumns={{
@@ -383,8 +395,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                           setSelected(opt.mode ?? null);
                           setSelectedPlan(opt.mode ?? null);
                         }}
-                        m={{ base: "auto", md: "0" }}
-                        w={{ base: "xs", md: "full" }}
+                        w="full"
                         textAlign="left"
                         borderRadius="xl"
                         p={6}
@@ -407,8 +418,13 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                   );
                 })}
               </Grid>
-              <HStack justify="center" gap={8}>
-                <SecondaryMdButton
+              <Stack
+                gap={{ base: 4, md: 8 }}
+                mt={8}
+                direction="row"
+                justify="center"
+              >
+                <AddToCartButton
                   disabled={!selectedPlan}
                   onClick={() =>
                     addToCart(
@@ -422,26 +438,22 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                       total
                     )
                   }
-                >
-                  ADD TO CART
-                </SecondaryMdButton>
-                <PrimaryMdButton
+                ></AddToCartButton>
+                <BuyNowButton
                   disabled={!selectedPlan}
                   onClick={() =>
                     router.push(
                       `/order-summary/${plan?.planDesc}/${selectedPlan}`
                     )
                   }
-                >
-                  BUY NOW
-                </PrimaryMdButton>
-              </HStack>
+                ></BuyNowButton>
+              </Stack>
             </Box>
           </section>
 
           {/* Product Benefits */}
           <section id="productBenefits">
-            <Box padding="8" textAlign="center">
+            <Box padding={{ base: 4, md: 8 }} textAlign="center">
               <VStack mb={6} gap={4}>
                 <H3>Plan Benefits</H3>
                 <Body>
@@ -519,7 +531,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                         justifyContent={{ base: "center", md: "flex-start" }}
                       >
                         <Box
-                          w={{ base: "full", md: "220px" }}
+                          w={{ base: "200px", md: "220px" }}
                           h="140px"
                           overflow="hidden"
                           display="flex"
@@ -573,7 +585,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
 
           {/* Product Features */}
           <section id="productFeatures" className="bg-gray-50">
-            <Box padding="8" textAlign="center">
+            <Box padding={{ base: 4, md: 8 }} textAlign="center">
               <VStack mb={8} gap={4}>
                 <H3>Plan Features</H3>
                 <Body>The following features are available for this plan:</Body>
@@ -620,7 +632,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                         <Image
                           src={card.icon}
                           alt={`${card.title} icon`}
-                          w="400px"
+                          w={{ base: "full", md: "400px" }}
                           h="180px"
                           objectFit="cover"
                           borderRadius="md"

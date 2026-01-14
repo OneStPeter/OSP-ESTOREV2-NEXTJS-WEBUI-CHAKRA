@@ -125,32 +125,34 @@ const Products = () => {
         </Box>
 
         {/* Memorial Park Cards */}
-        <Flex mt={8} flexDirection="column" gap={4} textAlign="center">
-          <H2>Memorial Parks</H2>
-          <Body>Beautiful locations for lasting memories.</Body>
-        </Flex>
+        <Box bg="gray.50" p="8" mt={8}>
+          <Flex textAlign="center" flexDirection="column" gap={4}>
+            <H2>Memorial Parks</H2>
+            <Body>Beautiful locations for lasting memories.</Body>
+          </Flex>
 
-        <Flex
-          mt="8"
-          gap={{ base: 8, lg: 16 }}
-          w="full"
-          overflowX={{ base: "auto", lg: "visible" }}
-          scrollBehavior="smooth"
-          justifyContent={{ base: "start", lg: "center" }}
-        >
-          <ProductCard
-            variant="memorial"
-            title="Guiguinto, Bulacan"
-            image="/images/memorial-park/memorial-park-1.jpg"
-            address="Guiguinto Memorial Gardens - St. Peter Memorial Gardens, Ilang-Ilang, Guiguinto, Bulacan"
-          />
-          <ProductCard
-            variant="memorial"
-            title="Legaspi City, Albay"
-            image="/images/memorial-park/memorial-park-2.jpg"
-            address="Taysan Hills, Brgy. 56-Taysan, Legaspi City, 4500 Taysan Hills, Brgy. 56-Taysan, Legaspi City"
-          />
-        </Flex>
+          <Flex
+            mt="8"
+            gap={{ base: 8, lg: 16 }}
+            w="full"
+            overflowX={{ base: "auto", lg: "visible" }}
+            scrollBehavior="smooth"
+            justifyContent={{ base: "start", lg: "center" }}
+          >
+            <ProductCard
+              variant="memorial"
+              title="Guiguinto, Bulacan"
+              image="/images/memorial-park/memorial-park-1.jpg"
+              address="Guiguinto Memorial Gardens - St. Peter Memorial Gardens, Ilang-Ilang, Guiguinto, Bulacan"
+            />
+            <ProductCard
+              variant="memorial"
+              title="Legaspi City, Albay"
+              image="/images/memorial-park/memorial-park-2.jpg"
+              address="Taysan Hills, Brgy. 56-Taysan, Legaspi City, 4500 Taysan Hills, Brgy. 56-Taysan, Legaspi City"
+            />
+          </Flex>
+        </Box>
         <ComparisonBanner
           compareList={compareList}
           setCompareList={setCompareList}

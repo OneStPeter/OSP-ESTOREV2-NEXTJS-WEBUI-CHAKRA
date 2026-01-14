@@ -66,7 +66,7 @@ const AboutUs = () => {
           justify="center"
           align="center"
           gap={{ base: 8, md: 32 }}
-          mb={8}
+          mb={16}
           px={{ base: 4, md: 8 }}
           py={{ base: 8, md: 12 }}
         >

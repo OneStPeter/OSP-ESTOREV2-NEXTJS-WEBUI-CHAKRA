@@ -1,6 +1,12 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { Carousel } from "@/components/ui/carousel";
-import { Body, DynamicButton, H2 } from "st-peter-ui";
+import {
+  Body,
+  DynamicButton,
+  H2,
+  PrimaryLgButton,
+  PrimaryMdButton,
+} from "st-peter-ui";
 
 const Location = () => {
   const slideData = [
@@ -77,8 +83,10 @@ const Location = () => {
               </Box>
             </Flex>
 
-            <Box mt={8}>
-              <DynamicButton label="Go to Map" />
+            <Box mt={8} w="full">
+              <PrimaryMdButton w={{ base: "full", md: "auto" }}>
+                GO TO MAP
+              </PrimaryMdButton>
             </Box>
           </Box>
         </Flex>

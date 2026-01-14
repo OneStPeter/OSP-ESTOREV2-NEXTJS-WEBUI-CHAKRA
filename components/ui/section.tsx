@@ -137,7 +137,7 @@ const Section: React.FC<SectionProps> = ({
                           {term.mode == "M"
                             ? "Monthly"
                             : term.mode == "C"
-                            ? "Cash"
+                            ? "Spot Cash"
                             : term.mode == "Q"
                             ? "Quarterly"
                             : term.mode == "S"

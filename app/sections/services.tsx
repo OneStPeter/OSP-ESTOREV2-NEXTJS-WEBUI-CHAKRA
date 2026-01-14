@@ -81,15 +81,13 @@ const Services = () => {
             containerClassName="col-span-1 lg:col-span-2 h-full bg-gray-200 min-h-[300px] lg:min-h-[300px]"
             onClick={() => router.push("/booking")}
           >
-            <Box w="full">
-              <Box p={8} w="lg">
-                <Box mb={4}>
-                  <H3>Memorial Service Booking Assistance</H3>
-                </Box>
-                <Body>
-                  To proceed, please have your life plan contact details ready.
-                </Body>
+            <Box p={8}>
+              <Box mb={4}>
+                <H3>Memorial Service Booking Assistance</H3>
               </Box>
+              <Body>
+                To proceed, please have your life plan contact details ready.
+              </Body>
             </Box>
             <Image
               src="/images/services/request-service.jpg"

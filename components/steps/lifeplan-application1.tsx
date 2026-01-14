@@ -55,26 +55,34 @@ const LifePlanApplication1 = () => {
             </Select.Positioner>
           </Select.Root>
 
-          <FileUpload.Root>
-            <FileUpload.HiddenInput />
-            <Box
-              asChild
-              width="100%"
-              border="1px solid"
-              borderColor="gray.300"
-              borderRadius="sm"
-              textAlign="start"
-              p={2}
-              boxSizing="border-box"
-              cursor="pointer"
-              _hover={{ borderColor: "gray.400" }}
-              fontSize="sm"
-            >
-              <FileUpload.Trigger>
-                <FileUpload.FileText />
-              </FileUpload.Trigger>
-            </Box>
-          </FileUpload.Root>
+          <Field.Root>
+            <FileUpload.Root>
+              <FileUpload.HiddenInput />
+
+              <FileUpload.Context>
+                {({ acceptedFiles }) => (
+                  <Box
+                    width="100%"
+                    border="1px solid"
+                    borderColor="gray.300"
+                    borderRadius="sm"
+                    p={2}
+                    cursor="pointer"
+                    _hover={{ borderColor: "gray.400" }}
+                    fontSize="sm"
+                  >
+                    <FileUpload.Trigger asChild>
+                      <Box>
+                        {acceptedFiles.length > 0
+                          ? acceptedFiles.map((file) => file.name).join(", ")
+                          : "driver's license.jpg"}
+                      </Box>
+                    </FileUpload.Trigger>
+                  </Box>
+                )}
+              </FileUpload.Context>
+            </FileUpload.Root>
+          </Field.Root>
         </Grid>
 
         <Separator />

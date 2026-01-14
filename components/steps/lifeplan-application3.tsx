@@ -34,7 +34,7 @@ const LifePlanApplication3 = () => {
     <>
       <VStack align="stretch" gap={4} mb={4}>
         <Body>
-          <Span fontWeight="bold">Residential Address</Span>
+          <Span fontWeight="bold">Employment</Span>
         </Body>
       </VStack>
 

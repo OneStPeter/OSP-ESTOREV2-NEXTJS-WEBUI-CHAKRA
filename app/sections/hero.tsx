@@ -16,7 +16,7 @@ const Hero = () => {
   return (
     <Box
       position="relative"
-      h="100vh"
+      h="100%"
       display="flex"
       alignItems="center"
       justifyContent="center"
@@ -37,8 +37,14 @@ const Hero = () => {
         Your browser does not support the video tag.
       </chakra.video>
 
-      <Box position="absolute" inset={0} bg="blackAlpha.600" h="100vh" />
-      <Box zIndex={2} maxW="7xl" w={{ base: "100%" }}>
+      <Box position="absolute" inset={0} bg="blackAlpha.600" h="100%" />
+      <Box
+        zIndex={2}
+        maxW="7xl"
+        w={{ base: "100%" }}
+        mt={{ base: 8, md: 24 }}
+        pb={{ base: 12, md: 24 }}
+      >
         <VStack alignItems="start" gap={8} p={8} color="white">
           <H1 color="white">
             Para sa Magandang Kinabukasan: Bawat Pilipino, Dapat may{" "}
@@ -84,7 +90,7 @@ const Hero = () => {
           </Stack>
 
           <Stack
-            direction={{ base: "column", md: "row" }}
+            direction={{ base: "row", md: "row" }}
             gap={4}
             w={{ base: "full" }}
           >
