@@ -13,22 +13,22 @@ const Location = () => {
     {
       title: "Chapel 1",
       button: "Explore Component",
-      src: "/images/chapels/chapel1.jpg",
+      src: "/images/chapels/Guiguinto.jpg",
     },
     {
       title: "Chapel 2",
       button: "Explore Component",
-      src: "/images/chapels/chapel2.jpg",
+      src: "/images/chapels/Iloilo.jpg",
     },
     {
       title: "Chapel 3",
       button: "Explore Component",
-      src: "/images/chapels/chapel3.jpg",
+      src: "/images/chapels/Masbate.jpg",
     },
     {
       title: "Chapel 4",
       button: "Explore Component",
-      src: "/images/chapels/chapel4.jpg",
+      src: "/images/chapels/Surigao.jpg",
     },
   ];
   return (
@@ -46,7 +46,21 @@ const Location = () => {
           align="center"
           w="full"
         >
-          <Box position="relative" overflow="hidden" w="full">
+          <Box
+            position="relative"
+            w={{ base: "100vw", sm: "100vw", md: "full" }}
+            maxW={{ base: "100vw", md: "600px", lg: "700px" }}
+            minW={0}
+            mb={{ base: 6, lg: 0 }}
+            overflowX={{ base: "auto", md: "hidden" }}
+            overflowY="hidden"
+            // sx={{
+            //   WebkitOverflowScrolling: "touch",
+            //   msOverflowStyle: "none",
+            //   scrollbarWidth: "none",
+            //   "&::-webkit-scrollbar": { display: "none" },
+            // }}
+          >
             <Carousel slides={slideData} />
           </Box>
 

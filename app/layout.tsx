@@ -6,6 +6,7 @@ import "./globals.css";
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
 import BottomNav from "@/components/ui/bottom-nav";
+import ServiceWorkerRegister from "@/components/service-worker";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -35,8 +36,16 @@ export default function RootLayout({
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
         />
+        <link rel="apple-touch-icon" href="/icon-192.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
+        <meta name="apple-mobile-web-app-title" content="eStore" />
       </head>
       <body style={{ overflowX: "hidden" }}>
+        <ServiceWorkerRegister />
         <StPeterProvider theme="green" font="Open Sans">
           <Navbar />
           {children}

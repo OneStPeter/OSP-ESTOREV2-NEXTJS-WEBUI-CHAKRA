@@ -20,7 +20,7 @@ const OrderSummary = ({
       <Grid
         templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
         gap={8}
-        mt={8}
+        mt={4}
       >
         <GridItem>
           <Image
@@ -43,14 +43,14 @@ const OrderSummary = ({
                   {mode === "M"
                     ? "Monthly"
                     : mode === "Q"
-                    ? "Quarterly"
-                    : mode === "S"
-                    ? "Semi-Annual"
-                    : mode === "A"
-                    ? "Annual"
-                    : mode === "C"
-                    ? "Cash"
-                    : mode}
+                      ? "Quarterly"
+                      : mode === "S"
+                        ? "Semi-Annual"
+                        : mode === "A"
+                          ? "Annual"
+                          : mode === "C"
+                            ? "Cash"
+                            : mode}
                 </H4>
               </Box>
             </Flex>

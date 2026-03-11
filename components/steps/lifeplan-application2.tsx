@@ -1,11 +1,8 @@
 "use client";
-import React from "react";
 import {
   VStack,
-  HStack,
   SimpleGrid,
   Box,
-  Text,
   Select,
   createListCollection,
   Portal,
@@ -13,7 +10,9 @@ import {
   Span,
 } from "@chakra-ui/react";
 import FloatingLabelInput from "../ui/floating-label-input";
-import { Body, H4 } from "st-peter-ui";
+import { Body } from "st-peter-ui";
+import { useEffect, useState } from "react";
+import { useOcr } from "@/hooks/useOCR";
 const provinceOptions = [
   "Abra",
   "Agusan del Norte",
@@ -218,6 +217,16 @@ const districtCollection = createListCollection({ items: districtOptions });
 const barangayCollection = createListCollection({ items: barangayOptions });
 
 const LifePlanApplication2 = () => {
+  const { runOCR, data } = useOcr();
+  const [addressLine, setAddressLine] = useState("");
+  useEffect(() => {
+    if (data?.response) {
+      setAddressLine(data.response.addressLine || "");
+    }
+  }, [data]);
+  useEffect(() => {
+    runOCR();
+  }, []);
   return (
     <>
       <VStack align="stretch" gap={4} mb={4}>
@@ -228,7 +237,7 @@ const LifePlanApplication2 = () => {
         </Box>
       </VStack>
 
-      <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
+      {/* <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
         <Field.Root>
           <FloatingLabelInput id="lotNumber" label="Lot #" />
         </Field.Root>
@@ -238,7 +247,6 @@ const LifePlanApplication2 = () => {
         <VStack align="stretch" gap={4}>
           <Select.Root collection={provinceCollection} width="100%">
             <Select.HiddenSelect />
-            {/* <Select.Label>Province</Select.Label> */}
             <Select.Control>
               <Select.Trigger>
                 <Select.ValueText placeholder="Select Province" />
@@ -264,7 +272,6 @@ const LifePlanApplication2 = () => {
         <VStack align="stretch" gap={4}>
           <Select.Root collection={cityCollection} width="100%">
             <Select.HiddenSelect />
-            {/* <Select.Label>City</Select.Label> */}
             <Select.Control>
               <Select.Trigger>
                 <Select.ValueText placeholder="Select City" />
@@ -287,13 +294,12 @@ const LifePlanApplication2 = () => {
             </Portal>
           </Select.Root>
         </VStack>
-      </SimpleGrid>
+      </SimpleGrid> */}
 
-      <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
+      {/* <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
         <VStack align="stretch" gap={4} mb={4}>
           <Select.Root collection={districtCollection} width="100%">
             <Select.HiddenSelect />
-            {/* <Select.Label>District</Select.Label> */}
             <Select.Control>
               <Select.Trigger>
                 <Select.ValueText placeholder="Select District" />
@@ -319,7 +325,6 @@ const LifePlanApplication2 = () => {
         <VStack align="stretch" gap={4} mb={4}>
           <Select.Root collection={barangayCollection} width="100%">
             <Select.HiddenSelect />
-            {/* <Select.Label>Barangay</Select.Label> */}
             <Select.Control>
               <Select.Trigger>
                 <Select.ValueText placeholder="Select Barangay" />
@@ -342,9 +347,20 @@ const LifePlanApplication2 = () => {
             </Portal>
           </Select.Root>
         </VStack>
-      </SimpleGrid>
+      </SimpleGrid> */}
 
-      {/* Add Chakra Input fields for Lot #, Street, Zip Code here if needed */}
+      <SimpleGrid columns={{ base: 1, md: 1 }} gap={4}>
+        <Field.Root>
+          {/* <Field.Label>Address Line</Field.Label> */}
+          <FloatingLabelInput
+            id="addressLine"
+            type="text"
+            label="Address"
+            value={addressLine}
+            onChange={(e) => setAddressLine(e.target.value)}
+          />
+        </Field.Root>
+      </SimpleGrid>
     </>
   );
 };

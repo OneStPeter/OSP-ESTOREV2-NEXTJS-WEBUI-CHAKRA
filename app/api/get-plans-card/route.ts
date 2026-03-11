@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    // Only needed if your C# API has self-signed certs (HTTPS)
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
     const res = await fetch("http://192.168.23.16:5237/GetPlansCard", {

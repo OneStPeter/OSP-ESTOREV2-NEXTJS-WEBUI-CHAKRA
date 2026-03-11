@@ -4,16 +4,15 @@ import {
   CancelButton,
   ContinueButton,
   H3,
-  H4,
   NextButton,
-  PrimarySmButton,
+  PrimaryMdButton,
 } from "st-peter-ui";
 import {
   Box,
   VStack,
+  Grid,
   Flex,
   Span,
-  Separator,
   FileUpload,
   Icon,
   Text,
@@ -23,11 +22,14 @@ import {
   Button,
   Portal,
   CloseButton,
+  Card,
+  Input,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { LuUpload } from "react-icons/lu";
+import { useState } from "react";
 import { UploadFile } from "osp-chakra-reusable-components";
 import { HiCamera } from "react-icons/hi2";
+import { LuUpload } from "react-icons/lu";
 const MAX_FILES = 3;
 
 const ConditionalDropzone = () => {
@@ -44,21 +46,69 @@ const ConditionalDropzone = () => {
         <LuUpload />
       </Icon>
       <FileUpload.DropzoneContent>
-        <Box>Drag and drop id here</Box>
-        {/* <Box color="fg.muted">
+        <Box>Drag and drop files here</Box>
+        <Box color="fg.muted">
           {MAX_FILES - acceptedFiles.length} more file
           {MAX_FILES - acceptedFiles.length !== 1 ? "s" : ""} allowed
-        </Box> */}
+        </Box>
       </FileUpload.DropzoneContent>
     </FileUpload.Dropzone>
   );
 };
+const fileToBytes = (file: File): Promise<Uint8Array> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const arrayBuffer = reader.result as ArrayBuffer;
+      const bytes = new Uint8Array(arrayBuffer);
+      resolve(bytes);
+    };
+
+    reader.onerror = (err) => reject(err);
+
+    reader.readAsArrayBuffer(file);
+  });
+};
+
 const page = () => {
   const router = useRouter();
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [referralDialogOpen, setReferralDialogOpen] = useState(false);
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const formData = new FormData();
+      formData.append("ImgFile", file); // must match C# parameter name
+
+      const response = await fetch(
+        "http://192.168.2.10:8010/api/EstoreV2/PostOCRUpload",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const result = await response.json();
+      console.log("API Response:", result);
+      localStorage.removeItem("ocrResult");
+      localStorage.setItem("ocrResult", JSON.stringify(result)); // Store in localStorage
+    } catch (error) {
+      console.error("Upload error:", error);
+    }
+  };
+
   return (
     <Flex
       w="full"
-      mt={{ base: "24", md: "16" }}
+      // mt={{ base: "24", md: "16" }}
       mb={16}
       justify="center"
       align="center"
@@ -131,9 +181,17 @@ const page = () => {
               router.push("/lifeplan-application");
             }}
           /> */}
-          <Dialog.Root size="lg">
+          <Dialog.Root
+            size="lg"
+            open={uploadDialogOpen}
+            onOpenChange={(details) => setUploadDialogOpen(details.open)}
+          >
             <Dialog.Trigger asChild>
-              <Button variant="solid" size="md">
+              <Button
+                w="full"
+                mt={{ base: 4, md: 0 }}
+                onClick={() => setUploadDialogOpen(true)}
+              >
                 CONTINUE
               </Button>
             </Dialog.Trigger>
@@ -145,39 +203,156 @@ const page = () => {
                     <Dialog.Title>Upload Requirements</Dialog.Title>
                   </Dialog.Header>
                   <Dialog.Body>
-                    <Box
-                      p="4"
-                      borderWidth="1px"
-                      borderRadius="lg"
-                      bg="green.50"
-                      mb={4}
-                    >
-                      <Text fontSize="sm" color="green.700" fontWeight="medium">
-                        To continue, please upload a valid ID. The system will
-                        use it to populate your information automatically.
-                      </Text>
-                    </Box>
-                    <Body fontWeight="bold" mb={4}>
-                      Upload Goverment-issued ID
-                    </Body>
-                    <Box w="full">
-                      <FileUpload.Root
-                        maxW="full"
-                        alignItems="stretch"
-                        maxFiles={MAX_FILES}
+                    <VStack gap={6} align="stretch">
+                      {/* Info Banner */}
+                      <Box
+                        p="4"
+                        borderWidth="1px"
+                        borderRadius="lg"
+                        bg="green.50"
                       >
-                        <FileUpload.HiddenInput />
-                        <ConditionalDropzone />
-                        <FileUpload.List clearable />
-                      </FileUpload.Root>{" "}
-                      <Box w="full" mt={4}>
-                        <Body fontWeight="bold" mb={4}>
-                          Upload Beneficiaries ID
-                        </Body>
-
-                        <UploadFile />
+                        <Text
+                          fontSize="sm"
+                          color="green.700"
+                          fontWeight="medium"
+                        >
+                          To continue, please upload a valid ID. The system will
+                          use it to populate your information automatically.
+                        </Text>
                       </Box>
-                    </Box>
+
+                      {/* Upload Government-issued ID Section */}
+                      <VStack gap={4} align="stretch">
+                        <Box>
+                          <Heading size="md" fontWeight="bold">
+                            Upload Government-issued ID
+                          </Heading>
+                          <Text fontSize="sm" color="fg.muted" mt={1}>
+                            Choose one of the options below to upload your ID
+                          </Text>
+                        </Box>
+
+                        {/* Two-option Grid Layout */}
+                        <Grid
+                          templateColumns={{ base: "1fr", md: "2fr" }}
+                          gap={4}
+                        >
+                          {/* Camera Option */}
+                          <Card.Root
+                            borderWidth="2px"
+                            borderColor="gray.200"
+                            p={6}
+                            textAlign="center"
+                            cursor="pointer"
+                            _hover={{
+                              borderColor: "blue.400",
+                              boxShadow: "md",
+                              bg: "blue.50",
+                            }}
+                            transition="all 0.2s"
+                          >
+                            <VStack gap={4}>
+                              <Flex
+                                w={16}
+                                h={16}
+                                rounded="full"
+                                bg="blue.100"
+                                align="center"
+                                justify="center"
+                                mx="auto"
+                              >
+                                <Icon size="xl" color="blue.600">
+                                  <HiCamera />
+                                </Icon>
+                              </Flex>
+                              <VStack gap={2}>
+                                <Text fontWeight="bold" fontSize="md">
+                                  Take a Photo
+                                </Text>
+                                <Text fontSize="sm" color="fg.muted">
+                                  Use your device camera to capture your ID
+                                </Text>
+                              </VStack>
+                              <FileUpload.Root capture="environment">
+                                <FileUpload.HiddenInput />
+                                <FileUpload.Trigger asChild>
+                                  <PrimaryMdButton mt={2} w="full">
+                                    Open Camera
+                                  </PrimaryMdButton>
+                                </FileUpload.Trigger>
+                              </FileUpload.Root>
+                            </VStack>
+                          </Card.Root>
+
+                          {/* Drag & Drop Option */}
+
+                          {/* <UploadFile /> */}
+                          <FileUpload.Root
+                            maxW="full"
+                            alignItems="stretch"
+                            maxFiles={MAX_FILES}
+                          >
+                            <FileUpload.HiddenInput
+                              onChange={(a) => handleFile(a)}
+                              // onChange={async (
+                              //   e: React.ChangeEvent<HTMLInputElement>,
+                              // ) => {
+                              //   const file = e.target.files?.[0];
+                              //   if (!file) return;
+
+                              //   try {
+                              //     const bytes = await fileToBytes(file);
+                              //     console.log("File bytes:", bytes);
+                              //   } catch (err) {
+                              //     console.error(
+                              //       "Error converting file to bytes:",
+                              //       err,
+                              //     );
+                              //   }
+                              // }}
+                            />
+                            <ConditionalDropzone />
+                            <FileUpload.List clearable />
+                          </FileUpload.Root>
+                        </Grid>
+
+                        {/* Accepted File Types Info */}
+                        {/* <Box
+                          p={3}
+                          bg="gray.50"
+                          rounded="md"
+                          fontSize="xs"
+                          color="fg.muted"
+                        >
+                          <Text>
+                            <Span fontWeight="medium">Accepted formats:</Span>{" "}
+                            PNG, JPG, JPEG, PDF (Max 3 files)
+                          </Text>
+                        </Box> */}
+                      </VStack>
+
+                      {/* Upload Signature Section */}
+                      <VStack gap={4} align="stretch">
+                        <Box>
+                          <Heading size="md" fontWeight="bold">
+                            Upload valid three (3) specimen signature.
+                          </Heading>
+                        </Box>
+                        <UploadFile />
+                        <Box
+                          p={3}
+                          bg="gray.50"
+                          rounded="md"
+                          fontSize="xs"
+                          color="fg.muted"
+                        >
+                          <Text>
+                            <Span fontWeight="medium">Accepted formats:</Span>{" "}
+                            PNG, JPG, JPEG(Max 3 files)
+                          </Text>
+                        </Box>
+                      </VStack>
+                    </VStack>
                   </Dialog.Body>
                   <Dialog.Footer>
                     <Dialog.ActionTrigger asChild>
@@ -185,9 +360,56 @@ const page = () => {
                     </Dialog.ActionTrigger>
                     <NextButton
                       onClick={() => {
-                        router.push("/lifeplan-application");
+                        setUploadDialogOpen(false);
+                        setReferralDialogOpen(true);
                       }}
                     />
+                  </Dialog.Footer>
+                  <Dialog.CloseTrigger asChild>
+                    <CloseButton size="sm" />
+                  </Dialog.CloseTrigger>
+                </Dialog.Content>
+              </Dialog.Positioner>
+            </Portal>
+          </Dialog.Root>
+
+          <Dialog.Root
+            placement="center"
+            open={referralDialogOpen}
+            onOpenChange={(details) => setReferralDialogOpen(details.open)}
+            size={{ mdDown: "full", md: "md" }}
+          >
+            <Portal>
+              <Dialog.Backdrop />
+              <Dialog.Positioner>
+                <Dialog.Content>
+                  <Dialog.Header>
+                    <Dialog.Title>Referral Agent</Dialog.Title>
+                  </Dialog.Header>
+                  <Dialog.Body>
+                    <VStack align="stretch" gap={4}>
+                      <Body>Do you have an referral agent? (optional)</Body>
+                      <Input placeholder="Enter agent name" />
+                    </VStack>
+                  </Dialog.Body>
+                  <Dialog.Footer>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setReferralDialogOpen(false);
+                        router.push("/lifeplan-application");
+                      }}
+                    >
+                      Skip
+                    </Button>
+                    <PrimaryMdButton
+                      onClick={() => {
+                        setReferralDialogOpen(false);
+                        router.push("/lifeplan-application");
+                      }}
+                    >
+                      Continue
+                    </PrimaryMdButton>
                   </Dialog.Footer>
                   <Dialog.CloseTrigger asChild>
                     <CloseButton size="sm" />

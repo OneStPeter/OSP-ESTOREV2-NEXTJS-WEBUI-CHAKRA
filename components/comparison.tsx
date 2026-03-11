@@ -11,6 +11,7 @@ import {
   Span,
   Badge,
   Heading,
+  Button,
 } from "@chakra-ui/react/";
 import { useRouter } from "next/navigation";
 import { IPlans } from "@/types/product";
@@ -20,6 +21,7 @@ import { parseCasketDescription } from "@/lib/utils/plan";
 import { useMemo } from "react";
 import { BreadcrumbTracker } from "./ui/breadcrumb-tracker";
 import { usePathname } from "next/navigation";
+import { FaArrowLeft } from "react-icons/fa6";
 
 interface ComparisonProps {
   compareList: string[];
@@ -43,51 +45,62 @@ const Comparison = ({ compareList, plans, removeItem }: ComparisonProps) => {
       compareList.map((pd) => descByPlanDesc.get(pd)).filter(Boolean) as Array<
         Record<string, any>
       >,
-    [compareList, descByPlanDesc]
+    [compareList, descByPlanDesc],
   );
 
   const isMaterialDifferent = useMemo(
     () => new Set(selectedDescs.map((d) => d.material)).size > 1,
-    [selectedDescs]
+    [selectedDescs],
   );
   const isGlassDifferent = useMemo(
     () => new Set(selectedDescs.map((d) => d.glass)).size > 1,
-    [selectedDescs]
+    [selectedDescs],
   );
   const isLidCoverDifferent = useMemo(
     () => new Set(selectedDescs.map((d) => d.lidCover)).size > 1,
-    [selectedDescs]
+    [selectedDescs],
   );
   const isTopTypeDifferent = useMemo(
     () => new Set(selectedDescs.map((d) => d.topType)).size > 1,
-    [selectedDescs]
+    [selectedDescs],
   );
   const isUrnDifferent = useMemo(
     () => new Set(selectedDescs.map((d) => d.urn)).size > 1,
-    [selectedDescs]
+    [selectedDescs],
   );
-
+  const breadcrumbItems = [
+    { label: "Home", href: "/" },
+    { label: "Plans", href: "/plans" },
+    { label: "Comparison", href: pathname },
+  ];
   return (
-    <Box mt={24} mb={16} w={{ base: "full", md: "7xl" }} mx="auto" p={8}>
+    <Box
+      mt={{ base: 0, md: 24 }}
+      mb={16}
+      w={{ base: "full", md: "7xl" }}
+      mx="auto"
+      p={8}
+    >
       <Flex justify="center" align="start" flexDirection="column" gap={4}>
         {/* <BreadcrumbTracker /> */}
-        <Breadcrumb
-          pathname={pathname}
-          items={[
-            { label: "Home", href: "/" },
-            { label: "Plans", href: "/plans" },
-            { label: "Plan Comparison" },
-          ]}
-        />
+        <Box display={{ base: "block", md: "none" }}>
+          <Button variant="ghost" size="md" onClick={() => router.back()}>
+            <FaArrowLeft color="#177D54" />
+            Back
+          </Button>
+        </Box>
+        {/* Desktop breadcrumb */}
+        <Box display={{ base: "none", md: "block" }}>
+          <Breadcrumb items={breadcrumbItems} />
+        </Box>
         <Heading fontWeight="semibold" textTransform="uppercase">
           Plan Comparison
         </Heading>
-
         <Text>
           Compare our memorial plans and choose the one that best suits your
           needs
         </Text>
-        <Box shadow="sm" borderRadius="md" p={8} w="full">
+        <Box shadow="sm" borderRadius="md" p={{ base: 0, md: 8 }} w="full">
           <Grid
             templateColumns={{
               base: "repeat(1, 1fr)",
@@ -103,7 +116,7 @@ const Comparison = ({ compareList, plans, removeItem }: ComparisonProps) => {
                 <GridItem
                   key={planDesc}
                   textAlign="center"
-                  px={8}
+                  px={{ base: 4, md: 8 }}
                   position="relative"
                   borderRight={{
                     base: "none",

@@ -129,7 +129,7 @@ const AboutUs = () => {
             />
           </Flex>
 
-          <Flex justify="center" align="center" mb={8}>
+          <Flex justify="center" align="center" mb={16}>
             {/* <InfiniteMovingCards
               items={testimonials}
               direction="left"

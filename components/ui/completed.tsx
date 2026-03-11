@@ -19,13 +19,13 @@ const Completed = () => {
         <br />
         Thank you for choosing St. Peter Life Plan.
       </Text>
-      <PrimaryMdButton
+      {/* <PrimaryMdButton
         colorPalette="green"
         mt={4}
         onClick={() => router.push("/checkout")}
       >
         Go to Payment
-      </PrimaryMdButton>
+      </PrimaryMdButton> */}
     </VStack>
   );
 };

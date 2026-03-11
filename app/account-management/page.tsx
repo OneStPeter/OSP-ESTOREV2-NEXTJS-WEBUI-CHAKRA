@@ -158,10 +158,10 @@ const page = () => {
                       <Text fontWeight="bold">₱3,000 / month</Text>
                     </VStack>
 
-                    <VStack align="start" gap={0}>
+                    {/* <VStack align="start" gap={0}>
                       <Text color="gray.500">Maturity Date</Text>
                       <Text fontWeight="bold">January 1, 2025</Text>
-                    </VStack>
+                    </VStack> */}
                   </Flex>
                 </VStack>
               </Box>

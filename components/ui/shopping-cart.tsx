@@ -15,11 +15,16 @@ import {
   DialogActionTrigger,
   Heading,
   Flex,
+  useBreakpointValue,
+  Stack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import { PrimaryMdButton, DeleteButton } from "st-peter-ui";
+import { MdOutlineAddCircle } from "react-icons/md";
+import { FaCircleMinus } from "react-icons/fa6";
+import { IoCloseCircle } from "react-icons/io5";
 
 interface ShoppingCartProps {
   open: boolean;
@@ -39,6 +44,13 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [removeIdx, setRemoveIdx] = useState<number | null>(null);
+
+  // Responsive values
+  const maxWidth = useBreakpointValue({ base: "100%", md: "md" });
+  const imageSize = useBreakpointValue({ base: "100px", md: "128px" });
+  const padding = useBreakpointValue({ base: 4, md: 6 });
+  const headingSize = useBreakpointValue({ base: "lg", md: "xl" });
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   useEffect(() => {
     if (open) {
@@ -60,7 +72,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
     if (removeIdx !== null) {
       setCartItems((items) => {
         const updated = items.filter((_, idx) => idx !== removeIdx);
-        sessionStorage.setItem("Cart", JSON.stringify(updated)); // sync to session
+        sessionStorage.setItem("Cart", JSON.stringify(updated));
         return updated;
       });
       setShowModal(false);
@@ -72,6 +84,18 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
     setShowModal(false);
     setRemoveIdx(null);
   };
+
+  const updateQuantity = (idx: number, newQuantity: number) => {
+    if (newQuantity < 1) return;
+    setCartItems((items) => {
+      const updated = [...items];
+      updated[idx].quantity = newQuantity;
+      updated[idx].total = updated[idx].price * newQuantity;
+      sessionStorage.setItem("Cart", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const router = useRouter();
   const grandTotal = cartItems.reduce((s, item) => s + Number(item.total), 0);
 
@@ -84,26 +108,36 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
       right={0}
       bottom={0}
       bg="blackAlpha.400"
-      justifyContent="end"
+      justifyContent={{ base: "center", md: "end" }}
       zIndex={50}
       opacity={open ? 1 : 0}
       pointerEvents={open ? "auto" : "none"}
       transition="opacity 0.3s"
       onClick={onClose}
+      // p={{ base: 4, md: 0 }}
     >
       <Box
-        w="full"
-        maxW="md"
+        w={maxWidth}
+        maxH={{ base: "90vh", md: "100vh" }}
         bg="white"
         shadow="lg"
-        roundedLeft="lg"
-        p={6}
+        roundedLeft={{ base: "lg", md: "lg" }}
+        roundedRight={{ base: "lg", md: 0 }}
+        p={padding}
         position="relative"
-        transform={open ? "translateX(0)" : "translateX(100%)"}
+        transform={
+          open
+            ? "translateX(0)"
+            : isMobile
+              ? "translateY(100%)"
+              : "translateX(100%)"
+        }
         transition="transform 0.3s"
         onClick={(e) => e.stopPropagation()}
+        display="flex"
+        flexDirection="column"
+        overflowY="auto"
       >
-        {/* Confirmation Modal */}
         <DialogRoot
           open={showModal}
           onOpenChange={(details) => setShowModal(details.open)}
@@ -125,22 +159,26 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
             </DialogFooter>
           </DialogContent>
         </DialogRoot>
+
         {/* Close button */}
         <Icon
           as={IoClose}
           position="absolute"
-          top={2}
-          right={2}
+          top={padding}
+          right={padding}
+          boxSize={6}
           color="gray.500"
           _hover={{ color: "black" }}
           onClick={onClose}
           cursor="pointer"
         />
 
-        <Heading textAlign="center">Shopping Cart</Heading>
+        <Heading textAlign="center" mb={isMobile ? 4 : 6}>
+          Shopping Cart
+        </Heading>
 
         {/* Cart Items */}
-        <Flex direction="column">
+        <Flex direction="column" flex={1} gap={4} mb={6}>
           {cartItems.length === 0 ? (
             <Box py={8} textAlign="center" color="gray.500">
               Your cart is empty.
@@ -149,78 +187,147 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
             cartItems.map((item, idx) => (
               <Box
                 key={idx}
-                borderBottom={cartItems.length > 1 ? "1px" : "none"}
+                borderBottom="1px"
                 borderColor="gray.200"
+                pb={4}
+                _last={{ borderBottom: "none" }}
               >
-                <HStack gap={4} mt={8}>
+                <Stack direction={{ base: "row" }} gap={4} align="start">
                   <Image
                     src={`/images/plan-images/${item.planDesc}.jpg`}
                     alt={item.planDesc}
-                    boxSize="128px"
+                    boxSize={imageSize}
                     objectFit="cover"
                     rounded="md"
+                    flexShrink={0}
                   />
-                  <VStack flex={1} ml={4} alignItems="start">
-                    <Text fontWeight="semibold">{item.planDesc}</Text>
-                    <Text color="gray.500" fontSize="sm">
+
+                  <VStack flex={1} alignItems="start" gap={2} w="full">
+                    <Text
+                      fontWeight="semibold"
+                      fontSize={{ base: "sm", md: "base" }}
+                    >
+                      {item.planDesc}
+                    </Text>
+                    <Text color="gray.500" fontSize={{ base: "xs", md: "sm" }}>
                       Mode:{" "}
                       {item.mode == "C"
                         ? "Cash"
                         : item.mode == "M"
-                        ? "Monthly"
-                        : item.mode == "Q"
-                        ? "Quarterly"
-                        : item.mode == "S"
-                        ? "Semi-Annual"
-                        : item.mode == "A"
-                        ? "Annual"
-                        : ""}
+                          ? "Monthly"
+                          : item.mode == "Q"
+                            ? "Quarterly"
+                            : item.mode == "S"
+                              ? "Semi-Annual"
+                              : item.mode == "A"
+                                ? "Annual"
+                                : ""}
                     </Text>
-                    <Text color="gray.500" fontSize="sm">
-                      Quantity: {item.quantity}
-                    </Text>
-                    <Text fontSize="sm" color="gray.500" mr={2}>
+
+                    {/* Quantity Controls */}
+                    <HStack
+                      gap={2}
+                      wrap="wrap"
+                      fontSize={{ base: "xs", md: "sm" }}
+                    >
+                      <Text color="gray.500">Qty:</Text>
+                      <Button
+                        size={{ base: "xs", md: "sm" }}
+                        variant="ghost"
+                        p={1}
+                        minW="unset"
+                        onClick={() => updateQuantity(idx, item.quantity - 1)}
+                        _hover={{ bg: "gray.100" }}
+                      >
+                        <FaCircleMinus size={16} />
+                      </Button>
+                      <Text
+                        fontWeight="semibold"
+                        minW="32px"
+                        textAlign="center"
+                      >
+                        {item.quantity}
+                      </Text>
+                      <Button
+                        size={{ base: "xs", md: "sm" }}
+                        variant="ghost"
+                        p={1}
+                        minW="unset"
+                        onClick={() => updateQuantity(idx, item.quantity + 1)}
+                        _hover={{ bg: "gray.100" }}
+                      >
+                        <MdOutlineAddCircle />
+                      </Button>
+                    </HStack>
+
+                    <Text fontSize={{ base: "xs", md: "sm" }} color="gray.600">
                       Price: ₱{" "}
                       {item.price
                         .toLocaleString("en-PH", { minimumFractionDigits: 2 })
                         .replace(/\.00$/, "")}
                     </Text>
+
+                    <Text
+                      fontSize={{ base: "xs", md: "sm" }}
+                      fontWeight="semibold"
+                    >
+                      Subtotal: ₱{" "}
+                      {item.total
+                        .toLocaleString("en-PH", { minimumFractionDigits: 2 })
+                        .replace(/\.00$/, "")}
+                    </Text>
                   </VStack>
 
-                  <DeleteButton
-                    colorPalette="red"
+                  <Icon
+                    as={IoCloseCircle}
+                    boxSize={{ base: 5, md: 6 }}
                     onClick={() => handleRemove(idx)}
+                    color="red.500"
+                    cursor="pointer"
+                    _hover={{ color: "red.700" }}
+                    flexShrink={0}
                   />
-                </HStack>
+                </Stack>
               </Box>
             ))
           )}
         </Flex>
 
-        {/* Cart Summary */}
-        <HStack justifyContent="space-between" mt={8}>
-          <Text fontSize="lg" fontWeight="semibold">
-            Total:
-          </Text>
-          <Text>
-            ₱{" "}
-            {grandTotal
-              .toLocaleString("en-PH", { minimumFractionDigits: 2 })
-              .replace(/\.00$/, "")}
-          </Text>
-        </HStack>
-        <PrimaryMdButton
-          mt={8}
-          w="full"
-          disabled={cartItems.length === 0}
-          onClick={() =>
-            router.push(
-              `/order-summary/${cartItems[0]?.planDesc}/${cartItems[0]?.mode}`
-            )
-          }
-        >
-          Checkout
-        </PrimaryMdButton>
+        {/* Summary and Button */}
+        <VStack gap={4} mt="auto" w="full">
+          <HStack
+            justifyContent="space-between"
+            w="full"
+            pt={4}
+            borderTopWidth={2}
+            borderColor="gray.200"
+          >
+            <Text fontSize={{ base: "base", md: "lg" }} fontWeight="semibold">
+              Total:
+            </Text>
+            <Text
+              fontSize={{ base: "base", md: "lg" }}
+              fontWeight="bold"
+              color="#109448"
+            >
+              ₱{" "}
+              {grandTotal
+                .toLocaleString("en-PH", { minimumFractionDigits: 2 })
+                .replace(/\.00$/, "")}
+            </Text>
+          </HStack>
+          <PrimaryMdButton
+            w="full"
+            disabled={cartItems.length === 0}
+            onClick={() =>
+              router.push(
+                `/order-summary/${cartItems[0]?.planDesc}/${cartItems[0]?.mode}`,
+              )
+            }
+          >
+            Proceed to Checkout
+          </PrimaryMdButton>
+        </VStack>
       </Box>
     </Box>
   );

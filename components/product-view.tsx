@@ -2,22 +2,21 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { IPlans } from "@/types/product";
-import { AddToCartButton, Breadcrumb, BuyNowButton } from "st-peter-ui";
+import { AddToCartButton, Breadcrumb, BuyNowButton, H2 } from "st-peter-ui";
 
 import {
-  Text,
   VStack,
   Image,
   Box,
   Grid,
   GridItem,
   Container,
-  HStack,
   Select,
   Portal,
   createListCollection,
   Stack,
   Flex,
+  Button,
 } from "@chakra-ui/react";
 import {
   ProductCarousel,
@@ -27,14 +26,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "./ui/product-carousel";
-import {
-  Body,
-  H3,
-  H4,
-  PrimaryMdButton,
-  SecondaryMdButton,
-  Small,
-} from "st-peter-ui";
+import { Body, H3, H4, Small } from "st-peter-ui";
+import { FaArrowLeft } from "react-icons/fa6";
+
 import { useRouter } from "next/navigation";
 import { addToCart } from "@/lib/utils/cart";
 
@@ -93,7 +87,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
   const terms = useMemo(() => {
     if (!plans) return [] as number[];
     return Array.from(
-      new Set(plans.map((p) => p.planTerm).filter((t) => t != null))
+      new Set(plans.map((p) => p.planTerm).filter((t) => t != null)),
     ).sort((a, b) => Number(a) - Number(b));
   }, [plans]);
 
@@ -126,14 +120,14 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
       mode === "C"
         ? "Spot Cash"
         : mode === "A"
-        ? "Annual"
-        : mode === "S"
-        ? "Semi-Annual"
-        : mode === "Q"
-        ? "Quarterly"
-        : mode === "M"
-        ? "Monthly"
-        : mode ?? "Plan";
+          ? "Annual"
+          : mode === "S"
+            ? "Semi-Annual"
+            : mode === "Q"
+              ? "Quarterly"
+              : mode === "M"
+                ? "Monthly"
+                : (mode ?? "Plan");
 
     const formatAmount = (amt: any) =>
       amt == null
@@ -155,12 +149,12 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
             p.mode === "A"
               ? 1
               : p.mode === "S"
-              ? 2
-              : p.mode === "Q"
-              ? 4
-              : p.mode === "M"
-              ? 12
-              : 1;
+                ? 2
+                : p.mode === "Q"
+                  ? 4
+                  : p.mode === "M"
+                    ? 12
+                    : 1;
           amountValue = Number(p.ipInstAmt);
         }
 
@@ -223,45 +217,48 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
             mx="auto"
             mt={{ base: 8, md: 32 }}
           >
-            <Breadcrumb items={breadcrumbItems} />
+            <Box display={{ base: "block", md: "none" }}>
+              <Button variant="ghost" size="md" onClick={() => router.back()}>
+                <FaArrowLeft color="#177D54" />
+                Back
+              </Button>
+            </Box>
+
+            {/* Desktop breadcrumb */}
+            <Box display={{ base: "none", md: "block" }}>
+              <Breadcrumb items={breadcrumbItems} />
+            </Box>
 
             <VStack
-              mx="auto"
-              mt={4}
-              gap={{ base: 8, md: 4 }}
-              textAlign={{ base: "start", md: "center" }}
-              justifyContent="center"
+              mt={8}
+              w={{ base: "full", md: "7xl" }}
+              justifyContent="start"
               minH={{ base: "auto", md: "150px" }}
             >
-              <H3>{plan?.planDesc}</H3>
-              <Body>{plan?.casketDesc}</Body>
-              <H4>
-                Contract Price: ₱
-                {Number(plan?.contractPrice).toLocaleString("en-PH")}
-              </H4>
-
               {/* Carousel */}
-              <Container maxW="5xl" mx="auto" px={6} mb={{ base: 12, md: 24 }}>
+              <Container maxW="7xl" mx="auto" mb={{ base: 8, md: 0 }} p={0}>
                 <ProductCarousel setApi={setCarouselApi} className="w-full">
                   <CarouselContent>
                     {carouselImages.map((src, index) => (
                       <CarouselItem key={index}>
                         <Box
                           position="relative"
-                          pb="56.25%"
+                          w="full"
+                          height={{ base: "400px", md: "500px" }}
+                          mx="auto"
                           borderRadius="2xl"
                           overflow="hidden"
-                          bg="gray.100"
+                          // bg="gray.100"
                         >
                           <Image
                             alt={`${plan?.planDesc} ${index + 1}`}
                             src={src}
                             position="absolute"
-                            top={0}
-                            left={0}
-                            width="100%"
-                            height="100%"
-                            objectFit="cover"
+                            inset={0}
+                            w="100%"
+                            h="100%"
+                            objectFit={{ base: "contain", md: "contain" }}
+                            objectPosition="center"
                           />
                         </Box>
                       </CarouselItem>
@@ -292,13 +289,29 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                 </Box>
               </Container>
             </VStack>
+            <Stack
+              textAlign={{ base: "start", md: "start" }}
+              gap={{ base: 4 }}
+              w={{ base: "full", md: "3xl" }}
+              mb={4}
+            >
+              <H3>{plan?.planDesc}</H3>
+              <Body>{plan?.casketDesc}</Body>
+              <H4>
+                Contract Price: ₱
+                {Number(plan?.contractPrice).toLocaleString("en-PH")}
+              </H4>
+            </Stack>
           </Box>
 
           {/* Payment Section */}
           <section id="paymentDetails" className="bg-gray-50">
-            <Box padding={{ base: 4, md: 8 }} textAlign="center">
+            <Box
+              padding={{ base: 4, md: 8 }}
+              textAlign={{ base: "center", md: "center" }}
+            >
               <Box mb={4}>
-                <H3>Choose your payment plan</H3>
+                <H4>Choose your payment plan</H4>
               </Box>
               <Box
                 mb={4}
@@ -435,7 +448,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                       paymentOptions
                         .find((opt) => opt.mode === selectedPlan)!
                         .amount.replace(/[^0-9.-]+/g, ""),
-                      total
+                      total,
                     )
                   }
                 ></AddToCartButton>
@@ -443,7 +456,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                   disabled={!selectedPlan}
                   onClick={() =>
                     router.push(
-                      `/order-summary/${plan?.planDesc}/${selectedPlan}`
+                      `/order-summary/${plan?.planDesc}/${selectedPlan}`,
                     )
                   }
                 ></BuyNowButton>
@@ -453,7 +466,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
 
           {/* Product Benefits */}
           <section id="productBenefits">
-            <Box padding={{ base: 4, md: 8 }} textAlign="center">
+            <Box padding={{ base: 4, md: 8 }} textAlign="start">
               <VStack mb={6} gap={4}>
                 <H3>Plan Benefits</H3>
                 <Body>
@@ -531,12 +544,11 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                         justifyContent={{ base: "center", md: "flex-start" }}
                       >
                         <Box
-                          w={{ base: "200px", md: "220px" }}
+                          w={{ base: "full", md: "220px" }}
                           h="140px"
                           overflow="hidden"
                           display="flex"
                           alignItems="center"
-                          justifyContent="center"
                           borderRadius="md"
                         >
                           <Image
@@ -585,7 +597,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
 
           {/* Product Features */}
           <section id="productFeatures" className="bg-gray-50">
-            <Box padding={{ base: 4, md: 8 }} textAlign="center">
+            <Box padding={{ base: 4, md: 8 }} mb={8} textAlign="center">
               <VStack mb={8} gap={4}>
                 <H3>Plan Features</H3>
                 <Body>The following features are available for this plan:</Body>
@@ -625,6 +637,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                   >
                     <VStack align="start" gap={4}>
                       <Box
+                        w="full"
                         display="flex"
                         justifyContent="center"
                         alignItems="center"
@@ -632,7 +645,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                         <Image
                           src={card.icon}
                           alt={`${card.title} icon`}
-                          w={{ base: "full", md: "400px" }}
+                          w="100%"
                           h="180px"
                           objectFit="cover"
                           borderRadius="md"

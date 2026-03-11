@@ -5,8 +5,9 @@ import React, { useEffect, useState } from "react";
 import { getModeAndName } from "@/lib/utils/plan";
 import OrderSummary from "@/components/order-summary";
 import { Box, Flex, Link, Text } from "@chakra-ui/react";
-import { ContinueButton } from "st-peter-ui";
+// import { ContinueButton } from "st-peter-ui";
 import { useRouter } from "next/navigation";
+import { Button, ButtonGroup } from "@chakra-ui/react";
 
 const Page = ({
   params,
@@ -48,7 +49,6 @@ const Page = ({
   }
   return (
     <Flex
-      mt={{ base: "24", md: "0" }}
       w="full"
       justify={{ base: "flex-start", md: "center" }}
       align="center"
@@ -56,13 +56,12 @@ const Page = ({
       p={8}
     >
       <Box
-        p={8}
+        p={{ base: 0, md: 8 }}
         borderRadius="lg"
         shadow={{ base: "none", md: "md" }}
         bg="white"
         maxW={{ base: "full", md: "3xl" }}
         mx="auto"
-        mt={8}
         w={{ base: "full", md: "80%" }}
       >
         <OrderSummary
@@ -72,13 +71,15 @@ const Page = ({
           contractPrice={plans[0].contractPrice}
         />
         <Box textAlign="end" w="full" mt={8}>
-          <ContinueButton
+          <Button
             mt={8}
             w="full"
             onClick={() => {
               router.push("/get-started");
             }}
-          />
+          >
+            Continue
+          </Button>
         </Box>
       </Box>
     </Flex>

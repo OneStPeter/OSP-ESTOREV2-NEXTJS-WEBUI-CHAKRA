@@ -91,7 +91,7 @@ const Products = () => {
                   const entry = map.get(key);
                   const exists = entry.terms.some(
                     (t: any) =>
-                      t.planTerm === p.planTerm && t.price === p.ipInstAmt
+                      t.planTerm === p.planTerm && t.price === p.ipInstAmt,
                   );
                   if (!exists)
                     entry.terms.push({
@@ -125,7 +125,7 @@ const Products = () => {
         </Box>
 
         {/* Memorial Park Cards */}
-        <Box bg="gray.50" p="8" mt={8}>
+        <Box p="8" mt={8}>
           <Flex textAlign="center" flexDirection="column" gap={4}>
             <H2>Memorial Parks</H2>
             <Body>Beautiful locations for lasting memories.</Body>

@@ -1,5 +1,6 @@
+"use client";
+
 import {
-  Text,
   Select,
   Input,
   Box,
@@ -9,13 +10,40 @@ import {
   FileUpload,
   Field,
   Separator,
-  Span,
+  Spinner,
 } from "@chakra-ui/react";
 import FloatingLabelInput from "../ui/floating-label-input";
-import { Body, SecondaryMdButton, SecondarySmButton } from "st-peter-ui";
-// Removed FloatingLabelSelect usage in favor of placeholder Selects
+import { Body } from "st-peter-ui";
+import { useOcr } from "@/hooks/useOCR";
+import { useEffect, useState } from "react";
+import { IPlanholder } from "@/types/ocrResponse";
+
+interface IOcrValue {
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
+  birthDate?: string;
+  idType?: string;
+  addressLine1?: string;
+}
 
 const LifePlanApplication1 = () => {
+  const { runOCR, data } = useOcr();
+  const [isLoading, setIsLoading] = useState(true);
+  var OCRValue = localStorage.getItem("ocrResult");
+
+  useEffect(() => {
+    runOCR();
+  }, []);
+
+  const [firstName, setFirstName] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [idType, setIdType] = useState("");
+
+  const [stateOcrValue, setStateOrcValue] = useState<IOcrValue>();
+
   const idCollection = createListCollection({
     items: [
       { label: "Passport", value: "passport" },
@@ -24,18 +52,53 @@ const LifePlanApplication1 = () => {
     ],
   });
 
+  useEffect(() => {
+    // const response: IPlanholder = data.response;
+
+    // var OCRValue = localStorage.getItem("ocrResult");
+
+    // console.log("OCRValue from localStorage:", OCRValue);
+    // var ocrValue = OCRValue ? JSON.parse(OCRValue) : null;
+    // setStateOrcValue(OCRValue ? JSON.parse(OCRValue) : null);
+
+    if (OCRValue != null) {
+      // console.log("Parsed OCRValue:", JSON.parse(OCRValue));
+      setStateOrcValue(JSON.parse(OCRValue));
+      // setFirstName(OCRValue!.firstName! || "");
+      // setMiddleName(OCRValue!.middleName! || "");
+      // setLastName(OCRValue!.lastName || "");
+      // setBirthDate(OCRValue!.birthDate || "");
+      // setIdType(OCRValue!.idType || "");
+    }
+
+    // setIsLoading(false);
+    // if (OCRValue!.birthDate) {
+    //   const [month, day, year] = OCRValue!.birthDate.split("/");
+    //   setBirthDate(
+    //     `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`,
+    //   );
+    // }
+  }, [OCRValue]);
+
+  // if (isLoading) {
+  //   return (
+  //     <VStack justify="center" align="center" h="500px">
+  //       <Spinner size="lg" />
+  //     </VStack>
+  //   );
+  // }
+
   return (
     <>
       <VStack mb={4} align="stretch">
         <Body fontWeight="bold">Identification</Body>
       </VStack>
 
-      <VStack gap={6} align="stretch">
+      <VStack gap={6} align="stretch" w="full">
         {/* Identification Section */}
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
           <Select.Root collection={idCollection}>
             <Select.HiddenSelect />
-            {/* <Select.Label>Select ID Type</Select.Label> */}
             <Select.Control>
               <Select.Trigger>
                 <Select.ValueText placeholder="Select ID Type" />
@@ -72,10 +135,16 @@ const LifePlanApplication1 = () => {
                     fontSize="sm"
                   >
                     <FileUpload.Trigger asChild>
-                      <Box>
+                      <Box
+                        onChange={(e) =>
+                          setIdType((e.target as HTMLInputElement).value)
+                        }
+                      >
                         {acceptedFiles.length > 0
                           ? acceptedFiles.map((file) => file.name).join(", ")
-                          : "driver's license.jpg"}
+                          : idType
+                            ? `${stateOcrValue?.idType}`
+                            : "Upload ID Image"}
                       </Box>
                     </FileUpload.Trigger>
                   </Box>
@@ -92,10 +161,22 @@ const LifePlanApplication1 = () => {
 
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
           <Field.Root>
-            <FloatingLabelInput id="lastName" type="text" label="Last Name" />
+            <FloatingLabelInput
+              id="lastName"
+              type="text"
+              label="Last Name"
+              value={stateOcrValue?.lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
           </Field.Root>
           <Field.Root>
-            <FloatingLabelInput id="firstName" type="text" label="First Name" />
+            <FloatingLabelInput
+              id="firstName"
+              type="text"
+              label="First Name"
+              value={stateOcrValue?.firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
           </Field.Root>
         </Grid>
 
@@ -105,6 +186,8 @@ const LifePlanApplication1 = () => {
               id="middleName"
               type="text"
               label="Middle Name"
+              value={stateOcrValue?.middleName}
+              onChange={(e) => setMiddleName(e.target.value)}
             />
           </Field.Root>
           <Field.Root>
@@ -125,7 +208,12 @@ const LifePlanApplication1 = () => {
           <Field.Root>
             <Field.Label>Date of Birth</Field.Label>
 
-            <Input id="dateOfBirth" type="date" />
+            <Input
+              id="dateOfBirth"
+              type="date"
+              value={stateOcrValue?.birthDate}
+              onChange={(e) => setBirthDate(e.target.value)}
+            />
           </Field.Root>
 
           <Field.Root>
@@ -144,7 +232,7 @@ const LifePlanApplication1 = () => {
 
         <Separator />
 
-        {/* Demographics Section (using placeholder Select) */}
+        {/* Demographics Section */}
         <Body fontWeight="bold">Demographics</Body>
         <Grid templateColumns={{ base: "1fr", md: "repeat(2 , 1fr)" }} gap={8}>
           <Field.Root>
@@ -268,11 +356,6 @@ const LifePlanApplication1 = () => {
         </Grid>
 
         <Separator />
-
-        {/* Insurability */}
-        {/* <Text fontWeight="semibold" fontSize="md">
-          Insurability
-        </Text> */}
 
         <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
           <Field.Root>

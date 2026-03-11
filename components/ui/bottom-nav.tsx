@@ -1,13 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import { HiOutlineHome } from "react-icons/hi2";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { IoNewspaperOutline } from "react-icons/io5";
 import { IoMenuOutline } from "react-icons/io5";
 import { IoSettingsOutline } from "react-icons/io5";
+import { MdOutlineMessage } from "react-icons/md";
+import { MdOutlineShoppingCart } from "react-icons/md";
+
 import { LoginButton } from "st-peter-ui";
 import {
   Box,
@@ -18,16 +21,26 @@ import {
   Button,
   useBreakpointValue,
 } from "@chakra-ui/react";
+import ShoppingCart from "./shopping-cart";
 
-const items = [
+const bottomNavItems = [
   { label: "Home", href: "/", icon: HiOutlineHome },
   { label: "Products", href: "/plans", icon: HiOutlineUserGroup },
   { label: "E-Services", href: "/services", icon: IoSettingsOutline },
   { label: "News & Blogs", href: "/contact", icon: IoNewspaperOutline },
+  { label: "Cart", icon: MdOutlineShoppingCart, isCart: true },
+];
+
+const sidePanelItems = [
+  { label: "Home", href: "/", icon: HiOutlineHome },
+  { label: "Products", href: "/plans", icon: HiOutlineUserGroup },
+  { label: "E-Services", href: "/services", icon: IoSettingsOutline },
+  { label: "News & Blogs", href: "/contact", icon: IoNewspaperOutline },
+  { label: "Contact Us", href: "/contact-us", icon: MdOutlineMessage },
 ];
 
 const BottomNav = () => {
-  // support Chakra versions that expose either `open` or `isOpen`
+  const [cartOpen, setCartOpen] = useState(false);
   const disclosure = useDisclosure();
   const open = (disclosure as any).open ?? (disclosure as any).isOpen;
   const onOpen = disclosure.onOpen;
@@ -55,28 +68,45 @@ const BottomNav = () => {
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <Flex justify="space-around" align="center" h={{ base: 16, md: 20 }}>
-          {items.map((it) => (
-            <Link
-              key={it.href}
-              href={it.href}
-              onClick={onClose}
-              aria-label={it.label}
-            >
-              <Flex
-                direction="column"
-                align="center"
-                gap={2}
-                color={isActive(it.href) ? "green.600" : "gray.600"}
-                _hover={{ color: "green.600" }}
-                fontWeight={isActive(it.href) ? "semibold" : "normal"}
+          {bottomNavItems.map((it) =>
+            it.isCart ? (
+              <Button
+                key={it.label}
+                variant="ghost"
+                onClick={() => setCartOpen(true)}
+                display="flex"
+                flexDir="column"
+                color={cartOpen ? "green.600" : "gray.600"}
+                alignItems="center"
                 minW={16}
+                aria-label="Shopping Cart"
               >
                 <Icon as={it.icon} boxSize={iconSize} />
                 <Text fontSize={{ base: "2xs", md: "xs" }}>{it.label}</Text>
-              </Flex>
-            </Link>
-          ))}
-          <Button
+              </Button>
+            ) : (
+              <Link
+                key={it.href}
+                href={it.href!}
+                onClick={onClose}
+                aria-label={it.label}
+              >
+                <Flex
+                  direction="column"
+                  align="center"
+                  gap={2}
+                  color={isActive(it.href!) ? "green.600" : "gray.600"}
+                  _hover={{ color: "green.600" }}
+                  fontWeight={isActive(it.href!) ? "semibold" : "normal"}
+                  minW={16}
+                >
+                  <Icon as={it.icon} boxSize={iconSize} />
+                  <Text fontSize={{ base: "2xs", md: "xs" }}>{it.label}</Text>
+                </Flex>
+              </Link>
+            ),
+          )}
+          {/* <Button
             variant="ghost"
             onClick={onOpen}
             display="flex"
@@ -88,7 +118,7 @@ const BottomNav = () => {
           >
             <Icon as={IoMenuOutline} boxSize={iconSize} />
             <Text fontSize={{ base: "2xs", md: "xs" }}>Menu</Text>
-          </Button>
+          </Button> */}
         </Flex>
       </Box>
 
@@ -141,7 +171,7 @@ const BottomNav = () => {
 
         <Box p={4} borderBottomWidth="1px">
           <Box as="nav" display="flex" flexDirection="column" gap={1}>
-            {items.map((it) => (
+            {sidePanelItems.map((it) => (
               <Link
                 key={it.href}
                 href={it.href}
@@ -166,7 +196,7 @@ const BottomNav = () => {
                 </Flex>
               </Link>
             ))}
-            <Box
+            {/* <Box
               mt={4}
               pt={4}
               borderTopWidth="1px"
@@ -196,7 +226,7 @@ const BottomNav = () => {
                   Help & Support
                 </Text>
               </Link>
-              <Link href="/profile" onClick={onClose} aria-label="My Plans">
+              {/* <Link href="/profile" onClick={onClose} aria-label="My Plans">
                 <Text
                   fontSize="sm"
                   color="gray.600"
@@ -204,15 +234,17 @@ const BottomNav = () => {
                 >
                   My Plans
                 </Text>
-              </Link>
-            </Box>
+              </Link> 
+            </Box> */}
           </Box>
         </Box>
 
-        <Box p={4}>
-          <LoginButton />
+        <Box p={4} w="full">
+          <LoginButton w="full" />
         </Box>
       </Box>
+
+      <ShoppingCart open={cartOpen} onClose={() => setCartOpen(false)} />
     </Box>
   );
 };

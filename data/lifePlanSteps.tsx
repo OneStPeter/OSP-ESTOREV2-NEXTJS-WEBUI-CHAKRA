@@ -2,6 +2,7 @@ import Beneficiary from "@/components/steps/beneficiary";
 import Confirmation from "@/components/steps/confirmation";
 import HealthDeclaration from "@/components/steps/health-declaration";
 import LifePlanApplicationWrapper from "@/components/steps/lifeplan-application-wrapper";
+import Payment from "@/components/steps/payment";
 import Requirements from "@/components/steps/upload-requirements";
 export const steps = [
   {
@@ -26,18 +27,25 @@ export const steps = [
     description: "Health Declaration & Terms and Conditions",
     component: <HealthDeclaration />,
   },
+  // {
+  //   id: "4",
+  //   header: "Upload Requirements",
+  //   title: "Requirements",
+  //   description: "Upload Requirements",
+  //   component: <Requirements />,
+  // },
   {
     id: "4",
-    header: "Upload Requirements",
-    title: "Requirements",
-    description: "Upload Requirements",
-    component: <Requirements />,
-  },
-  {
-    id: "5",
     header: "Review Summary",
     title: "Summary",
     description: "Review and confirm your application",
     component: <Confirmation />,
+  },
+  {
+    id: "5",
+    header: "Payment",
+    title: "Payment",
+    description: "Review and confirm your application",
+    component: <Payment />,
   },
 ];

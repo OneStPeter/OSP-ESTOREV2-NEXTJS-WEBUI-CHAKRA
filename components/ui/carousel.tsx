@@ -199,6 +199,15 @@ interface CarouselProps {
 
 export function Carousel({ slides }: CarouselProps) {
   const [current, setCurrent] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const handlePreviousClick = () => {
     const previous = current - 1;
@@ -216,12 +225,21 @@ export function Carousel({ slides }: CarouselProps) {
     }
   };
 
+  // For mobile: scrollable carousel
+  const handleScroll = () => {
+    if (!containerRef.current) return;
+    const scrollLeft = containerRef.current.scrollLeft;
+    const width = containerRef.current.offsetWidth;
+    const idx = Math.round(scrollLeft / width);
+    setCurrent(idx);
+  };
+
   const id = useId();
 
   return (
     <Box
       position="relative"
-      w={{ base: "95vmin", md: "full" }}
+      w={{ base: "100%", md: "full" }}
       h={{ base: "85vmin", md: "80vmin" }}
       mx="auto"
       aria-labelledby={`carousel-heading-${id}`}
@@ -230,38 +248,74 @@ export function Carousel({ slides }: CarouselProps) {
       alignItems="center"
       justifyContent="flex-end"
     >
-      <Box position="relative" w="full" h="70vmin">
+      <Box
+        position="relative"
+        w="full"
+        h="70vmin"
+        ref={containerRef}
+        overflowX={isMobile ? "auto" : "hidden"}
+        overflowY="hidden"
+        // sx={
+        //   isMobile
+        //     ? {
+        //         scrollSnapType: "x mandatory",
+        //         WebkitOverflowScrolling: "touch",
+        //         display: "flex",
+        //       }
+        //     : {}
+        // }
+        onScroll={isMobile ? handleScroll : undefined}
+      >
         <Flex
           as="ul"
-          position="absolute"
-          transition="transform 1s ease-in-out"
-          style={{
-            transform: `translateX(-${current * (100 / slides.length)}%)`,
-          }}
+          position={isMobile ? "static" : "absolute"}
+          transition={isMobile ? undefined : "transform 1s ease-in-out"}
+          style={
+            isMobile
+              ? { width: "100%", minWidth: 0 }
+              : {
+                  transform: `translateX(-${current * (100 / slides.length)}%)`,
+                }
+          }
         >
           {slides.map((slide, index) => (
-            <Slide
+            <Box
               key={index}
-              slide={slide}
-              index={index}
-              current={current}
-              handleSlideClick={handleSlideClick}
-            />
+              // sx={
+              //   isMobile
+              //     ? {
+              //         minWidth: "100vw",
+              //         scrollSnapAlign: "center",
+              //         flex: "0 0 100vw",
+              //       }
+              //     : { width: "100%" }
+              // }
+            >
+              <Slide
+                slide={slide}
+                index={index}
+                current={current}
+                handleSlideClick={handleSlideClick}
+              />
+            </Box>
           ))}
         </Flex>
       </Box>
-      <Flex justifyContent="center" w="100%" mt={16} zIndex={20}>
-        <CarouselControl
-          type="previous"
-          title="Go to previous slide"
-          handleClick={handlePreviousClick}
-        />
-        <CarouselControl
-          type="next"
-          title="Go to next slide"
-          handleClick={handleNextClick}
-        />
-      </Flex>
+      {/* Show arrows only on desktop */}
+      {!isMobile && (
+        <Flex justifyContent="center" w="100%" mt={16} zIndex={20}>
+          <CarouselControl
+            type="previous"
+            title="Go to previous slide"
+            handleClick={handlePreviousClick}
+          />
+          <CarouselControl
+            type="next"
+            title="Go to next slide"
+            handleClick={handleNextClick}
+          />
+        </Flex>
+      )}
     </Box>
   );
 }

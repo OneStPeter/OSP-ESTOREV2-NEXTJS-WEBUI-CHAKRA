@@ -94,14 +94,14 @@ const Confirmation = () => {
                   ? selectedPlan.mode === "M"
                     ? "Monthly"
                     : selectedPlan.mode === "Q"
-                    ? "Quarterly"
-                    : selectedPlan.mode === "S"
-                    ? "Semi-Annual"
-                    : selectedPlan.mode === "A"
-                    ? "Annual"
-                    : selectedPlan.mode === "C"
-                    ? "Cash"
-                    : selectedPlan.mode
+                      ? "Quarterly"
+                      : selectedPlan.mode === "S"
+                        ? "Semi-Annual"
+                        : selectedPlan.mode === "A"
+                          ? "Annual"
+                          : selectedPlan.mode === "C"
+                            ? "Cash"
+                            : selectedPlan.mode
                   : "-"
               }
             />
@@ -135,13 +135,12 @@ const Confirmation = () => {
         <Card.Body px={6} py={5}>
           {/* PERSONAL INFO */}
           <Box mb={4}>
-            <Body>
-              <Span fontWeight="semibold">
-                <Flex align="center" gap={2}>
-                  <FaRegUser /> Personal Info
-                </Flex>
-              </Span>
-            </Body>
+            <Flex align="center" gap={2}>
+              <Icon boxSize={4} color="gray.700">
+                <FaRegUser />
+              </Icon>
+              <Body fontWeight="semibold">Personal Info</Body>
+            </Flex>
           </Box>
           <Grid templateColumns={{ base: "1fr", md: "repeat(4,1fr)" }} gap={6}>
             <InfoItem label="Selected ID Type" value="Driver's License" />
@@ -166,13 +165,12 @@ const Confirmation = () => {
 
           {/* RESIDENTIAL ADDRESS */}
           <Box mb={4}>
-            <Body>
-              <Span fontWeight="semibold">
-                <Flex align="center" gap={2}>
-                  <FaRegAddressCard /> Residential Address
-                </Flex>
-              </Span>
-            </Body>
+            <Flex align="center" gap={2}>
+              <Icon boxSize={4} color="gray.700">
+                <FaRegAddressCard />
+              </Icon>
+              <Body fontWeight="semibold">Residential Address</Body>
+            </Flex>
           </Box>
           <Grid templateColumns={{ base: "1fr", md: "repeat(4,1fr)" }} gap={6}>
             <InfoItem label="Lot #" value="Lot 12-B" />
@@ -187,13 +185,12 @@ const Confirmation = () => {
 
           {/* EMPLOYMENT */}
           <Box mb={4}>
-            <Body>
-              <Span fontWeight="semibold">
-                <Flex align="center" gap={2}>
-                  <IoIosInformationCircleOutline /> Employment
-                </Flex>
-              </Span>
-            </Body>
+            <Flex align="center" gap={2}>
+              <Icon boxSize={4} color="gray.700">
+                <IoIosInformationCircleOutline />
+              </Icon>
+              <Body fontWeight="semibold">Employment</Body>
+            </Flex>
           </Box>
           <Grid templateColumns={{ base: "1fr", md: "repeat(4,1fr)" }} gap={6}>
             <InfoItem label="Occupation" value="Software Engineer" />
@@ -337,7 +334,7 @@ const Confirmation = () => {
                 <ConfirmButton
                   onClick={() => {
                     const checkboxInputs = document.querySelectorAll(
-                      "input[type='checkbox']"
+                      "input[type='checkbox']",
                     );
                     const input = checkboxInputs[
                       pendingCheck ?? 0

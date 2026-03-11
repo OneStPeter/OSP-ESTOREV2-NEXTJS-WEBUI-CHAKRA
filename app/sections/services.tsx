@@ -92,7 +92,7 @@ const Services = () => {
             <Image
               src="/images/services/request-service.jpg"
               alt="request service"
-              width={250}
+              width={240}
               height="auto"
               position="absolute"
               top="0"

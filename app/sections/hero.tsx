@@ -1,9 +1,9 @@
 "use client";
 
 import Search from "@/components/ui/search";
-import { Box, Span, Stack, VStack, chakra } from "@chakra-ui/react";
+import { Box, Flex, Span, Stack, VStack, chakra } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { H1, H3, Body, DynamicButton } from "st-peter-ui";
+import { H1, H3, Body, DynamicButton, BuyNowButton } from "st-peter-ui";
 
 const Hero = () => {
   const router = useRouter();
@@ -16,7 +16,7 @@ const Hero = () => {
   return (
     <Box
       position="relative"
-      h="100%"
+      h={{ base: "100%", md: "100vh" }}
       display="flex"
       alignItems="center"
       justifyContent="center"
@@ -24,28 +24,32 @@ const Hero = () => {
     >
       <chakra.video
         position="absolute"
-        inset={0}
-        w="full"
-        h="full"
+        top="50%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+        w="100%"
+        h="100%"
         objectFit="cover"
+        objectPosition="center"
         autoPlay
         loop
         muted
         playsInline
+        pointerEvents="none"
       >
         <source src="/video/hero-bg-video.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </chakra.video>
 
       <Box position="absolute" inset={0} bg="blackAlpha.600" h="100%" />
-      <Box
-        zIndex={2}
-        maxW="7xl"
-        w={{ base: "100%" }}
-        mt={{ base: 8, md: 24 }}
-        pb={{ base: 12, md: 24 }}
-      >
-        <VStack alignItems="start" gap={8} p={8} color="white">
+      <Box zIndex={2} maxW={{ base: "full", md: "7xl" }} w={{ base: "100%" }}>
+        <VStack
+          alignItems="start"
+          gap={8}
+          py={{ base: 8, md: 0 }}
+          px={{ base: 4, md: 0 }}
+          color="white"
+        >
           <H1 color="white">
             Para sa Magandang Kinabukasan: Bawat Pilipino, Dapat may{" "}
             <Span className="text-[#177D54]">St. Peter Life Plan</Span>.
@@ -89,18 +93,20 @@ const Hero = () => {
             ))}
           </Stack>
 
-          <Stack
-            direction={{ base: "row", md: "row" }}
+          <Flex
+            // direction={{ base: "row", md: "row" }}
+            justify={{ base: "space-between", md: "flex-start" }}
             gap={4}
             w={{ base: "full" }}
           >
             <DynamicButton label="PAY MY PLAN" />
 
-            <DynamicButton
+            {/* <DynamicButton
               label="BUY NOW"
               onClick={() => router.push("/plans")}
-            />
-          </Stack>
+            /> */}
+            <BuyNowButton onClick={() => router.push("/plans")} />
+          </Flex>
         </VStack>
       </Box>
     </Box>

@@ -58,11 +58,13 @@ const Navbar = () => {
           <Image
             src="https://www.stpeter.com.ph/images/logo2gold.png"
             alt="E-Store Logo"
-            onClick={() => router.push("/")}
             cursor="pointer"
-            width={{ base: 16, sm: 32, md: 30, lg: 40 }}
+            onClick={() => router.push("/")}
+            w={{ base: "120px", sm: "160px", md: "180px", lg: "190px" }}
+            h="auto"
+            maxW="100%"
+            objectFit="contain"
           />
-
           <HStack
             w="7xl"
             as="nav"
@@ -159,7 +161,7 @@ const Navbar = () => {
               variant="ghost"
               fontWeight="semibold"
               textDecoration="none"
-              onClick={() => router.push("/news")}
+              onClick={() => router.push("/news-updates")}
             >
               News & Blog
             </BaseButton>
