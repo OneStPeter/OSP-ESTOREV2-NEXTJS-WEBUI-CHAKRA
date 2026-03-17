@@ -2,12 +2,12 @@
 
 import { IPlans } from "@/types/product";
 import React, { useEffect, useState } from "react";
-import { getModeAndName } from "@/lib/utils/plan";
+import { useModeName } from "@/hooks/products/useProduct";
 import OrderSummary from "@/components/order-summary";
-import { Box, Flex, Link, Text } from "@chakra-ui/react";
-// import { ContinueButton } from "st-peter-ui";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { Button, ButtonGroup } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
+import { use } from "react";
 
 const Page = ({
   params,
@@ -15,30 +15,16 @@ const Page = ({
   params: Promise<{ planDesc: string; selectedPlan: string }>;
 }) => {
   const router = useRouter();
+  const { planDesc, selectedPlan } = use(params);
 
-  const [planDesc, setPlanDesc] = useState<string | null>(null);
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
-  const [plans, setPlans] = useState<IPlans[] | null>(null);
-
-  useEffect(() => {
-    const unwrapParams = async () => {
-      const resolvedParams = await params;
-      setPlanDesc(resolvedParams.planDesc);
-      setSelectedPlan(resolvedParams.selectedPlan);
-    };
-    unwrapParams();
-  }, [params]);
+  // Hook fetches data based on planDesc and selectedPlan
+  const { data: plans } = useModeName(planDesc, selectedPlan);
 
   useEffect(() => {
-    if (!planDesc) return;
-
-    const fetchPlan = async () => {
-      const planData = await getModeAndName(planDesc, selectedPlan!);
-      setPlans(planData);
-      sessionStorage.setItem("selectedPlan", JSON.stringify(planData[0]));
-    };
-    fetchPlan();
-  }, [planDesc]);
+    if (plans && plans.length > 0) {
+      sessionStorage.setItem("selectedPlan", JSON.stringify(plans[0]));
+    }
+  }, [plans]);
 
   if (!plans || plans.length === 0) {
     return (
@@ -47,6 +33,7 @@ const Page = ({
       </div>
     );
   }
+
   return (
     <Flex
       w="full"
@@ -65,7 +52,7 @@ const Page = ({
         w={{ base: "full", md: "80%" }}
       >
         <OrderSummary
-          mode={selectedPlan!}
+          mode={selectedPlan}
           planDesc={plans[0].planDesc}
           ipInstAmt={plans[0].ipInstAmt}
           contractPrice={plans[0].contractPrice}

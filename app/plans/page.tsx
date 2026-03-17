@@ -17,6 +17,7 @@ import { Body, H2 } from "st-peter-ui";
 import { useRouter } from "next/navigation";
 import { Breadcrumb } from "st-peter-ui";
 import { FaArrowLeft } from "react-icons/fa";
+import { usePlanSection } from "@/hooks/products/useProduct";
 
 const formatCurrency = (value: number | string) =>
   new Intl.NumberFormat("en-PH", {
@@ -63,24 +64,12 @@ const groupPlansByProduct = (plans: IPlans[], productCode: string) => {
 const Products = () => {
   const router = useRouter();
 
-  const [plans, setPlans] = useState<IPlans[]>([]);
+  const { data: plans } = usePlanSection();
+
   const [showAlert, setShowAlert] = useState(false);
   const alertRef = useRef<HTMLDivElement>(null);
 
   const [compareList, setCompareList] = useState<string[]>([]);
-
-  useEffect(() => {
-    const fetchPlans = async () => {
-      try {
-        const res = await fetch("/api/get-plans-sections");
-        const data = await res.json();
-        setPlans(data.result);
-      } catch (error) {
-        console.error("Error fetching plans:", error);
-      }
-    };
-    fetchPlans();
-  }, []);
 
   useEffect(() => {
     if (showAlert) {
@@ -125,7 +114,7 @@ const Products = () => {
       align="stretch"
       w="full"
       mb={8}
-      pt={{ base: "84px", md: "100px" }}
+      pt={{ base: 8, md: 32 }}
       pb={{ base: 12, md: 16 }}
     >
       {showAlert && (

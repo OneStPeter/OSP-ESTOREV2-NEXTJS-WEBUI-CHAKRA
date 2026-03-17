@@ -8,20 +8,15 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export async function getProductByName(planDesc: string) {
-  const url = `http://192.168.23.16:5237/GetProductByName?name=${planDesc}`;
-  // console.log("Fetching:", url);
-
+  const url = `http://192.168.23.16:5237/GetProductByName?planDesc=${planDesc}`;
   const res = await fetch(url);
-  // console.log("Response status:", res.status);
-
   if (!res.ok) throw new Error("Failed to fetch product");
-
   const data = await res.json();
   return Array.isArray(data) ? data : [data];
 }
 
 export async function getModeAndName(planDesc: string, selectedPlan: string) {
-  const url = `http://192.168.23.16:5237/GetModeAndName?name=${planDesc}&mode=${selectedPlan}`;
+  const url = `http://192.168.23.16:5237/GetModeAndName?planDesc=${planDesc}&mode=${selectedPlan}`;
   console.log("Fetching:", url);
 
   const res = await fetch(url);

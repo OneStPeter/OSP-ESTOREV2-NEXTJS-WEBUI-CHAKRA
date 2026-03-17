@@ -11,14 +11,14 @@ const page = () => {
   return (
     <Box p={8} mt={8}>
       <LoginPage
-        onLogin={() => router.push("/account-management")}
+        onLogin={() => router.push("/account")}
         onSignUp={function (
           email: string,
           password: string,
           firstname: string,
           lastname: string,
           middlename: string,
-          contactnumber: string
+          contactnumber: string,
         ): void {
           throw new Error("Function not implemented.");
         }}

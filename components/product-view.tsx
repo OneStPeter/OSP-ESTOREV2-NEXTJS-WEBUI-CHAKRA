@@ -3,7 +3,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { IPlans } from "@/types/product";
 import { AddToCartButton, Breadcrumb, BuyNowButton, H2 } from "st-peter-ui";
-
 import {
   VStack,
   Image,
@@ -28,7 +27,6 @@ import {
 } from "./ui/product-carousel";
 import { Body, H3, H4, Small } from "st-peter-ui";
 import { FaArrowLeft } from "react-icons/fa6";
-
 import { useRouter } from "next/navigation";
 import { addToCart } from "@/lib/utils/cart";
 
