@@ -127,7 +127,7 @@ const Navbar = () => {
                       fontWeight="semibold"
                       textDecoration="none"
                     >
-                      Pay My Plan
+                      <Link href="/pay-my-plan">Pay My Plan</Link>
                     </Menu.Item>
                     <Menu.Item
                       value="file-a-claim"

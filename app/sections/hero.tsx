@@ -99,12 +99,12 @@ const Hero = () => {
             gap={4}
             w={{ base: "full" }}
           >
-            <DynamicButton label="PAY MY PLAN" />
+            {/* <DynamicButton label="PAY MY PLAN" /> */}
 
-            {/* <DynamicButton
-              label="BUY NOW"
-              onClick={() => router.push("/plans")}
-            /> */}
+            <DynamicButton
+              label="PAY MY PLAN"
+              onClick={() => router.push("/pay-my-plan")}
+            />
             <BuyNowButton onClick={() => router.push("/plans")} />
           </Flex>
         </VStack>

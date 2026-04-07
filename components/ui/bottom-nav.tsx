@@ -28,7 +28,6 @@ const bottomNavItems = [
   { label: "Products", href: "/plans", icon: HiOutlineUserGroup },
   { label: "E-Services", href: "/services", icon: IoSettingsOutline },
   { label: "News & Blogs", href: "/contact", icon: IoNewspaperOutline },
-  { label: "Cart", icon: MdOutlineShoppingCart, isCart: true },
 ];
 
 const sidePanelItems = [
@@ -41,6 +40,9 @@ const sidePanelItems = [
 
 const BottomNav = () => {
   const [cartOpen, setCartOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [cartPosition, setCartPosition] = useState({ x: 0, y: 0 });
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const disclosure = useDisclosure();
   const open = (disclosure as any).open ?? (disclosure as any).isOpen;
   const onOpen = disclosure.onOpen;
@@ -50,8 +52,33 @@ const BottomNav = () => {
 
   const isActive = (href: string) => href === pathname;
 
+  const handleCartMouseDown = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (cartOpen) return;
+    setIsDragging(true);
+    setDragOffset({
+      x: e.clientX - cartPosition.x,
+      y: e.clientY - cartPosition.y,
+    });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    setCartPosition({
+      x: e.clientX - dragOffset.x,
+      y: e.clientY - dragOffset.y,
+    });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
   return (
-    <Box>
+    <Box
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+    >
       {/* Bottom navigation - visible on mobile only */}
       <Box
         as="nav"
@@ -68,45 +95,28 @@ const BottomNav = () => {
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <Flex justify="space-around" align="center" h={{ base: 16, md: 20 }}>
-          {bottomNavItems.map((it) =>
-            it.isCart ? (
-              <Button
-                key={it.label}
-                variant="ghost"
-                onClick={() => setCartOpen(true)}
-                display="flex"
-                flexDir="column"
-                color={cartOpen ? "green.600" : "gray.600"}
-                alignItems="center"
+          {bottomNavItems.map((it) => (
+            <Link
+              key={it.href}
+              href={it.href!}
+              onClick={onClose}
+              aria-label={it.label}
+            >
+              <Flex
+                direction="column"
+                align="center"
+                gap={2}
+                color={isActive(it.href!) ? "green.600" : "gray.600"}
+                _hover={{ color: "green.600" }}
+                fontWeight={isActive(it.href!) ? "semibold" : "normal"}
                 minW={16}
-                aria-label="Shopping Cart"
               >
                 <Icon as={it.icon} boxSize={iconSize} />
                 <Text fontSize={{ base: "2xs", md: "xs" }}>{it.label}</Text>
-              </Button>
-            ) : (
-              <Link
-                key={it.href}
-                href={it.href!}
-                onClick={onClose}
-                aria-label={it.label}
-              >
-                <Flex
-                  direction="column"
-                  align="center"
-                  gap={2}
-                  color={isActive(it.href!) ? "green.600" : "gray.600"}
-                  _hover={{ color: "green.600" }}
-                  fontWeight={isActive(it.href!) ? "semibold" : "normal"}
-                  minW={16}
-                >
-                  <Icon as={it.icon} boxSize={iconSize} />
-                  <Text fontSize={{ base: "2xs", md: "xs" }}>{it.label}</Text>
-                </Flex>
-              </Link>
-            ),
-          )}
-          {/* <Button
+              </Flex>
+            </Link>
+          ))}
+          <Button
             variant="ghost"
             onClick={onOpen}
             display="flex"
@@ -118,7 +128,7 @@ const BottomNav = () => {
           >
             <Icon as={IoMenuOutline} boxSize={iconSize} />
             <Text fontSize={{ base: "2xs", md: "xs" }}>Menu</Text>
-          </Button> */}
+          </Button>
         </Flex>
       </Box>
 
@@ -243,6 +253,32 @@ const BottomNav = () => {
           <LoginButton w="full" />
         </Box>
       </Box>
+
+      {/* Floating Cart Button */}
+      <Button
+        position="fixed"
+        bottom={{ base: 20, md: 24 }}
+        right={6}
+        zIndex="sticky"
+        borderRadius="full"
+        bg="green.600"
+        _hover={{ bg: "green.700" }}
+        w={16}
+        h={16}
+        display={{ base: "flex", md: "flex", lg: "none" }}
+        alignItems="center"
+        justifyContent="center"
+        boxShadow="lg"
+        onClick={() => setCartOpen(true)}
+        aria-label="Shopping Cart"
+      >
+        <Flex direction="column" align="center" gap={0.5}>
+          <Icon as={MdOutlineShoppingCart} boxSize={6} color="white" />
+          {/* <Text fontSize="xs" color="white" fontWeight="semibold">
+            Cart
+          </Text> */}
+        </Flex>
+      </Button>
 
       <ShoppingCart open={cartOpen} onClose={() => setCartOpen(false)} />
     </Box>

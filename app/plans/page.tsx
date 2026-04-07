@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import Section from "@/components/ui/section";
 import ComparisonBanner from "@/components/ui/comparison-banner";
-import { Body, H2 } from "st-peter-ui";
+import { Body, H2, H3 } from "st-peter-ui";
 import { useRouter } from "next/navigation";
 import { Breadcrumb } from "st-peter-ui";
 import { FaArrowLeft } from "react-icons/fa";
@@ -156,13 +156,13 @@ const Products = () => {
                 <Grid
                   templateColumns={{ base: "1fr", md: "1fr auto" }}
                   gap={{ base: 5, md: 4 }}
-                  mt={{ base: 3, md: 5 }}
+                  mt={{ base: 3, md: 4 }}
                   alignItems="center"
                 >
                   <GridItem>
                     <Box textAlign={{ base: "start", md: "left" }}>
-                      <H2>Our Life Plans</H2>
-                      <Body color="gray.600">
+                      <H3>Our Life Plans</H3>
+                      <Body>
                         Secure your family's future with peace of mind
                       </Body>
                     </Box>

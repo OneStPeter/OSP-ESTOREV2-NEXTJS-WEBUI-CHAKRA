@@ -17,23 +17,20 @@ const LifePlanApplicationWrapper = () => {
         <Tabs.Trigger value="step1">
           <Flex align="center" gap={2}>
             <FaRegUser fontSize={24} />
-            <Text display={{ base: "none", md: "block" }}>Personal Info</Text>
+            <Text>Personal Info</Text>
           </Flex>
         </Tabs.Trigger>
 
         <Tabs.Trigger value="step2">
           <Flex align="center" gap={2}>
             <IoHomeOutline />
-            <Text display={{ base: "none", md: "block" }}>
-              Residential Address
-            </Text>
+            <Text>Residential Address</Text>
           </Flex>
         </Tabs.Trigger>
-
         <Tabs.Trigger value="step3">
           <Flex align="center" gap={2}>
             <BsPersonWorkspace />
-            <Text display={{ base: "none", md: "block" }}>Employment</Text>
+            <Text>Employment</Text>
           </Flex>
         </Tabs.Trigger>
       </Tabs.List>

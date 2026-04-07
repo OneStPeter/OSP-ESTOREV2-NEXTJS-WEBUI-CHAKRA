@@ -1,0 +1,167 @@
+"use client";
+
+import React, { useState } from "react";
+import { Body, Box, H3, PrimaryMdFlexButton } from "st-peter-ui";
+import {
+  VStack,
+  Grid,
+  Button,
+  Link,
+  Separator,
+  Input,
+  Field,
+  Flex,
+} from "@chakra-ui/react";
+import FloatingLabelInput from "@/components/ui/floating-label-input";
+import { FaArrowLeft } from "react-icons/fa";
+import { Breadcrumb } from "st-peter-ui";
+
+import { useRouter } from "next/navigation";
+
+const PayMyPlan = () => {
+  const router = useRouter();
+
+  const [formData, setFormData] = useState({
+    lpaNumber: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    dateOfBirth: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSearch = () => {
+    console.log("Search Account:", formData);
+  };
+  const breadcrumbItems = [
+    {
+      label: "Home",
+      href: "/",
+    },
+    {
+      label: "Pay My Plan",
+      href: "/pay-my-plan",
+    },
+  ];
+
+  return (
+    <Box
+      p={8}
+      mt={{ base: 0, md: 24 }}
+      maxW={"7xl"}
+      mx={"auto"}
+      px={{ base: 4, md: 0 }}
+    >
+      <Box display={{ base: "block", md: "none" }}>
+        <Button variant="ghost" size="md" onClick={() => router.back()} px={0}>
+          <FaArrowLeft color="#177D54" />
+          Back
+        </Button>
+      </Box>
+      <Box display={{ base: "none", md: "block" }}>
+        <Breadcrumb items={breadcrumbItems} />
+      </Box>
+      <Box mt={4}>
+        <H3>Pay My Plan</H3>
+        <Body>
+          Search for your St. Peter Life Plan account to view details and manage
+          your plan.
+        </Body>
+      </Box>
+
+      <VStack gap={6} mt={8} align="stretch" w="full">
+        {/* LPA Number Section */}
+        <Grid templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }} gap={8}>
+          <Field.Root>
+            <FloatingLabelInput
+              id="lpaNumber"
+              name="lpaNumber"
+              type="text"
+              label="LPA Number"
+              value={formData.lpaNumber}
+              onChange={handleChange}
+            />
+          </Field.Root>
+        </Grid>
+
+        {/* Full Name Section */}
+
+        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
+          <Field.Root>
+            <FloatingLabelInput
+              id="firstName"
+              name="firstName"
+              type="text"
+              label="First Name"
+              value={formData.firstName}
+              onChange={handleChange}
+            />
+          </Field.Root>
+          <Field.Root>
+            <FloatingLabelInput
+              id="middleName"
+              name="middleName"
+              type="text"
+              label="Middle Name"
+              value={formData.middleName}
+              onChange={handleChange}
+            />
+          </Field.Root>
+        </Grid>
+
+        <Grid templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }} gap={8}>
+          <Field.Root>
+            <FloatingLabelInput
+              id="lastName"
+              name="lastName"
+              type="text"
+              label="Last Name"
+              value={formData.lastName}
+              onChange={handleChange}
+            />
+          </Field.Root>
+        </Grid>
+
+        <Grid templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }} gap={8}>
+          <Field.Root>
+            <Field.Label>Date of Birth</Field.Label>
+            <Input
+              id="dateOfBirth"
+              name="dateOfBirth"
+              type="date"
+              value={formData.dateOfBirth}
+              onChange={handleChange}
+            />
+          </Field.Root>
+        </Grid>
+
+        <Separator />
+
+        {/* Search Button */}
+        <PrimaryMdFlexButton
+          onClick={() => {
+            router.push("/pay-my-plan/details");
+          }}
+        >
+          SEARCH
+        </PrimaryMdFlexButton>
+
+        {/* Use My Saved Templates Link */}
+        <Box textAlign="center">
+          <Button w="full" variant="outline">
+            Use My Saved Templates
+          </Button>
+        </Box>
+      </VStack>
+    </Box>
+  );
+};
+
+export default PayMyPlan;

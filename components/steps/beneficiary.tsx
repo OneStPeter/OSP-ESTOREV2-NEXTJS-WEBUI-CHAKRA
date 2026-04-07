@@ -15,17 +15,20 @@ import {
   Stack,
   IconButton,
   useBreakpointValue,
+  Button,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { LuPencil } from "react-icons/lu";
 import {
   Body,
   H4,
   Small,
   DeleteSolidButton,
   SecondaryMdButton,
-  PrimaryMdButton,
   DynamicOutlineButton,
+  PrimaryMdButton,
+  EditButton,
 } from "st-peter-ui";
 import { FloatingLabelInput } from "../ui/floating-label-input";
 
@@ -181,7 +184,7 @@ const Beneficiary = () => {
           size={{ mdDown: "full", md: "lg" }}
         >
           <Dialog.Trigger asChild>
-            <DynamicOutlineButton label="Add"></DynamicOutlineButton>
+            <DynamicOutlineButton label="Add "></DynamicOutlineButton>
           </Dialog.Trigger>
           <Portal>
             <Dialog.Backdrop />
@@ -384,18 +387,37 @@ const Beneficiary = () => {
                 </Grid>
               </Box>
 
-              {isMobile ? (
-                <IconButton
-                  aria-label="Delete beneficiary"
-                  variant="ghost"
-                  color="red.500"
-                  mt={1}
-                >
-                  <FaRegTrashAlt />
-                </IconButton>
-              ) : (
-                <DeleteSolidButton mt={{ base: 1, md: "auto" }} />
-              )}
+              <HStack gap={2} mt={{ base: 1, md: "auto" }}>
+                {isMobile ? (
+                  <IconButton
+                    aria-label="Edit beneficiary"
+                    variant="ghost"
+                    color="blue.500"
+                    onClick={() =>
+                      handleOpenEdit("principal", idx, beneficiary)
+                    }
+                  >
+                    <LuPencil />
+                  </IconButton>
+                ) : (
+                  <EditButton
+                    onClick={() =>
+                      handleOpenEdit("principal", idx, beneficiary)
+                    }
+                  ></EditButton>
+                )}
+                {isMobile ? (
+                  <IconButton
+                    aria-label="Delete beneficiary"
+                    variant="ghost"
+                    color="red.500"
+                  >
+                    <FaRegTrashAlt />
+                  </IconButton>
+                ) : (
+                  <DeleteSolidButton />
+                )}
+              </HStack>
             </Flex>
           </Box>
         ))}
@@ -456,18 +478,37 @@ const Beneficiary = () => {
                 </Grid>
               </Box>
 
-              {isMobile ? (
-                <IconButton
-                  aria-label="Delete beneficiary"
-                  variant="ghost"
-                  color="red.500"
-                  mt={1}
-                >
-                  <FaRegTrashAlt />
-                </IconButton>
-              ) : (
-                <DeleteSolidButton mt={{ base: 1, md: "auto" }} />
-              )}
+              <HStack gap={2} mt={{ base: 1, md: "auto" }}>
+                {isMobile ? (
+                  <IconButton
+                    aria-label="Edit beneficiary"
+                    variant="ghost"
+                    color="blue.500"
+                    onClick={() =>
+                      handleOpenEdit("contingent", idx, beneficiary)
+                    }
+                  >
+                    <LuPencil />
+                  </IconButton>
+                ) : (
+                  <EditButton
+                    onClick={() =>
+                      handleOpenEdit("contingent", idx, beneficiary)
+                    }
+                  ></EditButton>
+                )}
+                {isMobile ? (
+                  <IconButton
+                    aria-label="Delete beneficiary"
+                    variant="ghost"
+                    color="red.500"
+                  >
+                    <FaRegTrashAlt />
+                  </IconButton>
+                ) : (
+                  <DeleteSolidButton />
+                )}
+              </HStack>
             </Flex>
           </Box>
         ))}

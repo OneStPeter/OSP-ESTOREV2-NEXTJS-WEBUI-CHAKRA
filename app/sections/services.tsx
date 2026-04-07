@@ -66,7 +66,7 @@ const Services = () => {
           </WobbleCard>
           <WobbleCard
             containerClassName="col-span-1 min-h-[300px] bg-gray-200 bg-[#177D54] text-white"
-            onClick={() => router.push("/Transaction")}
+            onClick={() => router.push("/transaction")}
           >
             <Box p={8}>
               <Box mb={4}>

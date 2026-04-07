@@ -3,26 +3,17 @@ import {
   VStack,
   Box,
   Grid,
-  GridItem,
   Checkbox,
   Dialog,
-  Button,
   Span,
   Card,
-  Stack,
   Icon,
   Flex,
   Separator,
+  Tabs,
+  Text,
 } from "@chakra-ui/react";
-import {
-  H4,
-  Small,
-  Body,
-  CancelButton,
-  ConfirmButton,
-  H2,
-  H3,
-} from "st-peter-ui";
+import { H4, Small, Body, CancelButton, ConfirmButton, H3 } from "st-peter-ui";
 import { FaRegAddressCard } from "react-icons/fa6";
 import { FaRegUser } from "react-icons/fa";
 import { IoIosInformationCircleOutline } from "react-icons/io";
@@ -133,80 +124,101 @@ const Confirmation = () => {
           />
         </Card.Header>
         <Card.Body px={6} py={5}>
-          {/* PERSONAL INFO */}
-          <Box mb={4}>
-            <Flex align="center" gap={2}>
-              <Icon boxSize={4} color="gray.700">
-                <FaRegUser />
-              </Icon>
-              <Body fontWeight="semibold">Personal Info</Body>
-            </Flex>
-          </Box>
-          <Grid templateColumns={{ base: "1fr", md: "repeat(4,1fr)" }} gap={6}>
-            <InfoItem label="Selected ID Type" value="Driver's License" />
-            <InfoItem label="Uploaded ID" value="Id.png" />
-            <InfoItem label="Last Name" value="Dela Cruz" />
-            <InfoItem label="First Name" value="Juan" />
-            <InfoItem label="Middle Name" value="Reyes" />
-            <InfoItem label="Suffix" value="N/A" />
-            <InfoItem label="Date of Birth" value="January 1, 1990" />
-            <InfoItem label="Gender" value="Male" />
-            <InfoItem label="Contact Number" value="+63 912 345 6789" />
-            <InfoItem label="Email" value="juan.delacruz@example.com" />
-            <InfoItem label="Landline Number" value="+63 2 123 4567" />
-            <InfoItem
-              label="Mailing Address"
-              value="123 Main St, Manila, Philippines"
-            />
-            <InfoItem label="Insurability" value="Insurable" />
-          </Grid>
+          <Tabs.Root defaultValue="personal" variant="line">
+            <Tabs.List>
+              <Tabs.Trigger value="personal">
+                <Flex align="center" gap={2}>
+                  <Icon boxSize={4} color="gray.700">
+                    <FaRegUser />
+                  </Icon>
+                  <Text>Personal Info</Text>
+                </Flex>
+              </Tabs.Trigger>
 
-          <Separator my={6} />
+              <Tabs.Trigger value="residential">
+                <Flex align="center" gap={2}>
+                  <Icon boxSize={4} color="gray.700">
+                    <FaRegAddressCard />
+                  </Icon>
+                  <Text>Residential Address</Text>
+                </Flex>
+              </Tabs.Trigger>
 
-          {/* RESIDENTIAL ADDRESS */}
-          <Box mb={4}>
-            <Flex align="center" gap={2}>
-              <Icon boxSize={4} color="gray.700">
-                <FaRegAddressCard />
-              </Icon>
-              <Body fontWeight="semibold">Residential Address</Body>
-            </Flex>
-          </Box>
-          <Grid templateColumns={{ base: "1fr", md: "repeat(4,1fr)" }} gap={6}>
-            <InfoItem label="Lot #" value="Lot 12-B" />
-            <InfoItem label="Street" value="Maple Street" />
-            <InfoItem label="Province" value="Cavite" />
-            <InfoItem label="City" value="Dasmariñas" />
-            <InfoItem label="District" value="District II" />
-            <InfoItem label="Barangay" value="Barangay Sampaloc" />
-          </Grid>
+              <Tabs.Trigger value="employment">
+                <Flex align="center" gap={2}>
+                  <Icon boxSize={4} color="gray.700">
+                    <IoIosInformationCircleOutline />
+                  </Icon>
+                  <Text>Employment</Text>
+                </Flex>
+              </Tabs.Trigger>
+            </Tabs.List>
 
-          <Separator my={6} />
+            <Tabs.Content value="personal">
+              <Box py={6}>
+                <Grid
+                  templateColumns={{ base: "1fr", md: "repeat(4,1fr)" }}
+                  gap={6}
+                >
+                  <InfoItem label="Selected ID Type" value="Driver's License" />
+                  <InfoItem label="Uploaded ID" value="Id.png" />
+                  <InfoItem label="Last Name" value="Dela Cruz" />
+                  <InfoItem label="First Name" value="Juan" />
+                  <InfoItem label="Middle Name" value="Reyes" />
+                  <InfoItem label="Suffix" value="N/A" />
+                  <InfoItem label="Date of Birth" value="January 1, 1990" />
+                  <InfoItem label="Gender" value="Male" />
+                  <InfoItem label="Contact Number" value="+63 912 345 6789" />
+                  <InfoItem label="Email" value="juan.delacruz@example.com" />
+                  <InfoItem label="Landline Number" value="+63 2 123 4567" />
+                  <InfoItem
+                    label="Mailing Address"
+                    value="123 Main St, Manila, Philippines"
+                  />
+                  <InfoItem label="Insurability" value="Insurable" />
+                </Grid>
+              </Box>
+            </Tabs.Content>
 
-          {/* EMPLOYMENT */}
-          <Box mb={4}>
-            <Flex align="center" gap={2}>
-              <Icon boxSize={4} color="gray.700">
-                <IoIosInformationCircleOutline />
-              </Icon>
-              <Body fontWeight="semibold">Employment</Body>
-            </Flex>
-          </Box>
-          <Grid templateColumns={{ base: "1fr", md: "repeat(4,1fr)" }} gap={6}>
-            <InfoItem label="Occupation" value="Software Engineer" />
-            <InfoItem label="Employer Name" value="Acme Corporation" />
-            <InfoItem label="Employment Status" value="Full-time" />
-            <InfoItem
-              label="Office Address"
-              value="456 Business Rd, Makati, Philippines"
-            />
-            <InfoItem label="TIN" value="123-456-789" />
-            <InfoItem label="SSS/GSIS" value="SSS-01-2345678" />
-            <InfoItem
-              label="Other Source of Fund"
-              value="Freelance consulting"
-            />
-          </Grid>
+            <Tabs.Content value="residential">
+              <Box py={6}>
+                <Grid
+                  templateColumns={{ base: "1fr", md: "repeat(4,1fr)" }}
+                  gap={6}
+                >
+                  <InfoItem label="Lot #" value="Lot 12-B" />
+                  <InfoItem label="Street" value="Maple Street" />
+                  <InfoItem label="Province" value="Cavite" />
+                  <InfoItem label="City" value="Dasmariñas" />
+                  <InfoItem label="District" value="District II" />
+                  <InfoItem label="Barangay" value="Barangay Sampaloc" />
+                </Grid>
+              </Box>
+            </Tabs.Content>
+
+            <Tabs.Content value="employment">
+              <Box py={6}>
+                <Grid
+                  templateColumns={{ base: "1fr", md: "repeat(4,1fr)" }}
+                  gap={6}
+                >
+                  <InfoItem label="Occupation" value="Software Engineer" />
+                  <InfoItem label="Employer Name" value="Acme Corporation" />
+                  <InfoItem label="Employment Status" value="Full-time" />
+                  <InfoItem
+                    label="Office Address"
+                    value="456 Business Rd, Makati, Philippines"
+                  />
+                  <InfoItem label="TIN" value="123-456-789" />
+                  <InfoItem label="SSS/GSIS" value="SSS-01-2345678" />
+                  <InfoItem
+                    label="Other Source of Fund"
+                    value="Freelance consulting"
+                  />
+                </Grid>
+              </Box>
+            </Tabs.Content>
+          </Tabs.Root>
         </Card.Body>
       </Card.Root>
 

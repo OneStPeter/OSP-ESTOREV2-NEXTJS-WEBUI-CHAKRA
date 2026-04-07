@@ -28,7 +28,7 @@ import {
 } from "st-peter-ui";
 import { UploadFile } from "osp-chakra-reusable-components";
 const HealthDeclaration = () => {
-  const [value, setValue] = useState(["second-item"]);
+  const [value, setValue] = useState([""]);
   const items = [
     {
       value: "first-item",
