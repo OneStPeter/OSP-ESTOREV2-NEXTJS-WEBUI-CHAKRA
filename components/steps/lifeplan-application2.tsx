@@ -13,6 +13,9 @@ import FloatingLabelInput from "../ui/floating-label-input";
 import { Body } from "st-peter-ui";
 import { useEffect, useState } from "react";
 import { useOcr } from "@/hooks/useOCR";
+import { GeoApifyService } from "@/services/API/GeoApifyService";
+import { IAddress } from "@/types/planholder";
+
 const provinceOptions = [
   "Abra",
   "Agusan del Norte",
@@ -207,7 +210,6 @@ const cityOptions = [
   "Ipil",
 ].map((city) => ({ label: city, value: city }));
 
-// For demo, use cityOptions for district/barangay as well (replace with real data as needed)
 const districtOptions = cityOptions;
 const barangayOptions = cityOptions;
 
@@ -216,17 +218,66 @@ const cityCollection = createListCollection({ items: cityOptions });
 const districtCollection = createListCollection({ items: districtOptions });
 const barangayCollection = createListCollection({ items: barangayOptions });
 
-const LifePlanApplication2 = () => {
+interface LifePlanApplication2Props {
+  onAddressUpdate?: (address: IAddress) => void;
+}
+
+const LifePlanApplication2 = ({
+  onAddressUpdate,
+}: LifePlanApplication2Props) => {
+  const OCRValue = localStorage.getItem("ocrResult");
   const { runOCR, data } = useOcr();
-  const [addressLine, setAddressLine] = useState("");
-  useEffect(() => {
-    if (data?.response) {
-      setAddressLine(data.response.addressLine || "");
+  const [lot, setLot] = useState("");
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [province, setProvince] = useState("");
+  const [district, setDistrict] = useState("");
+  const [barangay, setBarangay] = useState("");
+
+  const parseAddress = async (address: string) => {
+    if (!address) return;
+
+    try {
+      const result = await GeoApifyService.autocompleteAddress(address);
+
+      console.log("PARSED RESULT:", result);
+
+      setLot(result.houseNumber ?? "");
+      setStreet(result.street ?? "");
+      setCity(result.city ?? "");
+      setDistrict(result.suburb ?? "");
+      setProvince(result.province ?? "");
+    } catch (error) {
+      console.error("Error parsing address:", error);
     }
-  }, [data]);
+  };
+
+  useEffect(() => {
+    if (OCRValue != null) {
+      const ocrData = JSON.parse(OCRValue);
+      const address = ocrData.addressLine || "";
+      parseAddress(address);
+    } else if (data?.response) {
+      const address = data.response.addressLine || "";
+      parseAddress(address);
+    }
+  }, [OCRValue, data]);
+
+  useEffect(() => {
+    onAddressUpdate?.({
+      lot,
+      street,
+      barangay,
+      city,
+      province,
+      addressLine: `${lot} ${street} ${barangay} ${city} ${province}`.trim(),
+    });
+  }, [lot, street, barangay, city, province, district]);
+
   useEffect(() => {
     runOCR();
   }, []);
+
   return (
     <>
       <VStack align="stretch" gap={4} mb={4}>
@@ -237,15 +288,30 @@ const LifePlanApplication2 = () => {
         </Box>
       </VStack>
 
-      {/* <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
+      <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
         <Field.Root>
-          <FloatingLabelInput id="lotNumber" label="Lot #" />
+          <FloatingLabelInput
+            id="lotNumber"
+            label="Lot #"
+            value={lot}
+            onChange={(e) => setLot(e.target.value)}
+          />
         </Field.Root>
         <Field.Root>
-          <FloatingLabelInput id="street" label="Street" />
+          <FloatingLabelInput
+            id="street"
+            label="Street"
+            value={street}
+            onChange={(e) => setStreet(e.target.value)}
+          />
         </Field.Root>
         <VStack align="stretch" gap={4}>
-          <Select.Root collection={provinceCollection} width="100%">
+          <Select.Root
+            value={[province]}
+            onValueChange={(e) => setProvince(e.value[0])}
+            collection={provinceCollection}
+            width="100%"
+          >
             <Select.HiddenSelect />
             <Select.Control>
               <Select.Trigger>
@@ -270,7 +336,12 @@ const LifePlanApplication2 = () => {
           </Select.Root>
         </VStack>
         <VStack align="stretch" gap={4}>
-          <Select.Root collection={cityCollection} width="100%">
+          <Select.Root
+            value={[city]}
+            onValueChange={(e) => setCity(e.value[0])}
+            collection={cityCollection}
+            width="100%"
+          >
             <Select.HiddenSelect />
             <Select.Control>
               <Select.Trigger>
@@ -294,11 +365,13 @@ const LifePlanApplication2 = () => {
             </Portal>
           </Select.Root>
         </VStack>
-      </SimpleGrid> */}
-
-      {/* <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
-        <VStack align="stretch" gap={4} mb={4}>
-          <Select.Root collection={districtCollection} width="100%">
+        <VStack align="stretch" gap={4}>
+          <Select.Root
+            value={[district]}
+            onValueChange={(e) => setDistrict(e.value[0])}
+            collection={districtCollection}
+            width="100%"
+          >
             <Select.HiddenSelect />
             <Select.Control>
               <Select.Trigger>
@@ -322,8 +395,13 @@ const LifePlanApplication2 = () => {
             </Portal>
           </Select.Root>
         </VStack>
-        <VStack align="stretch" gap={4} mb={4}>
-          <Select.Root collection={barangayCollection} width="100%">
+        <VStack align="stretch" gap={4}>
+          <Select.Root
+            value={[barangay]}
+            onValueChange={(e) => setBarangay(e.value[0])}
+            collection={barangayCollection}
+            width="100%"
+          >
             <Select.HiddenSelect />
             <Select.Control>
               <Select.Trigger>
@@ -347,19 +425,6 @@ const LifePlanApplication2 = () => {
             </Portal>
           </Select.Root>
         </VStack>
-      </SimpleGrid> */}
-
-      <SimpleGrid columns={{ base: 1, md: 1 }} gap={4}>
-        <Field.Root>
-          {/* <Field.Label>Address Line</Field.Label> */}
-          <FloatingLabelInput
-            id="addressLine"
-            type="text"
-            label="Address"
-            value={addressLine}
-            onChange={(e) => setAddressLine(e.target.value)}
-          />
-        </Field.Root>
       </SimpleGrid>
     </>
   );

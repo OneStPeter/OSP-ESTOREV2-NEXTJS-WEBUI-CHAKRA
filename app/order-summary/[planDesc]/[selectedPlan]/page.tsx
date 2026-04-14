@@ -17,12 +17,18 @@ const Page = ({
   const router = useRouter();
   const { planDesc, selectedPlan } = use(params);
 
-  // Hook fetches data based on planDesc and selectedPlan
   const { data: plans } = useModeName(planDesc, selectedPlan);
 
   useEffect(() => {
     if (plans && plans.length > 0) {
-      sessionStorage.setItem("selectedPlan", JSON.stringify(plans[0]));
+      const quantity = sessionStorage.getItem("quantity") || "1";
+      sessionStorage.setItem(
+        "selectedPlan",
+        JSON.stringify({
+          ...plans[0],
+          quantity: parseInt(quantity),
+        }),
+      );
     }
   }, [plans]);
 
@@ -56,6 +62,7 @@ const Page = ({
           planDesc={plans[0].planDesc}
           ipInstAmt={plans[0].ipInstAmt}
           contractPrice={plans[0].contractPrice}
+          quantity={parseInt(sessionStorage.getItem("quantity") || "1")}
         />
         <Box textAlign="end" w="full" mt={8}>
           <Button

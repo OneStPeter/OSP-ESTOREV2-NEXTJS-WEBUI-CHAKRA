@@ -8,6 +8,5 @@ export async function createCheckout(payload: any) {
     },
     body: JSON.stringify(payload),
   });
-
   return res.json();
 }

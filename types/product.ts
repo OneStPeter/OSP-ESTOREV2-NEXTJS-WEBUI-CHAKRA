@@ -10,4 +10,5 @@ export interface IPlans {
   active: boolean;
   casketDesc: string;
   discount: number;
+  quantity: number;
 }

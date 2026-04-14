@@ -11,6 +11,7 @@
   "dependencies": {
     "@chakra-ui/react": "^3.28.0",
     "@emotion/react": "^11.14.0",
+    "@splpi/dms-estore-upload": "^1.0.3",
     "@yhuanshin/shared-components": "^1.0.3",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.6.0",

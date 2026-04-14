@@ -452,11 +452,12 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                 ></AddToCartButton>
                 <BuyNowButton
                   disabled={!selectedPlan}
-                  onClick={() =>
+                  onClick={() => {
+                    sessionStorage.setItem("quantity", JSON.stringify(quantity));
                     router.push(
                       `/order-summary/${plan?.planDesc}/${selectedPlan}`,
                     )
-                  }
+                  }}
                 ></BuyNowButton>
               </Stack>
             </Box>

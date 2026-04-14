@@ -35,7 +35,7 @@ const SideBar = () => {
         },
       ],
     },
-    { icon: FaCreditCard, label: "Pay My Plan", href: "/account/pay" },
+    { icon: FaCreditCard, label: "Pay My Plan", href: "/account/pay-my-plan" },
     {
       icon: FaClipboard,
       label: "Auto-Payment Enrollment",

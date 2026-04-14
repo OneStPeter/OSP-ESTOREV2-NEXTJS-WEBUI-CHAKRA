@@ -9,7 +9,7 @@ import { MdOutlineMailOutline } from "react-icons/md";
 import SideBar from "@/components/ui/sidebar";
 import { Body, H4 } from "st-peter-ui";
 
-const page = () => {
+const Account = () => {
   return (
     <Box mt="32" p="8">
       <Flex w="7xl" mx="auto" justify="center">
@@ -173,4 +173,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Account;

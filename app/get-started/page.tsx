@@ -2,33 +2,27 @@
 import {
   Body,
   CancelButton,
-  ContinueButton,
   H3,
   NextButton,
   PrimaryMdButton,
 } from "st-peter-ui";
+import { DmsUploadRequirements } from "@splpi/dms-estore-upload";
 import {
   Box,
   VStack,
-  Grid,
   Flex,
   Span,
   FileUpload,
   Icon,
-  Text,
-  Heading,
   useFileUploadContext,
   Dialog,
   Button,
   Portal,
   CloseButton,
-  Card,
   Input,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { UploadFile } from "osp-chakra-reusable-components";
-import { HiCamera } from "react-icons/hi2";
+import { useRef, useState } from "react";
 import { LuUpload } from "react-icons/lu";
 const MAX_FILES = 3;
 
@@ -75,14 +69,15 @@ const page = () => {
   const router = useRouter();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [referralDialogOpen, setReferralDialogOpen] = useState(false);
+  const uploadRef = useRef<() => Promise<any> | undefined>(null);
 
-  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  //FUNCTION TO HANDLE FILE UPLOAD AND API CALL
+  const handleFile = async (file: File) => {
     if (!file) return;
 
     try {
       const formData = new FormData();
-      formData.append("ImgFile", file); // must match C# parameter name
+      formData.append("ImgFile", file);
 
       const response = await fetch(
         "http://192.168.2.10:8010/api/EstoreV2/PostOCRUpload",
@@ -202,10 +197,10 @@ const page = () => {
                   <Dialog.Header>
                     <Dialog.Title>Upload Requirements</Dialog.Title>
                   </Dialog.Header>
-                  <Dialog.Body>
+                  {/* <Dialog.Body>
                     <VStack gap={6} align="stretch">
                       {/* Info Banner */}
-                      <Box
+                  {/* <Box
                         p="4"
                         borderWidth="1px"
                         borderRadius="lg"
@@ -219,10 +214,10 @@ const page = () => {
                           To continue, please upload a valid ID. The system will
                           use it to populate your information automatically.
                         </Text>
-                      </Box>
+                      </Box> */}
 
-                      {/* Upload Government-issued ID Section */}
-                      <VStack gap={4} align="stretch">
+                  {/* Upload Government-issued ID Section */}
+                  {/* <VStack gap={4} align="stretch">
                         <Box>
                           <Heading size="md" fontWeight="bold">
                             Upload Government-issued ID
@@ -233,12 +228,12 @@ const page = () => {
                         </Box>
 
                         {/* Two-option Grid Layout */}
-                        <Grid
+                  {/* <Grid
                           templateColumns={{ base: "1fr", md: "2fr" }}
                           gap={4}
                         >
                           {/* Camera Option */}
-                          <Card.Root
+                  {/* <Card.Root
                             borderWidth="2px"
                             borderColor="gray.200"
                             p={6}
@@ -282,42 +277,42 @@ const page = () => {
                                 </FileUpload.Trigger>
                               </FileUpload.Root>
                             </VStack>
-                          </Card.Root>
+                          </Card.Root> */}
 
-                          {/* Drag & Drop Option */}
+                  {/* Drag & Drop Option */}
 
-                          {/* <UploadFile /> */}
-                          <FileUpload.Root
-                            maxW="full"
-                            alignItems="stretch"
-                            maxFiles={MAX_FILES}
-                          >
-                            <FileUpload.HiddenInput
-                              onChange={(a) => handleFile(a)}
-                              // onChange={async (
-                              //   e: React.ChangeEvent<HTMLInputElement>,
-                              // ) => {
-                              //   const file = e.target.files?.[0];
-                              //   if (!file) return;
+                  {/* <UploadFile /> */}
+                  {/* <FileUpload.Root
+                    maxW="full"
+                    alignItems="stretch"
+                    maxFiles={MAX_FILES}
+                  >
+                    <FileUpload.HiddenInput
+                      onChange={(a) => handleFile(a)}
+                      // onChange={async (
+                      //   e: React.ChangeEvent<HTMLInputElement>,
+                      // ) => {
+                      //   const file = e.target.files?.[0];
+                      //   if (!file) return;
 
-                              //   try {
-                              //     const bytes = await fileToBytes(file);
-                              //     console.log("File bytes:", bytes);
-                              //   } catch (err) {
-                              //     console.error(
-                              //       "Error converting file to bytes:",
-                              //       err,
-                              //     );
-                              //   }
-                              // }}
-                            />
-                            <ConditionalDropzone />
-                            <FileUpload.List clearable />
-                          </FileUpload.Root>
-                        </Grid>
+                      //   try {
+                      //     const bytes = await fileToBytes(file);
+                      //     console.log("File bytes:", bytes);
+                      //   } catch (err) {
+                      //     console.error(
+                      //       "Error converting file to bytes:",
+                      //       err,
+                      //     );
+                      //   }
+                      // }}
+                    />
+                    <ConditionalDropzone />
+                    <FileUpload.List clearable />
+                  </FileUpload.Root> */}
+                  {/* </Grid> */}
 
-                        {/* Accepted File Types Info */}
-                        {/* <Box
+                  {/* Accepted File Types Info */}
+                  {/* <Box
                           p={3}
                           bg="gray.50"
                           rounded="md"
@@ -329,10 +324,10 @@ const page = () => {
                             PNG, JPG, JPEG, PDF (Max 3 files)
                           </Text>
                         </Box> */}
-                      </VStack>
+                  {/* </VStack> */}
 
-                      {/* Upload Signature Section */}
-                      <VStack gap={4} align="stretch">
+                  {/* Upload Signature Section */}
+                  {/* <VStack gap={4} align="stretch">
                         <Box>
                           <Heading size="md" fontWeight="bold">
                             Upload valid three (3) specimen signature.
@@ -351,15 +346,50 @@ const page = () => {
                             PNG, JPG, JPEG(Max 3 files)
                           </Text>
                         </Box>
-                      </VStack>
-                    </VStack>
+                      </VStack> */}
+                  {/* </VStack>
+                  </Dialog.Body> */}
+
+                  {/* DMS COMPONENT */}
+                  <Dialog.Body>
+                    <DmsUploadRequirements
+                      onChange={handleFile}
+                      apiBase="http://192.168.23.126:5129"
+                      uploadedBy={"testuser"}
+                      PrimaryMdButton={PrimaryMdButton}
+                      onBeforeNext={(uploadFn: any) => {
+                        uploadRef.current = uploadFn;
+                      }}
+                      onIdUploadComplete={(result: any) =>
+                        console.log("ID:", result)
+                      }
+                      onSignatureUploadComplete={(result: any) =>
+                        console.log("Sig:", result)
+                      }
+                    />
                   </Dialog.Body>
+
+                  {/* <NextButton
+                    onClick={async () => {
+                      if (uploadRef.current) {
+                        const result = await uploadRef.current();
+                        if (!result.success) return;
+                      }
+                      setUploadDialogOpen(false);
+                      setReferralDialogOpen(true);
+                    }}
+                  /> */}
+
                   <Dialog.Footer>
                     <Dialog.ActionTrigger asChild>
                       <CancelButton />
                     </Dialog.ActionTrigger>
                     <NextButton
-                      onClick={() => {
+                      onClick={async () => {
+                        if (uploadRef.current) {
+                          const result = await uploadRef.current();
+                          if (!result.success) return;
+                        }
                         setUploadDialogOpen(false);
                         setReferralDialogOpen(true);
                       }}

@@ -13,6 +13,8 @@ import {
 } from "@chakra-ui/react";
 import FloatingLabelInput from "../ui/floating-label-input";
 import { Body, H4 } from "st-peter-ui";
+import { IEmployment } from "@/types/planholder";
+import { IApplicationData } from "@/types/planholder";
 
 const genderOptions = [
   { value: "male", label: "Male" },
@@ -29,7 +31,33 @@ const civilStatusCollection = createListCollection({
   items: civilStatusOptions,
 });
 
-const LifePlanApplication3 = () => {
+interface LifePlanApplication3Props {
+  initialData?: IEmployment;
+  onUpdate?: (employment: IEmployment) => void;
+}
+
+const LifePlanApplication3 = ({
+  initialData,
+  onUpdate,
+}: LifePlanApplication3Props) => {
+  const [applicationData, setApplicationData] =
+    React.useState<IApplicationData>({} as IApplicationData);
+
+  const [formData, setFormData] = React.useState<IEmployment>({
+    occupation: initialData?.occupation ?? "",
+    employerName: initialData?.employerName ?? "",
+    employmentStatus: initialData?.employmentStatus ?? "",
+    officeAddress: initialData?.officeAddress ?? "",
+    TIN: initialData?.TIN ?? "",
+    SSS: initialData?.SSS ?? "",
+    sourceOfIncome: initialData?.sourceOfIncome ?? "",
+  });
+
+  // Auto-save to parent when formData changes
+  React.useEffect(() => {
+    onUpdate?.(formData);
+  }, [formData, onUpdate]);
+
   return (
     <>
       <VStack align="stretch" gap={4} mb={4}>
@@ -38,101 +66,72 @@ const LifePlanApplication3 = () => {
         </Body>
       </VStack>
 
-      {/* <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
-        <Field.Root>
-          <FloatingLabelInput id="landlineNumber" label="Landline Number" />
-        </Field.Root>
-        <Field.Root>
-          <FloatingLabelInput id="mailToCollect" label="Mail to Collect" />
-        </Field.Root>
-      </SimpleGrid> */}
-
-      <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
-        {/* <VStack align="stretch" gap={4} mb={4}>
-          <Select.Root collection={genderCollection} width="100%">
-            <Select.HiddenSelect />
-            <Select.Control>
-              <Select.Trigger>
-                <Select.ValueText placeholder="Select Gender" />
-              </Select.Trigger>
-              <Select.IndicatorGroup>
-                <Select.Indicator />
-              </Select.IndicatorGroup>
-            </Select.Control>
-            <Portal>
-              <Select.Positioner>
-                <Select.Content>
-                  {genderOptions.map((item) => (
-                    <Select.Item item={item} key={item.value}>
-                      {item.label}
-                      <Select.ItemIndicator />
-                    </Select.Item>
-                  ))}
-                </Select.Content>
-              </Select.Positioner>
-            </Portal>
-          </Select.Root>
-        </VStack> */}
-        {/* <VStack align="stretch" gap={4}>
-          <Select.Root collection={civilStatusCollection} width="100%">
-            <Select.HiddenSelect />
-            <Select.Control>
-              <Select.Trigger>
-                <Select.ValueText placeholder="Select Civil Status" />
-              </Select.Trigger>
-              <Select.IndicatorGroup>
-                <Select.Indicator />
-              </Select.IndicatorGroup>
-            </Select.Control>
-            <Portal>
-              <Select.Positioner>
-                <Select.Content>
-                  {civilStatusOptions.map((item) => (
-                    <Select.Item item={item} key={item.value}>
-                      {item.label}
-                      <Select.ItemIndicator />
-                    </Select.Item>
-                  ))}
-                </Select.Content>
-              </Select.Positioner>
-            </Portal>
-          </Select.Root>
-        </VStack> */}
-      </SimpleGrid>
-
-      {/* <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
-        <Field.Root>
-          <FloatingLabelInput id="height" label="Height (inches)" />
-        </Field.Root>
-        <Field.Root>
-          <FloatingLabelInput id="weight" label="Weight (lbs)" />
-        </Field.Root>
-      </SimpleGrid> */}
-
       <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
         <Field.Root>
-          <FloatingLabelInput id="occupation" label="Occupation" />
+          <FloatingLabelInput
+            id="occupation"
+            label="Occupation"
+            value={formData.occupation}
+            onChange={(e) => {
+              setFormData({ ...formData, occupation: e.target.value });
+            }}
+          />
         </Field.Root>
         <Field.Root>
-          <FloatingLabelInput id="employerName" label="Employer Name" />
+          <FloatingLabelInput
+            id="employerName"
+            label="Employer Name"
+            value={formData.employerName}
+            onChange={(e) => {
+              setFormData({ ...formData, employerName: e.target.value });
+            }}
+          />
         </Field.Root>
       </SimpleGrid>
 
       <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
         <Field.Root>
-          <FloatingLabelInput id="employmentStatus" label="Employment Status" />
+          <FloatingLabelInput
+            id="employmentStatus"
+            label="Employment Status"
+            value={formData.employmentStatus}
+            onChange={(e) => {
+              setFormData({ ...formData, employmentStatus: e.target.value });
+            }}
+          />
         </Field.Root>
         <Field.Root>
-          <FloatingLabelInput id="officeAddress" label="Office Address" />
+          <FloatingLabelInput
+            id="officeAddress"
+            label="Office Address"
+            value={formData.officeAddress}
+            onChange={(e) => {
+              setFormData({ ...formData, officeAddress: e.target.value });
+            }}
+          />
         </Field.Root>
       </SimpleGrid>
 
       <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
         <Field.Root>
-          <FloatingLabelInput id="tin" label="TIN" />
+          <FloatingLabelInput
+            id="tin"
+            label="TIN"
+            value={formData.TIN}
+            onChange={(e) => {
+              setFormData({ ...formData, TIN: e.target.value });
+            }}
+          />
         </Field.Root>
         <Field.Root>
-          <FloatingLabelInput id="sssGsis" label="SSS/GSIS" />
+          <FloatingLabelInput
+            id="sssGsis"
+            label="SSS"
+            value={formData.SSS}
+            onChange={(e) => {
+              setFormData({ ...formData, SSS: e.target.value });
+            }}
+          />
         </Field.Root>
       </SimpleGrid>
       <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
@@ -140,6 +139,10 @@ const LifePlanApplication3 = () => {
           <FloatingLabelInput
             id="otherSourceOfFund"
             label="Other Source of Fund"
+            value={formData.sourceOfIncome}
+            onChange={(e) => {
+              setFormData({ ...formData, sourceOfIncome: e.target.value });
+            }}
           />
         </Field.Root>
       </SimpleGrid>

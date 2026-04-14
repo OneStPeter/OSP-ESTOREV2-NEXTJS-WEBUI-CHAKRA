@@ -31,6 +31,7 @@ import {
   EditButton,
 } from "st-peter-ui";
 import { FloatingLabelInput } from "../ui/floating-label-input";
+import { IBeneficiary } from "@/types/planholder";
 
 const beneficiaryTypes = createListCollection({
   items: [
@@ -48,71 +49,106 @@ const relationshipTypes = createListCollection({
   ],
 });
 
-type BeneficiaryItem = {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  birthDate: string;
-  relationship: string;
-  address: string;
-};
-
 type SelectedBeneficiary = {
   type: "principal" | "contingent";
   index: number;
 };
 
-const Beneficiary = () => {
+interface BeneficiaryProps {
+  onUpdate?: (
+    principal: IBeneficiary | undefined,
+    contingent: IBeneficiary | undefined,
+    all: IBeneficiary[],
+  ) => void;
+}
+
+const Beneficiary = ({ onUpdate }: BeneficiaryProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   const [principalBeneficiaries, setPrincipalBeneficiaries] = useState<
-    BeneficiaryItem[]
-  >([
-    {
-      firstName: "Juan",
-      middleName: "",
-      lastName: "Dela Cruz",
-      birthDate: "1990-01-01",
-      relationship: "Sibling",
-      address: "Quezon City",
-    },
-    {
-      firstName: "Maria",
-      middleName: "R.",
-      lastName: "Santos",
-      birthDate: "1992-03-10",
-      relationship: "Sibling",
-      address: "Makati City",
-    },
-  ]);
+    IBeneficiary[]
+  >([]);
 
   const [contingentBeneficiaries, setContingentBeneficiaries] = useState<
-    BeneficiaryItem[]
-  >([
-    {
-      firstName: "Alex",
-      middleName: "",
-      lastName: "Santos",
-      birthDate: "1980-02-14",
-      relationship: "Parent",
-      address: "Pasig City",
-    },
-  ]);
+    IBeneficiary[]
+  >([]);
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedBeneficiary, setSelectedBeneficiary] =
     useState<SelectedBeneficiary | null>(null);
-  const [editedBeneficiary, setEditedBeneficiary] = useState<BeneficiaryItem>({
+
+  const [formBeneficiary, setFormBeneficiary] = useState<IBeneficiary>({
     firstName: "",
-    middleName: "",
+    middleInitial: "",
     lastName: "",
     birthDate: "",
-    relationship: "",
     address: "",
+    relationship: "",
+    beneficiaryClass: "principal",
   });
 
-  const formatFullName = (beneficiary: BeneficiaryItem) => {
-    return [beneficiary.firstName, beneficiary.middleName, beneficiary.lastName]
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [addFormBeneficiary, setAddFormBeneficiary] = useState<IBeneficiary>({
+    firstName: "",
+    middleInitial: "",
+    lastName: "",
+    birthDate: "",
+    address: "",
+    relationship: "",
+    beneficiaryClass: "principal",
+  });
+
+  const handleSaveAddBeneficiary = () => {
+    if (
+      !addFormBeneficiary.firstName ||
+      !addFormBeneficiary.lastName ||
+      !addFormBeneficiary.birthDate ||
+      !addFormBeneficiary.relationship ||
+      !addFormBeneficiary.address
+    ) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    let newPrincipal = principalBeneficiaries;
+    let newContingent = contingentBeneficiaries;
+
+    if (addFormBeneficiary.beneficiaryClass === "principal") {
+      newPrincipal = [...principalBeneficiaries, addFormBeneficiary];
+      setPrincipalBeneficiaries(newPrincipal);
+    } else {
+      newContingent = [...contingentBeneficiaries, addFormBeneficiary];
+      setContingentBeneficiaries(newContingent);
+    }
+
+    const allBeneficiaries = [...newPrincipal, ...newContingent];
+
+    setAddFormBeneficiary({
+      firstName: "",
+      middleInitial: "",
+      lastName: "",
+      birthDate: "",
+      relationship: "",
+      address: "",
+      beneficiaryClass: "principal",
+    });
+    setAddDialogOpen(false);
+    console.log("Beneficiary added:", addFormBeneficiary);
+
+    // Call parent update callback
+    onUpdate?.(
+      newPrincipal.length > 0 ? newPrincipal[0] : undefined,
+      newContingent.length > 0 ? newContingent[0] : undefined,
+      allBeneficiaries,
+    );
+  };
+
+  const formatFullName = (beneficiary: IBeneficiary) => {
+    return [
+      beneficiary.firstName,
+      beneficiary.middleInitial,
+      beneficiary.lastName,
+    ]
       .filter((namePart) => namePart.trim().length > 0)
       .join(" ");
   };
@@ -131,10 +167,10 @@ const Beneficiary = () => {
   const handleOpenEdit = (
     type: "principal" | "contingent",
     index: number,
-    beneficiary: BeneficiaryItem,
+    beneficiary: IBeneficiary,
   ) => {
     setSelectedBeneficiary({ type, index });
-    setEditedBeneficiary({ ...beneficiary });
+    setFormBeneficiary({ ...beneficiary });
     setEditDialogOpen(true);
   };
 
@@ -145,7 +181,7 @@ const Beneficiary = () => {
       setPrincipalBeneficiaries((prev) =>
         prev.map((beneficiary, index) =>
           index === selectedBeneficiary.index
-            ? { ...editedBeneficiary }
+            ? { ...formBeneficiary }
             : beneficiary,
         ),
       );
@@ -153,7 +189,7 @@ const Beneficiary = () => {
       setContingentBeneficiaries((prev) =>
         prev.map((beneficiary, index) =>
           index === selectedBeneficiary.index
-            ? { ...editedBeneficiary }
+            ? { ...formBeneficiary }
             : beneficiary,
         ),
       );
@@ -182,6 +218,8 @@ const Beneficiary = () => {
           placement="center"
           motionPreset="slide-in-bottom"
           size={{ mdDown: "full", md: "lg" }}
+          open={addDialogOpen}
+          onOpenChange={(details) => setAddDialogOpen(details.open)}
         >
           <Dialog.Trigger asChild>
             <DynamicOutlineButton label="Add "></DynamicOutlineButton>
@@ -201,7 +239,24 @@ const Beneficiary = () => {
                       gap={4}
                       w="full"
                     >
-                      <Select.Root collection={beneficiaryTypes} size="md">
+                      <Select.Root
+                        collection={beneficiaryTypes}
+                        size="md"
+                        value={
+                          addFormBeneficiary.beneficiaryClass
+                            ? [addFormBeneficiary.beneficiaryClass]
+                            : []
+                        }
+                        onValueChange={(details) =>
+                          setAddFormBeneficiary((prev) => ({
+                            ...prev,
+                            beneficiaryClass:
+                              (details.value?.[0] as
+                                | "principal"
+                                | "contingent") ?? "principal",
+                          }))
+                        }
+                      >
                         <Select.HiddenSelect />
                         <Select.Control>
                           <Select.Trigger>
@@ -226,7 +281,21 @@ const Beneficiary = () => {
                         </Select.Positioner>
                       </Select.Root>
 
-                      <Select.Root collection={relationshipTypes} size="md">
+                      <Select.Root
+                        collection={relationshipTypes}
+                        size="md"
+                        value={
+                          addFormBeneficiary.relationship
+                            ? [addFormBeneficiary.relationship]
+                            : []
+                        }
+                        onValueChange={(details) =>
+                          setAddFormBeneficiary((prev) => ({
+                            ...prev,
+                            relationship: details.value?.[0] ?? "",
+                          }))
+                        }
+                      >
                         <Select.HiddenSelect />
                         <Select.Control>
                           <Select.Trigger>
@@ -263,6 +332,13 @@ const Beneficiary = () => {
                           id="firstName"
                           type="text"
                           label="First Name"
+                          value={addFormBeneficiary.firstName}
+                          onChange={(e) =>
+                            setAddFormBeneficiary((prev) => ({
+                              ...prev,
+                              firstName: e.target.value,
+                            }))
+                          }
                         />
                         <Field.ErrorText>
                           This field is required
@@ -274,6 +350,13 @@ const Beneficiary = () => {
                           id="lastName"
                           type="text"
                           label="Last Name"
+                          value={addFormBeneficiary.lastName}
+                          onChange={(e) =>
+                            setAddFormBeneficiary((prev) => ({
+                              ...prev,
+                              lastName: e.target.value,
+                            }))
+                          }
                         />
                         <Field.ErrorText>
                           This field is required
@@ -285,6 +368,13 @@ const Beneficiary = () => {
                           id="middleInitial"
                           type="text"
                           label="Middle Initial"
+                          value={addFormBeneficiary.middleInitial}
+                          onChange={(e) =>
+                            setAddFormBeneficiary((prev) => ({
+                              ...prev,
+                              middleInitial: e.target.value,
+                            }))
+                          }
                         />
                         <Field.ErrorText>
                           This field is required
@@ -297,6 +387,13 @@ const Beneficiary = () => {
                         id="address"
                         type="text"
                         label="Address"
+                        value={addFormBeneficiary.address}
+                        onChange={(e) =>
+                          setAddFormBeneficiary((prev) => ({
+                            ...prev,
+                            address: e.target.value,
+                          }))
+                        }
                       />
                       <Field.ErrorText>This field is required</Field.ErrorText>
                     </Field.Root>
@@ -304,7 +401,17 @@ const Beneficiary = () => {
                     {/* Row 3: DOB  */}
                     <Field.Root w={{ base: "full", md: "300px" }}>
                       <Field.Label>Date of Birth</Field.Label>
-                      <Input id="dateOfBirth" type="date" />
+                      <Input
+                        id="dateOfBirth"
+                        type="date"
+                        value={addFormBeneficiary.birthDate}
+                        onChange={(e) =>
+                          setAddFormBeneficiary((prev) => ({
+                            ...prev,
+                            birthDate: e.target.value,
+                          }))
+                        }
+                      />
                       <Field.ErrorText>This field is required</Field.ErrorText>
                     </Field.Root>
                   </VStack>
@@ -318,7 +425,9 @@ const Beneficiary = () => {
                     <Dialog.ActionTrigger asChild>
                       <SecondaryMdButton>Cancel</SecondaryMdButton>
                     </Dialog.ActionTrigger>
-                    <PrimaryMdButton>Save</PrimaryMdButton>
+                    <PrimaryMdButton onClick={handleSaveAddBeneficiary}>
+                      Save
+                    </PrimaryMdButton>
                   </Stack>
                 </Dialog.Footer>
                 <Dialog.CloseTrigger asChild>
@@ -334,185 +443,215 @@ const Beneficiary = () => {
         <Body fontWeight="bold">Principal Beneficiaries</Body>
       </HStack>
 
-      <VStack align="stretch" gap={3} mb={4}>
-        {principalBeneficiaries.map((beneficiary, idx) => (
-          <Box
-            key={idx}
-            bg="white"
-            borderWidth="1px"
-            borderColor="gray.200"
-            rounded="xl"
-            px={{ base: 3, md: 4 }}
-            py={{ base: 3, md: 4 }}
-          >
-            <Flex justify="space-between" align="start" gap={3}>
-              <Box
-                flex="1"
-                cursor="pointer"
-                onClick={() => handleOpenEdit("principal", idx, beneficiary)}
-              >
-                <Grid
-                  templateColumns={{
-                    base: "1fr",
-                    md: "repeat(3, minmax(0, 1fr))",
-                  }}
-                  gap={{ base: 2, md: 4 }}
+      {principalBeneficiaries.length === 0 ? (
+        <Box
+          bg="gray.50"
+          borderWidth="1px"
+          borderColor="gray.200"
+          rounded="xl"
+          px={4}
+          py={8}
+          textAlign="center"
+          mb={4}
+        >
+          <Body color="gray.500">No principal beneficiaries added yet</Body>
+        </Box>
+      ) : (
+        <VStack align="stretch" gap={3} mb={4}>
+          {principalBeneficiaries.map((beneficiary, idx) => (
+            <Box
+              key={idx}
+              bg="white"
+              borderWidth="1px"
+              borderColor="gray.200"
+              rounded="xl"
+              px={{ base: 3, md: 4 }}
+              py={{ base: 3, md: 4 }}
+            >
+              <Flex justify="space-between" align="start" gap={3}>
+                <Box
+                  flex="1"
+                  cursor="pointer"
+                  onClick={() => handleOpenEdit("principal", idx, beneficiary)}
                 >
-                  <GridItem>
-                    <VStack align="start" gap={0} minW={0}>
-                      <Small color="gray.500">Name</Small>
-                      <Body fontWeight="semibold">
-                        {formatFullName(beneficiary)}
-                      </Body>
-                    </VStack>
-                  </GridItem>
-
-                  <GridItem>
-                    <VStack align="start" gap={0}>
-                      <Small color="gray.500">Relationship</Small>
-                      <Body fontWeight="semibold">
-                        {beneficiary.relationship}
-                      </Body>
-                    </VStack>
-                  </GridItem>
-
-                  <GridItem>
-                    <VStack align="start" gap={0}>
-                      <Small color="gray.500">Date of Birth</Small>
-                      <Body fontWeight="semibold">
-                        {formatDateDisplay(beneficiary.birthDate)}
-                      </Body>
-                    </VStack>
-                  </GridItem>
-                </Grid>
-              </Box>
-
-              <HStack gap={2} mt={{ base: 1, md: "auto" }}>
-                {isMobile ? (
-                  <IconButton
-                    aria-label="Edit beneficiary"
-                    variant="ghost"
-                    color="blue.500"
-                    onClick={() =>
-                      handleOpenEdit("principal", idx, beneficiary)
-                    }
+                  <Grid
+                    templateColumns={{
+                      base: "1fr",
+                      md: "repeat(3, minmax(0, 1fr))",
+                    }}
+                    gap={{ base: 2, md: 4 }}
                   >
-                    <LuPencil />
-                  </IconButton>
-                ) : (
-                  <EditButton
-                    onClick={() =>
-                      handleOpenEdit("principal", idx, beneficiary)
-                    }
-                  ></EditButton>
-                )}
-                {isMobile ? (
-                  <IconButton
-                    aria-label="Delete beneficiary"
-                    variant="ghost"
-                    color="red.500"
-                  >
-                    <FaRegTrashAlt />
-                  </IconButton>
-                ) : (
-                  <DeleteSolidButton />
-                )}
-              </HStack>
-            </Flex>
-          </Box>
-        ))}
-      </VStack>
+                    <GridItem>
+                      <VStack align="start" gap={0} minW={0}>
+                        <Small color="gray.500">Name</Small>
+                        <Body fontWeight="semibold">
+                          {formatFullName(beneficiary)}
+                        </Body>
+                      </VStack>
+                    </GridItem>
+
+                    <GridItem>
+                      <VStack align="start" gap={0}>
+                        <Small color="gray.500">Relationship</Small>
+                        <Body fontWeight="semibold">
+                          {beneficiary.relationship}
+                        </Body>
+                      </VStack>
+                    </GridItem>
+
+                    <GridItem>
+                      <VStack align="start" gap={0}>
+                        <Small color="gray.500">Date of Birth</Small>
+                        <Body fontWeight="semibold">
+                          {formatDateDisplay(beneficiary.birthDate)}
+                        </Body>
+                      </VStack>
+                    </GridItem>
+                  </Grid>
+                </Box>
+
+                <HStack gap={2} mt={{ base: 1, md: "auto" }}>
+                  {isMobile ? (
+                    <IconButton
+                      aria-label="Edit beneficiary"
+                      variant="ghost"
+                      color="blue.500"
+                      onClick={() =>
+                        handleOpenEdit("principal", idx, beneficiary)
+                      }
+                    >
+                      <LuPencil />
+                    </IconButton>
+                  ) : (
+                    <EditButton
+                      onClick={() =>
+                        handleOpenEdit("principal", idx, beneficiary)
+                      }
+                    ></EditButton>
+                  )}
+                  {isMobile ? (
+                    <IconButton
+                      aria-label="Delete beneficiary"
+                      variant="ghost"
+                      color="red.500"
+                    >
+                      <FaRegTrashAlt />
+                    </IconButton>
+                  ) : (
+                    <DeleteSolidButton />
+                  )}
+                </HStack>
+              </Flex>
+            </Box>
+          ))}
+        </VStack>
+      )}
       <HStack justify="space-between" align="center" w="full" mb={4}>
         <Body fontWeight="bold">Contingent Beneficiaries</Body>
       </HStack>
-      <VStack align="stretch" gap={3} mb={4}>
-        {contingentBeneficiaries.map((beneficiary, idx) => (
-          <Box
-            key={idx}
-            bg="white"
-            borderWidth="1px"
-            borderColor="gray.200"
-            rounded="xl"
-            px={{ base: 3, md: 4 }}
-            py={{ base: 3, md: 4 }}
-          >
-            <Flex justify="space-between" align="start" gap={3}>
-              <Box
-                flex="1"
-                cursor="pointer"
-                onClick={() => handleOpenEdit("contingent", idx, beneficiary)}
-              >
-                <Grid
-                  templateColumns={{
-                    base: "1fr",
-                    md: "repeat(3, minmax(0, 1fr))",
-                  }}
-                  gap={{ base: 2, md: 4 }}
+      {contingentBeneficiaries.length === 0 ? (
+        <Box
+          bg="gray.50"
+          borderWidth="1px"
+          borderColor="gray.200"
+          rounded="xl"
+          px={4}
+          py={8}
+          textAlign="center"
+          mb={4}
+        >
+          <Body color="gray.500">No contingent beneficiaries added yet</Body>
+        </Box>
+      ) : (
+        <VStack align="stretch" gap={3} mb={4}>
+          {contingentBeneficiaries.map((beneficiary, idx) => (
+            <Box
+              key={idx}
+              bg="white"
+              borderWidth="1px"
+              borderColor="gray.200"
+              rounded="xl"
+              px={{ base: 3, md: 4 }}
+              py={{ base: 3, md: 4 }}
+            >
+              <Flex justify="space-between" align="start" gap={3}>
+                <Box
+                  flex="1"
+                  cursor="pointer"
+                  onClick={() => handleOpenEdit("contingent", idx, beneficiary)}
                 >
-                  <GridItem>
-                    <VStack align="start" gap={0} minW={0}>
-                      <Small color="gray.500">Name</Small>
-                      <Body fontWeight="semibold">
-                        {formatFullName(beneficiary)}
-                      </Body>
-                    </VStack>
-                  </GridItem>
-
-                  <GridItem>
-                    <VStack align="start" gap={0}>
-                      <Small color="gray.500">Relationship</Small>
-                      <Body fontWeight="semibold">
-                        {beneficiary.relationship}
-                      </Body>
-                    </VStack>
-                  </GridItem>
-
-                  <GridItem>
-                    <VStack align="start" gap={0}>
-                      <Small color="gray.500">Date of Birth</Small>
-                      <Body fontWeight="semibold">
-                        {formatDateDisplay(beneficiary.birthDate)}
-                      </Body>
-                    </VStack>
-                  </GridItem>
-                </Grid>
-              </Box>
-
-              <HStack gap={2} mt={{ base: 1, md: "auto" }}>
-                {isMobile ? (
-                  <IconButton
-                    aria-label="Edit beneficiary"
-                    variant="ghost"
-                    color="blue.500"
-                    onClick={() =>
-                      handleOpenEdit("contingent", idx, beneficiary)
-                    }
+                  <Grid
+                    templateColumns={{
+                      base: "1fr",
+                      md: "repeat(3, minmax(0, 1fr))",
+                    }}
+                    gap={{ base: 2, md: 4 }}
                   >
-                    <LuPencil />
-                  </IconButton>
-                ) : (
-                  <EditButton
-                    onClick={() =>
-                      handleOpenEdit("contingent", idx, beneficiary)
-                    }
-                  ></EditButton>
-                )}
-                {isMobile ? (
-                  <IconButton
-                    aria-label="Delete beneficiary"
-                    variant="ghost"
-                    color="red.500"
-                  >
-                    <FaRegTrashAlt />
-                  </IconButton>
-                ) : (
-                  <DeleteSolidButton />
-                )}
-              </HStack>
-            </Flex>
-          </Box>
-        ))}
-      </VStack>
+                    <GridItem>
+                      <VStack align="start" gap={0} minW={0}>
+                        <Small color="gray.500">Name</Small>
+                        <Body fontWeight="semibold">
+                          {formatFullName(beneficiary)}
+                        </Body>
+                      </VStack>
+                    </GridItem>
+
+                    <GridItem>
+                      <VStack align="start" gap={0}>
+                        <Small color="gray.500">Relationship</Small>
+                        <Body fontWeight="semibold">
+                          {beneficiary.relationship}
+                        </Body>
+                      </VStack>
+                    </GridItem>
+
+                    <GridItem>
+                      <VStack align="start" gap={0}>
+                        <Small color="gray.500">Date of Birth</Small>
+                        <Body fontWeight="semibold">
+                          {formatDateDisplay(beneficiary.birthDate)}
+                        </Body>
+                      </VStack>
+                    </GridItem>
+                  </Grid>
+                </Box>
+
+                <HStack gap={2} mt={{ base: 1, md: "auto" }}>
+                  {isMobile ? (
+                    <IconButton
+                      aria-label="Edit beneficiary"
+                      variant="ghost"
+                      color="blue.500"
+                      onClick={() =>
+                        handleOpenEdit("contingent", idx, beneficiary)
+                      }
+                    >
+                      <LuPencil />
+                    </IconButton>
+                  ) : (
+                    <EditButton
+                      onClick={() =>
+                        handleOpenEdit("contingent", idx, beneficiary)
+                      }
+                    ></EditButton>
+                  )}
+                  {isMobile ? (
+                    <IconButton
+                      aria-label="Delete beneficiary"
+                      variant="ghost"
+                      color="red.500"
+                    >
+                      <FaRegTrashAlt />
+                    </IconButton>
+                  ) : (
+                    <DeleteSolidButton />
+                  )}
+                </HStack>
+              </Flex>
+            </Box>
+          ))}
+        </VStack>
+      )}
 
       <Dialog.Root
         placement="center"
@@ -536,9 +675,9 @@ const Beneficiary = () => {
                     <Field.Root>
                       <Field.Label>First Name</Field.Label>
                       <Input
-                        value={editedBeneficiary.firstName}
+                        value={formBeneficiary.firstName}
                         onChange={(e) =>
-                          setEditedBeneficiary((prev) => ({
+                          setFormBeneficiary((prev) => ({
                             ...prev,
                             firstName: e.target.value,
                           }))
@@ -548,25 +687,25 @@ const Beneficiary = () => {
                     </Field.Root>
 
                     <Field.Root>
-                      <Field.Label>Middle Name</Field.Label>
+                      <Field.Label>Middle Initial</Field.Label>
                       <Input
-                        value={editedBeneficiary.middleName}
+                        value={formBeneficiary.middleInitial}
                         onChange={(e) =>
-                          setEditedBeneficiary((prev) => ({
+                          setFormBeneficiary((prev) => ({
                             ...prev,
-                            middleName: e.target.value,
+                            middleInitial: e.target.value,
                           }))
                         }
-                        placeholder="Enter middle name"
+                        placeholder="Enter middle initial"
                       />
                     </Field.Root>
 
                     <Field.Root>
                       <Field.Label>Last Name</Field.Label>
                       <Input
-                        value={editedBeneficiary.lastName}
+                        value={formBeneficiary.lastName}
                         onChange={(e) =>
-                          setEditedBeneficiary((prev) => ({
+                          setFormBeneficiary((prev) => ({
                             ...prev,
                             lastName: e.target.value,
                           }))
@@ -579,9 +718,9 @@ const Beneficiary = () => {
                       <Field.Label>Birthdate</Field.Label>
                       <Input
                         type="date"
-                        value={editedBeneficiary.birthDate}
+                        value={formBeneficiary.birthDate}
                         onChange={(e) =>
-                          setEditedBeneficiary((prev) => ({
+                          setFormBeneficiary((prev) => ({
                             ...prev,
                             birthDate: e.target.value,
                           }))
@@ -594,12 +733,12 @@ const Beneficiary = () => {
                       <Select.Root
                         collection={relationshipTypes}
                         value={
-                          editedBeneficiary.relationship
-                            ? [editedBeneficiary.relationship]
+                          formBeneficiary.relationship
+                            ? [formBeneficiary.relationship]
                             : []
                         }
                         onValueChange={(details) =>
-                          setEditedBeneficiary((prev) => ({
+                          setFormBeneficiary((prev) => ({
                             ...prev,
                             relationship: details.value?.[0] ?? "",
                           }))
@@ -633,9 +772,9 @@ const Beneficiary = () => {
                     <Field.Root>
                       <Field.Label>Address</Field.Label>
                       <Input
-                        value={editedBeneficiary.address}
+                        value={formBeneficiary.address}
                         onChange={(e) =>
-                          setEditedBeneficiary((prev) => ({
+                          setFormBeneficiary((prev) => ({
                             ...prev,
                             address: e.target.value,
                           }))

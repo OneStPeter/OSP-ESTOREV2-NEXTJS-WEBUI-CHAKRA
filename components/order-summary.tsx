@@ -8,11 +8,13 @@ const OrderSummary = ({
   mode,
   contractPrice,
   ipInstAmt,
+  quantity,
 }: {
   planDesc: string;
   mode: string;
   contractPrice: number;
   ipInstAmt: number;
+  quantity: number;
 }) => {
   return (
     <>
@@ -80,6 +82,10 @@ const OrderSummary = ({
                 </Body>
               </Flex>
             ) : null}
+            <Flex justify="space-between" w="full">
+              <Body>Quantity</Body>
+              <Body>{quantity}</Body>
+            </Flex>
           </Flex>
         </GridItem>
       </Grid>

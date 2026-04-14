@@ -41,11 +41,11 @@ export const steps = [
     description: "Review and confirm your application",
     component: <Confirmation />,
   },
-  {
-    id: "5",
-    header: "Payment",
-    title: "Payment",
-    description: "Review and confirm your application",
-    component: <Payment />,
-  },
+  // {
+  //   id: "5",
+  //   header: "Payment",
+  //   title: "Payment",
+  //   description: "Review and confirm your application",
+  //   component: <Payment />,
+  // },
 ];

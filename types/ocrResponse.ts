@@ -11,3 +11,11 @@ export interface IAPIResponse {
     description: string;
     response: IPlanholder;
 }
+export interface IOcrValue {
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
+  birthDate?: string;
+  idType?: string;
+  addressLine1?: string;
+}

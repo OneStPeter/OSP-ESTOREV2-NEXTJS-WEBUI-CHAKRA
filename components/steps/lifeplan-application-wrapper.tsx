@@ -9,8 +9,46 @@ import { FaRegUser } from "react-icons/fa";
 import { Tabs } from "@chakra-ui/react";
 import { IoHomeOutline } from "react-icons/io5";
 import { BsPersonWorkspace } from "react-icons/bs";
+import { useState, useEffect, useCallback } from "react";
+import { IApplicationData, IAddress, IPersonalInfo } from "@/types/planholder";
+import {
+  createEmptyApplicationData,
+  saveApplicationDataToLocalStorage,
+  loadApplicationDataFromLocalStorage,
+} from "@/lib/utils/applicationDataFactory";
 
 const LifePlanApplicationWrapper = () => {
+  const [applicationData, setApplicationData] = useState<IApplicationData>(
+    createEmptyApplicationData(),
+  );
+
+  useEffect(() => {
+    const savedData = loadApplicationDataFromLocalStorage();
+    if (savedData) {
+      setApplicationData(savedData);
+    }
+  }, []);
+
+  useEffect(() => {
+    saveApplicationDataToLocalStorage(applicationData);
+  }, [applicationData]);
+
+  const handlePersonalInfoUpdate = useCallback(
+    (personalInfo: IPersonalInfo) => {
+      setApplicationData((prev) => ({
+        ...prev,
+        personalInfo,
+      }));
+    },
+    [],
+  );
+
+  const handleAddressUpdate = useCallback((address: IAddress) => {
+    setApplicationData((prev) => ({
+      ...prev,
+      address,
+    }));
+  }, []);
   return (
     <Tabs.Root defaultValue="step1" variant="line">
       <Tabs.List>
@@ -36,11 +74,11 @@ const LifePlanApplicationWrapper = () => {
       </Tabs.List>
 
       <Tabs.Content value="step1">
-        <LifePlanApplication1 />
+        <LifePlanApplication1 onUpdate={handlePersonalInfoUpdate} />
       </Tabs.Content>
 
       <Tabs.Content value="step2">
-        <LifePlanApplication2 />
+        <LifePlanApplication2 onAddressUpdate={handleAddressUpdate} />
       </Tabs.Content>
 
       <Tabs.Content value="step3">
