@@ -2,6 +2,7 @@
 import {
   Box,
   Button,
+  IconButton,
   HStack,
   Text,
   VStack,
@@ -25,19 +26,11 @@ import { PrimaryMdButton, DeleteButton } from "st-peter-ui";
 import { MdOutlineAddCircle } from "react-icons/md";
 import { FaCircleMinus } from "react-icons/fa6";
 import { IoCloseCircle } from "react-icons/io5";
+import { CartItem } from "@/types/cartItem";
 
 interface ShoppingCartProps {
   open: boolean;
   onClose: () => void;
-}
-
-interface CartItem {
-  planDesc?: string;
-  image?: string;
-  mode?: string;
-  quantity: number;
-  price: number;
-  total: number;
 }
 
 const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
@@ -45,7 +38,6 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
   const [showModal, setShowModal] = useState(false);
   const [removeIdx, setRemoveIdx] = useState<number | null>(null);
 
-  // Responsive values
   const maxWidth = useBreakpointValue({ base: "100%", md: "md" });
   const imageSize = useBreakpointValue({ base: "100px", md: "128px" });
   const padding = useBreakpointValue({ base: 4, md: 6 });
@@ -109,7 +101,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
       bottom={0}
       bg="blackAlpha.400"
       justifyContent={{ base: "center", md: "end" }}
-      zIndex={50}
+      zIndex="modal"
       opacity={open ? 1 : 0}
       pointerEvents={open ? "auto" : "none"}
       transition="opacity 0.3s"
@@ -118,12 +110,13 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
     >
       <Box
         w={maxWidth}
-        maxH={{ base: "90vh", md: "100vh" }}
+        maxH={{ base: "95vh", md: "100vh" }}
         bg="white"
         shadow="lg"
         roundedLeft={{ base: "lg", md: "lg" }}
         roundedRight={{ base: "lg", md: 0 }}
         p={padding}
+        pb={{ base: 24, md: 6 }}
         position="relative"
         transform={
           open
@@ -161,17 +154,18 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
         </DialogRoot>
 
         {/* Close button */}
-        <Icon
-          as={IoClose}
+        <IconButton
+          aria-label="Close shopping cart"
+          variant="ghost"
           position="absolute"
           top={padding}
           right={padding}
-          boxSize={6}
           color="gray.500"
-          _hover={{ color: "black" }}
+          _hover={{ color: "black", bg: "gray.100" }}
           onClick={onClose}
-          cursor="pointer"
-        />
+        >
+          <IoClose size={22} />
+        </IconButton>
 
         <Heading textAlign="center" mb={isMobile ? 4 : 6}>
           Shopping Cart
@@ -319,11 +313,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
           <PrimaryMdButton
             w="full"
             disabled={cartItems.length === 0}
-            onClick={() =>
-              router.push(
-                `/order-summary/${cartItems[0]?.planDesc}/${cartItems[0]?.mode}`,
-              )
-            }
+            onClick={() => router.push(`/order-summary/`)}
           >
             Proceed to Checkout
           </PrimaryMdButton>

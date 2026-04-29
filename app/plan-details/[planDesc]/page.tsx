@@ -9,6 +9,8 @@ interface PageProps {
 }
 
 const Page = ({ params }: PageProps) => {
+  sessionStorage.removeItem("CheckoutCart");
+
   const { planDesc } = use(params);
   const { data: plan } = useProductByName(planDesc);
 

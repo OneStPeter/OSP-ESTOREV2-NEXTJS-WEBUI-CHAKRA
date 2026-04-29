@@ -1,110 +1,125 @@
+// OrderSummary component - updated to handle single or multiple items
+"use client";
 import React from "react";
-import { IPlans } from "@/types/product";
-import { Text, Grid, GridItem, Image, Flex, Box } from "@chakra-ui/react";
-import { Body, H3, H4 } from "st-peter-ui";
+import {
+  Heading,
+  Text,
+  Grid,
+  GridItem,
+  Image,
+  Flex,
+  Box,
+  VStack,
+  HStack,
+  Badge,
+} from "@chakra-ui/react";
+import { CartItem } from "@/types/cartItem";
 
-const OrderSummary = ({
-  planDesc,
-  mode,
-  contractPrice,
-  ipInstAmt,
-  quantity,
-}: {
-  planDesc: string;
-  mode: string;
-  contractPrice: number;
-  ipInstAmt: number;
-  quantity: number;
-}) => {
+const getModeLabel = (mode: string) => {
+  const modeMap: Record<string, string> = {
+    M: "Monthly",
+    Q: "Quarterly",
+    S: "Semi-Annual",
+    A: "Annual",
+    C: "Cash",
+  };
+  return modeMap[mode] || mode;
+};
+
+const OrderSummary: React.FC<{ cartItems?: CartItem[] }> = ({ cartItems }) => {
+  if (!cartItems || cartItems.length === 0) return null;
+
+  const bg = "white";
+  const muted = "gray.600";
+
+  const grandTotal = cartItems.reduce(
+    (sum, item) => sum + Number(item.total),
+    0,
+  );
+
   return (
-    <>
-      <H3>Order Summary</H3>
-      <Grid
-        templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
-        gap={8}
-        mt={4}
-      >
-        <GridItem>
-          <Image
-            src={`/images/plan-images/${planDesc}.jpg`}
-            alt={planDesc}
-            w="full"
-            h="48"
-            objectFit="cover"
-            borderRadius="lg"
-          />
-        </GridItem>
-        <GridItem>
-          <Flex flexDirection="column" w="full" gap={4} justify="center">
-            <Flex justify="space-between" w="full">
-              <Box>
-                <H4>{planDesc}</H4>
-              </Box>
-              <Box>
-                <H4>
-                  {mode === "M"
-                    ? "Monthly"
-                    : mode === "Q"
-                      ? "Quarterly"
-                      : mode === "S"
-                        ? "Semi-Annual"
-                        : mode === "A"
-                          ? "Annual"
-                          : mode === "C"
-                            ? "Cash"
-                            : mode}
-                </H4>
-              </Box>
-            </Flex>
+    <Box>
+      <Text fontWeight="semibold" fontSize="2xl" mb={4}>
+        Order Summary
+      </Text>
 
-            {mode === "C" ? (
-              <Flex justify="space-between" w="full">
-                <Body>Contract Price</Body>
-                <Body>
-                  ₱
-                  {contractPrice.toLocaleString("en-PH", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                </Body>
-              </Flex>
-            ) : ["M", "Q", "S", "A"].includes(mode) ? (
-              <Flex justify="space-between" w="full">
-                <Body>Installment Amount</Body>
-                <Body>
-                  ₱
-                  {typeof ipInstAmt === "number"
-                    ? ipInstAmt.toLocaleString("en-PH", {
+      <VStack gap={6} align="stretch">
+        {cartItems.map((item, idx) => (
+          <Box key={idx} bg={bg} borderRadius="md" p={4}>
+            <Grid
+              templateColumns={{ base: "1fr", md: "120px 1fr" }}
+              gap={4}
+              alignItems="center"
+            >
+              <GridItem>
+                <Image
+                  src={`/images/plan-images/${item.planDesc}.jpg`}
+                  alt={item.planDesc}
+                  borderRadius="md"
+                  objectFit="cover"
+                  w="full"
+                  h={{ base: "160px", md: "120px" }}
+                />
+              </GridItem>
+
+              <GridItem>
+                <HStack justify="space-between" align="start">
+                  <VStack align="start" gap={1}>
+                    <Heading as="h3" size="md">
+                      {item.planDesc}
+                    </Heading>
+                    <Text fontSize="sm" color={muted}>
+                      {getModeLabel(item.mode)}
+                    </Text>
+                  </VStack>
+
+                  <VStack align="end" gap={0}>
+                    <Text fontWeight="bold">
+                      ₱
+                      {Number(item.price).toLocaleString("en-PH", {
                         minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })
-                    : "N/A"}
-                </Body>
-              </Flex>
-            ) : null}
-            <Flex justify="space-between" w="full">
-              <Body>Quantity</Body>
-              <Body>{quantity}</Body>
-            </Flex>
-          </Flex>
-        </GridItem>
-      </Grid>
+                      })}
+                    </Text>
+                    <Text fontSize="sm" color={muted}>
+                      per unit
+                    </Text>
+                  </VStack>
+                </HStack>
 
-      <Box height="1px" backgroundColor="gray.200" mt={8} />
+                <Box h="1px" bg="gray.200" my={3} />
 
-      <Flex justify="space-between" align="center" mt={8}>
-        <Body>Total Amount Payable</Body>
-        <Body>
-          ₱
-          {typeof ipInstAmt === "number"
-            ? ipInstAmt.toLocaleString("en-PH", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })
-            : "0.00"}
-        </Body>
-      </Flex>
-    </>
+                <HStack justify="space-between">
+                  <Text color={muted}>Quantity</Text>
+                  <Text fontWeight="semibold">{item.quantity}</Text>
+                </HStack>
+
+                <HStack justify="space-between" pt={3}>
+                  <Text fontWeight="bold">Subtotal</Text>
+                  <Text fontWeight="bold" color="#109448">
+                    ₱
+                    {Number(item.total).toLocaleString("en-PH", {
+                      minimumFractionDigits: 2,
+                    })}
+                  </Text>
+                </HStack>
+              </GridItem>
+            </Grid>
+          </Box>
+        ))}
+
+        <Box p={4} bg={bg} borderTop="2px solid black">
+          <HStack justify="space-between">
+            <Text fontSize="lg" fontWeight="semibold">
+              Grand Total
+            </Text>
+            <Text fontSize="lg" fontWeight="bold" color="#109448">
+              ₱
+              {grandTotal.toLocaleString("en-PH", { minimumFractionDigits: 2 })}
+            </Text>
+          </HStack>
+        </Box>
+      </VStack>
+    </Box>
   );
 };
 

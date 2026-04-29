@@ -16,6 +16,7 @@ import {
   Stack,
   Flex,
   Button,
+  Spinner,
 } from "@chakra-ui/react";
 import {
   ProductCarousel,
@@ -184,13 +185,14 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
       setQuantity(1);
     }
   }, [quantity]);
+
   const breadcrumbItems = [
     {
       label: "Home",
       href: "/",
     },
     {
-      label: "Plans",
+      label: "Life Plans",
       href: `/plans`,
     },
     {
@@ -203,7 +205,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
     <>
       {!hasPlans ? (
         <section className="h-screen flex items-center justify-center">
-          <Body>No product data found.</Body>
+          <Spinner size="lg" color="#21bc27" />
         </section>
       ) : (
         <>
@@ -453,10 +455,30 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                 <BuyNowButton
                   disabled={!selectedPlan}
                   onClick={() => {
-                    sessionStorage.setItem("quantity", JSON.stringify(quantity));
-                    router.push(
-                      `/order-summary/${plan?.planDesc}/${selectedPlan}`,
-                    )
+                    const selectedPayment = paymentOptions.find(
+                      (opt) => opt.mode === selectedPlan,
+                    );
+
+                    if (!plan || !selectedPayment || quantity == null) {
+                      return;
+                    }
+
+                    const checkoutItem = {
+                      planDesc: plan.planDesc,
+                      mode: selectedPlan!,
+                      planTerm: plan.planTerm.toString(),
+                      quantity,
+                      price: Number(
+                        selectedPayment.amount.replace(/[^0-9.-]+/g, ""),
+                      ),
+                      total,
+                    };
+
+                    sessionStorage.setItem(
+                      "CheckoutCart",
+                      JSON.stringify([checkoutItem]),
+                    );
+                    router.push(`/order-summary/`);
                   }}
                 ></BuyNowButton>
               </Stack>
