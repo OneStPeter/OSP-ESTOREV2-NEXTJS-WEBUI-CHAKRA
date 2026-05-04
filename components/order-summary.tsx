@@ -47,55 +47,54 @@ const OrderSummary: React.FC<{ cartItems?: CartItem[] }> = ({ cartItems }) => {
         {cartItems.map((item, idx) => (
           <Box key={idx} bg={bg} borderRadius="md" p={4}>
             <Grid
-              templateColumns={{ base: "1fr", md: "120px 1fr" }}
-              gap={4}
+              templateColumns={{ base: "1fr", md: "280px 1fr" }}
+              gap={8}
               alignItems="center"
             >
-              <GridItem>
+              <GridItem w="full" maxW={{ md: "280px" }}>
                 <Image
                   src={`/images/plan-images/${item.planDesc}.jpg`}
                   alt={item.planDesc}
                   borderRadius="md"
                   objectFit="cover"
-                  w="full"
-                  h={{ base: "160px", md: "120px" }}
+                  w="100%"
+                  h={{ base: "220px", md: "260px" }}
                 />
               </GridItem>
 
               <GridItem>
-                <HStack justify="space-between" align="start">
-                  <VStack align="start" gap={1}>
-                    <Heading as="h3" size="md">
+                <HStack justify="space-between" align="start" mb={4}>
+                  <VStack align="start" gap={4}>
+                    <Heading as="h3" size="md" color={muted}>
                       {item.planDesc}
                     </Heading>
-                    <Text fontSize="sm" color={muted}>
-                      {getModeLabel(item.mode)}
-                    </Text>
+                    <Text color={muted}>Mode</Text>
                   </VStack>
 
-                  <VStack align="end" gap={0}>
-                    <Text fontWeight="bold">
+                  <VStack align="end" gap={4}>
+                    <Text fontWeight="semibold">
                       ₱
-                      {Number(item.price).toLocaleString("en-PH", {
-                        minimumFractionDigits: 2,
-                      })}
+                      {Number(item.price ?? item.ipInstAmt ?? 0).toLocaleString(
+                        "en-PH",
+                        {
+                          minimumFractionDigits: 2,
+                        },
+                      )}
                     </Text>
-                    <Text fontSize="sm" color={muted}>
-                      per unit
-                    </Text>
+                    <Text color={muted}>{getModeLabel(item.mode)}</Text>
                   </VStack>
                 </HStack>
 
-                <Box h="1px" bg="gray.200" my={3} />
+                {/* <Box h="1px" bg="gray.200" my={3} /> */}
 
                 <HStack justify="space-between">
                   <Text color={muted}>Quantity</Text>
-                  <Text fontWeight="semibold">{item.quantity}</Text>
+                  <Text color={muted}>{item.quantity}</Text>
                 </HStack>
 
                 <HStack justify="space-between" pt={3}>
-                  <Text fontWeight="bold">Subtotal</Text>
-                  <Text fontWeight="bold" color="#109448">
+                  <Text fontWeight="semibold">Subtotal</Text>
+                  <Text fontWeight="semibold">
                     ₱
                     {Number(item.total).toLocaleString("en-PH", {
                       minimumFractionDigits: 2,
@@ -109,10 +108,10 @@ const OrderSummary: React.FC<{ cartItems?: CartItem[] }> = ({ cartItems }) => {
 
         <Box p={4} bg={bg} borderTop="2px solid black">
           <HStack justify="space-between">
-            <Text fontSize="lg" fontWeight="semibold">
+            <Text fontSize="lg" fontWeight="bold">
               Grand Total
             </Text>
-            <Text fontSize="lg" fontWeight="bold" color="#109448">
+            <Text fontSize="lg" fontWeight="bold">
               ₱
               {grandTotal.toLocaleString("en-PH", { minimumFractionDigits: 2 })}
             </Text>
