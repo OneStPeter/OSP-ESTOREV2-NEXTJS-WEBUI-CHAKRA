@@ -142,7 +142,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
         const isSpotCash = p.mode === "C";
         let amountValue;
         if (isSpotCash) {
-          amountValue = Number(total);
+          amountValue = Number(plan?.contractPrice ?? 0);
         } else {
           const paymentsPerYear =
             p.mode === "A"
@@ -463,20 +463,25 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                       return;
                     }
 
+                    const selectedAmount = Number(
+                      selectedPayment.amount.replace(/[^0-9.-]+/g, ""),
+                    );
+                    const isSpotCash = selectedPlan === "C";
+
                     const checkoutItem = {
                       planDesc: plan.planDesc,
                       mode: selectedPlan!,
                       planTerm: plan.planTerm.toString(),
                       quantity,
-                      price: Number(
-                        selectedPayment.amount.replace(/[^0-9.-]+/g, ""),
-                      ),
-                      total,
+                      ...(isSpotCash
+                        ? { price: selectedAmount }
+                        : { ipInstAmt: selectedAmount }),
+                      total: selectedAmount * quantity,
                     };
 
                     sessionStorage.setItem(
                       "CheckoutCart",
-                      JSON.stringify([checkoutItem]),
+                      JSON.stringify(checkoutItem),
                     );
                     router.push(`/order-summary/`);
                   }}
