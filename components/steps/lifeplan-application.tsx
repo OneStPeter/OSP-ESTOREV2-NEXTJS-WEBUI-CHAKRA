@@ -7,8 +7,15 @@ import { useState } from "react";
 import { Body, Breadcrumb, H3 } from "st-peter-ui";
 import { FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-
-import { PayMongoService } from "@/services/API/PayMongoService";
+import { CartItem } from "@/types/cartItem";
+import {
+  TransactionService,
+  PayMongoService,
+} from "@/services/API/PayMongoService";
+import {
+  createEmptyApplicationData,
+  loadApplicationDataFromLocalStorage,
+} from "@/lib/utils/applicationDataFactory";
 
 const breadcrumbItems = [
   { label: "Home", href: "/" },
@@ -25,25 +32,30 @@ const LifePlanApplication = () => {
     setLoading(true);
 
     try {
-      const stored = sessionStorage.getItem("selectedPlan");
-      const selectedPlan = stored ? JSON.parse(stored) : null;
+      const stored = sessionStorage.getItem("CheckoutCart");
+      const selectedPlan = stored ? (JSON.parse(stored) as CartItem) : null;
 
-      if (!selectedPlan) {
-        throw new Error("No selected plan");
-      }
+      if (!selectedPlan) throw new Error("No selected plan");
 
-      const { checkoutUrl } = await PayMongoService.createCheckout({
-        planDesc: selectedPlan.planDesc,
-        productCode: selectedPlan.productCode,
-        contractPrice: selectedPlan.contractPrice,
-        ipInstAmt: selectedPlan.ipInstAmt,
-        planTerm: selectedPlan.planTerm,
-        quantity: selectedPlan.quantity,
-      });
+      const applicationData =
+        loadApplicationDataFromLocalStorage() ?? createEmptyApplicationData();
 
-      if (!checkoutUrl) {
-        throw new Error("Checkout URL not found");
-      }
+      await TransactionService.insert(applicationData);
+
+      const checkoutPayload = {
+        items: [
+          {
+            planDesc: selectedPlan.planDesc,
+            ipInstAmt: Number(selectedPlan.price),
+            quantity: selectedPlan.quantity ?? 1,
+          },
+        ],
+      };
+
+      const { checkoutUrl } =
+        await PayMongoService.createCheckout(checkoutPayload);
+
+      if (!checkoutUrl) throw new Error("Checkout URL not found");
 
       window.location.href = checkoutUrl;
     } catch (err) {
@@ -53,7 +65,6 @@ const LifePlanApplication = () => {
       setLoading(false);
     }
   };
-
   return (
     <Box
       w="full"
