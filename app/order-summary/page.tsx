@@ -5,9 +5,16 @@ import OrderSummary from "@/components/order-summary";
 import { Box, Flex, Spinner, Button } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { CartItem } from "@/types/cartItem";
+import Container from "@/components/ui/container";
+import { Breadcrumb } from "st-peter-ui";
 
 const OrderSummaryPage = () => {
   const router = useRouter();
+  const breadcrumbItems = [
+    { label: "Home", href: "/" },
+    { label: "Order Summary", href: "#" },
+  ];
+
   const [cartItems, setCartItems] = useState<CartItem[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -47,13 +54,7 @@ const OrderSummaryPage = () => {
   }
 
   return (
-    <Flex
-      w="full"
-      justify={{ base: "flex-start", md: "center" }}
-      align="center"
-      h={{ base: "auto", md: "100vh" }}
-      p={8}
-    >
+    <Container>
       <Box
         p={{ base: 0, md: 8 }}
         borderRadius="lg"
@@ -85,7 +86,7 @@ const OrderSummaryPage = () => {
           </Button>
         </Box>
       </Box>
-    </Flex>
+    </Container>
   );
 };
 

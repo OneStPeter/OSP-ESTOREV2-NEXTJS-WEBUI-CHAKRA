@@ -1,14 +1,8 @@
 "use client";
-import { Box, Flex } from "@chakra-ui/react";
+
+import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { Carousel } from "@/components/ui/carousel";
-import {
-  BaseText,
-  Body,
-  DynamicButton,
-  H2,
-  PrimaryLgButton,
-  PrimaryMdButton,
-} from "st-peter-ui";
+import { BaseText, Body, PrimaryMdButton } from "st-peter-ui";
 
 const Location = () => {
   const slideData = [
@@ -33,78 +27,124 @@ const Location = () => {
       src: "/images/chapels/Surigao.jpg",
     },
   ];
+
   return (
     <Box
       as="section"
-      mt={8}
-      py={{ base: 8, md: 12 }}
+      py={{ base: 8, md: 14, lg: 20 }}
       px={{ base: 4, md: 8 }}
-      bg="gray.50"
+      bg="white"
     >
-      <Box maxW="7xl" w="full" m="auto">
-        <Flex
-          flexDir={{ base: "column", lg: "row" }}
-          gap={{ base: 6, md: 8 }}
-          align="center"
-          w="full"
+      <Box maxW="7xl" mx="auto" w="full">
+        <SimpleGrid
+          columns={{ base: 1, lg: 2 }}
+          gap={{ base: 8, md: 10, lg: 14 }}
+          alignItems="center"
         >
-          <Box
-            position="relative"
-            w={{ base: "100vw", sm: "100vw", md: "full" }}
-            maxW={{ base: "100vw", md: "600px", lg: "700px" }}
-            minW={0}
-            mb={{ base: 6, lg: 0 }}
-            overflowX={{ base: "auto", md: "hidden" }}
-            overflowY="hidden"
-            // sx={{
-            //   WebkitOverflowScrolling: "touch",
-            //   msOverflowStyle: "none",
-            //   scrollbarWidth: "none",
-            //   "&::-webkit-scrollbar": { display: "none" },
-            // }}
+          {/* Left Content */}
+          <Flex
+            order={{ base: 2, lg: 1 }}
+            direction="column"
+            align={{ base: "stretch", md: "flex-start" }}
+            textAlign="left"
+            gap={{ base: 5, md: 6 }}
           >
-            <Carousel slides={slideData} />
-          </Box>
+            <Box>
+              <Text
+                fontSize={{ base: "sm", md: "md" }}
+                fontWeight="semibold"
+                color="green.700"
+                mb={3}
+                letterSpacing="wide"
+                textTransform="uppercase"
+              >
+                Our Locations
+              </Text>
 
-          <Box
-            p={{ base: 4, md: 6 }}
-            display="flex"
-            flexDir="column"
-            justifyContent="center"
-            w={{ base: "full", md: "lg" }}
-          >
-            <Flex
-              flexDirection={{ base: "column", md: "column" }}
+              <BaseText
+                fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
+                fontWeight="bold"
+                lineHeight="1.1"
+              >
+                We&apos;re Near{" "}
+                <Box as="span" color="green.600">
+                  You
+                </Box>
+              </BaseText>
+            </Box>
+
+            <Box maxW={{ base: "full", md: "520px" }}>
+              <Body>
+                Visit us at our convenient location, easily accessible for all
+                your needs. Our chapel is situated in the heart of the city,
+                providing a peaceful and welcoming environment for families and
+                guests. Whether you’re planning a visit or need assistance, our
+                friendly staff is always ready to help.
+              </Body>
+            </Box>
+
+            <SimpleGrid
+              columns={{ base: 2, sm: 3 }}
+              gap={4}
               w="full"
-              m="auto"
+              maxW="520px"
+              pt={{ base: 2, md: 4 }}
             >
-              <Box mb={4}>
-                <BaseText
-                  fontSize={{ base: "2xl", md: "4xl" }}
-                  fontWeight="bold"
-                >
-                  We&apos;re Near{" "}
-                  <Box as="span" color="green.600">
-                    {" "}
-                    You
-                  </Box>
-                </BaseText>
+              <Box
+                p={4}
+                borderWidth="1px"
+                borderColor="green.100"
+                borderRadius="2xl"
+                bg="gray.50"
+              >
+                <Text fontSize="2xl" fontWeight="bold" color="green.700">
+                  280+
+                </Text>
+                <Text fontSize="sm" color="gray.600">
+                  Chapels
+                </Text>
               </Box>
 
-              <Box w={{ base: "100%", md: "md" }}>
-                <Body>
-                  Visit us at our convenient location, easily accessible for all
-                  your needs. Our chapel is situated in the heart of the city,
-                  providing a peaceful and welcoming environment for families
-                  and guests. Whether you’re planning a visit or need
-                  assistance, our friendly staff is always ready to help.
-                </Body>
+              <Box
+                p={4}
+                borderWidth="1px"
+                borderColor="green.100"
+                borderRadius="2xl"
+                bg="gray.50"
+              >
+                <Text fontSize="2xl" fontWeight="bold" color="green.700">
+                  200+
+                </Text>
+                <Text fontSize="sm" color="gray.600">
+                  Branches
+                </Text>
               </Box>
-            </Flex>
 
-            <Box mt={8} w="full">
+              <Box
+                display={{ base: "none", sm: "block" }}
+                p={4}
+                borderWidth="1px"
+                borderColor="green.100"
+                borderRadius="2xl"
+                bg="gray.50"
+              >
+                <Text fontSize="2xl" fontWeight="bold" color="green.700">
+                  PH
+                </Text>
+                <Text fontSize="sm" color="gray.600">
+                  Nationwide
+                </Text>
+              </Box>
+            </SimpleGrid>
+
+            <Flex
+              direction={{ base: "column", sm: "row" }}
+              gap={3}
+              w={{ base: "full", sm: "auto" }}
+              pt={{ base: 2, md: 4 }}
+            >
               <PrimaryMdButton
-                w={{ base: "full", md: "auto" }}
+                w={{ base: "full", sm: "auto" }}
                 onClick={() =>
                   window.open(
                     "https://www.google.com/maps/search/St+Peter+Chapels/@14.6564517,121.0245058,15z/data=!3m1!4b1?entry=ttu&g_ep=EgoyMDI2MDQyOS4wIKXMDSoASAFQAw%3D%3D",
@@ -114,9 +154,27 @@ const Location = () => {
               >
                 GO TO MAP
               </PrimaryMdButton>
+            </Flex>
+          </Flex>
+
+          {/* Right Carousel */}
+          <Box order={{ base: 1, lg: 2 }} w="full" minW={0}>
+            <Box position="relative" w="full">
+              <Box order={{ base: 1, lg: 2 }} w="full" minW={0}>
+                <Box
+                  position="relative"
+                  w="full"
+                  maxW={{ base: "full", lg: "680px" }}
+                  mx="auto"
+                  overflow="hidden"
+                  bg="transparent"
+                >
+                  <Carousel slides={slideData} />
+                </Box>
+              </Box>
             </Box>
           </Box>
-        </Flex>
+        </SimpleGrid>
       </Box>
     </Box>
   );

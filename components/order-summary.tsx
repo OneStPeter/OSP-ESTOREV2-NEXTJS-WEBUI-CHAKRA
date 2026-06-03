@@ -2,10 +2,22 @@
 "use client";
 import React from "react";
 import { IPlans } from "@/types/product";
-import { Text, Grid, GridItem, Image, Flex, Box } from "@chakra-ui/react";
-import { Body, H3, H4 } from "st-peter-ui";
+import {
+  Text,
+  Grid,
+  GridItem,
+  Image,
+  Flex,
+  Box,
+  Heading,
+  HStack,
+  VStack,
+  Button,
+} from "@chakra-ui/react";
+import { Body, Breadcrumb, H3, H4 } from "st-peter-ui";
 import { CartItem } from "@/types/cartItem";
-import { Heading, HStack, VStack } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { FaArrowLeft } from "react-icons/fa";
 
 const getModeLabel = (mode: string) => {
   const modeMap: Record<string, string> = {
@@ -19,6 +31,12 @@ const getModeLabel = (mode: string) => {
 };
 
 const OrderSummary: React.FC<{ cartItems?: CartItem[] }> = ({ cartItems }) => {
+  const router = useRouter();
+  const breadcrumbItems = [
+    { label: "Home", href: "/" },
+    { label: "Order Summary", href: "#" },
+  ];
+
   if (!cartItems || cartItems.length === 0) return null;
 
   const bg = "white";
@@ -31,13 +49,19 @@ const OrderSummary: React.FC<{ cartItems?: CartItem[] }> = ({ cartItems }) => {
 
   return (
     <Box>
+      <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 0 }}>
+        <Button variant="ghost" onClick={() => router.back()} px={0}>
+          <FaArrowLeft color="#177D54" />
+          Back
+        </Button>
+      </Box>
       <Text fontWeight="semibold" fontSize="2xl" mb={4}>
         Order Summary
       </Text>
 
       <VStack gap={6} align="stretch">
         {cartItems.map((item, idx) => (
-          <Box key={idx} bg={bg} borderRadius="md" p={4}>
+          <Box key={idx} bg={bg} borderRadius="md">
             <Grid
               templateColumns={{ base: "1fr", md: "280px 1fr" }}
               gap={8}

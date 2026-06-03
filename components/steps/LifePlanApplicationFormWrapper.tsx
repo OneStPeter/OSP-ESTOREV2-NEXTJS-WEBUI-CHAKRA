@@ -1,48 +1,36 @@
-// components/steps/LifePlanApplicationWrapper.tsx
 "use client";
 
 import LifePlanApplication1 from "./LifePlanApplication1";
 import LifePlanApplication2 from "./LifePlanApplication2";
 import LifePlanApplication3 from "./LifePlanApplication3";
-import { Box, Flex, Text } from "@chakra-ui/react";
-import { FaRegUser } from "react-icons/fa";
-import { Tabs } from "@chakra-ui/react";
-import { IoHomeOutline } from "react-icons/io5";
-import { BsPersonWorkspace } from "react-icons/bs";
-import { useState, useEffect, useCallback } from "react";
+import { Box, Flex, Icon, Tabs, Text } from "@chakra-ui/react";
+import { FaRegAddressCard, FaRegUser } from "react-icons/fa";
+import { IoIosInformationCircleOutline } from "react-icons/io";
+import { useCallback, useEffect, useState } from "react";
 import {
-  IApplicationData,
   IAddress,
-  IPersonalInfo,
+  IApplicationData,
   IEmployment,
+  IPersonalInfo,
 } from "@/types/planholder";
 import {
   createEmptyApplicationData,
-  saveApplicationDataToLocalStorage,
   loadApplicationDataFromLocalStorage,
+  saveApplicationDataToLocalStorage,
 } from "@/lib/utils/applicationDataFactory";
 
 const LifePlanApplicationFormWrapper = () => {
-  const [applicationData, setApplicationData] = useState<IApplicationData>(
-    createEmptyApplicationData(),
-  );
-  const [activeTab, setActiveTab] = useState("step1");
-
-  // Load saved data on mount
-  useEffect(() => {
-    const savedData = loadApplicationDataFromLocalStorage();
-    if (savedData) {
-      setApplicationData(savedData);
+  const [applicationData, setApplicationData] = useState<IApplicationData>(() => {
+    if (typeof window === "undefined") {
+      return createEmptyApplicationData();
     }
-  }, []);
 
-  // Save to localStorage only when tab changes
-  const handleTabChange = (details: any) => {
-    // Save current data before switching tabs
+    return loadApplicationDataFromLocalStorage() ?? createEmptyApplicationData();
+  });
+
+  useEffect(() => {
     saveApplicationDataToLocalStorage(applicationData);
-    console.log("Data saved to localStorage on tab change", applicationData);
-    setActiveTab(details.value);
-  };
+  }, [applicationData]);
 
   const handlePersonalInfoUpdate = useCallback(
     (personalInfo: IPersonalInfo) => {
@@ -67,42 +55,64 @@ const LifePlanApplicationFormWrapper = () => {
       employment,
     }));
   }, []);
+
+  const tabItems = [
+    {
+      icon: FaRegUser,
+      label: "Personal Info",
+      value: "personal",
+      page: (
+        <LifePlanApplication1
+          initialData={applicationData.personalInfo}
+          onUpdate={handlePersonalInfoUpdate}
+        />
+      ),
+    },
+    {
+      icon: FaRegAddressCard,
+      label: "Address",
+      value: "address",
+      page: <LifePlanApplication2 onAddressUpdate={handleAddressUpdate} />,
+    },
+    {
+      icon: IoIosInformationCircleOutline,
+      label: "Employment",
+      value: "employment",
+      page: (
+        <LifePlanApplication3
+          initialData={applicationData.employment}
+          onUpdate={handleEmploymentUpdate}
+        />
+      ),
+    },
+  ];
+
   return (
-    <Tabs.Root value={activeTab} onValueChange={handleTabChange} variant="line">
-      <Tabs.List>
-        <Tabs.Trigger value="step1">
-          <Flex align="center" gap={2}>
-            <FaRegUser fontSize={24} />
-            <Text>Personal Info</Text>
-          </Flex>
-        </Tabs.Trigger>
+    <Box w="full">
+      <Tabs.Root defaultValue="personal" variant="enclosed" maxW="full">
+        <Tabs.List gap="2" overflowX="auto">
+          {tabItems.map((item) => (
+            <Tabs.Trigger
+              key={item.value}
+              value={item.value}
+              minW={{ base: "140px", md: "160px" }}
+              textWrap="nowrap"
+            >
+              <Flex align="center" gap="2">
+                <Icon as={item.icon} boxSize="15px" />
+                <Text as="span">{item.label}</Text>
+              </Flex>
+            </Tabs.Trigger>
+          ))}
+        </Tabs.List>
 
-        <Tabs.Trigger value="step2">
-          <Flex align="center" gap={2}>
-            <IoHomeOutline />
-            <Text>Residential Address</Text>
-          </Flex>
-        </Tabs.Trigger>
-        <Tabs.Trigger value="step3">
-          <Flex align="center" gap={2}>
-            <BsPersonWorkspace />
-            <Text>Employment</Text>
-          </Flex>
-        </Tabs.Trigger>
-      </Tabs.List>
-
-      <Tabs.Content value="step1">
-        <LifePlanApplication1 onUpdate={handlePersonalInfoUpdate} />
-      </Tabs.Content>
-
-      <Tabs.Content value="step2">
-        <LifePlanApplication2 onAddressUpdate={handleAddressUpdate} />
-      </Tabs.Content>
-
-      <Tabs.Content value="step3">
-        <LifePlanApplication3 onUpdate={handleEmploymentUpdate} />
-      </Tabs.Content>
-    </Tabs.Root>
+        {tabItems.map((item) => (
+          <Tabs.Content key={item.value} value={item.value} px="2">
+            {item.page}
+          </Tabs.Content>
+        ))}
+      </Tabs.Root>
+    </Box>
   );
 };
 

@@ -4,7 +4,6 @@ import {
   Badge,
   Box,
   Button,
-  Card,
   CloseButton,
   Dialog,
   Flex,
@@ -30,15 +29,15 @@ import {
 import { FaRegAddressCard } from "react-icons/fa6";
 import { FaRegUser } from "react-icons/fa";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { checkboxList } from "@/data/checkBoxList";
 import { CartItem } from "@/types/cartItem";
 import { ITransactionData } from "@/types/planholder";
 import { LuPencil } from "react-icons/lu";
-
+import type { IconType } from "react-icons";
 export type ConfirmationProps = {
   onAllAcceptedChange?: (allAccepted: boolean) => void;
+  onEdit?: () => void;
 };
 
 const modeLabel = (mode?: string) => {
@@ -124,8 +123,68 @@ const SectionCardHeader = ({
   </Flex>
 );
 
-const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
-  const router = useRouter();
+const CardRoot = ({
+  title,
+  children,
+}: {
+  title?: React.ReactNode;
+  children: React.ReactNode;
+}) => (
+  <Box bg="white" borderWidth="1px" borderColor="gray.200" rounded="xl">
+    {title && (
+      <Box px={{ base: 4, md: 6 }} py={4} borderBottomWidth="1px">
+        <H4>{title}</H4>
+      </Box>
+    )}
+    {children}
+  </Box>
+);
+
+const CardMainContent = ({ children }: { children: React.ReactNode }) => (
+  <Box px={{ base: 4, md: 6 }} py={{ base: 4, md: 6 }}>
+    {children}
+  </Box>
+);
+
+const Card = {
+  Root: CardRoot,
+  MainContent: CardMainContent,
+};
+
+type TabItem = {
+  icon: IconType;
+  label: string;
+  value: string;
+  page: React.ReactNode;
+};
+
+const Tab = ({ tabItems }: { tabItems: TabItem[] }) => (
+  <Tabs.Root defaultValue={tabItems[0]?.value} variant="enclosed" maxW="full">
+    <Tabs.List gap="2" overflowX="auto" mb={4}>
+      {tabItems.map((item) => (
+        <Tabs.Trigger
+          key={item.value}
+          value={item.value}
+          minW={{ base: "140px", md: "160px" }}
+          textWrap="nowrap"
+        >
+          <Flex align="center" gap={2}>
+            <Icon as={item.icon} boxSize="15px" />
+            <Text as="span">{item.label}</Text>
+          </Flex>
+        </Tabs.Trigger>
+      ))}
+    </Tabs.List>
+
+    {tabItems.map((item) => (
+      <Tabs.Content key={item.value} value={item.value}>
+        {item.page}
+      </Tabs.Content>
+    ))}
+  </Tabs.Root>
+);
+
+const Confirmation = ({ onAllAcceptedChange, onEdit }: ConfirmationProps) => {
   const [cartItems, setCartItems] = useState<CartItem[] | null>(null);
   const [lifePlanApplication, setLifePlanApplication] =
     useState<ITransactionData | null>(null);
@@ -143,16 +202,16 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
       const lifePlanApplicationStored = localStorage.getItem(
         "LifePlanApplication",
       );
-      console.log(
-        "Raw LifePlanApplication from localStorage:",
-        lifePlanApplicationStored,
-      );
+      // console.log(
+      //   "Raw LifePlanApplication from localStorage:",
+      //   lifePlanApplicationStored,
+      // );
 
       const parsedApplicationData = lifePlanApplicationStored
         ? (JSON.parse(lifePlanApplicationStored) as ITransactionData)
         : null;
 
-      console.log("Parsed LifePlanApplication data:", parsedApplicationData);
+      // console.log("Parsed LifePlanApplication data:", parsedApplicationData);
       setLifePlanApplication(parsedApplicationData);
 
       if (checkoutStored) {
@@ -230,7 +289,7 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
       <Box px={{ base: 2, md: 8 }} pb={{ base: 4, md: 8 }}>
         <VStack align="stretch" gap={{ base: 4, md: 8 }}>
           {/* Order Summary */}
-          <Card.Root
+          {/* <Card.Root
             bg="white"
             shadow="sm"
             borderWidth="1px"
@@ -295,33 +354,77 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                   <Text fontWeight="semibold" color="gray.900">
                     {selectedPlan ? `₱ ${selectedPlan.total}` : "-"}
                   </Text>
-                  {/* <Text fontSize="sm" color="gray.600">
-                    Taxes and fees may apply.
-                  </Text> */}
                 </Box>
               </Grid>
             </Card.Body>
-          </Card.Root>
+          </Card.Root> */}
 
-          {/* Life Plan Application */}
-          <Card.Root
-            bg="white"
-            shadow="sm"
-            borderWidth="1px"
-            rounded="xl"
-            overflow="hidden"
-          >
-            <Card.Header py={4} px={{ base: 4, md: 6 }} borderBottomWidth="1px">
-              <Flex justify="space-between" align="center" gap={4} wrap="wrap">
-                <SectionCardHeader
-                  icon={<FaRegUser />}
-                  title="Life Plan Application"
-                />
-                <Box display={{ base: "none", md: "block" }}>
-                  <EditButton
-                    onClick={() => router.push("/lifeplan-application")}
-                  />
+          {/* ORDER SUMMARY CARD COMPONENT */}
+          <Card.Root title={"Order Summary"}>
+            <Card.MainContent>
+              <Grid
+                templateColumns={{
+                  base: "repeat(2, 1fr)",
+                  md: "repeat(3, 1fr)",
+                }}
+                gap={4}
+              >
+                <Box
+                  p={4}
+                  rounded="lg"
+                  transition="all 0.15s ease"
+                  _hover={{ bg: "gray.100" }}
+                >
+                  <Small color="gray.500">Selected Plan</Small>
+                  <Body>
+                    <Span fontWeight="semibold">
+                      {selectedPlan ? selectedPlan.planDesc : "-"}
+                    </Span>
+                  </Body>
                 </Box>
+                <Box
+                  p={4}
+                  rounded="lg"
+                  transition="all 0.15s ease"
+                  _hover={{ bg: "gray.100" }}
+                >
+                  <Small color="gray.500">Quantity</Small>
+                  <Body>
+                    <Span fontWeight="semibold">
+                      {selectedPlan ? selectedPlan.quantity : "-"}
+                    </Span>
+                  </Body>
+                </Box>
+                <Box
+                  p={4}
+                  rounded="lg"
+                  transition="all 0.15s ease"
+                  _hover={{ bg: "gray.100" }}
+                >
+                  <Small color="gray.500">Total Amount Payable</Small>
+                  <Text fontWeight="semibold" color="gray.900">
+                    {selectedPlan ? `₱ ${selectedPlan.total}` : "-"}
+                  </Text>
+                </Box>
+              </Grid>
+            </Card.MainContent>
+          </Card.Root>
+          {/* Life Plan Application */}
+          {/* <Card.Root title="Life Plan Application">
+            <Card.MainContent>
+              <Flex
+                justify="space-between"
+                align="center"
+                gap={4}
+                wrap="wrap"
+                mb={6}
+              >
+                <Box />
+
+                <Box display={{ base: "none", md: "block" }}>
+                  <EditButton onClick={() => onEdit?.()} />
+                </Box>
+
                 <Button
                   display={{ base: "inline-flex", md: "none" }}
                   variant="ghost"
@@ -330,36 +433,19 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                   h="auto"
                   borderRadius="full"
                   aria-label="Edit email"
-                  onClick={() => router.push("/lifeplan-application")}
+                  onClick={() => onEdit?.()}
                 >
                   <Icon as={LuPencil} boxSize={4} />
                 </Button>
-
-                {/* <Button
-                  variant="outline"
-                  size="sm"
-                  rounded="full"
-                  onClick={() => router.push("/lifeplan-application")}
-                >
-                  EDIT
-                </Button> */}
               </Flex>
-            </Card.Header>
-            <Card.Body px={{ base: 4, md: 6 }} py={{ base: 5, md: 6 }}>
+
               <Tabs.Root defaultValue="personal" variant="line">
-                <Tabs.List
-                  // flexDirection={{ base: "row" }}
-                  // overflowY={{ base: "hidden", md: "hidden" }}
-                  // maxH={{ base: "40vh", md: "none" }}
-                  // maxW="full"
-                  gap={{ base: 1, md: 2 }}
-                >
+                <Tabs.List gap={{ base: 4, md: 2 }}>
                   <Tabs.Trigger
                     value="personal"
                     flexShrink={0}
                     minW="max-content"
-                    px={{ base: 4, md: 4 }}
-                    // py={2}
+                    px={{ base: 0, md: 4 }}
                   >
                     <Flex align="center" gap={2}>
                       <Icon
@@ -369,6 +455,7 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                       >
                         <FaRegUser />
                       </Icon>
+
                       <Text
                         whiteSpace="nowrap"
                         fontSize={{ base: "xs", md: "md" }}
@@ -382,8 +469,7 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                     value="residential"
                     flexShrink={0}
                     minW="max-content"
-                    px={{ base: 3, md: 4 }}
-                    // py={2}
+                    px={{ base: 0, md: 4 }}
                   >
                     <Flex align="center" gap={2}>
                       <Icon
@@ -393,9 +479,11 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                       >
                         <FaRegAddressCard />
                       </Icon>
+
                       <Text
                         whiteSpace="nowrap"
                         fontSize={{ base: "xs", md: "md" }}
+                        textAlign="center"
                       >
                         Residential Address
                       </Text>
@@ -406,7 +494,7 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                     value="employment"
                     flexShrink={0}
                     minW="max-content"
-                    px={{ base: 3, md: 4 }}
+                    px={{ base: 0, md: 4 }}
                     py={2}
                   >
                     <Flex align="center" gap={2}>
@@ -417,6 +505,7 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                       >
                         <IoIosInformationCircleOutline />
                       </Icon>
+
                       <Text
                         whiteSpace="nowrap"
                         fontSize={{ base: "xs", md: "md" }}
@@ -438,80 +527,79 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                       gap={4}
                     >
                       <InfoTile
-                        // icon={<FaRegAddressCard />}
                         label="Uploaded ID"
                         value={lifePlanApplication?.personalInfo.idType || "-"}
                       />
+
                       <InfoTile
-                        // icon={<FaRegUser />}
                         label="Last Name"
                         value={
                           lifePlanApplication?.personalInfo.lastName || "-"
                         }
                       />
+
                       <InfoTile
-                        // icon={<FaRegUser />}
                         label="First Name"
                         value={
                           lifePlanApplication?.personalInfo.firstName || "-"
                         }
                       />
+
                       <InfoTile
-                        // icon={<FaRegUser />}
                         label="Middle Name"
                         value={
                           lifePlanApplication?.personalInfo.middleName || "-"
                         }
                       />
+
                       <InfoTile
-                        // icon={<FaRegUser />}
                         label="Suffix"
                         value={lifePlanApplication?.personalInfo.suffix || "-"}
                       />
+
                       <InfoTile
-                        // icon={<IoIosInformationCircleOutline />}
                         label="Date of Birth"
                         value={
                           lifePlanApplication?.personalInfo.birthDate || "-"
                         }
                       />
+
                       <InfoTile
-                        // icon={<IoIosInformationCircleOutline />}
                         label="Gender"
                         value={lifePlanApplication?.personalInfo.gender || "-"}
                       />
+
                       <InfoTile
-                        // icon={<IoIosInformationCircleOutline />}
                         label="Contact Number"
                         value={
                           lifePlanApplication?.personalInfo.mobileNumber || "-"
                         }
                       />
+
                       <InfoTile
-                        // icon={<IoIosInformationCircleOutline />}
                         label="Email"
                         value={
                           lifePlanApplication?.personalInfo.emailAddress || "-"
                         }
                       />
+
                       <InfoTile
-                        // icon={<IoIosInformationCircleOutline />}
                         label="Landline Number"
                         value={
                           lifePlanApplication?.personalInfo.landLineNumber ||
                           "-"
                         }
                       />
+
                       <InfoTile
-                        // icon={<IoIosInformationCircleOutline />}
                         label="Mailing Address"
                         value={
                           lifePlanApplication?.personalInfo.mailingAddress ||
                           "-"
                         }
                       />
+
                       <InfoTile
-                        // icon={<IoIosInformationCircleOutline />}
                         label="Civil Status"
                         value={
                           lifePlanApplication?.personalInfo.civilStatus || "-"
@@ -532,27 +620,26 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                       gap={4}
                     >
                       <InfoTile
-                        // icon={<FaRegAddressCard />}
                         label="Lot #"
                         value={lifePlanApplication?.address.lot || "-"}
                       />
+
                       <InfoTile
-                        // icon={<FaRegAddressCard />}
                         label="Street"
                         value={lifePlanApplication?.address.street || "-"}
                       />
+
                       <InfoTile
-                        // icon={<FaRegAddressCard />}
                         label="Barangay"
                         value={lifePlanApplication?.address.barangay || "-"}
                       />
+
                       <InfoTile
-                        // icon={<FaRegAddressCard />}
                         label="City"
                         value={lifePlanApplication?.address.city || "-"}
                       />
+
                       <InfoTile
-                        // icon={<FaRegAddressCard />}
                         label="Province"
                         value={lifePlanApplication?.address.province || "-"}
                       />
@@ -571,46 +658,45 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                       gap={4}
                     >
                       <InfoTile
-                        // icon={<IoIosInformationCircleOutline />}
                         label="Occupation"
                         value={
                           lifePlanApplication?.employment.occupation || "-"
                         }
                       />
+
                       <InfoTile
-                        // icon={<IoIosInformationCircleOutline />}
                         label="Employer Name"
                         value={
                           lifePlanApplication?.employment.employerName || "-"
                         }
                       />
+
                       <InfoTile
-                        // icon={<IoIosInformationCircleOutline />}
                         label="Employment Status"
                         value={
                           lifePlanApplication?.employment.employmentStatus ||
                           "-"
                         }
                       />
+
                       <InfoTile
-                        // icon={<IoIosInformationCircleOutline />}
                         label="Office Address"
                         value={
                           lifePlanApplication?.employment.officeAddress || "-"
                         }
                       />
+
                       <InfoTile
-                        // icon={<IoIosInformationCircleOutline />}
                         label="TIN"
                         value={lifePlanApplication?.employment.TIN || "-"}
                       />
+
                       <InfoTile
-                        // icon={<IoIosInformationCircleOutline />}
                         label="SSS/GSIS"
                         value={lifePlanApplication?.employment.SSS || "-"}
                       />
+
                       <InfoTile
-                        // icon={<IoIosInformationCircleOutline />}
                         label="Source of Income"
                         value={
                           lifePlanApplication?.employment.sourceOfIncome || "-"
@@ -620,98 +706,302 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                   </Box>
                 </Tabs.Content>
               </Tabs.Root>
-            </Card.Body>
-          </Card.Root>
+            </Card.MainContent>
+          </Card.Root> */}
+          <Card.Root title="Life Plan Application">
+            <Card.MainContent>
+              <Tab
+                tabItems={[
+                  {
+                    icon: FaRegUser,
+                    label: "Personal Info",
+                    value: "personal",
+                    page: (
+                      <Box>
+                        <Box>
+                          <Grid
+                            templateColumns={{
+                              base: "repeat(2,1fr)",
+                              md: "repeat(3,1fr)",
+                              lg: "repeat(4, 1fr)",
+                            }}
+                            gap={4}
+                          >
+                            <InfoTile
+                              label="Uploaded ID"
+                              value={
+                                lifePlanApplication?.personalInfo.idType || "-"
+                              }
+                            />
 
-          {/* Beneficiaries */}
-          <Card.Root
-            bg="white"
-            shadow="sm"
-            borderWidth="1px"
-            rounded="xl"
-            overflow="hidden"
-          >
-            <Card.Header py={4} px={{ base: 4, md: 6 }} borderBottomWidth="1px">
-              <SectionCardHeader
-                icon={<FaRegAddressCard />}
-                title="Beneficiaries"
+                            <InfoTile
+                              label="Last Name"
+                              value={
+                                lifePlanApplication?.personalInfo.lastName ||
+                                "-"
+                              }
+                            />
+
+                            <InfoTile
+                              label="First Name"
+                              value={
+                                lifePlanApplication?.personalInfo.firstName ||
+                                "-"
+                              }
+                            />
+
+                            <InfoTile
+                              label="Middle Name"
+                              value={
+                                lifePlanApplication?.personalInfo.middleName ||
+                                "-"
+                              }
+                            />
+
+                            <InfoTile
+                              label="Suffix"
+                              value={
+                                lifePlanApplication?.personalInfo.suffix || "-"
+                              }
+                            />
+
+                            <InfoTile
+                              label="Date of Birth"
+                              value={
+                                lifePlanApplication?.personalInfo.birthDate ||
+                                "-"
+                              }
+                            />
+
+                            <InfoTile
+                              label="Gender"
+                              value={
+                                lifePlanApplication?.personalInfo.gender || "-"
+                              }
+                            />
+
+                            <InfoTile
+                              label="Contact Number"
+                              value={
+                                lifePlanApplication?.personalInfo
+                                  .mobileNumber || "-"
+                              }
+                            />
+
+                            <InfoTile
+                              label="Email"
+                              value={
+                                lifePlanApplication?.personalInfo
+                                  .emailAddress || "-"
+                              }
+                            />
+
+                            <InfoTile
+                              label="Landline Number"
+                              value={
+                                lifePlanApplication?.personalInfo
+                                  .landLineNumber || "-"
+                              }
+                            />
+
+                            <InfoTile
+                              label="Mailing Address"
+                              value={
+                                lifePlanApplication?.personalInfo
+                                  .mailingAddress || "-"
+                              }
+                            />
+
+                            <InfoTile
+                              label="Civil Status"
+                              value={
+                                lifePlanApplication?.personalInfo.civilStatus ||
+                                "-"
+                              }
+                            />
+                          </Grid>
+                        </Box>
+                      </Box>
+                    ),
+                  },
+                  {
+                    icon: FaRegAddressCard,
+                    label: "Address",
+                    value: "address",
+                    page: (
+                      <Box>
+                        <Grid
+                          templateColumns={{
+                            base: "repeat(2,1fr)",
+                            md: "repeat(3,1fr)",
+                            lg: "repeat(4, 1fr)",
+                          }}
+                          gap={4}
+                        >
+                          <InfoTile
+                            label="Lot #"
+                            value={lifePlanApplication?.address.lot || "-"}
+                          />
+
+                          <InfoTile
+                            label="Street"
+                            value={lifePlanApplication?.address.street || "-"}
+                          />
+
+                          <InfoTile
+                            label="Barangay"
+                            value={lifePlanApplication?.address.barangay || "-"}
+                          />
+
+                          <InfoTile
+                            label="City"
+                            value={lifePlanApplication?.address.city || "-"}
+                          />
+
+                          <InfoTile
+                            label="Province"
+                            value={lifePlanApplication?.address.province || "-"}
+                          />
+                        </Grid>
+                      </Box>
+                    ),
+                  },
+                  {
+                    icon: IoIosInformationCircleOutline,
+                    label: "Employment",
+                    value: "employment",
+                    page: (
+                      <Box>
+                        <Grid
+                          templateColumns={{
+                            base: "repeat(2,1fr)",
+                            md: "repeat(3,1fr)",
+                            lg: "repeat(4, 1fr)",
+                          }}
+                          gap={4}
+                        >
+                          <InfoTile
+                            label="Occupation"
+                            value={
+                              lifePlanApplication?.employment.occupation || "-"
+                            }
+                          />
+
+                          <InfoTile
+                            label="Employer Name"
+                            value={
+                              lifePlanApplication?.employment.employerName ||
+                              "-"
+                            }
+                          />
+
+                          <InfoTile
+                            label="Employment Status"
+                            value={
+                              lifePlanApplication?.employment
+                                .employmentStatus || "-"
+                            }
+                          />
+
+                          <InfoTile
+                            label="Office Address"
+                            value={
+                              lifePlanApplication?.employment.officeAddress ||
+                              "-"
+                            }
+                          />
+
+                          <InfoTile
+                            label="TIN"
+                            value={lifePlanApplication?.employment.TIN || "-"}
+                          />
+
+                          <InfoTile
+                            label="SSS/GSIS"
+                            value={lifePlanApplication?.employment.SSS || "-"}
+                          />
+
+                          <InfoTile
+                            label="Source of Income"
+                            value={
+                              lifePlanApplication?.employment.sourceOfIncome ||
+                              "-"
+                            }
+                          />
+                        </Grid>
+                      </Box>
+                    ),
+                  },
+                ]}
               />
-            </Card.Header>
-            <Card.Body px={{ base: 4, md: 6 }} py={{ base: 5, md: 6 }}>
+            </Card.MainContent>
+          </Card.Root>
+          {/* Beneficiaries */}
+          <Card.Root title="Beneficiaries">
+            <Card.MainContent>
               <Grid
                 templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
                 gap={4}
               >
                 {beneficiaries.map((b, idx) => (
-                  <Card.Root
+                  <Box
                     key={`${b.name}-${idx}`}
-                    bg="white"
-                    borderWidth="1px"
-                    rounded="xl"
+                    borderWidth="0px"
                     overflow="hidden"
                     transition="all 0.15s ease"
                     _hover={{ shadow: "sm" }}
+                    p={4}
+                    rounded="xl"
                   >
-                    <Card.Body p={5}>
-                      <Flex justify="space-between" align="start" gap={4}>
-                        <HStack gap={3} minW={0}>
-                          <Avatar.Root size="sm">
-                            <Avatar.Fallback name={b.name} />
-                          </Avatar.Root>
-                          <Box minW={0}>
-                            <Text fontWeight="semibold" lineClamp={1}>
-                              {b.name}
-                            </Text>
-                            <HStack gap={2} mt={1} wrap="wrap">
-                              <Badge variant="subtle" colorPalette="green">
-                                {b.relationship}
-                              </Badge>
-                              <Text fontSize="sm" color="gray.600">
-                                {b.dob}
-                              </Text>
-                            </HStack>
-                          </Box>
-                        </HStack>
-                      </Flex>
+                    <Flex justify="space-between" align="start" gap={4}>
+                      <HStack gap={3} minW={0}>
+                        <Avatar.Root size="sm">
+                          <Avatar.Fallback name={b.name} />
+                        </Avatar.Root>
 
-                      <Box
-                        mt={4}
-                        p={4}
-                        borderWidth="1px"
-                        rounded="lg"
-                        bg="gray.50"
-                      >
-                        <Small color="gray.500">Address</Small>
-                        <Text
-                          fontSize="sm"
-                          color="gray.800"
-                          mt={1}
-                          lineClamp={3}
-                        >
-                          {b.address}
-                        </Text>
-                      </Box>
-                    </Card.Body>
-                  </Card.Root>
+                        <Box minW={0}>
+                          <Text fontWeight="semibold" lineClamp={1}>
+                            {b.name}
+                          </Text>
+
+                          <HStack gap={2} mt={1} wrap="wrap">
+                            <Badge variant="subtle" colorPalette="green">
+                              {b.relationship}
+                            </Badge>
+
+                            <Text fontSize="sm" color="gray.600">
+                              {b.dob}
+                            </Text>
+                          </HStack>
+                        </Box>
+                      </HStack>
+                    </Flex>
+
+                    <Box mt={4} p={4} rounded="lg" bg="gray.50">
+                      <Small color="gray.500">Address</Small>
+
+                      <Text fontSize="sm" color="gray.800" mt={1} lineClamp={3}>
+                        {b.address}
+                      </Text>
+                    </Box>
+                  </Box>
                 ))}
               </Grid>
-            </Card.Body>
+            </Card.MainContent>
           </Card.Root>
 
           {/* Confirmation Agreements */}
-          <Card.Root
-            bg="white"
-            shadow="sm"
-            borderWidth="1px"
-            rounded="xl"
-            overflow="hidden"
-          >
-            <Card.Header py={4} px={{ base: 4, md: 6 }} borderBottomWidth="1px">
-              <Flex justify="space-between" align="center" gap={4} wrap="wrap">
-                <SectionCardHeader
-                  icon={<IoIosInformationCircleOutline />}
-                  title="Agreements"
-                />
+          <Card.Root title="Agreements">
+            <Card.MainContent>
+              <Flex
+                justify="space-between"
+                align="center"
+                gap={4}
+                wrap="wrap"
+                mb={6}
+              >
+                <Box />
+
                 <Badge
                   variant="solid"
                   backgroundColor="green.100"
@@ -721,11 +1011,11 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                   {acceptedCount}/{checkboxList.length} accepted
                 </Badge>
               </Flex>
-            </Card.Header>
-            <Card.Body px={{ base: 4, md: 6 }} py={{ base: 5, md: 6 }}>
+
               <VStack align="stretch" gap={3}>
                 {checkboxList.map((item, index) => {
                   const isAccepted = acceptedAgreements[index];
+
                   return (
                     <Box
                       key={index}
@@ -754,6 +1044,7 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                           <Text fontWeight="semibold" lineClamp={2}>
                             {item.checkBoxTitle}.
                           </Text>
+
                           <Text
                             fontSize="sm"
                             color="gray.600"
@@ -763,6 +1054,7 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                             Tap to review details.
                           </Text>
                         </Box>
+
                         <Badge
                           variant="subtle"
                           colorPalette={isAccepted ? "green" : "gray"}
@@ -774,7 +1066,7 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                   );
                 })}
               </VStack>
-            </Card.Body>
+            </Card.MainContent>
           </Card.Root>
 
           {/* Agreement Dialog */}
@@ -812,7 +1104,7 @@ const Confirmation = ({ onAllAcceptedChange }: ConfirmationProps) => {
                   </Dialog.Header>
 
                   <Dialog.Body px={{ base: 4, md: 6 }} pb={{ base: 5, md: 6 }}>
-                    <Box p={4} borderWidth="1px" rounded="lg" bg="gray.50">
+                    <Box p={4} borderWidth="0px" rounded="lg" bg="gray.50">
                       <Text
                         whiteSpace="pre-wrap"
                         fontSize="sm"

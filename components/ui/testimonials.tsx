@@ -32,7 +32,7 @@ const Testimonials = ({ testimonials }: TestimonialsProps) => {
           p={6}
           rounded="lg"
           // border="1px solid #1A1A1A"
-          minH="260px"
+          minH={{ base: "auto", md: "250px" }}
         >
           <VStack align="start" gap={4}>
             {/* <Avatar name={item.name} size="md" /> */}

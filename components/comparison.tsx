@@ -22,6 +22,7 @@ import { useMemo } from "react";
 import { BreadcrumbTracker } from "./ui/breadcrumb-tracker";
 import { usePathname } from "next/navigation";
 import { FaArrowLeft } from "react-icons/fa6";
+import Container from "./ui/container";
 
 interface ComparisonProps {
   compareList: string[];
@@ -74,17 +75,16 @@ const Comparison = ({ compareList, plans, removeItem }: ComparisonProps) => {
     { label: "Comparison", href: pathname },
   ];
   return (
-    <Box
-      mt={{ base: 0, md: 24 }}
-      mb={16}
-      w={{ base: "full", md: "7xl" }}
-      mx="auto"
-      p={8}
-    >
+    <Container>
       <Flex justify="center" align="start" flexDirection="column" gap={4}>
         {/* <BreadcrumbTracker /> */}
-        <Box display={{ base: "block", md: "none" }}>
-          <Button variant="ghost" size="md" onClick={() => router.back()}>
+        <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 0 }}>
+          <Button
+            variant="ghost"
+            size="md"
+            onClick={() => router.back()}
+            px={0}
+          >
             <FaArrowLeft color="#177D54" />
             Back
           </Button>
@@ -93,9 +93,7 @@ const Comparison = ({ compareList, plans, removeItem }: ComparisonProps) => {
         <Box display={{ base: "none", md: "block" }}>
           <Breadcrumb items={breadcrumbItems} />
         </Box>
-        <Heading fontWeight="semibold" textTransform="uppercase">
-          Plan Comparison
-        </Heading>
+        <Heading fontWeight="semibold">Plan Comparison</Heading>
         <Text>
           Compare our memorial plans and choose the one that best suits your
           needs
@@ -364,7 +362,7 @@ const Comparison = ({ compareList, plans, removeItem }: ComparisonProps) => {
           </Grid>
         </Box>
       </Flex>
-    </Box>
+    </Container>
   );
 };
 

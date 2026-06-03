@@ -1,10 +1,12 @@
 "use client";
 import {
+  BaseText,
   Body,
   CancelButton,
   H3,
   NextButton,
   PrimaryMdButton,
+  PrimaryMdFlexButton,
 } from "st-peter-ui";
 import { DmsUploadRequirements } from "@splpi/dms-estore-upload";
 import {
@@ -24,6 +26,8 @@ import {
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { LuUpload } from "react-icons/lu";
+import Container from "@/components/ui/container";
+import { FaArrowLeft } from "react-icons/fa";
 const MAX_FILES = 3;
 
 const ConditionalDropzone = () => {
@@ -93,57 +97,56 @@ const GetStarted = () => {
 
       const result = await response.json();
       console.log("API Response:", result);
-      localStorage.removeItem("ocrResult");
-      localStorage.setItem("ocrResult", JSON.stringify(result)); // Store in localStorage
+      // localStorage.removeItem("ocrResult");
+      localStorage.setItem("ocrResult", JSON.stringify(result));
     } catch (error) {
       console.error("Upload error:", error);
     }
   };
 
   return (
-    <Flex
-      w="full"
-      // mt={{ base: "24", md: "16" }}
-      mb={16}
-      justify="center"
-      align="center"
-      minH={{ base: "auto", md: "100vh" }}
-    >
+    <Container>
+      <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 4 }}>
+        <Button variant="ghost" onClick={() => router.back()} px={0}>
+          <FaArrowLeft color="#177D54" />
+          Back
+        </Button>
+      </Box>
+
       <Box
-        p={8}
-        mt={8}
+        p={{ base: 0, md: 8 }}
         rounded="lg"
         shadow={{ base: "none", md: "md" }}
         bg="white"
         maxW="3xl"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
         mx="auto"
-        w={{ base: "full", md: "80%" }}
       >
         <VStack gap={4} align="stretch">
           <Box textAlign="center">
             <H3>Let's Get Started</H3>
           </Box>
-          <Body>
+          <BaseText textAlign={{ base: "center", md: "start" }}>
             We'll be needing some documents and information to proceed with the
             purchase, please prepare the following in advance to smooth out the
             next steps
-          </Body>
+          </BaseText>
           <Box bg="gray.50" p={8} rounded="md">
             <VStack align="start" gap={2}>
-              <Box mb={4}>
-                <Body fontWeight="bold">Required Information</Body>
-                <Body>1. Full Name</Body>
-                <Body>2. Nationality</Body>
-                <Body>3. Mobile Number</Body>
-                <Body>4. Email Address</Body>
-                <Body>5. Date of Birth</Body>
-                <Body>6. Complete Address</Body>
-                <Body>7. Beneficiary/ies</Body>
-                <Body>
-                  <Span fontWeight="bold">Required Documents</Span>
-                </Body>
-                <Body>1. Current and Valid Government-issued ID</Body>
-                <Body>2. Specimen Signature</Body>
+              <Box mb={4} display="flex" flexDirection="column" gap={2}>
+                <BaseText fontWeight="bold">Required Information</BaseText>
+                <BaseText>1. Full Name</BaseText>
+                <BaseText>2. Nationality</BaseText>
+                <BaseText>3. Mobile Number</BaseText>
+                <BaseText>4. Email Address</BaseText>
+                <BaseText>5. Date of Birth</BaseText>
+                <BaseText>6. Complete Address</BaseText>
+                <BaseText>7. Beneficiary/ies</BaseText>
+                <BaseText fontWeight="bold">Required Documents</BaseText>
+                <BaseText>1. Current and Valid Government-issued ID</BaseText>
+                <BaseText>2. Specimen Signature</BaseText>
               </Box>
               {/* <Box p="4" borderWidth="1px" borderRadius="lg" bg="green.50">
                 <Text fontSize="sm" color="green.700" fontWeight="medium">
@@ -183,7 +186,7 @@ const GetStarted = () => {
           >
             <Dialog.Trigger asChild>
               <Button
-                w="full"
+                w={{ base: "sm", md: "xl" }}
                 mt={{ base: 4, md: 0 }}
                 onClick={() => setUploadDialogOpen(true)}
               >
@@ -450,7 +453,7 @@ const GetStarted = () => {
           </Dialog.Root>
         </Box>
       </Box>
-    </Flex>
+    </Container>
   );
 };
 

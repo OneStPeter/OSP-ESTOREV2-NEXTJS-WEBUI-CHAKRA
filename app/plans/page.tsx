@@ -1,4 +1,5 @@
 import AllProducts from "@/components/all-products";
+import AllProductsCopy from "@/components/all-products.updated-copy";
 import { ProductService } from "@/services/API/ProductService";
 import { IPlans } from "@/types/product";
 
@@ -52,7 +53,12 @@ export default async function Products() {
   const cremationGroups = groupPlansByProduct(plans, "CP");
 
   return (
-    <AllProducts
+    // <AllProducts
+    //   plans={plans}
+    //   traditionalGroups={traditionalGroups}
+    //   cremationGroups={cremationGroups}
+    // />
+    <AllProductsCopy
       plans={plans}
       traditionalGroups={traditionalGroups}
       cremationGroups={cremationGroups}

@@ -4,6 +4,7 @@ import Products from "./sections/products";
 import Location from "./sections/location";
 import AboutUs from "./sections/aboutus";
 import { useDemoAuth } from "@/components/ui/demo-auth";
+import TestimonialPage from "./sections/testimonials";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       <Products />
       <Location />
       <AboutUs />
+      <TestimonialPage />
     </>
   );
 }

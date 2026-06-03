@@ -13,6 +13,7 @@ interface HorizontalStepperProps {
   onStepChange?: (index: number) => void;
   onSubmit?: () => void;
   submitDisabled?: boolean;
+  activeStep?: number;
 }
 
 const HorizontalStepper = ({
@@ -20,8 +21,18 @@ const HorizontalStepper = ({
   onStepChange,
   onSubmit,
   submitDisabled,
+  activeStep: controlledActiveStep,
 }: HorizontalStepperProps) => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [localActiveStep, setLocalActiveStep] = useState(0);
+  const activeStep =
+    controlledActiveStep !== undefined ? controlledActiveStep : localActiveStep;
+
+  const handleStepChange = (index: number) => {
+    if (controlledActiveStep === undefined) {
+      setLocalActiveStep(index);
+    }
+    onStepChange?.(index);
+  };
   const router = useRouter();
 
   return (
@@ -29,8 +40,7 @@ const HorizontalStepper = ({
       <Steps.Root
         step={activeStep}
         onStepChange={(index) => {
-          setActiveStep(index.step);
-          onStepChange?.(index.step);
+          handleStepChange(index.step);
         }}
         count={steps.length}
         colorPalette="green"

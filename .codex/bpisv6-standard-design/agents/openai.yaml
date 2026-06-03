@@ -1,0 +1,8 @@
+interface:
+  display_name: "BPIS V6 Standard Design"
+  short_description: "Strict BPIS UI standardization rules."
+  brand_color: "#109448"
+  default_prompt: "Use $bpisv6-standard-design to standardize this UI while preserving behavior."
+
+policy:
+  allow_implicit_invocation: true

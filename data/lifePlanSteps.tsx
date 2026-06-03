@@ -5,7 +5,9 @@ import Confirmation, {
 import HealthDeclaration from "@/components/steps/HealthDeclaration";
 import LifePlanApplicationWrapper from "@/components/steps/LifePlanApplicationFormWrapper";
 
-export const createLifePlanSteps = (confirmationProps?: ConfirmationProps) => [
+export const createLifePlanSteps = (
+  confirmationProps?: ConfirmationProps & { onEdit?: () => void },
+) => [
   {
     id: "1",
     header: "Life Plan Application",

@@ -3,18 +3,23 @@ import {
   VStack,
   SimpleGrid,
   Box,
+  Text,
   Select,
   createListCollection,
   Portal,
   Field,
-  Span,
 } from "@chakra-ui/react";
 import FloatingLabelInput from "../ui/floating-label-input";
-import { Body } from "st-peter-ui";
 import { useEffect, useState } from "react";
 import { useOcr } from "@/hooks/useOCR";
 import { GeoApifyService } from "@/services/API/GeoApifyService";
 import { IAddress } from "@/types/planholder";
+import { BRAND_COLORS } from "@/lib/theme/brand-colors";
+import {
+  STANDARD_RADIUS,
+  STANDARD_SHADOWS,
+  STANDARD_SPACING,
+} from "@/lib/theme/standard-design-tokens";
 
 const provinceOptions = [
   "Abra",
@@ -225,8 +230,8 @@ interface LifePlanApplication2Props {
 const LifePlanApplication2 = ({
   onAddressUpdate,
 }: LifePlanApplication2Props) => {
-  const OCRValue = "";
-  // const OCRValue = localStorage.getItem("ocrResult");
+  const OCRValue =
+    typeof window === "undefined" ? null : localStorage.getItem("ocrResult");
   const { runOCR, data } = useOcr();
   const [lot, setLot] = useState("");
   const [street, setStreet] = useState("");
@@ -240,8 +245,6 @@ const LifePlanApplication2 = ({
 
     try {
       const result = await GeoApifyService.autocompleteAddress(address);
-
-      console.log("PARSED RESULT:", result);
 
       setLot(result.houseNumber ?? "");
       setStreet(result.street ?? "");
@@ -269,9 +272,9 @@ const LifePlanApplication2 = ({
       lot,
       street,
       barangay,
+      district,
       city,
       province,
-      // addressLine: `${lot} ${street} ${barangay} ${city} ${province}`.trim(),
     });
   }, [lot, street, barangay, city, province, district]);
 
@@ -280,154 +283,171 @@ const LifePlanApplication2 = ({
   }, []);
 
   return (
-    <>
-      <VStack align="stretch" gap={4} mb={4}>
+    <Box
+      bg={BRAND_COLORS.white}
+      borderWidth="1px"
+      borderColor={BRAND_COLORS.neutralBorder}
+      borderRadius={STANDARD_RADIUS.lg}
+      boxShadow={STANDARD_SHADOWS.level1}
+      p={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
+    >
+      <VStack align="stretch" gap={STANDARD_SPACING.md}>
         <Box>
-          <Body>
-            <Span fontWeight="bold">Residential Address</Span>
-          </Body>
+          <Text
+            color={BRAND_COLORS.neutralText}
+            fontSize={{ base: "18px", md: "20px" }}
+            fontWeight="700"
+            lineHeight="1.3"
+          >
+            Residential Address
+          </Text>
         </Box>
-      </VStack>
 
-      <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
-        <Field.Root>
-          <FloatingLabelInput
-            id="lotNumber"
-            label="Lot #"
-            value={lot}
-            onChange={(e) => setLot(e.target.value)}
-          />
-        </Field.Root>
-        <Field.Root>
-          <FloatingLabelInput
-            id="street"
-            label="Street"
-            value={street}
-            onChange={(e) => setStreet(e.target.value)}
-          />
-        </Field.Root>
-        <VStack align="stretch" gap={4}>
-          <Select.Root
-            value={[province]}
-            onValueChange={(e) => setProvince(e.value[0])}
-            collection={provinceCollection}
-            width="100%"
-          >
-            <Select.HiddenSelect />
-            <Select.Control>
-              <Select.Trigger>
-                <Select.ValueText placeholder="Select Province" />
-              </Select.Trigger>
-              <Select.IndicatorGroup>
-                <Select.Indicator />
-              </Select.IndicatorGroup>
-            </Select.Control>
-            <Portal>
-              <Select.Positioner>
-                <Select.Content>
-                  {provinceOptions.map((item) => (
-                    <Select.Item item={item} key={item.value}>
-                      {item.label}
-                      <Select.ItemIndicator />
-                    </Select.Item>
-                  ))}
-                </Select.Content>
-              </Select.Positioner>
-            </Portal>
-          </Select.Root>
-        </VStack>
-        <VStack align="stretch" gap={4}>
-          <Select.Root
-            value={[city]}
-            onValueChange={(e) => setCity(e.value[0])}
-            collection={cityCollection}
-            width="100%"
-          >
-            <Select.HiddenSelect />
-            <Select.Control>
-              <Select.Trigger>
-                <Select.ValueText placeholder="Select City" />
-              </Select.Trigger>
-              <Select.IndicatorGroup>
-                <Select.Indicator />
-              </Select.IndicatorGroup>
-            </Select.Control>
-            <Portal>
-              <Select.Positioner>
-                <Select.Content>
-                  {cityOptions.map((item) => (
-                    <Select.Item item={item} key={item.value}>
-                      {item.label}
-                      <Select.ItemIndicator />
-                    </Select.Item>
-                  ))}
-                </Select.Content>
-              </Select.Positioner>
-            </Portal>
-          </Select.Root>
-        </VStack>
-        <VStack align="stretch" gap={4}>
-          <Select.Root
-            value={[district]}
-            onValueChange={(e) => setDistrict(e.value[0])}
-            collection={districtCollection}
-            width="100%"
-          >
-            <Select.HiddenSelect />
-            <Select.Control>
-              <Select.Trigger>
-                <Select.ValueText placeholder="Select District" />
-              </Select.Trigger>
-              <Select.IndicatorGroup>
-                <Select.Indicator />
-              </Select.IndicatorGroup>
-            </Select.Control>
-            <Portal>
-              <Select.Positioner>
-                <Select.Content>
-                  {districtOptions.map((item) => (
-                    <Select.Item item={item} key={item.value}>
-                      {item.label}
-                      <Select.ItemIndicator />
-                    </Select.Item>
-                  ))}
-                </Select.Content>
-              </Select.Positioner>
-            </Portal>
-          </Select.Root>
-        </VStack>
-        <VStack align="stretch" gap={4}>
-          <Select.Root
-            value={[barangay]}
-            onValueChange={(e) => setBarangay(e.value[0])}
-            collection={barangayCollection}
-            width="100%"
-          >
-            <Select.HiddenSelect />
-            <Select.Control>
-              <Select.Trigger>
-                <Select.ValueText placeholder="Select Barangay" />
-              </Select.Trigger>
-              <Select.IndicatorGroup>
-                <Select.Indicator />
-              </Select.IndicatorGroup>
-            </Select.Control>
-            <Portal>
-              <Select.Positioner>
-                <Select.Content>
-                  {barangayOptions.map((item) => (
-                    <Select.Item item={item} key={item.value}>
-                      {item.label}
-                      <Select.ItemIndicator />
-                    </Select.Item>
-                  ))}
-                </Select.Content>
-              </Select.Positioner>
-            </Portal>
-          </Select.Root>
-        </VStack>
-      </SimpleGrid>
-    </>
+        <SimpleGrid columns={{ base: 1, md: 2 }} gap={STANDARD_SPACING.sm}>
+          <Field.Root>
+            <Select.Root
+              value={[province]}
+              onValueChange={(e) => setProvince(e.value[0])}
+              collection={provinceCollection}
+              width="100%"
+            >
+              <Select.HiddenSelect />
+              <Select.Control>
+                <Select.Trigger>
+                  <Select.ValueText placeholder="Select Province" />
+                </Select.Trigger>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+              </Select.Control>
+              <Portal>
+                <Select.Positioner>
+                  <Select.Content>
+                    {provinceOptions.map((item) => (
+                      <Select.Item item={item} key={item.value}>
+                        {item.label}
+                        <Select.ItemIndicator />
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Positioner>
+              </Portal>
+            </Select.Root>
+          </Field.Root>
+
+          <Field.Root>
+            <Select.Root
+              value={[city]}
+              onValueChange={(e) => setCity(e.value[0])}
+              collection={cityCollection}
+              width="100%"
+            >
+              <Select.HiddenSelect />
+              <Select.Control>
+                <Select.Trigger>
+                  <Select.ValueText placeholder="Select City" />
+                </Select.Trigger>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+              </Select.Control>
+              <Portal>
+                <Select.Positioner>
+                  <Select.Content>
+                    {cityOptions.map((item) => (
+                      <Select.Item item={item} key={item.value}>
+                        {item.label}
+                        <Select.ItemIndicator />
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Positioner>
+              </Portal>
+            </Select.Root>
+          </Field.Root>
+
+          <Field.Root>
+            <Select.Root
+              value={[district]}
+              onValueChange={(e) => setDistrict(e.value[0])}
+              collection={districtCollection}
+              width="100%"
+            >
+              <Select.HiddenSelect />
+              <Select.Control>
+                <Select.Trigger>
+                  <Select.ValueText placeholder="Select District" />
+                </Select.Trigger>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+              </Select.Control>
+              <Portal>
+                <Select.Positioner>
+                  <Select.Content>
+                    {districtOptions.map((item) => (
+                      <Select.Item item={item} key={item.value}>
+                        {item.label}
+                        <Select.ItemIndicator />
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Positioner>
+              </Portal>
+            </Select.Root>
+          </Field.Root>
+
+          <Field.Root>
+            <Select.Root
+              value={[barangay]}
+              onValueChange={(e) => setBarangay(e.value[0])}
+              collection={barangayCollection}
+              width="100%"
+            >
+              <Select.HiddenSelect />
+              <Select.Control>
+                <Select.Trigger>
+                  <Select.ValueText placeholder="Select Barangay" />
+                </Select.Trigger>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+              </Select.Control>
+              <Portal>
+                <Select.Positioner>
+                  <Select.Content>
+                    {barangayOptions.map((item) => (
+                      <Select.Item item={item} key={item.value}>
+                        {item.label}
+                        <Select.ItemIndicator />
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Positioner>
+              </Portal>
+            </Select.Root>
+          </Field.Root>
+
+          <Field.Root>
+            <FloatingLabelInput
+              id="street"
+              label="Street"
+              value={street}
+              onChange={(e) => setStreet(e.target.value)}
+            />
+          </Field.Root>
+
+          <Field.Root>
+            <FloatingLabelInput
+              id="lotNumber"
+              label="Lot #"
+              value={lot}
+              onChange={(e) => setLot(e.target.value)}
+            />
+          </Field.Root>
+        </SimpleGrid>
+      </VStack>
+    </Box>
   );
 };
 

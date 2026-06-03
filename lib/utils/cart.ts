@@ -24,35 +24,38 @@ export const addToCart = (
     return;
 
   const stored = sessionStorage.getItem("Cart");
-  const cart = stored ? JSON.parse(stored) : [];
-  total = price * quantity;
-  const exists = cart.some((c: any) => c.planDesc === planDesc);
-  if (!exists) cart.push({ planDesc, mode, planTerm, quantity, price, total });
-
-
-  // Check if exact item already exists (same planDesc, mode, planTerm)
-  const itemExists = cart.some(
+  const cart = stored ? (JSON.parse(stored) as CartItem[]) : [];
+  const normalizedTotal = price * quantity;
+  const exactItemIndex = cart.findIndex(
     (item: CartItem) =>
       item.planDesc === planDesc &&
       item.mode === mode &&
       item.planTerm === planTerm,
   );
 
-  if (itemExists) {
-    return; // Prevent adding duplicate exact items
+  if (exactItemIndex >= 0) {
+    const existingItem = cart[exactItemIndex];
+    cart[exactItemIndex] = {
+      ...existingItem,
+      quantity: existingItem.quantity + quantity,
+      price,
+      total: (existingItem.quantity + quantity) * price,
+      contractPrice,
+    };
+  } else {
+    const newItem: CartItem = {
+      planDesc,
+      mode,
+      planTerm,
+      quantity,
+      price,
+      total: normalizedTotal,
+      contractPrice,
+    };
+
+    cart.push(newItem);
   }
 
-  const newItem: CartItem = {
-    planDesc,
-    mode,
-    planTerm,
-    quantity,
-    price,
-    total,
-    contractPrice,
-  };
-
-  cart.push(newItem);
   sessionStorage.setItem("Cart", JSON.stringify(cart));
 };
 

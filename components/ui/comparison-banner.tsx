@@ -1,77 +1,125 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, Text } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { PrimaryMdButton } from "st-peter-ui";
+import { BRAND_COLORS } from "@/lib/theme/brand-colors";
+import {
+  STANDARD_RADIUS,
+  STANDARD_SHADOWS,
+  STANDARD_SPACING,
+} from "@/lib/theme/standard-design-tokens";
 
 interface ComparisonBannerProps {
   compareList: string[];
   setShowAlert: (show: boolean) => void;
   setCompareList: (list: string[]) => void;
 }
+
 const ComparisonBanner = ({
   compareList,
   setShowAlert,
   setCompareList,
 }: ComparisonBannerProps) => {
   const router = useRouter();
+
+  const handleCompare = () => {
+    if (compareList.length < 2) {
+      setShowAlert(true);
+      return;
+    }
+
+    setShowAlert(false);
+    router.push(`/plan-comparison/${compareList.join(",")}`);
+  };
+
+  if (compareList.length === 0) {
+    return null;
+  }
+
   return (
-    <>
-      {compareList.length > 0 && (
-        <Box
-          position="fixed"
-          bottom={{ base: 8, md: 16, lg: 0 }}
-          left={0}
-          right={0}
-          height={{ base: 150, md: "auto" }}
-          color="white"
-          bg="green.700"
-          py={5}
-          px={6}
-          shadow="2xl"
-          zIndex={50}
-        >
-          <Flex
-            maxW="7xl"
-            mx="auto"
-            flexDirection={{ base: "column", sm: "row" }}
-            alignItems="center"
-            justifyContent="space-between"
-            gap={4}
+    <Box
+      position="fixed"
+      left="50%"
+      bottom={{
+        base: "calc(7rem + env(safe-area-inset-bottom))",
+        md: STANDARD_SPACING.md,
+      }}
+      transform="translateX(-50%)"
+      w={{ base: "calc(100% - 32px)", md: "min(760px, calc(100% - 64px))" }}
+      maxW="760px"
+      bg={BRAND_COLORS.darkGreen}
+      color={BRAND_COLORS.white}
+      borderWidth="1px"
+      borderColor={BRAND_COLORS.primaryGreen}
+      borderRadius={{ base: STANDARD_RADIUS.lg, md: STANDARD_RADIUS.xl }}
+      px={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
+      py={{ base: STANDARD_SPACING.sm, md: "14px" }}
+      boxShadow={STANDARD_SHADOWS.level3}
+      zIndex={40}
+    >
+      <Flex
+        align={{ base: "stretch", sm: "center" }}
+        justify="space-between"
+        direction={{ base: "column", sm: "row" }}
+        gap={STANDARD_SPACING.sm}
+      >
+        <Box minW={0}>
+          <Text
+            fontSize={{ base: "15px", md: "16px" }}
+            fontWeight="800"
+            lineHeight="1.3"
           >
-            <Flex alignItems="center" gap={4} w="100%">
-              {/*  */}
-              <Box w="100%">
-                <Text fontWeight="medium">
-                  {compareList.length}{" "}
-                  {compareList.length === 1 ? "plan" : "plans"} selected for
-                  comparison
-                </Text>
-                <Flex justifyContent="space-between" gap={4} w="100%" mt={2}>
-                  <PrimaryMdButton onClick={() => setCompareList([])}>
-                    Clear all
-                  </PrimaryMdButton>
-                  <PrimaryMdButton
-                    disabled={compareList.length > 3}
-                    onClick={() => {
-                      if (compareList.length < 2) {
-                        setShowAlert(true);
-                      } else if (compareList.length > 1) {
-                        setShowAlert(false);
-                        router.push(
-                          `/plan-comparison/${compareList.join(",")}`,
-                        );
-                      }
-                    }}
-                  >
-                    Compare plan
-                  </PrimaryMdButton>
-                </Flex>
-              </Box>
-            </Flex>
-          </Flex>
+            {compareList.length} {compareList.length === 1 ? "plan" : "plans"}{" "}
+            selected for comparison
+          </Text>
+          <Text
+            display={{ base: "none", md: "block" }}
+            mt="2px"
+            color="#D8F5E5"
+            fontSize="13px"
+            lineClamp={1}
+          >
+            {compareList.join(", ")}
+          </Text>
         </Box>
-      )}
-    </>
+
+        <HStack gap={STANDARD_SPACING.xs} w={{ base: "full", sm: "auto" }}>
+          <Button
+            h="40px"
+            flex={{ base: "1", sm: "initial" }}
+            minW={{ base: 0, sm: "116px" }}
+            px={STANDARD_SPACING.sm}
+            borderWidth="1px"
+            borderColor="#BFE8D0"
+            borderRadius={STANDARD_RADIUS.md}
+            bg="transparent"
+            color={BRAND_COLORS.white}
+            fontSize="13px"
+            fontWeight="800"
+            onClick={() => setCompareList([])}
+            _hover={{ bg: "rgba(255,255,255,0.12)" }}
+          >
+            CLEAR ALL
+          </Button>
+
+          <Button
+            h="40px"
+            flex={{ base: "1", sm: "initial" }}
+            minW={{ base: 0, sm: "140px" }}
+            px={STANDARD_SPACING.sm}
+            borderRadius={STANDARD_RADIUS.md}
+            bg={BRAND_COLORS.white}
+            color={BRAND_COLORS.darkGreen}
+            fontSize="13px"
+            fontWeight="800"
+            disabled={compareList.length > 3}
+            onClick={handleCompare}
+            _hover={{ bg: BRAND_COLORS.successBg }}
+          >
+            COMPARE PLAN
+          </Button>
+        </HStack>
+      </Flex>
+    </Box>
   );
 };
 

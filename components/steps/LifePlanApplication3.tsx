@@ -1,34 +1,15 @@
-import React from "react";
-import {
-  VStack,
-  HStack,
-  SimpleGrid,
-  Box,
-  Text,
-  Portal,
-  Select,
-  Field,
-  createListCollection,
-  Span,
-} from "@chakra-ui/react";
-import FloatingLabelInput from "../ui/floating-label-input";
-import { Body, H4 } from "st-peter-ui";
-import { IEmployment } from "@/types/planholder";
+"use client";
 
-const genderOptions = [
-  { value: "male", label: "Male" },
-  { value: "female", label: "Female" },
-];
-const civilStatusOptions = [
-  { value: "single", label: "Single" },
-  { value: "in_relationship", label: "In a Relationship" },
-];
-const genderCollection = createListCollection({
-  items: genderOptions,
-});
-const civilStatusCollection = createListCollection({
-  items: civilStatusOptions,
-});
+import { Box, Field, SimpleGrid, Text, VStack } from "@chakra-ui/react";
+import FloatingLabelInput from "../ui/floating-label-input";
+import { BRAND_COLORS } from "@/lib/theme/brand-colors";
+import {
+  STANDARD_RADIUS,
+  STANDARD_SHADOWS,
+  STANDARD_SPACING,
+} from "@/lib/theme/standard-design-tokens";
+import { IEmployment } from "@/types/planholder";
+import React from "react";
 
 interface LifePlanApplication3Props {
   initialData?: IEmployment;
@@ -49,102 +30,109 @@ const LifePlanApplication3 = ({
     sourceOfIncome: initialData?.sourceOfIncome ?? "",
   });
 
-  // Auto-save to parent when formData changes
-  React.useEffect(() => {
-    if (onUpdate) {
-      onUpdate(formData);
-    }
-  }, [formData, onUpdate]);
+  const updateFormData = (nextData: IEmployment) => {
+    setFormData(nextData);
+    onUpdate?.(nextData);
+  };
 
   return (
-    <>
-      <VStack align="stretch" gap={4} mb={4}>
-        <Body>
-          <Span fontWeight="bold">Employment</Span>
-        </Body>
+    <Box
+      bg={BRAND_COLORS.white}
+      borderWidth="1px"
+      borderColor={BRAND_COLORS.neutralBorder}
+      borderRadius={STANDARD_RADIUS.lg}
+      boxShadow={STANDARD_SHADOWS.level1}
+      p={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
+    >
+      <VStack align="stretch" gap={STANDARD_SPACING.md}>
+        <Box>
+          <Text
+            color={BRAND_COLORS.neutralText}
+            fontSize={{ base: "18px", md: "20px" }}
+            fontWeight="700"
+            lineHeight="1.3"
+          >
+            Employment
+          </Text>
+        </Box>
+
+        <SimpleGrid columns={{ base: 1, md: 2 }} gap={STANDARD_SPACING.sm}>
+          <Field.Root>
+            <FloatingLabelInput
+              id="occupation"
+              label="Occupation"
+              value={formData.occupation}
+              onChange={(e) => {
+                updateFormData({ ...formData, occupation: e.target.value });
+              }}
+            />
+          </Field.Root>
+          <Field.Root>
+            <FloatingLabelInput
+              id="employerName"
+              label="Employer Name"
+              value={formData.employerName}
+              onChange={(e) => {
+                updateFormData({ ...formData, employerName: e.target.value });
+              }}
+            />
+          </Field.Root>
+          <Field.Root>
+            <FloatingLabelInput
+              id="employmentStatus"
+              label="Employment Status"
+              value={formData.employmentStatus}
+              onChange={(e) => {
+                updateFormData({
+                  ...formData,
+                  employmentStatus: e.target.value,
+                });
+              }}
+            />
+          </Field.Root>
+          <Field.Root>
+            <FloatingLabelInput
+              id="officeAddress"
+              label="Office Address"
+              value={formData.officeAddress}
+              onChange={(e) => {
+                updateFormData({ ...formData, officeAddress: e.target.value });
+              }}
+            />
+          </Field.Root>
+          <Field.Root>
+            <FloatingLabelInput
+              id="tin"
+              label="TIN"
+              value={formData.TIN}
+              onChange={(e) => {
+                updateFormData({ ...formData, TIN: e.target.value });
+              }}
+            />
+          </Field.Root>
+          <Field.Root>
+            <FloatingLabelInput
+              id="sssGsis"
+              label="SSS"
+              value={formData.SSS}
+              onChange={(e) => {
+                updateFormData({ ...formData, SSS: e.target.value });
+              }}
+            />
+          </Field.Root>
+          <Field.Root>
+            <FloatingLabelInput
+              id="otherSourceOfFund"
+              label="Other Source of Fund"
+              value={formData.sourceOfIncome}
+              onChange={(e) => {
+                updateFormData({ ...formData, sourceOfIncome: e.target.value });
+              }}
+            />
+          </Field.Root>
+        </SimpleGrid>
       </VStack>
-
-      <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
-        <Field.Root>
-          <FloatingLabelInput
-            id="occupation"
-            label="Occupation"
-            value={formData.occupation}
-            onChange={(e) => {
-              setFormData({ ...formData, occupation: e.target.value });
-            }}
-          />
-        </Field.Root>
-        <Field.Root>
-          <FloatingLabelInput
-            id="employerName"
-            label="Employer Name"
-            value={formData.employerName}
-            onChange={(e) => {
-              setFormData({ ...formData, employerName: e.target.value });
-            }}
-          />
-        </Field.Root>
-      </SimpleGrid>
-
-      <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
-        <Field.Root>
-          <FloatingLabelInput
-            id="employmentStatus"
-            label="Employment Status"
-            value={formData.employmentStatus}
-            onChange={(e) => {
-              setFormData({ ...formData, employmentStatus: e.target.value });
-            }}
-          />
-        </Field.Root>
-        <Field.Root>
-          <FloatingLabelInput
-            id="officeAddress"
-            label="Office Address"
-            value={formData.officeAddress}
-            onChange={(e) => {
-              setFormData({ ...formData, officeAddress: e.target.value });
-            }}
-          />
-        </Field.Root>
-      </SimpleGrid>
-
-      <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
-        <Field.Root>
-          <FloatingLabelInput
-            id="tin"
-            label="TIN"
-            value={formData.TIN}
-            onChange={(e) => {
-              setFormData({ ...formData, TIN: e.target.value });
-            }}
-          />
-        </Field.Root>
-        <Field.Root>
-          <FloatingLabelInput
-            id="sssGsis"
-            label="SSS"
-            value={formData.SSS}
-            onChange={(e) => {
-              setFormData({ ...formData, SSS: e.target.value });
-            }}
-          />
-        </Field.Root>
-      </SimpleGrid>
-      <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={4}>
-        <Field.Root w="100%">
-          <FloatingLabelInput
-            id="otherSourceOfFund"
-            label="Other Source of Fund"
-            value={formData.sourceOfIncome}
-            onChange={(e) => {
-              setFormData({ ...formData, sourceOfIncome: e.target.value });
-            }}
-          />
-        </Field.Root>
-      </SimpleGrid>
-    </>
+    </Box>
   );
 };
 

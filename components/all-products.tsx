@@ -83,6 +83,9 @@ const groupPlansByProduct = (
 };
 
 const AllProducts = ({ plans }: Props) => {
+  3;
+  sessionStorage.removeItem("CheckoutCart");
+
   const router = useRouter();
 
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -144,8 +147,7 @@ const AllProducts = ({ plans }: Props) => {
             <Box maxW="7xl" mx="auto">
               <Box
                 display={{ base: "block", md: "none" }}
-                px={{ base: 4, md: 0 }}
-                mb={{ base: 4, md: 0 }}
+                mb={{ base: 4, md: 4 }}
               >
                 <Button variant="ghost" onClick={() => router.back()} px={0}>
                   <FaArrowLeft color="#177D54" />
@@ -162,12 +164,12 @@ const AllProducts = ({ plans }: Props) => {
                 alignItems="center"
                 gap={{ base: 8, md: 0 }}
               >
-                <GridItem px={{ base: 4, md: 0 }}>
+                <GridItem>
                   <H3>Our Life Plans</H3>
                   <Body>Secure your family's future with peace of mind</Body>
                 </GridItem>
 
-                <GridItem px={{ base: 4, md: 0 }} justifySelf="start">
+                <GridItem justifySelf="start">
                   <Tabs.List bg="gray.100" borderRadius="full" p={1}>
                     <Tabs.Trigger
                       value="traditional"
@@ -201,7 +203,7 @@ const AllProducts = ({ plans }: Props) => {
 
           {/* CONTENT - SAME DESIGN */}
           <Tabs.Content value="traditional">
-            <Box px={{ base: 4, md: 8 }} maxW="7xl" mx="auto">
+            <Box maxW="7xl" mx="auto">
               {traditionalGroups.map((g, i) => (
                 <Section
                   key={g.planDesc}
@@ -220,7 +222,7 @@ const AllProducts = ({ plans }: Props) => {
           </Tabs.Content>
 
           <Tabs.Content value="cremation">
-            <Box px={{ base: 4, md: 8 }} maxW="7xl" mx="auto">
+            <Box maxW="7xl" mx="auto">
               {cremationGroups.map((g, i) => (
                 <Section
                   key={g.planDesc}

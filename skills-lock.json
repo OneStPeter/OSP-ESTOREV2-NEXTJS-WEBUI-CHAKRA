@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "senior-ux-designer": {
+      "source": "imainzed5/FinTrack",
+      "sourceType": "github",
+      "skillPath": "skills/senior-ux-designer/SKILL.md",
+      "computedHash": "429cbc3054967d6b91a1cc31ede0090eaf8105fdc0a6ecaac0305b22d93cdec7"
+    }
+  }
+}

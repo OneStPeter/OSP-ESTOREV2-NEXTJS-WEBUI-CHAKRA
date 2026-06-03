@@ -12,7 +12,6 @@ import {
   Badge,
   Box,
   Button,
-  Container,
   Flex,
   Grid,
   GridItem,
@@ -39,9 +38,11 @@ import {
 } from "./ui/product-carousel";
 import { Body, H3, H4, Small } from "st-peter-ui";
 import { FaArrowLeft } from "react-icons/fa6";
-import { FiCalendar, FiRepeat, FiShield } from "react-icons/fi";
+import { FiCalendar, FiRepeat } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { addToCart } from "@/lib/utils/cart";
+import Container from "./ui/container";
+import { DetailAccordion } from "./ui/accordion";
 
 type PaymentOption = {
   mode?: string;
@@ -52,11 +53,92 @@ type PaymentOption = {
   cadence: string;
 };
 
+type SelectOptionItem = {
+  value: string;
+  label: string;
+};
+
+type DetailCard = {
+  title: string;
+  desc?: string;
+  subtitle?: string;
+  icon: string;
+  details?: {
+    title: string;
+    desc: string;
+  }[];
+};
+
+const planBenefitCards: DetailCard[] = [
+  {
+    title: "Memorial Service",
+    desc: `A memorial service from our accredited mortuary for a chapel viewing of four (4) days or for viewing outside of our accredited mortuary, at your or your beneficiary's expense, for nine (9) days. The memorial service may only be availed 30 days after the date of effectivity of the plan.`,
+    icon: "/images/plan-benefits/memorial-service.jpg",
+  },
+  {
+    title: "Casket Provision",
+    desc: "A provision for a casket depending on the purchased plan.",
+    icon: "/images/plan-benefits/casket-provision.jpg",
+  },
+  {
+    title: "Insurance Coverages",
+    icon: "/images/plan-benefits/insurance.jpg",
+    subtitle:
+      "You can buy the plan if youâ€™re healthy and between 18 and 60 years old (before your 60th birthday).",
+    details: [
+      {
+        title: "Cash Assistance",
+        desc: "Your beneficiaries shall receive an amount equivalent to the Gross Contract Price if you die within 10 years from the date of effectivity of the plan and you have not reached the age of 65 upon death.",
+      },
+      {
+        title: "Payment of Unpaid Balance",
+        desc: "The unpaid balance of your plan will be considered fully paid if you die while paying for this plan and you have not reached the age of 65 upon death.",
+      },
+      {
+        title: "Waiver of Installment",
+        desc: "You will be exempted from paying the balance of your plan if you suffer from an uninterrupted disability of at least six (6) months during the paying period and you have not reached the age of 60 at the start of your disability.",
+      },
+    ],
+  },
+  {
+    title: "Accidental Death & Dismemberment",
+    icon: "/images/plan-benefits/accidental-death.jpg",
+    desc: "Coverage applies if you are in good health and between the insurable ages of 18 to 55 years at time of purchase. You or your beneficiaries shall be entitled to cash, based on a schedule, if you die or become dismembered due to an accident during the paying period and you have not reached the age of 60 upon death/accident.",
+  },
+  {
+    title: "Alternative Cash / Memorial Option",
+    icon: "/images/plan-benefits/cash.jpg",
+    desc: "Cash according to a schedule will be provided if the memorial service is not performed. One of your heirs, successors or assigns will be entitled to a memorial service only if they opt to retain the plan.",
+  },
+  {
+    title: "Surrender Benefit",
+    icon: "/images/plan-benefits/surrender.jpg",
+    desc: "Cash if you surrender your plan while in-force. You will no longer be entitled to any benefit upon surrender of your plan.",
+  },
+];
+
+const planFeatureCards: DetailCard[] = [
+  {
+    title: "Transferability",
+    desc: "You may transfer your plan to another living person.",
+    icon: "/images/plan-features/transfer.jpg",
+  },
+  {
+    title: "Assignability",
+    desc: "You may assign the plan to any deceased person, however, any insurance coverage provided to the transferor shall automatically terminate, provided that the balance, if any, is paid before the service is rendered.",
+    icon: "/images/plan-features/assignability.jpg",
+  },
+  {
+    title: "Free Look Period",
+    desc: "You may cancel the plan within 15 days from the date of effectivity of the plan and you will receive a refund of your payment in full.",
+    icon: "/images/plan-features/free-look.jpg",
+  },
+];
+
 const ProductView = ({ plans }: { plans: IPlans[] }) => {
   const router = useRouter();
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [slideCount, setSlideCount] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [selectedTerm, setSelectedTerm] = useState<number | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
@@ -78,18 +160,12 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
 
   useEffect(() => {
     if (!carouselApi) {
-      setSlideCount(carouselImages.length);
       setCurrentSlide(0);
       return;
     }
 
     const update = () => {
       try {
-        const snaps = carouselApi.scrollSnapList?.();
-        const count = Array.isArray(snaps)
-          ? snaps.length
-          : carouselImages.length;
-        setSlideCount(count);
         const selected =
           typeof carouselApi.selectedScrollSnap === "function"
             ? carouselApi.selectedScrollSnap()
@@ -115,6 +191,11 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
     ).sort((a, b) => Number(a) - Number(b));
   }, [plans]);
 
+  const defaultSelectedTerm = useMemo(() => {
+    if (terms.length === 0) return null;
+    return plan?.planTerm ?? terms[0];
+  }, [terms, plan?.planTerm]);
+
   const termCollection = useMemo(() => {
     return createListCollection({
       items: terms.map((t) => ({
@@ -123,6 +204,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
       })),
     });
   }, [terms]);
+
   const quantityCollection = useMemo(() => {
     return createListCollection({
       items: [1, 2, 3].map((q) => ({
@@ -133,10 +215,9 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
   }, []);
 
   useEffect(() => {
-    if (terms.length > 0 && selectedTerm == null) {
-      setSelectedTerm(plan?.planTerm ?? terms[0]);
-    }
-  }, [terms, plan, selectedTerm]);
+    if (defaultSelectedTerm == null) return;
+    setSelectedTerm((current) => current ?? defaultSelectedTerm);
+  }, [defaultSelectedTerm]);
 
   const paymentOptions = useMemo(() => {
     if (!plans || selectedTerm == null) return [] as PaymentOption[];
@@ -167,7 +248,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                 ? "12 payments per year"
                 : "Flexible payment";
 
-    const formatAmount = (amt: any) =>
+    const formatAmount = (amt: unknown) =>
       amt == null
         ? "N/A"
         : `₱${Number(amt).toLocaleString("en-PH", {
@@ -195,7 +276,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
           cadence: cadence(p.mode),
         };
       });
-  }, [plans, selectedTerm]);
+  }, [plans, selectedTerm, contractPrice]);
 
   useEffect(() => {
     if (paymentOptions.length === 0) {
@@ -208,13 +289,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
     }
 
     setSelected(null);
-  }, [paymentOptions, selected]);
-
-  useEffect(() => {
-    if (quantity == null) {
-      setQuantity(1);
-    }
-  }, [quantity]);
+  }, [paymentOptions, selected, selectedTerm]);
 
   const selectedPayment = useMemo(
     () => paymentOptions.find((opt) => opt.mode === selectedPlan),
@@ -222,9 +297,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
   );
 
   const selectedTotal =
-    selectedPayment && quantity
-      ? selectedPayment.amountValue * quantity
-      : undefined;
+    selectedPayment && quantity ? selectedPayment.amountValue * quantity : "";
 
   const handleAddToCart = useCallback(() => {
     const active = selectedPayment;
@@ -250,7 +323,12 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
 
   const handleBuyNow = useCallback(() => {
     const active = selectedPayment;
-    if (!plan || !active || quantity == null || !selectedPlan) return;
+    if (!plan || !active || quantity == null || !selectedPlan) {
+      alert(
+        "Please select a payment option, plan term, and quantity to continue.",
+      );
+      return;
+    }
 
     try {
       setIsBuyingNow(true);
@@ -273,30 +351,14 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
       setIsBuyingNow(false);
     }
   }, [selectedPayment, plan, quantity, selectedPlan, contractPrice, router]);
-
   const breadcrumbItems = [
-    {
-      label: "Home",
-      href: "/",
-    },
-    {
-      label: "Plans",
-      href: `/plans`,
-    },
-    {
-      label: `${plan?.planDesc}`,
-      href: `/plan-details/${plan?.planDesc}`,
-    },
+    { label: "Home", href: "/" },
+    { label: "Life Plans", href: "/plans" },
+    { label: plan?.planDesc ?? "Product Details", href: "#" },
   ];
-
   return (
     <Box bgGradient="linear(to-b, #f7faf8 0%, white 24%)" minH="100vh">
-      <Container
-        maxW="7xl"
-        px={{ base: 4, md: 6, lg: 8 }}
-        mt={{ base: 24, md: 32 }}
-        pb={{ base: 36, md: 10 }}
-      >
+      <Container>
         {!hasPlans ? (
           <VStack align="stretch" gap={{ base: 6, md: 8 }}>
             <Skeleton height={{ base: "38px", md: "24px" }} w="220px" />
@@ -315,20 +377,25 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
           </VStack>
         ) : (
           <>
-            <Box mb={{ base: 4, md: 6 }}>
+            <Box
+              display={{ base: "block", md: "none" }}
+              mb={{ base: 4, md: 0 }}
+            >
               <Button
                 variant="ghost"
+                size="md"
                 onClick={() => router.back()}
-                display={{ base: "inline-flex", md: "none" }}
-                aria-label="Go back"
+                px={0}
               >
                 <FaArrowLeft color="#177D54" />
                 Back
               </Button>
-
-              <Box display={{ base: "none", md: "block" }}>
-                <Breadcrumb items={breadcrumbItems} />
-              </Box>
+            </Box>
+            <Box
+              display={{ base: "none", md: "block" }}
+              mb={{ base: 0, md: 4 }}
+            >
+              <Breadcrumb items={breadcrumbItems} />
             </Box>
 
             <Grid
@@ -352,7 +419,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                             role="group"
                             position="relative"
                             w="full"
-                            h={{ base: "320px", md: "520px" }}
+                            h={{ base: "220px", md: "520px" }}
                             bgGradient="linear(to-br, gray.50, white)"
                             rounded="2xl"
                             overflow="hidden"
@@ -383,7 +450,12 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                     <CarouselNext className="right-4 bg-white/95 hover:bg-white border border-gray-200 shadow-lg" />
                   </ProductCarousel>
 
-                  <HStack mt={4} gap={2} overflowX="auto" pb={1}>
+                  <HStack
+                    mt={{ base: 2, md: 4 }}
+                    gap={2}
+                    overflowX="auto"
+                    pb={1}
+                  >
                     {carouselImages.map((src, index) => {
                       const isActive = index === currentSlide;
                       return (
@@ -396,8 +468,8 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                           borderColor={isActive ? "green.500" : "gray.200"}
                           rounded="md"
                           overflow="hidden"
-                          minW="72px"
-                          h="72px"
+                          minW={{ base: "56px", md: "72px" }}
+                          h={{ base: "56px", md: "72px" }}
                           bg="white"
                           transition="all .2s ease"
                           _hover={{
@@ -431,23 +503,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                     templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }}
                     gap={6}
                   >
-                    {[
-                      {
-                        title: "Transferability",
-                        desc: "You may transfer your plan to another living person.",
-                        icon: "/images/plan-features/transfer.jpg",
-                      },
-                      {
-                        title: "Assignability",
-                        desc: "You may assign the plan to any deceased person, however, any insurance coverage provided to the transferor shall automatically terminate, provided that the balance, if any, is paid before the service is rendered.",
-                        icon: "/images/plan-features/assignability.jpg",
-                      },
-                      {
-                        title: "Free Look Period",
-                        desc: "You may cancel the plan within 15 days from the date of effectivity of the plan and you will receive a refund of your payment in full.",
-                        icon: "/images/plan-features/free-look.jpg",
-                      },
-                    ].map((card) => (
+                    {planFeatureCards.map((card) => (
                       <Box
                         key={card.title}
                         bg="white"
@@ -482,26 +538,33 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
               <GridItem>
                 <VStack
                   align="stretch"
-                  gap={5}
+                  gap={{ base: 3, md: 5 }}
                   position={{ base: "static", lg: "sticky" }}
                   top={{ lg: "110px" }}
                 >
                   <Box
+                    order={{ base: 1, md: 1 }}
                     rounded="2xl"
                     borderWidth="1px"
                     borderColor="gray.200"
                     bg="white"
-                    p={{ base: 4, md: 5 }}
+                    p={{ base: 3, md: 5 }}
                     shadow="sm"
                   >
-                    <VStack align="stretch" gap={{ base: 8, md: 4 }}>
+                    <VStack align="stretch" gap={{ base: 3, md: 4 }}>
                       <BaseText
-                        fontSize={{ base: "2xl", md: "3xl" }}
+                        fontSize={{ base: "xl", md: "3xl" }}
                         fontWeight="700"
                       >
                         {plan?.planDesc}
                       </BaseText>
-                      <Body color="gray.700">{plan?.casketDesc}</Body>
+                      <Body
+                        color="gray.700"
+                        fontSize={{ base: "sm", md: "md" }}
+                        lineClamp={{ base: 2, md: "unset" }}
+                      >
+                        {plan?.casketDesc}
+                      </Body>
 
                       <HStack
                         align="end"
@@ -590,18 +653,19 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                   </Box>
 
                   <Box
+                    order={{ base: 2, md: 2 }}
                     rounded="2xl"
                     borderWidth="1px"
                     borderColor="gray.200"
                     bg="white"
-                    p={{ base: 4, md: 5 }}
+                    p={{ base: 3, md: 5 }}
                     shadow="sm"
                   >
-                    <VStack align="stretch" gap={{ base: 8, md: 4 }}>
+                    <VStack align="stretch" gap={{ base: 3, md: 4 }}>
                       <H4>Choose Your Payment Plan</H4>
                       <Grid
                         templateColumns={{
-                          base: "1fr",
+                          base: "repeat(2, minmax(0, 1fr))",
                           md: "1fr 1fr",
                           lg: "1fr",
                         }}
@@ -617,6 +681,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                               rounded="lg"
                               borderWidth="1px"
                               borderColor="gray.300"
+                              minH={{ base: "40px", md: "44px" }}
                             >
                               <Select.ValueText placeholder="Select term" />
                             </Select.Trigger>
@@ -627,18 +692,20 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                           <Portal>
                             <Select.Positioner>
                               <Select.Content>
-                                {termCollection.items.map((item: any) => (
-                                  <Select.Item
-                                    item={item}
-                                    key={item.value}
-                                    onClick={() =>
-                                      setSelectedTerm(Number(item.value))
-                                    }
-                                  >
-                                    {item.label}
-                                    <Select.ItemIndicator />
-                                  </Select.Item>
-                                ))}
+                                {termCollection.items.map(
+                                  (item: SelectOptionItem) => (
+                                    <Select.Item
+                                      item={item}
+                                      key={item.value}
+                                      onClick={() =>
+                                        setSelectedTerm(Number(item.value))
+                                      }
+                                    >
+                                      {item.label}
+                                      <Select.ItemIndicator />
+                                    </Select.Item>
+                                  ),
+                                )}
                               </Select.Content>
                             </Select.Positioner>
                           </Portal>
@@ -654,6 +721,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                               rounded="lg"
                               borderWidth="1px"
                               borderColor="gray.300"
+                              minH={{ base: "40px", md: "44px" }}
                             >
                               <Select.ValueText placeholder="Select quantity" />
                             </Select.Trigger>
@@ -664,18 +732,20 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                           <Portal>
                             <Select.Positioner>
                               <Select.Content>
-                                {quantityCollection.items.map((item: any) => (
-                                  <Select.Item
-                                    item={item}
-                                    key={item.value}
-                                    onClick={() =>
-                                      setQuantity(Number(item.value))
-                                    }
-                                  >
-                                    {item.label}
-                                    <Select.ItemIndicator />
-                                  </Select.Item>
-                                ))}
+                                {quantityCollection.items.map(
+                                  (item: SelectOptionItem) => (
+                                    <Select.Item
+                                      item={item}
+                                      key={item.value}
+                                      onClick={() =>
+                                        setQuantity(Number(item.value))
+                                      }
+                                    >
+                                      {item.label}
+                                      <Select.ItemIndicator />
+                                    </Select.Item>
+                                  ),
+                                )}
                               </Select.Content>
                             </Select.Positioner>
                           </Portal>
@@ -684,11 +754,11 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
 
                       <Grid
                         templateColumns={{
-                          base: "1fr",
+                          base: "repeat(2, minmax(0, 1fr))",
                           md: "repeat(2,1fr)",
                           lg: "repeat(2,1fr)",
                         }}
-                        gap={3}
+                        gap={{ base: 2, md: 3 }}
                       >
                         {paymentOptions.map((opt) => {
                           const isSelected = selected === opt.mode;
@@ -709,9 +779,10 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                                   }
                                 }}
                                 w="full"
+                                minH={{ base: "92px", md: "auto" }}
                                 textAlign="left"
                                 borderRadius="xl"
-                                p={4}
+                                p={{ base: 2.5, md: 4 }}
                                 borderWidth="1px"
                                 borderColor={
                                   isSelected ? "green.500" : "gray.200"
@@ -730,12 +801,19 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                                 aria-pressed={isSelected}
                                 aria-label={`${opt.label} payment option`}
                               >
-                                <VStack align="stretch" gap={2}>
+                                <VStack
+                                  align="stretch"
+                                  gap={{ base: 1, md: 2 }}
+                                >
                                   <HStack
                                     justify="space-between"
                                     align="center"
                                   >
-                                    <Text fontWeight="semibold">
+                                    <Text
+                                      fontWeight="semibold"
+                                      fontSize={{ base: "12px", md: "md" }}
+                                      lineHeight="1.2"
+                                    >
                                       {opt.label}
                                     </Text>
                                     {isSelected ? (
@@ -743,8 +821,10 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                                         colorPalette="green"
                                         variant="solid"
                                         rounded="full"
-                                        p={2}
+                                        px={{ base: 1.5, md: 2 }}
+                                        py={{ base: 0.5, md: 2 }}
                                         color="white"
+                                        fontSize={{ base: "10px", md: "xs" }}
                                         fontWeight={"semibold"}
                                       >
                                         Selected
@@ -752,20 +832,29 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                                     ) : null}
                                   </HStack>
                                   <Text
-                                    fontSize="2xl"
+                                    fontSize={{ base: "16px", md: "2xl" }}
                                     fontWeight="bold"
                                     color="green.700"
+                                    lineHeight="1.2"
                                   >
                                     {opt.amount}
                                   </Text>
-                                  <Separator />
-                                  <Text fontSize="sm" color="gray.600">
+                                  <Text
+                                    fontSize={{ base: "11px", md: "sm" }}
+                                    color="gray.600"
+                                    lineHeight="1.25"
+                                  >
                                     Term: {opt.term}{" "}
                                     {opt.term === 1 ? "year" : "years"}
                                   </Text>
-                                  <Text fontSize="sm" color="gray.600">
+                                  {/* <Text
+                                    fontSize={{ base: "11px", md: "sm" }}
+                                    color="gray.600"
+                                    lineHeight="1.25"
+                                    lineClamp={1}
+                                  >
                                     {opt.cadence}
-                                  </Text>
+                                  </Text> */}
                                 </VStack>
                               </Box>
                             </GridItem>
@@ -777,12 +866,13 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                         rounded="xl"
                         bg="gray.50"
                         p={4}
+                        display={{ base: "none", md: "block" }}
                         borderWidth="1px"
                         borderColor="gray.200"
                       >
                         <HStack justify="space-between" align="center">
                           <Text fontSize="sm" color="gray.600">
-                            Estimated Total
+                            Total
                           </Text>
                           <Text
                             fontWeight="bold"
@@ -815,40 +905,18 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                           onClick={handleBuyNow}
                         />
                       </Stack>
-
-                      {/* <Button
-                          flex={1}
-                          size="lg"
-                          rounded="xl"
-                          variant="outline"
-                          colorPalette="green"
-                          borderWidth="2px"
-                          disabled={!selectedPlan || isBuyingNow}
-                          loading={isAddingToCart}
-                          onClick={handleAddToCart}
-                          aria-label="Add selected plan to cart"
-                        >
-                          Add to Cart
-                        </Button>
-                        <Button
-                          flex={1}
-                          size="lg"
-                          rounded="xl"
-                          colorPalette="green"
-                          disabled={!selectedPlan || isAddingToCart}
-                          loading={isBuyingNow}
-                          onClick={handleBuyNow}
-                          aria-label="Buy selected plan now"
-                        >
-                          Buy Now
-                        </Button> */}
                     </VStack>
                   </Box>
                 </VStack>
               </GridItem>
             </Grid>
 
-            <Box as="section" id="productBenefits" mt={{ base: 8, md: 14 }}>
+            <Box
+              as="section"
+              id="productBenefits"
+              display={{ base: "none", md: "block" }}
+              mt={{ base: 8, md: 14 }}
+            >
               <VStack align="start" gap={4} mb={8} p={{ base: 2, md: 0 }}>
                 <H3>Plan Benefits</H3>
                 <Body color="gray.600">
@@ -975,10 +1043,51 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
               </VStack>
             </Box>
 
+            <Box display={{ base: "block", md: "none" }} mt={8}>
+              <VStack align="stretch" gap={4}>
+                <Box px={2}>
+                  <H3>Plan Details</H3>
+                  <Body color="gray.600">
+                    Expand a section to review benefits and features.
+                  </Body>
+                </Box>
+
+                <VStack align="stretch" gap={4}>
+                  <DetailAccordion
+                    title="Plan Benefits"
+                    items={planBenefitCards.map((item) => ({
+                      title: item.title,
+                      description: item.desc,
+                      subtitle: item.subtitle,
+                      image: {
+                        src: item.icon,
+                        alt: `${item.title} image`,
+                      },
+                      details: item.details?.map((detail) => ({
+                        title: detail.title,
+                        description: detail.desc,
+                      })),
+                    }))}
+                  />
+                  <DetailAccordion
+                    title="Plan Features"
+                    items={planFeatureCards.map((item) => ({
+                      title: item.title,
+                      description: item.desc,
+                      image: {
+                        src: item.icon,
+                        alt: `${item.title} image`,
+                      },
+                    }))}
+                  />
+                </VStack>
+              </VStack>
+            </Box>
+
             <Box
               as="section"
               id="productFeatures"
-              display={{ base: "block", lg: "none" }}
+              display={{ base: "none", md: "block", lg: "none" }}
               mt={{ base: 10, md: 14 }}
             >
               <VStack align="start" gap={2} mb={6}>
@@ -1040,7 +1149,11 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
             </Box>
 
             <Box
-              display={{ base: "block", lg: "none" }}
+              display={{
+                base:
+                  selectedPlan && selectedTerm && quantity ? "block" : "none",
+                lg: "none",
+              }}
               position="fixed"
               bottom={0}
               left={0}
@@ -1052,7 +1165,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
               backdropFilter="blur(8px)"
               px={4}
               py={3}
-              pb="calc(env(safe-area-inset-bottom) + 12px)"
+              pb="calc(env(safe-area-inset-bottom) + 40px)"
               shadow="0 -8px 24px rgba(0,0,0,0.08)"
             >
               <VStack align="stretch" gap={2} mb={20}>
@@ -1066,19 +1179,21 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                 </Text>
                 <HStack gap={2}>
                   <AddToCartButton
-                    flex={1}
-                    disabled={!selectedPlan || isBuyingNow}
                     loading={isAddingToCart}
                     onClick={handleAddToCart}
-                    aria-label="Add selected plan to cart"
+                    disabled={
+                      !selectedPlan || !selectedTerm || !quantity || isBuyingNow
+                    }
                   />
-
                   <BuyNowButton
-                    flex={1}
-                    disabled={!selectedPlan || isAddingToCart}
+                    disabled={
+                      !selectedPlan ||
+                      !selectedTerm ||
+                      !quantity ||
+                      isAddingToCart
+                    }
                     loading={isBuyingNow}
                     onClick={handleBuyNow}
-                    aria-label="Buy selected plan now"
                   />
                 </HStack>
               </VStack>

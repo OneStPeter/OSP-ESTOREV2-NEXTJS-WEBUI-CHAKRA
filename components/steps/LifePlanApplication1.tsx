@@ -1,35 +1,90 @@
 "use client";
 
 import {
-  Select,
-  Input,
   Box,
-  VStack,
-  Grid,
-  createListCollection,
-  FileUpload,
   Field,
-  Separator,
-  Button,
+  Grid,
+  Input,
+  Select,
+  Text,
+  VStack,
+  createListCollection,
 } from "@chakra-ui/react";
 import FloatingLabelInput from "../ui/floating-label-input";
-import { Body } from "st-peter-ui";
+import { BRAND_COLORS } from "@/lib/theme/brand-colors";
+import {
+  STANDARD_RADIUS,
+  STANDARD_SHADOWS,
+  STANDARD_SPACING,
+} from "@/lib/theme/standard-design-tokens";
 import { useOcr } from "@/hooks/useOCR";
-import { useEffect, useState } from "react";
-import { IOcrValue } from "@/types/ocrResponse";
-import { IApplicationData, IPersonalInfo } from "@/types/planholder";
-import { saveApplicationDataToLocalStorage } from "@/lib/utils/applicationDataFactory";
+import { useEffect, useState, type ReactNode } from "react";
+import { IPersonalInfo } from "@/types/planholder";
 
 interface LifePlanApplication1Props {
   initialData?: IPersonalInfo;
   onUpdate?: (personalInfo: IPersonalInfo, address?: any) => void;
 }
 
+interface SectionCardProps {
+  title: string;
+  children: ReactNode;
+}
+
+const idCollection = createListCollection({
+  items: [
+    { label: "Passport", value: "passport" },
+    { label: "Driver's License", value: "driver_license" },
+    { label: "Philippine Identification Card", value: "national_id" },
+  ],
+});
+
+const genderCollection = createListCollection({
+  items: [
+    { label: "Male", value: "male" },
+    { label: "Female", value: "female" },
+  ],
+});
+
+const civilStatusCollection = createListCollection({
+  items: [
+    { label: "Single", value: "single" },
+    { label: "Married", value: "married" },
+    { label: "Widowed", value: "widowed" },
+    { label: "Divorced", value: "divorced" },
+    { label: "Separated", value: "separated" },
+    { label: "Annulled", value: "annulled" },
+  ],
+});
+
+const SectionCard = ({ title, children }: SectionCardProps) => (
+  <Box
+    bg={BRAND_COLORS.white}
+    borderWidth="1px"
+    borderColor={BRAND_COLORS.neutralBorder}
+    borderRadius={STANDARD_RADIUS.lg}
+    boxShadow={STANDARD_SHADOWS.level1}
+    p={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
+  >
+    <VStack align="stretch" gap={STANDARD_SPACING.md}>
+      <Text
+        color={BRAND_COLORS.neutralText}
+        fontSize={{ base: "18px", md: "20px" }}
+        fontWeight="700"
+        lineHeight="1.3"
+      >
+        {title}
+      </Text>
+      {children}
+    </VStack>
+  </Box>
+);
+
 const LifePlanApplication1 = ({
   initialData,
   onUpdate,
 }: LifePlanApplication1Props) => {
-  const { runOCR, data } = useOcr();
+  const { runOCR } = useOcr();
 
   const [formData, setFormData] = useState<IPersonalInfo>({
     firstName: initialData?.firstName ?? "",
@@ -48,182 +103,128 @@ const LifePlanApplication1 = ({
     emailAddress: initialData?.emailAddress ?? "",
     mailingAddress: initialData?.mailingAddress ?? "",
     landLineNumber: initialData?.landLineNumber ?? "",
-    // addressLine1: initialData?.addressLine1 ?? "",
   });
-  // const OCRValue = localStorage.getItem("ocrResult");
-  const OCRValue = "";
+
+  const updateFormData = (nextData: IPersonalInfo) => {
+    setFormData(nextData);
+    onUpdate?.(nextData);
+  };
+
   useEffect(() => {
     runOCR();
   }, []);
 
-  const [stateOcrValue, setStateOrcValue] = useState<IOcrValue>();
-
-  const idCollection = createListCollection({
-    items: [
-      { label: "Passport", value: "passport" },
-      { label: "Driver's License", value: "driver_license" },
-      { label: "Philippine Identification Card", value: "national_id" },
-    ],
-  });
-
-  // Auto-save formData to parent whenever it changes
   useEffect(() => {
-    onUpdate?.(formData);
-  }, [formData, onUpdate]);
+    const OCRValue =
+      typeof window === "undefined" ? null : localStorage.getItem("ocrResult");
 
-  useEffect(() => {
     if (OCRValue != null) {
-      const ocrData = JSON.parse(OCRValue);
-      setStateOrcValue(ocrData);
-      console.log("OCR Data:", ocrData);
+      try {
+        const ocrData = JSON.parse(OCRValue);
 
-      const [month, day, year] = ocrData.birthDate
-        .split("/")
-        .map((part: string) => part.trim());
-      const formattedBirthDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+        const [month, day, year] = ocrData.birthDate
+          .split("/")
+          .map((part: string) => part.trim());
+        const formattedBirthDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
 
-      let mappedIdType = "";
-      if (ocrData.idType) {
-        const normalizedIdType = ocrData.idType
-          .toLowerCase()
-          .replace(/\s+/g, "_")
-          .replace(/'/g, "");
-        if (normalizedIdType.includes("passport")) {
-          mappedIdType = "passport";
-        } else if (normalizedIdType.includes("driver")) {
-          mappedIdType = "driver_license";
-        } else if (
-          normalizedIdType.includes("national") ||
-          normalizedIdType.includes("id")
-        ) {
-          mappedIdType = "national_id";
+        let mappedIdType = "";
+        if (ocrData?.idType) {
+          const normalizedIdType = ocrData.idType
+            .toLowerCase()
+            .replace(/\s+/g, "_")
+            .replace(/'/g, "");
+          if (normalizedIdType.includes("passport")) {
+            mappedIdType = "passport";
+          } else if (normalizedIdType.includes("driver")) {
+            mappedIdType = "driver_license";
+          } else if (
+            normalizedIdType.includes("national") ||
+            normalizedIdType.includes("id")
+          ) {
+            mappedIdType = "national_id";
+          }
         }
+
+        const updatedData = {
+          ...formData,
+          firstName: ocrData?.firstName || "",
+          lastName: ocrData?.lastName || "",
+          middleName: ocrData?.middleName || "",
+          birthDate: formattedBirthDate || "",
+          idType: mappedIdType || "",
+        };
+        updateFormData(updatedData);
+      } catch (e) {
+        console.error("Failed to parse OCR value:", e);
+        localStorage.removeItem("ocrResult");
       }
-
-      // console.log(
-      //   "Original idType:",
-      //   ocrData.idType,
-      //   "Mapped to:",
-      //   mappedIdType,
-      // );
-
-      const updatedData = {
-        ...formData,
-        firstName: ocrData.firstName || "",
-        lastName: ocrData.lastName || "",
-        middleName: ocrData.middleName || "",
-        addressLine1: ocrData.addressLine || "",
-        suffix: ocrData.suffix || "",
-        birthDate: formattedBirthDate || "",
-        idType: mappedIdType || "",
-      };
-      setFormData(updatedData);
-      onUpdate?.(updatedData);
     }
-  }, [OCRValue]);
+  }, []);
 
   return (
-    <>
-      <VStack mb={4} align="stretch">
-        <Body fontWeight="bold">Identification</Body>
-      </VStack>
-      {/* <Button onClick={() => console.log("Current formData:", formData)}>
-        Log Form Data
-      </Button> */}
-      <VStack gap={6} align="stretch" w="full">
-        {/* Identification Section */}
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
-          <Select.Root
-            collection={idCollection}
-            value={formData.idType ? [formData.idType] : []}
-            onValueChange={(details) =>
-              setFormData({ ...formData, idType: details.value[0] })
-            }
-          >
-            <Select.HiddenSelect />
-            <Select.Control>
-              <Select.Trigger>
-                <Select.ValueText placeholder="Select ID Type" />
-                {formData.idType && (
-                  <Box fontSize="sm" color="fg.default" hidden>
-                    {
-                      idCollection.items.find(
-                        (item) => item.value === formData.idType,
-                      )?.label
-                    }
-                  </Box>
-                )}
-              </Select.Trigger>
-              <Select.IndicatorGroup>
-                <Select.Indicator />
-              </Select.IndicatorGroup>
-            </Select.Control>
-            <Select.Positioner>
-              <Select.Content>
-                {idCollection.items.map((item) => (
-                  <Select.Item key={item.value} item={item}>
-                    {item.label}
-                  </Select.Item>
-                ))}
-              </Select.Content>
-            </Select.Positioner>
-          </Select.Root>
+    <VStack gap={STANDARD_SPACING.md} align="stretch" w="full">
+      <SectionCard title="Identification">
+        <Grid
+          templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+          gap={STANDARD_SPACING.sm}
+        >
+          <Field.Root>
+            <Select.Root
+              collection={idCollection}
+              value={formData.idType ? [formData.idType] : []}
+              onValueChange={(details) =>
+                updateFormData({ ...formData, idType: details.value[0] })
+              }
+            >
+              <Select.HiddenSelect />
+              <Select.Control>
+                <Select.Trigger>
+                  <Select.ValueText placeholder="Select ID Type" />
+                </Select.Trigger>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+              </Select.Control>
+              <Select.Positioner>
+                <Select.Content>
+                  {idCollection.items.map((item) => (
+                    <Select.Item key={item.value} item={item}>
+                      {item.label}
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Positioner>
+            </Select.Root>
+          </Field.Root>
 
-          {/* <Field.Root>
-            <FileUpload.Root>
-              <FileUpload.HiddenInput />
-
-              <FileUpload.Context>
-                {({ acceptedFiles }) => (
-                  <Box
-                    width="100%"
-                    border="1px solid"
-                    borderColor="gray.300"
-                    borderRadius="sm"
-                    p={2}
-                    cursor="pointer"
-                    _hover={{ borderColor: "gray.400" }}
-                    fontSize="sm"
-                  >
-                    <FileUpload.Trigger asChild>
-                      <Box
-                      // onChange={(e) =>
-                      //   setStateOrcValue({
-                      //     ...stateOcrValue,
-                      //     idType: e.target.addEventListener.,
-                      //   })
-                      // }
-                      >
-                        value={stateOcrValue?.idType || ""}
-                        {acceptedFiles.length > 0
-                          ? acceptedFiles.map((file) => file.name).join(", ")
-                          : `${stateOcrValue?.idType || "Upload ID Image"}`}
-                      </Box>
-                    </FileUpload.Trigger>
-                  </Box>
-                )}
-              </FileUpload.Context>
-            </FileUpload.Root>
-          </Field.Root> */}
+          <Field.Root>
+            <FloatingLabelInput
+              id="idNumber"
+              type="text"
+              label="ID Number"
+              value={formData.idNumber || ""}
+              onChange={(e) =>
+                updateFormData({ ...formData, idNumber: e.target.value })
+              }
+            />
+          </Field.Root>
         </Grid>
+      </SectionCard>
 
-        <Separator />
-
-        {/* Full Name Section */}
-        <Body fontWeight="bold">Full Name</Body>
-
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
+      <SectionCard title="Full Name">
+        <Grid
+          templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+          gap={STANDARD_SPACING.sm}
+        >
           <Field.Root>
             <FloatingLabelInput
               id="lastName"
               type="text"
               label="Last Name"
               value={formData.lastName || ""}
-              onChange={(e) => {
-                const newData = { ...formData, lastName: e.target.value };
-                setFormData(newData);
-                onUpdate?.(newData);
-              }}
+              onChange={(e) =>
+                updateFormData({ ...formData, lastName: e.target.value })
+              }
             />
           </Field.Root>
           <Field.Root>
@@ -232,27 +233,20 @@ const LifePlanApplication1 = ({
               type="text"
               label="First Name"
               value={formData.firstName || ""}
-              onChange={(e) => {
-                const newData = { ...formData, firstName: e.target.value };
-                setFormData(newData);
-                onUpdate?.(newData);
-              }}
+              onChange={(e) =>
+                updateFormData({ ...formData, firstName: e.target.value })
+              }
             />
           </Field.Root>
-        </Grid>
-
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
           <Field.Root>
             <FloatingLabelInput
               id="middleName"
               type="text"
               label="Middle Name"
               value={formData.middleName || ""}
-              onChange={(e) => {
-                const newData = { ...formData, middleName: e.target.value };
-                setFormData(newData);
-                onUpdate?.(newData);
-              }}
+              onChange={(e) =>
+                updateFormData({ ...formData, middleName: e.target.value })
+              }
             />
           </Field.Root>
           <Field.Root>
@@ -261,37 +255,33 @@ const LifePlanApplication1 = ({
               type="text"
               label="Suffix (Optional)"
               value={formData.suffix || ""}
-              onChange={(e) => {
-                const newData = { ...formData, suffix: e.target.value };
-                setFormData(newData);
-                onUpdate?.(newData);
-              }}
+              onChange={(e) =>
+                updateFormData({ ...formData, suffix: e.target.value })
+              }
             />
           </Field.Root>
         </Grid>
+      </SectionCard>
 
-        <Separator />
-
-        {/* Personal Data Section */}
-        <Body fontWeight="bold">Personal Details</Body>
-
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
+      <SectionCard title="Personal Details">
+        <Grid
+          templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+          gap={STANDARD_SPACING.sm}
+        >
           <Field.Root>
             <Field.Label>Date of Birth</Field.Label>
-
             <Input
               id="dateOfBirth"
               type="date"
               value={formData.birthDate || ""}
               onChange={(e) =>
-                setFormData({ ...formData, birthDate: e.target.value })
+                updateFormData({ ...formData, birthDate: e.target.value })
               }
             />
           </Field.Root>
 
           <Field.Root>
             <Field.Label>Date of Naturalization</Field.Label>
-
             <Input id="dateOfNeutralization" type="date" />
           </Field.Root>
 
@@ -299,9 +289,12 @@ const LifePlanApplication1 = ({
             <FloatingLabelInput
               id="height"
               label="Height (ft)"
-              // value={stateOcrValue?.height}
+              value={formData.height ? String(formData.height) : ""}
               onChange={(e) =>
-                setFormData({ ...formData, height: parseFloat(e.target.value) })
+                updateFormData({
+                  ...formData,
+                  height: parseFloat(e.target.value),
+                })
               }
             />
           </Field.Root>
@@ -309,27 +302,30 @@ const LifePlanApplication1 = ({
             <FloatingLabelInput
               id="weight"
               label="Weight (lbs)"
-              // value={stateOcrValue?.weight}
+              value={formData.weight ? String(formData.weight) : ""}
               onChange={(e) =>
-                setFormData({ ...formData, weight: parseFloat(e.target.value) })
+                updateFormData({
+                  ...formData,
+                  weight: parseFloat(e.target.value),
+                })
               }
             />
           </Field.Root>
         </Grid>
+      </SectionCard>
 
-        <Separator />
-
-        {/* Demographics Section */}
-        <Body fontWeight="bold">Demographics</Body>
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2 , 1fr)" }} gap={8}>
+      <SectionCard title="Demographics">
+        <Grid
+          templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+          gap={STANDARD_SPACING.sm}
+        >
           <Field.Root>
             <Select.Root
-              collection={createListCollection({
-                items: [
-                  { label: "Male", value: "male" },
-                  { label: "Female", value: "female" },
-                ],
-              })}
+              collection={genderCollection}
+              value={formData.gender ? [formData.gender] : []}
+              onValueChange={(details) =>
+                updateFormData({ ...formData, gender: details.value[0] })
+              }
             >
               <Select.HiddenSelect id="gender" />
               <Select.Control>
@@ -342,12 +338,7 @@ const LifePlanApplication1 = ({
               </Select.Control>
               <Select.Positioner>
                 <Select.Content>
-                  {createListCollection({
-                    items: [
-                      { label: "Male", value: "male" },
-                      { label: "Female", value: "female" },
-                    ],
-                  }).items.map((item) => (
+                  {genderCollection.items.map((item) => (
                     <Select.Item key={item.value} item={item}>
                       {item.label}
                     </Select.Item>
@@ -356,18 +347,14 @@ const LifePlanApplication1 = ({
               </Select.Positioner>
             </Select.Root>
           </Field.Root>
+
           <Field.Root>
             <Select.Root
-              collection={createListCollection({
-                items: [
-                  { label: "Single", value: "single" },
-                  { label: "Married", value: "married" },
-                  { label: "Widowed", value: "widowed" },
-                  { label: "Divorced", value: "divorced" },
-                  { label: "Separated", value: "separated" },
-                  { label: "Annulled", value: "annulled" },
-                ],
-              })}
+              collection={civilStatusCollection}
+              value={formData.civilStatus ? [formData.civilStatus] : []}
+              onValueChange={(details) =>
+                updateFormData({ ...formData, civilStatus: details.value[0] })
+              }
             >
               <Select.HiddenSelect id="civilStatus" />
               <Select.Control>
@@ -380,16 +367,7 @@ const LifePlanApplication1 = ({
               </Select.Control>
               <Select.Positioner>
                 <Select.Content>
-                  {createListCollection({
-                    items: [
-                      { label: "Single", value: "single" },
-                      { label: "Married", value: "married" },
-                      { label: "Widowed", value: "widowed" },
-                      { label: "Divorced", value: "divorced" },
-                      { label: "Separated", value: "separated" },
-                      { label: "Annulled", value: "annulled" },
-                    ],
-                  }).items.map((item) => (
+                  {civilStatusCollection.items.map((item) => (
                     <Select.Item key={item.value} item={item}>
                       {item.label}
                     </Select.Item>
@@ -398,31 +376,34 @@ const LifePlanApplication1 = ({
               </Select.Positioner>
             </Select.Root>
           </Field.Root>
+
           <Field.Root>
             <FloatingLabelInput
               id="nationality"
               type="text"
               label="Nationality"
+              value={formData.nationality || ""}
               onChange={(e) =>
-                setFormData({ ...formData, nationality: e.target.value })
+                updateFormData({ ...formData, nationality: e.target.value })
               }
             />
           </Field.Root>
         </Grid>
+      </SectionCard>
 
-        <Separator />
-
-        {/* Basic Contact Info */}
-        <Body fontWeight="bold">Contact Information</Body>
-
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
+      <SectionCard title="Contact Information">
+        <Grid
+          templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+          gap={STANDARD_SPACING.sm}
+        >
           <Field.Root>
             <FloatingLabelInput
               id="mobileNumber"
               type="text"
               label="Mobile Number"
+              value={formData.mobileNumber || ""}
               onChange={(e) =>
-                setFormData({ ...formData, mobileNumber: e.target.value })
+                updateFormData({ ...formData, mobileNumber: e.target.value })
               }
             />
           </Field.Root>
@@ -431,21 +412,23 @@ const LifePlanApplication1 = ({
               id="landlineNumber"
               type="text"
               label="Landline Number"
+              value={formData.landLineNumber || ""}
               onChange={(e) =>
-                setFormData({ ...formData, landLineNumber: e.target.value })
+                updateFormData({
+                  ...formData,
+                  landLineNumber: e.target.value,
+                })
               }
             />
           </Field.Root>
-        </Grid>
-
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
           <Field.Root>
             <FloatingLabelInput
               id="email"
               type="email"
               label="Email Address"
+              value={formData.emailAddress || ""}
               onChange={(e) =>
-                setFormData({ ...formData, emailAddress: e.target.value })
+                updateFormData({ ...formData, emailAddress: e.target.value })
               }
             />
           </Field.Root>
@@ -454,16 +437,20 @@ const LifePlanApplication1 = ({
               id="mailingAddress"
               type="text"
               label="Mailing Address"
+              value={formData.mailingAddress || ""}
               onChange={(e) =>
-                setFormData({ ...formData, mailingAddress: e.target.value })
+                updateFormData({ ...formData, mailingAddress: e.target.value })
               }
             />
           </Field.Root>
         </Grid>
+      </SectionCard>
 
-        <Separator />
-
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
+      <SectionCard title="Insurability">
+        <Grid
+          templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+          gap={STANDARD_SPACING.sm}
+        >
           <Field.Root>
             <FloatingLabelInput
               id="insurability"
@@ -474,8 +461,8 @@ const LifePlanApplication1 = ({
             />
           </Field.Root>
         </Grid>
-      </VStack>
-    </>
+      </SectionCard>
+    </VStack>
   );
 };
 

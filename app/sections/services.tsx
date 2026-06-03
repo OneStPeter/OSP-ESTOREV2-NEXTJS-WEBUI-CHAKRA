@@ -1,16 +1,23 @@
 "use client";
 
-import { Box, Button, Grid, HStack, Image, VStack } from "@chakra-ui/react";
+import { Box, Button, Grid, HStack, VStack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { BaseText } from "st-peter-ui";
-import { ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  FileText,
+  RefreshCw,
+  Search,
+  Calendar,
+} from "lucide-react";
+import { BiSolidCoinStack } from "react-icons/bi";
 
 const services = [
   {
     title: "Apply for Claim Benefits",
     description:
       "Please check your policy details, contact a Sales Agent, or visit your branch of account for more information.",
-    image: "/images/services/claim-benefits.jpg",
+    icon: FileText,
     href: "/claims",
     buttonText: "Apply Now",
     featured: true,
@@ -20,6 +27,7 @@ const services = [
     title: "Return of Premium",
     description:
       "Please check your policy details, contact a Sales Agent, or visit your branch of account for more information.",
+    icon: BiSolidCoinStack,
     href: "/login",
     buttonText: "Start Request",
     featured: false,
@@ -29,6 +37,7 @@ const services = [
     title: "Track Your Request",
     description:
       "To track your request, please have your reference number ready.",
+    icon: Search,
     href: "/transaction",
     buttonText: "Track Request",
     featured: false,
@@ -38,7 +47,7 @@ const services = [
     title: "Memorial Service Booking Assistance",
     description:
       "To proceed, please have your life plan contact details ready.",
-    image: "/images/services/request-service.jpg",
+    icon: Calendar,
     href: "/booking",
     buttonText: "Book Service",
     featured: true,
@@ -52,33 +61,48 @@ const Services = () => {
   return (
     <Box
       as="section"
-      py={{ base: 12, md: 20 }}
+      bg="gray.50"
+      py={{ base: 8, md: 14 }}
       px={{ base: 4, md: 8 }}
-      overflow="hidden"
+      minH="400px"
     >
-      <VStack gap={3} mb={{ base: 10, md: 14 }} textAlign="center">
+      <VStack
+        gap={{ base: 2, md: 3 }}
+        mb={{ base: 6, md: 10 }}
+        textAlign="center"
+      >
         <BaseText
-          fontSize={{ base: "2xl", md: "4xl" }}
+          fontSize={{ base: "xl", md: "4xl" }}
           fontWeight="bold"
           lineHeight="shorter"
           maxW="4xl"
         >
           Get instant access to online services{" "}
         </BaseText>
-        <BaseText color="gray.600" fontSize={{ base: "sm", md: "md" }}>
+
+        <BaseText
+          color="gray.600"
+          fontSize={{ base: "xs", md: "md" }}
+          lineHeight={{ base: "short", md: "tall" }}
+          maxW="3xl"
+        >
           Access claims, requests, memorial services, and policy-related
           assistance with a fast and convenient digital experience.
         </BaseText>
       </VStack>
 
       <Grid
-        templateColumns={{ base: "1fr", lg: "repeat(3, 1fr)" }}
-        gap={6}
-        maxW="7xl"
+        templateColumns={{
+          base: "repeat(2, 1fr)",
+          md: "repeat(4, 1fr)",
+        }}
+        gap={{ base: 3, md: 5 }}
+        maxW="6xl"
         mx="auto"
+        alignItems="stretch"
       >
         {services.map((service, index) => {
-          const isFeatured = service.featured;
+          const iconBg = service.dark ? "green.50" : "green.50";
 
           return (
             <Box
@@ -87,115 +111,113 @@ const Services = () => {
               overflow="hidden"
               cursor="pointer"
               role="group"
-              minH={{ base: "320px", md: "340px" }}
-              gridColumn={{
-                base: "span 1",
-                lg: isFeatured ? "span 2" : "span 1",
-              }}
-              bg={
-                service.dark
-                  ? "linear-gradient(135deg, #177D54 0%, #116B47 100%)"
-                  : "white"
-              }
-              color={service.dark ? "white" : "gray.900"}
-              borderRadius="32px"
+              minH={{ base: "132px", md: "230px" }}
+              bg="white"
+              color="gray.900"
+              borderRadius={{ base: "18px", md: "24px" }}
               border="1px solid"
-              borderColor={service.dark ? "whiteAlpha.200" : "gray.200"}
-              boxShadow="0 10px 40px rgba(0,0,0,0.06)"
-              transition="all 0.3s ease"
+              borderColor="gray.100"
+              boxShadow={{
+                base: "0 6px 18px rgba(0,0,0,0.04)",
+                md:
+                  index === 2
+                    ? "0 14px 34px rgba(0,0,0,0.10)"
+                    : "0 8px 24px rgba(0,0,0,0.05)",
+              }}
+              transition="all 0.25s ease"
               _hover={{
-                transform: "translateY(-6px)",
-                boxShadow: "0 20px 60px rgba(0,0,0,0.12)",
+                transform: "translateY(-4px)",
+                boxShadow: "0 16px 40px rgba(0,0,0,0.10)",
               }}
               onClick={() => router.push(service.href)}
             >
-              {/* Background Glow */}
-              <Box
-                position="absolute"
-                top="-80px"
-                right="-80px"
-                w="220px"
-                h="220px"
-                bg={service.dark ? "whiteAlpha.100" : "rgba(23, 125, 84, 0.08)"}
-                filter="blur(20px)"
-                borderRadius="full"
-              />
-
-              <Box
-                position="relative"
-                zIndex={2}
+              <VStack
                 h="full"
-                p={{ base: 6, md: 8 }}
-                display="flex"
-                flexDirection="column"
-                justifyContent="space-between"
+                justify="center"
+                align="center"
+                textAlign="center"
+                gap={{ base: 2, md: 3 }}
+                px={{ base: 3, md: 5 }}
+                py={{ base: 4, md: 6 }}
               >
-                <Box maxW={{ base: "full", lg: isFeatured ? "60%" : "full" }}>
+                <Box
+                  w={{ base: "38px", md: "52px" }}
+                  h={{ base: "38px", md: "52px" }}
+                  rounded="full"
+                  bg={iconBg}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  overflow="hidden"
+                  flexShrink={0}
+                >
+                  {service.icon ? (
+                    <Box
+                      as={service.icon}
+                      color={service.dark ? "#177D54" : "#177D54"}
+                      width={{ base: "18px", md: "24px" }}
+                      height={{ base: "18px", md: "24px" }}
+                    />
+                  ) : (
+                    <Box
+                      w={{ base: "18px", md: "24px" }}
+                      h={{ base: "18px", md: "24px" }}
+                      rounded="sm"
+                      bg="#177D54"
+                      opacity={0.9}
+                    />
+                  )}
+                </Box>
+
+                <VStack gap={{ base: 1, md: 2 }} flex="1" justify="center">
                   <BaseText
-                    fontSize={{ base: "2xl", md: "3xl" }}
+                    fontSize={{ base: "xs", md: "sm" }}
                     fontWeight="bold"
-                    lineHeight="shorter"
-                    mb={4}
-                    color={service.dark ? "white" : "gray.900"}
+                    lineHeight="short"
+                    color="gray.900"
                   >
                     {service.title}
                   </BaseText>
 
                   <BaseText
-                    fontSize={{ base: "sm", md: "md" }}
-                    lineHeight="tall"
-                    color={service.dark ? "whiteAlpha.800" : "gray.600"}
+                    display={{ base: "none", md: "block" }}
+                    fontSize="xs"
+                    lineHeight="short"
+                    color="gray.600"
+                    maxW="220px"
                   >
                     {service.description}
                   </BaseText>
-                </Box>
 
-                <HStack mt={8}>
                   <Button
-                    size="md"
-                    rounded="full"
-                    px={6}
-                    bg={service.dark ? "white" : "#177D54"}
-                    color={service.dark ? "#177D54" : "white"}
+                    size="xs"
+                    variant="plain"
+                    h="auto"
+                    minW="auto"
+                    px={0}
+                    mt={{ base: 0, md: 1 }}
+                    color="#177D54"
+                    fontSize={{ base: "10px", md: "xs" }}
                     fontWeight="semibold"
-                    transition="all 0.2s ease"
                     _hover={{
-                      transform: "translateX(2px)",
-                      opacity: 0.9,
+                      color: "#116B47",
                     }}
                   >
-                    {service.buttonText}
+                    <HStack gap={1}>
+                      <Box as="span">{service.buttonText}</Box>
+                      <Box
+                        as="span"
+                        transition="transform 0.2s ease"
+                        _groupHover={{
+                          transform: "translateX(3px)",
+                        }}
+                      >
+                        <ArrowRight size={12} />
+                      </Box>
+                    </HStack>
                   </Button>
-
-                  <Box
-                    transition="transform 0.2s ease"
-                    _groupHover={{
-                      transform: "translateX(4px)",
-                    }}
-                  >
-                    <ArrowRight size={18} />
-                  </Box>
-                </HStack>
-              </Box>
-
-              {service.image && (
-                <Image
-                  src={service.image}
-                  alt={service.title}
-                  position="absolute"
-                  right={{ base: "-20px", lg: "20px" }}
-                  bottom="0"
-                  w={{ base: "160px", md: "240px", lg: "280px" }}
-                  objectFit="contain"
-                  opacity={0.95}
-                  transition="all 0.35s ease"
-                  _groupHover={{
-                    transform: "scale(1.04) translateY(-4px)",
-                  }}
-                  pointerEvents="none"
-                  display={{ base: "none", md: "block" }}
-                />
-              )}
+                </VStack>
+              </VStack>
             </Box>
           );
         })}

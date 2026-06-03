@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Body, Box, H3, PrimaryMdFlexButton } from "st-peter-ui";
+import { Body, Box, Breadcrumb, H3, PrimaryMdFlexButton } from "st-peter-ui";
 import {
   VStack,
   Grid,
@@ -8,13 +8,20 @@ import {
   Input,
   Field,
   RadioGroup,
+  Button,
 } from "@chakra-ui/react";
 import FloatingLabelInput from "@/components/ui/floating-label-input";
 import { ISearchedPlanholder } from "@/types/planholder";
 import { PayMongoService } from "@/services/API/PayMongoService";
 import { useRouter } from "next/navigation";
 import { CartItem } from "@/types/cartItem";
+import Container from "@/components/ui/container";
+import { FaArrowLeft } from "react-icons/fa6";
 const DetailsPayMyPlan = () => {
+  const breadcrumbItems = [
+    { label: "Home", href: "/" },
+    { label: "Pay My Plan", href: "/pay-my-plan" },
+  ];
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [formData, setFormData] = useState({
     contractNo: "",
@@ -182,27 +189,21 @@ const DetailsPayMyPlan = () => {
   }, []);
 
   return (
-    <Box
-      p={8}
-      mt={{ base: 0, md: 24 }}
-      maxW={"7xl"}
-      mx={"auto"}
-      px={{ base: 4, md: 0 }}
-    >
-      {/* <Box display={{ base: "block", md: "none" }}>
+    <Container>
+      <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 0 }}>
         <Button variant="ghost" size="md" onClick={() => router.back()} px={0}>
           <FaArrowLeft color="#177D54" />
           Back
         </Button>
-      </Box> */}
-      {/* <Box display={{ base: "none", md: "block" }}>
+      </Box>
+      <Box display={{ base: "none", md: "block" }}>
         <Breadcrumb items={breadcrumbItems} />
-      </Box> */}
-      <Box mt={4}>
+      </Box>
+      <Box>
         <H3>Pay My Plan</H3>
         <Body>
-          Search for your St. Peter Life Plan account to view details and manage
-          your plan.
+          Review the details of your plan and proceed to payment. Please ensure
+          that all information is correct before proceeding.
         </Body>
       </Box>
 
@@ -522,7 +523,7 @@ const DetailsPayMyPlan = () => {
           Proceed
         </PrimaryMdFlexButton>
       </VStack>
-    </Box>
+    </Container>
   );
 };
 

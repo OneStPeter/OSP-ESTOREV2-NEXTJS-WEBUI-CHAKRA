@@ -1,93 +1,55 @@
 "use client";
 
-import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
-import Testimonials, { TestimonialItem } from "@/components/ui/testimonials";
-import { Box, Flex, Heading, Text } from "@chakra-ui/react";
-import Head from "next/head";
-// import { base } from "motion/react-client";
+import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import React from "react";
 import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
-import { BaseText, Body, H2, H3 } from "st-peter-ui";
-
-const testimonials: TestimonialItem[] = [
-  {
-    quote:
-      "I believe that St. Peter is a good and credible company that delivers their services with excellence...",
-    name: "Mrs. Anadina C. Felomino",
-    branch: "Koronadal Branch",
-    planholderSince: "St. Peter Planholder since 1995",
-  },
-  {
-    quote:
-      "I decided to buy a policy for me and my husband because ever since I was always interested in insurance...",
-    name: "Mila T. Garcia",
-    branch: "Butuan East and Butuan West Branches",
-    planholderSince: "St. Peter Planholder since 1999",
-  },
-  {
-    quote:
-      "Ako po si Yolanda Laberon Eclipse... Being a planholder feels good! Now, I got 3 St. Peter Life Plans...",
-    name: "Yolanda L. Eclipse",
-    branch: "Catbalogan Branch",
-    planholderSince: "St. Peter Planholder since 2005",
-  },
-  {
-    quote:
-      "I’ve been a member for almost 12 years and I already started to receive my Return of Premium...",
-    name: "Juanita C. Intong",
-    branch: "Mandaue Branch",
-    planholderSince: "St. Peter Planholder since 2007",
-  },
-  {
-    quote:
-      "Back then, I was not a believer in pre-need plans... Being a planholder of St. Peter Life Plan gives me security...",
-    name: "Jocelyn S. Ongdico",
-    branch: "Meycauayan Branch",
-    planholderSince: "St. Peter Planholder since 2010",
-  },
-  {
-    quote:
-      "I decided to buy a plan because nowadays, it is very expensive to die... I even bought 2 more life plans...",
-    name: "Cristina Jumawan",
-    branch: "Dumaguete Branch",
-    planholderSince: "St. Peter Planholder since 2017",
-  },
-];
+import { BaseText, Body } from "st-peter-ui";
 
 const AboutUs = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.3 });
+
   return (
-    <section className="overflow-hidden">
-      <Box w="full">
-        <Flex
+    <Box as="section" bg="gray.50" overflow="hidden">
+      <Box
+        maxW="7xl"
+        mx="auto"
+        px={{ base: 4, md: 8 }}
+        py={{ base: 10, md: 16, lg: 20 }}
+      >
+        <SimpleGrid
           ref={ref}
-          direction={{ base: "column", md: "row" }}
-          justify="center"
-          align="center"
-          gap={{ base: 8, md: 32 }}
-          mb={16}
-          px={{ base: 4, md: 8 }}
-          py={{ base: 8, md: 12 }}
+          columns={{ base: 1, lg: 2 }}
+          gap={{ base: 8, md: 10, lg: 14 }}
+          alignItems="center"
         >
-          {/* Left Text */}
-          <Flex
-            p={4}
-            textAlign={{ base: "center", md: "left" }}
-            flexDirection="column"
-            gap={4}
-          >
-            <BaseText fontSize={{ base: "2xl", md: "4xl" }} fontWeight="bold">
-              Serving the Filipino
-            </BaseText>
-            <BaseText
-              fontSize={{ base: "2xl", md: "4xl" }}
-              color="#177D54"
-              fontWeight="bold"
-            >
-              Since 1980
-            </BaseText>
-            <Box mx="auto" maxW={{ base: "90%", md: "400px" }}>
+          {/* Left Content */}
+          <Flex direction="column" gap={{ base: 5, md: 6 }}>
+            <Box>
+              <Text
+                fontSize={{ base: "sm", md: "md" }}
+                fontWeight="semibold"
+                color="green.700"
+                mb={3}
+                letterSpacing="wide"
+                textTransform="uppercase"
+              >
+                About St. Peter
+              </Text>
+
+              <BaseText
+                fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
+                fontWeight="bold"
+                lineHeight="1.1"
+              >
+                Serving the Filipino{" "}
+                <Box as="span" color="#177D54">
+                  Since 1980
+                </Box>
+              </BaseText>
+            </Box>
+
+            <Box maxW="560px">
               <Body>
                 We are a trusted Pre-Need DeathCare company, serving the
                 Filipino public for over 30 years with professional and
@@ -95,61 +57,156 @@ const AboutUs = () => {
                 every family.
               </Body>
             </Box>
+
+            <SimpleGrid
+              columns={{ base: 1, sm: 3 }}
+              gap={4}
+              pt={{ base: 2, md: 4 }}
+              maxW="640px"
+            >
+              <Box
+                p={5}
+                bg="white"
+                borderRadius="2xl"
+                borderWidth="1px"
+                borderColor="gray.100"
+                boxShadow="0 12px 30px rgba(16, 24, 40, 0.06)"
+              >
+                <Text fontSize="sm" color="gray.500" mb={2}>
+                  Trusted since
+                </Text>
+                <Text fontSize="2xl" fontWeight="bold" color="#177D54">
+                  1980
+                </Text>
+              </Box>
+
+              <Box
+                p={5}
+                bg="white"
+                borderRadius="2xl"
+                borderWidth="1px"
+                borderColor="gray.100"
+                boxShadow="0 12px 30px rgba(16, 24, 40, 0.06)"
+              >
+                <Text fontSize="sm" color="gray.500" mb={2}>
+                  Service focus
+                </Text>
+                <Text fontSize="2xl" fontWeight="bold" color="#177D54">
+                  Families
+                </Text>
+              </Box>
+
+              <Box
+                p={5}
+                bg="white"
+                borderRadius="2xl"
+                borderWidth="1px"
+                borderColor="gray.100"
+                boxShadow="0 12px 30px rgba(16, 24, 40, 0.06)"
+              >
+                <Text fontSize="sm" color="gray.500" mb={2}>
+                  Plans
+                </Text>
+                <Text fontSize="2xl" fontWeight="bold" color="#177D54">
+                  Affordable
+                </Text>
+              </Box>
+            </SimpleGrid>
           </Flex>
 
-          {/* Right Stats */}
-          <Flex
-            direction={{ base: "row", md: "column" }}
-            gap={{ base: 8, md: 4 }}
-            justify="center"
-            mt={{ base: 4, md: 0 }}
+          {/* Right Stats Card */}
+          <Box
+            bg="white"
+            borderRadius={{ base: "2xl", md: "3xl" }}
+            p={{ base: 5, md: 8 }}
+            borderWidth="1px"
+            borderColor="gray.100"
+            boxShadow="0 24px 60px rgba(16, 24, 40, 0.08)"
           >
-            <Flex direction="column" align="center">
-              <Text fontSize="3xl" color="#177D54" fontWeight="bold">
-                {inView && <CountUp start={0} end={280} duration={2.5} />}
-              </Text>
-              <Text fontSize="3xl" fontWeight="bold">
-                Chapels
-              </Text>
-            </Flex>
-            <Flex direction="column" align="center">
-              <Text fontSize="3xl" color="#177D54" fontWeight="bold">
-                {inView && <CountUp start={0} end={200} duration={2.5} />}
-              </Text>
-              <Text fontSize="3xl" fontWeight="bold">
-                Branches
-              </Text>
-            </Flex>
-          </Flex>
-        </Flex>
+            <Text
+              fontSize={{ base: "lg", md: "xl" }}
+              fontWeight="bold"
+              mb={6}
+              color="gray.800"
+            >
+              Built on trust, service, and accessibility.
+            </Text>
 
-        {/* Testimonials */}
-        <Box p={8}>
-          <Flex direction="column" align="center" textAlign="center" mb={8}>
-            <BaseText fontSize={{ base: "2xl", md: "4xl" }} fontWeight="bold">
-              Testimonials
-            </BaseText>
+            <SimpleGrid columns={{ base: 2, md: 2 }} gap={4}>
+              <Flex
+                direction="column"
+                justify="center"
+                minH="150px"
+                p={{ base: 4, md: 6 }}
+                borderRadius="2xl"
+                bg="green.50"
+                borderWidth="1px"
+                borderColor="green.100"
+              >
+                <Text
+                  fontSize={{ base: "4xl", md: "5xl" }}
+                  color="#177D54"
+                  fontWeight="bold"
+                  lineHeight="1"
+                >
+                  {inView && <CountUp start={0} end={280} duration={2.5} />}+
+                </Text>
+                <Text
+                  mt={3}
+                  fontSize={{ base: "md", md: "lg" }}
+                  fontWeight="semibold"
+                  color="gray.700"
+                >
+                  Chapels
+                </Text>
+              </Flex>
+
+              <Flex
+                direction="column"
+                justify="center"
+                minH="150px"
+                p={{ base: 4, md: 6 }}
+                borderRadius="2xl"
+                bg="green.50"
+                borderWidth="1px"
+                borderColor="green.100"
+              >
+                <Text
+                  fontSize={{ base: "4xl", md: "5xl" }}
+                  color="#177D54"
+                  fontWeight="bold"
+                  lineHeight="1"
+                >
+                  {inView && <CountUp start={0} end={200} duration={2.5} />}+
+                </Text>
+                <Text
+                  mt={3}
+                  fontSize={{ base: "md", md: "lg" }}
+                  fontWeight="semibold"
+                  color="gray.700"
+                >
+                  Branches
+                </Text>
+              </Flex>
+            </SimpleGrid>
+
             <Box
-              h="5px"
-              w="100px"
-              bg="green.700"
-              borderRadius="full"
-              mt={2}
-              mb={4}
-            />
-          </Flex>
-
-          <Flex justify="center" align="center" mb={16}>
-            {/* <InfiniteMovingCards
-              items={testimonials}
-              direction="left"
-              speed="slow"
-            /> */}
-            <Testimonials testimonials={testimonials} />
-          </Flex>
-        </Box>
+              mt={5}
+              p={{ base: 4, md: 5 }}
+              borderRadius="2xl"
+              bg="gray.50"
+              borderWidth="1px"
+              borderColor="gray.100"
+            >
+              <Text fontSize={{ base: "sm", md: "md" }} color="gray.600">
+                Professional and traditional memorial services made accessible
+                for Filipino families.
+              </Text>
+            </Box>
+          </Box>
+        </SimpleGrid>
       </Box>
-    </section>
+    </Box>
   );
 };
 

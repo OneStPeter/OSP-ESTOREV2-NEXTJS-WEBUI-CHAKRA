@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Body, Box, H3, PrimaryMdFlexButton } from "st-peter-ui";
+import { Body, Box, H3, H4, PrimaryMdFlexButton } from "st-peter-ui";
 import {
   VStack,
   Grid,
@@ -16,6 +16,7 @@ import { Breadcrumb } from "st-peter-ui";
 import { useSearchPlanholder } from "@/hooks/planholder/useSearchPlanholder";
 
 import { useRouter } from "next/navigation";
+import Container from "@/components/ui/container";
 
 const PayMyPlan = () => {
   const router = useRouter();
@@ -112,14 +113,8 @@ const PayMyPlan = () => {
   ];
 
   return (
-    <Box
-      mt={{ base: 24, md: 32 }}
-      maxW={"7xl"}
-      mx={"auto"}
-      mb={{ base: 24, md: 16 }}
-      px={{ base: 4, md: 0 }}
-    >
-      <Box display={{ base: "block", md: "none" }} mb={8}>
+    <Container>
+      <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 4 }}>
         <Button variant="ghost" size="md" onClick={() => router.back()} px={0}>
           <FaArrowLeft color="#177D54" />
           Back
@@ -129,11 +124,11 @@ const PayMyPlan = () => {
         <Breadcrumb items={breadcrumbItems} />
       </Box>
       <Box>
-        <H3>Pay My Plan</H3>
-        <Body>
+        <H3 display={{ base: "none", md: "block" }}>Pay My Plan</H3>
+        <H4>
           Search for your St. Peter Life Plan account to view details and manage
           your plan.
-        </Body>
+        </H4>
       </Box>
 
       <VStack gap={6} mt={8} align="stretch" w="full">
@@ -220,7 +215,7 @@ const PayMyPlan = () => {
           </Button>
         </Box>
       </VStack>
-    </Box>
+    </Container>
   );
 };
 

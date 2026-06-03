@@ -5,38 +5,114 @@ import {
   Portal,
   Image,
   IconButton,
+  Icon,
   Box,
-  Avatar,
-  AvatarGroup,
-  Dialog,
   VStack,
   Text,
-  Button,
   CloseButton,
+  Flex,
 } from "@chakra-ui/react";
-import { IoSearchOutline } from "react-icons/io5";
-import { MdOutlineShoppingCart, MdArrowDropDown } from "react-icons/md";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useCartCount } from "@/hooks/useCartCount";
+import type { IconType } from "react-icons";
+
 import {
-  BaseButton,
-  ContactUsButton,
-  LoginButton,
-  PrimaryMdButton,
-} from "st-peter-ui";
+  IoLeafOutline,
+  IoMenuOutline,
+  IoNewspaperOutline,
+  IoSearchOutline,
+} from "react-icons/io5";
+import {
+  MdOutlineMessage,
+  MdOutlineShoppingCart,
+  MdArrowDropDown,
+} from "react-icons/md";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect, useMemo } from "react";
+import { useCartCount } from "@/hooks/useCartCount";
+import { BaseButton, ContactUsButton, LoginButton } from "st-peter-ui";
 import Link from "next/link";
 import { useDemoAuth } from "@/components/ui/demo-auth";
-import { MdOutlineAccountCircle } from "react-icons/md";
+import { IoMdNotificationsOutline } from "react-icons/io";
 import ShoppingCart from "@/components/ui/shopping-cart";
+import { FiCreditCard, FiFileText, FiInfo, FiSun } from "react-icons/fi";
+import { BRAND_COLORS } from "@/lib/theme/brand-colors";
+import {
+  STANDARD_RADIUS,
+  STANDARD_SHADOWS,
+  STANDARD_SPACING,
+} from "@/lib/theme/standard-design-tokens";
+
+const mobileMenuItems: Array<{
+  label: string;
+  href: string;
+  icon: IconType;
+}> = [
+  { label: "Products", href: "/plans", icon: IoLeafOutline },
+  { label: "Pay My Plan", href: "/pay-my-plan", icon: FiCreditCard },
+  { label: "Claim", href: "/claims", icon: FiFileText },
+  { label: "News & Blog", href: "/news-updates", icon: IoNewspaperOutline },
+  { label: "About Us", href: "/about-us", icon: FiInfo },
+  { label: "Contact Us", href: "/contact-us", icon: MdOutlineMessage },
+];
+
+const pageTitles: Record<string, string> = {
+  "/account": "Account",
+  "/account/manage-plan/transfer": "Transfer My Plan",
+  "/account/pay-my-plan": "Pay My Plan",
+  "/account/profile": "Profile",
+  "/booking": "Memorial Service Booking",
+  "/change-mode": "Change Mode",
+  "/claims": "Claim",
+  "/contact-us": "Contact Us",
+  "/get-started": "Get Started",
+  "/lifeplan-application": "Life Plan Application",
+  "/login": "Log In",
+  "/news-updates": "News & Blog",
+  "/order-summary": "Order Summary",
+  "/pay-my-plan": "Pay My Plan",
+  "/pay-my-plan/details": "Pay My Plan",
+  "/plan-comparison": "Plan Comparison",
+  "/plan-details": "Plan Details",
+  "/plans": "Life Plans",
+  "/reinstatement": "Reinstatement",
+  "/rop": "Return of Premium",
+  "/rop-payout": "Return of Premium",
+  "/success": "Payment Success",
+  "/transaction": "Transaction",
+};
+
+const getPageTitle = (pathname: string) => {
+  if (pathname === "/") return "";
+
+  const matchedPath = Object.keys(pageTitles)
+    .sort((a, b) => b.length - a.length)
+    .find((path) => pathname === path || pathname.startsWith(`${path}/`));
+
+  if (matchedPath) return pageTitles[matchedPath];
+
+  const segment = pathname.split("/").filter(Boolean).at(-1) ?? "";
+
+  return segment
+    .split("-")
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
 
 const Navbar = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const count = useCartCount();
-  const { isLoggedIn, logout } = useDemoAuth();
+  const { isLoggedIn } = useDemoAuth();
+  const isHomePage = pathname === "/";
+  const pageTitle = useMemo(() => getPageTitle(pathname), [pathname]);
+
+  const isActiveMobileMenuItem = (href: string) => {
+    if (href === "/") return pathname === href;
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,48 +124,273 @@ const Navbar = () => {
 
   return (
     <>
+      {/* Mobile Navbar */}
       <HStack
         display={{ base: "flex", md: "none" }}
         position="fixed"
-        top={scrolled ? 0 : 4}
-        left={scrolled ? 0 : 3}
-        right={scrolled ? 0 : 3}
+        top={0}
+        left={0}
+        right={0}
         zIndex={50}
-        px={4}
-        py={3}
+        h="56px"
+        px={STANDARD_SPACING.sm}
+        py={0}
         justify="space-between"
         align="center"
-        bg={scrolled ? "whiteAlpha.900" : "whiteAlpha.800"}
-        backdropFilter="blur(12px)"
-        transition="all 0.3s ease"
-        borderRadius={scrolled ? "0" : "full"}
-        shadow={scrolled ? "md" : "sm"}
+        bg={BRAND_COLORS.white}
+        borderBottomWidth="1px"
+        borderColor={BRAND_COLORS.neutralBorder}
+        boxShadow={scrolled ? STANDARD_SHADOWS.level1 : "none"}
+        transition="box-shadow 180ms ease-out"
       >
-        <Image
-          src="https://www.stpeter.com.ph/images/logo2gold.png"
-          alt="E-Store Logo"
-          cursor="pointer"
-          onClick={() => router.push("/")}
-          w={{ base: "140px", sm: "160px" }}
-          h="auto"
-          maxW="100%"
-          objectFit="contain"
-        />
+        <IconButton
+          aria-label="Open menu"
+          variant="ghost"
+          minW="40px"
+          h="40px"
+          px={0}
+          borderRadius={STANDARD_RADIUS.md}
+          onClick={() => setMobileMenuOpen(true)}
+        >
+          <IoMenuOutline />
+        </IconButton>
 
-        {isLoggedIn ? (
-          <Box cursor="pointer" onClick={() => setProfileOpen(true)}>
-            <AvatarGroup>
-              <Avatar.Root>
-                <Avatar.Fallback />
-                <Avatar.Image src="/images/profile.jpg" />
-              </Avatar.Root>
-            </AvatarGroup>
-          </Box>
-        ) : (
-          <LoginButton onClick={() => router.push("/login")} />
-        )}
+        <Flex flex="1" minW={0} align="center">
+          {isHomePage ? (
+            <Image
+              src="https://www.stpeter.com.ph/images/logo2gold.png"
+              alt="E-Store Logo"
+              cursor="pointer"
+              onClick={() => router.push("/")}
+              w={{ base: "142px", sm: "160px" }}
+              h="auto"
+              maxW="100%"
+              objectFit="contain"
+            />
+          ) : (
+            <Text
+              color={BRAND_COLORS.black}
+              fontSize={{ base: "17px", sm: "18px" }}
+              fontWeight="500"
+              lineHeight="1.15"
+              overflow="hidden"
+              textOverflow="ellipsis"
+              whiteSpace="nowrap"
+            >
+              {pageTitle}
+            </Text>
+          )}
+        </Flex>
+
+        <Flex gap={2} align="center">
+          <IconButton
+            aria-label="Toggle theme"
+            variant="ghost"
+            minW="40px"
+            h="40px"
+            px={0}
+            borderRadius={STANDARD_RADIUS.md}
+          >
+            <FiSun />
+          </IconButton>
+          {isLoggedIn && (
+            <>
+              <Box position="relative">
+                <IconButton
+                  aria-label="Shopping Cart"
+                  variant="ghost"
+                  minW="40px"
+                  h="40px"
+                  px={0}
+                  borderRadius={STANDARD_RADIUS.md}
+                  aria-expanded={cartOpen}
+                  aria-haspopup="dialog"
+                  onClick={() => setCartOpen((open) => !open)}
+                >
+                  <MdOutlineShoppingCart />
+                </IconButton>
+                <IconButton
+                  aria-label="Notifications"
+                  variant="ghost"
+                  minW="40px"
+                  h="40px"
+                  px={0}
+                  borderRadius={STANDARD_RADIUS.md}
+                >
+                  <IoMdNotificationsOutline />
+                </IconButton>
+
+                {count > 0 && (
+                  <Box
+                    position="absolute"
+                    top="4px"
+                    right="4px"
+                    minW="16px"
+                    h="16px"
+                    px="4px"
+                    borderRadius="full"
+                    bg={BRAND_COLORS.errorRed}
+                    color={BRAND_COLORS.white}
+                    fontSize="10px"
+                    fontWeight="800"
+                    lineHeight="16px"
+                    textAlign="center"
+                  >
+                    {count}
+                  </Box>
+                )}
+              </Box>
+            </>
+          )}
+
+          {!isLoggedIn && (
+            <Box position="relative">
+              <IconButton
+                aria-label="Shopping Cart"
+                variant="ghost"
+                minW="40px"
+                h="40px"
+                px={0}
+                borderRadius={STANDARD_RADIUS.md}
+                aria-expanded={cartOpen}
+                aria-haspopup="dialog"
+                onClick={() => setCartOpen((open) => !open)}
+              >
+                <MdOutlineShoppingCart />
+              </IconButton>
+
+              {count > 0 && (
+                <Box
+                  position="absolute"
+                  top="4px"
+                  right="4px"
+                  minW="16px"
+                  h="16px"
+                  px="4px"
+                  borderRadius="full"
+                  bg={BRAND_COLORS.errorRed}
+                  color={BRAND_COLORS.white}
+                  fontSize="10px"
+                  fontWeight="800"
+                  lineHeight="16px"
+                  textAlign="center"
+                >
+                  {count}
+                </Box>
+              )}
+            </Box>
+          )}
+        </Flex>
       </HStack>
 
+      {mobileMenuOpen && (
+        <Box
+          position="fixed"
+          inset={0}
+          bg="blackAlpha.600"
+          zIndex={60}
+          display={{ base: "block", md: "none" }}
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      <Box
+        position="fixed"
+        top={0}
+        left={0}
+        h="100%"
+        w="300px"
+        maxW="calc(100vw - 48px)"
+        bg={BRAND_COLORS.white}
+        boxShadow={STANDARD_SHADOWS.level3}
+        zIndex={70}
+        transform={mobileMenuOpen ? "translateX(0)" : "translateX(-100%)"}
+        transition="transform 180ms ease-out"
+        display={{ base: "block", md: "none" }}
+      >
+        <Flex
+          h="64px"
+          px={STANDARD_SPACING.sm}
+          justify="space-between"
+          align="center"
+          borderBottomWidth="1px"
+          borderColor={BRAND_COLORS.neutralBorder}
+        >
+          <Image
+            src="https://www.stpeter.com.ph/images/logo2gold.png"
+            alt="E-Store Logo"
+            cursor="pointer"
+            onClick={() => {
+              router.push("/");
+              setMobileMenuOpen(false);
+            }}
+            w="132px"
+            h="auto"
+            objectFit="contain"
+          />
+          <CloseButton
+            onClick={() => setMobileMenuOpen(false)}
+            aria-label="Close menu"
+            size="sm"
+          />
+        </Flex>
+
+        <Box px={STANDARD_SPACING.sm} pt={STANDARD_SPACING.sm}>
+          <Text
+            fontSize="12px"
+            fontWeight="500"
+            color={BRAND_COLORS.grey}
+            mb={STANDARD_SPACING.xs}
+          >
+            Menu
+          </Text>
+
+          <VStack as="nav" align="stretch" gap="4px">
+            {mobileMenuItems.map((item) => {
+              const active = isActiveMobileMenuItem(item.href);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Flex
+                    minH="44px"
+                    align="center"
+                    gap={STANDARD_SPACING.xs}
+                    px={STANDARD_SPACING.sm}
+                    borderRadius={STANDARD_RADIUS.sm}
+                    bg={active ? BRAND_COLORS.primaryGreen : "transparent"}
+                    color={
+                      active ? BRAND_COLORS.white : BRAND_COLORS.neutralText
+                    }
+                    _hover={{
+                      bg: active
+                        ? BRAND_COLORS.primaryGreen
+                        : BRAND_COLORS.subtleBg,
+                    }}
+                    transition="background 150ms ease-out, color 150ms ease-out"
+                  >
+                    <Icon
+                      as={item.icon}
+                      boxSize="18px"
+                      color={
+                        active ? BRAND_COLORS.white : BRAND_COLORS.primaryGreen
+                      }
+                      flexShrink={0}
+                    />
+                    <Text fontSize="13px" fontWeight={active ? "700" : "500"}>
+                      {item.label}
+                    </Text>
+                  </Flex>
+                </Link>
+              );
+            })}
+          </VStack>
+        </Box>
+      </Box>
+      {/* Desktop Navbar */}
       <HStack
         display={{ base: "none", md: "inline-flex" }}
         padding={10}
@@ -246,49 +547,77 @@ const Navbar = () => {
               <IoSearchOutline />
             </IconButton>
 
-            <Box position="relative">
-              <IconButton
-                aria-label="Shopping Cart"
-                variant="ghost"
-                aria-expanded={cartOpen}
-                aria-haspopup="dialog"
-                onClick={() => setCartOpen((open) => !open)}
-              >
-                <MdOutlineShoppingCart />
-              </IconButton>
-
-              {count > 0 && (
-                <Box
-                  position="absolute"
-                  top="0"
-                  right="0"
-                  transform="translate(30%, -30%)"
-                  bg="red.500"
-                  color="white"
-                  w="16px"
-                  h="16px"
-                  borderRadius="full"
-                  fontSize="xs"
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
+            {!isLoggedIn && (
+              <Box position="relative">
+                <IconButton
+                  aria-label="Shopping Cart"
+                  variant="ghost"
+                  aria-expanded={cartOpen}
+                  aria-haspopup="dialog"
+                  onClick={() => setCartOpen((open) => !open)}
                 >
-                  {count}
-                </Box>
-              )}
-            </Box>
+                  <MdOutlineShoppingCart />
+                </IconButton>
+
+                {count > 0 && (
+                  <Box
+                    position="absolute"
+                    top="0"
+                    right="0"
+                    transform="translate(30%, -30%)"
+                    bg="red.500"
+                    color="white"
+                    w="16px"
+                    h="16px"
+                    borderRadius="full"
+                    fontSize="xs"
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    {count}
+                  </Box>
+                )}
+              </Box>
+            )}
 
             <ContactUsButton onClick={() => router.push("/contact-us")} />
 
             {isLoggedIn ? (
-              <Box cursor="pointer" onClick={() => setProfileOpen(true)}>
-                <AvatarGroup>
-                  <Avatar.Root>
-                    <Avatar.Fallback />
-                    <Avatar.Image src="/images/profile.jpg" />
-                  </Avatar.Root>
-                </AvatarGroup>
-              </Box>
+              <Flex gap={4} align="center">
+                <IoMdNotificationsOutline size={24} />{" "}
+                <Box position="relative">
+                  <IconButton
+                    aria-label="Shopping Cart"
+                    variant="ghost"
+                    aria-expanded={cartOpen}
+                    aria-haspopup="dialog"
+                    onClick={() => setCartOpen((open) => !open)}
+                  >
+                    <MdOutlineShoppingCart />
+                  </IconButton>
+
+                  {count > 0 && (
+                    <Box
+                      position="absolute"
+                      top="0"
+                      right="0"
+                      transform="translate(30%, -30%)"
+                      bg="red.500"
+                      color="white"
+                      w="16px"
+                      h="16px"
+                      borderRadius="full"
+                      fontSize="xs"
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      {count}
+                    </Box>
+                  )}
+                </Box>
+              </Flex>
             ) : (
               <LoginButton onClick={() => router.push("/login")} />
             )}
@@ -325,68 +654,6 @@ const Navbar = () => {
         </Flex>
       </Button> */}
       <ShoppingCart open={cartOpen} onClose={() => setCartOpen(false)} />
-
-      {/* Profile Modal */}
-      <Dialog.Root
-        open={profileOpen}
-        onOpenChange={(e) => setProfileOpen(e.open)}
-        size="md"
-        placement="top"
-      >
-        <Dialog.Backdrop />
-        <Dialog.Positioner>
-          <Dialog.Content>
-            <Dialog.Header>
-              <Dialog.Title display="none" />
-            </Dialog.Header>
-            <Dialog.Body as={VStack} gap={8} py={8}>
-              {/* Profile Picture */}
-              <Avatar.Root size="xl">
-                <Avatar.Image src="/images/profile.jpg" alt="Profile" />
-                <Avatar.Fallback />
-              </Avatar.Root>
-
-              {/* User Name */}
-              <VStack gap={1}>
-                <Text fontSize="lg" fontWeight="bold">
-                  Yhuan Shin Tejima
-                </Text>
-                <Text fontSize="sm" color="gray.600">
-                  SPLPI-01-123456789
-                </Text>
-              </VStack>
-
-              {/* Action Buttons */}
-              <VStack gap={3} w="full" pt={4}>
-                <PrimaryMdButton
-                  w="full"
-                  onClick={() => {
-                    router.push("/account/profile");
-                    setProfileOpen(false);
-                  }}
-                >
-                  Manage Account
-                </PrimaryMdButton>
-                <Button
-                  w="full"
-                  colorScheme="red"
-                  variant="outline"
-                  onClick={() => {
-                    logout?.();
-                    setProfileOpen(false);
-                    router.push("/");
-                  }}
-                >
-                  Sign Out
-                </Button>
-              </VStack>
-            </Dialog.Body>
-            <Dialog.CloseTrigger asChild>
-              <CloseButton size="md" />
-            </Dialog.CloseTrigger>{" "}
-          </Dialog.Content>
-        </Dialog.Positioner>
-      </Dialog.Root>
     </>
   );
 };

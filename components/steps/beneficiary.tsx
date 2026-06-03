@@ -29,6 +29,7 @@ import {
   DynamicOutlineButton,
   PrimaryMdButton,
   EditButton,
+  PrimaryMdFlexButton,
 } from "st-peter-ui";
 import { FloatingLabelInput } from "../ui/floating-label-input";
 import { IBeneficiary } from "@/types/planholder";
@@ -314,7 +315,7 @@ const Beneficiary = ({ onUpdate }: BeneficiaryProps) => {
           onOpenChange={(details) => setAddDialogOpen(details.open)}
         >
           <Dialog.Trigger asChild>
-            <DynamicOutlineButton label="Add "></DynamicOutlineButton>
+            <Button w={{ base: "full", md: "auto" }}>Add Beneficiary</Button>
           </Dialog.Trigger>
           <Portal>
             <Dialog.Backdrop />
