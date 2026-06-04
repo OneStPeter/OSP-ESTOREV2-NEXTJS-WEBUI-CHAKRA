@@ -21,13 +21,15 @@ const LifePlanApplication3 = ({
   onUpdate,
 }: LifePlanApplication3Props) => {
   const [formData, setFormData] = React.useState<IEmployment>({
-    occupation: initialData?.occupation ?? "",
-    employerName: initialData?.employerName ?? "",
-    employmentStatus: initialData?.employmentStatus ?? "",
-    officeAddress: initialData?.officeAddress ?? "",
-    TIN: initialData?.TIN ?? "",
-    SSS: initialData?.SSS ?? "",
-    sourceOfIncome: initialData?.sourceOfIncome ?? "",
+    occupation: initialData?.occupation ?? "Software Engineer",
+    employerName: initialData?.employerName ?? "ABC Technologies Inc.",
+    employmentStatus: initialData?.employmentStatus ?? "Regular",
+    officeAddress:
+      initialData?.officeAddress ??
+      "456 Ayala Avenue, Bel-Air, Makati City",
+    TIN: initialData?.TIN ?? "123-456-789-000",
+    SSS: initialData?.SSS ?? "34-1234567-8",
+    sourceOfIncome: initialData?.sourceOfIncome ?? "Salary",
   });
 
   const updateFormData = (nextData: IEmployment) => {
@@ -37,15 +39,15 @@ const LifePlanApplication3 = ({
 
   return (
     <Box
-      bg={BRAND_COLORS.white}
-      borderWidth="1px"
-      borderColor={BRAND_COLORS.neutralBorder}
-      borderRadius={STANDARD_RADIUS.lg}
-      boxShadow={STANDARD_SHADOWS.level1}
+      // bg={BRAND_COLORS.white}
+      // borderWidth="1px"
+      // borderColor={BRAND_COLORS.neutralBorder}
+      // borderRadius={STANDARD_RADIUS.lg}
+      // boxShadow={STANDARD_SHADOWS.level1}
       p={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
     >
       <VStack align="stretch" gap={STANDARD_SPACING.md}>
-        <Box>
+        {/* <Box>
           <Text
             color={BRAND_COLORS.neutralText}
             fontSize={{ base: "18px", md: "20px" }}
@@ -54,7 +56,7 @@ const LifePlanApplication3 = ({
           >
             Employment
           </Text>
-        </Box>
+        </Box> */}
 
         <SimpleGrid columns={{ base: 1, md: 2 }} gap={STANDARD_SPACING.sm}>
           <Field.Root>

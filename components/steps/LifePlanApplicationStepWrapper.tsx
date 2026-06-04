@@ -24,12 +24,29 @@ const LifePlanApplicationStepWrapper = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [allAgreementsAccepted, setAllAgreementsAccepted] = useState(false);
+  const [applicationSection, setApplicationSection] = useState<string>();
+  // Bumped on every "Edit" so repeat clicks on the same section re-trigger
+  // the open/scroll effect (steps stay mounted between navigations).
+  const [applicationSectionKey, setApplicationSectionKey] = useState(0);
+  // Whether all application sub-forms (Personal, Address, Employment) are filled.
+  const [applicationValid, setApplicationValid] = useState(false);
   const router = useRouter();
 
   const steps = createLifePlanSteps({
     onAllAcceptedChange: setAllAgreementsAccepted,
-    onEdit: () => setCurrentStep(0),
+    applicationSection,
+    applicationSectionKey,
+    onApplicationValidChange: setApplicationValid,
+    onEdit: (section) => {
+      // Open the matching section, then return to the application form step.
+      setApplicationSection(section ?? "personal");
+      setApplicationSectionKey((key) => key + 1);
+      setCurrentStep(0);
+    },
   });
+
+  // Block advancing past the application step until every field is filled.
+  const nextDisabled = currentStep === 0 && !applicationValid;
 
   const handleCheckout = async () => {
     if (!allAgreementsAccepted) return;
@@ -89,6 +106,7 @@ const LifePlanApplicationStepWrapper = () => {
   return (
     <Container>
       <Box
+        p={0}
         w="full"
         // bg={BRAND_COLORS.white}
         // borderWidth="1px"
@@ -128,6 +146,7 @@ const LifePlanApplicationStepWrapper = () => {
               onStepChange={setCurrentStep}
               onSubmit={handleCheckout}
               submitDisabled={!allAgreementsAccepted || loading}
+              nextDisabled={nextDisabled}
             />
           </Box>
         </Box>

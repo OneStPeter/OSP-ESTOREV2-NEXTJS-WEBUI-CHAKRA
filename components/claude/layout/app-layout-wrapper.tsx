@@ -23,13 +23,20 @@ const navItems: NavItem[] = [
   { label: "Contact Us", href: "/contact-us", icon: MdOutlineMessage },
 ];
 
-export function AppLayoutWrapper({ children }: { children: ReactNode }) {
+export function AppLayoutWrapper({
+  children,
+  display,
+}: {
+  children: ReactNode;
+  display?: any;
+}) {
   return (
     <AppLayout
       navItems={navItems}
-      appName="E-Store"
+      appName="eStore"
       appSubtitle="St. Peter Life Plan"
       font="Open Sans"
+      display={display}
     >
       {children}
     </AppLayout>

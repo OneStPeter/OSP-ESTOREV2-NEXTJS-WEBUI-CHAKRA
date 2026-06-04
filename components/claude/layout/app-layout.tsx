@@ -14,6 +14,7 @@ interface AppLayoutProps {
   appName?: string;
   appSubtitle?: string;
   font?: string;
+  display?: any;
 }
 
 export function AppLayout({
@@ -23,6 +24,7 @@ export function AppLayout({
   appName = "App",
   appSubtitle,
   font,
+  display,
 }: AppLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -32,9 +34,6 @@ export function AppLayout({
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!isSidebarOpen && window.innerWidth >= 992) {
-      setIsSidebarOpen(true);
-    }
     const fontSizeMap: Record<string, string> = {
       sm: "14px",
       md: "16px",
@@ -50,15 +49,18 @@ export function AppLayout({
       fontFamily={font ? `'${font}', sans-serif` : undefined}
       bg={"white"}
       overflow="hidden"
+      display={display ?? "flex"}
     >
-      {/* LEFT: Sidebar (full height) */}
-      <Sidebar
-        isOpen={isSidebarOpen}
-        onClose={closeSidebar}
-        navItems={navItems}
-        appName={appName}
-        appSubtitle={appSubtitle}
-      />
+      {/* LEFT: Sidebar — mobile/tablet only (desktop uses navbar.tsx floating pill) */}
+      <Box display={{ base: "block", lg: "none" }}>
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onClose={closeSidebar}
+          navItems={navItems}
+          appName={appName}
+          appSubtitle={appSubtitle}
+        />
+      </Box>
 
       {/* RIGHT: Navbar + content */}
       <Flex flex="1" direction="column" minW={0}>
@@ -81,6 +83,7 @@ export function AppLayout({
           ref={scrollRef}
           px={0}
           pb={"100px"}
+          pt={0}
         >
           <StickyNavbarContext refParent={scrollRef}>
             {children}

@@ -1,34 +1,21 @@
 "use client";
 
 import {
-  Box,
   Field,
   Grid,
   Input,
   Select,
-  Text,
-  VStack,
   createListCollection,
 } from "@chakra-ui/react";
 import FloatingLabelInput from "../ui/floating-label-input";
-import { BRAND_COLORS } from "@/lib/theme/brand-colors";
-import {
-  STANDARD_RADIUS,
-  STANDARD_SHADOWS,
-  STANDARD_SPACING,
-} from "@/lib/theme/standard-design-tokens";
+import { STANDARD_SPACING } from "@/lib/theme/standard-design-tokens";
 import { useOcr } from "@/hooks/useOCR";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { IPersonalInfo } from "@/types/planholder";
 
 interface LifePlanApplication1Props {
   initialData?: IPersonalInfo;
   onUpdate?: (personalInfo: IPersonalInfo, address?: any) => void;
-}
-
-interface SectionCardProps {
-  title: string;
-  children: ReactNode;
 }
 
 const idCollection = createListCollection({
@@ -57,29 +44,6 @@ const civilStatusCollection = createListCollection({
   ],
 });
 
-const SectionCard = ({ title, children }: SectionCardProps) => (
-  <Box
-    bg={BRAND_COLORS.white}
-    borderWidth="1px"
-    borderColor={BRAND_COLORS.neutralBorder}
-    borderRadius={STANDARD_RADIUS.lg}
-    boxShadow={STANDARD_SHADOWS.level1}
-    p={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
-  >
-    <VStack align="stretch" gap={STANDARD_SPACING.md}>
-      <Text
-        color={BRAND_COLORS.neutralText}
-        fontSize={{ base: "18px", md: "20px" }}
-        fontWeight="700"
-        lineHeight="1.3"
-      >
-        {title}
-      </Text>
-      {children}
-    </VStack>
-  </Box>
-);
-
 const LifePlanApplication1 = ({
   initialData,
   onUpdate,
@@ -87,22 +51,24 @@ const LifePlanApplication1 = ({
   const { runOCR } = useOcr();
 
   const [formData, setFormData] = useState<IPersonalInfo>({
-    firstName: initialData?.firstName ?? "",
-    middleName: initialData?.middleName ?? "",
-    lastName: initialData?.lastName ?? "",
+    firstName: initialData?.firstName ?? "Juan",
+    middleName: initialData?.middleName ?? "Santos",
+    lastName: initialData?.lastName ?? "Dela Cruz",
     suffix: initialData?.suffix ?? "",
-    birthDate: initialData?.birthDate ?? "",
-    idType: initialData?.idType ?? "",
-    idNumber: initialData?.idNumber ?? "",
-    height: initialData?.height ?? 0,
-    weight: initialData?.weight ?? 0,
-    gender: initialData?.gender ?? "",
-    civilStatus: initialData?.civilStatus ?? "",
-    nationality: initialData?.nationality ?? "",
-    mobileNumber: initialData?.mobileNumber ?? "",
-    emailAddress: initialData?.emailAddress ?? "",
-    mailingAddress: initialData?.mailingAddress ?? "",
-    landLineNumber: initialData?.landLineNumber ?? "",
+    birthDate: initialData?.birthDate ?? "1990-05-15",
+    idType: initialData?.idType ?? "national_id",
+    idNumber: initialData?.idNumber ?? "1234-5678-9012",
+    height: initialData?.height ?? 5.7,
+    weight: initialData?.weight ?? 154,
+    gender: initialData?.gender ?? "male",
+    civilStatus: initialData?.civilStatus ?? "married",
+    nationality: initialData?.nationality ?? "Filipino",
+    mobileNumber: initialData?.mobileNumber ?? "0917-123-4567",
+    emailAddress: initialData?.emailAddress ?? "juan.delacruz@example.com",
+    mailingAddress:
+      initialData?.mailingAddress ??
+      "123 Mabini Street, Barangay San Antonio, Makati City",
+    landLineNumber: initialData?.landLineNumber ?? "02-8123-4567",
   });
 
   const updateFormData = (nextData: IPersonalInfo) => {
@@ -162,13 +128,12 @@ const LifePlanApplication1 = ({
   }, []);
 
   return (
-    <VStack gap={STANDARD_SPACING.md} align="stretch" w="full">
-      <SectionCard title="Identification">
-        <Grid
-          templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
-          gap={STANDARD_SPACING.sm}
-        >
-          <Field.Root>
+    <Grid
+      templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+      gap={STANDARD_SPACING.sm}
+      w="full"
+    >
+      <Field.Root>
             <Select.Root
               collection={idCollection}
               value={formData.idType ? [formData.idType] : []}
@@ -208,14 +173,7 @@ const LifePlanApplication1 = ({
               }
             />
           </Field.Root>
-        </Grid>
-      </SectionCard>
 
-      <SectionCard title="Full Name">
-        <Grid
-          templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
-          gap={STANDARD_SPACING.sm}
-        >
           <Field.Root>
             <FloatingLabelInput
               id="lastName"
@@ -260,14 +218,7 @@ const LifePlanApplication1 = ({
               }
             />
           </Field.Root>
-        </Grid>
-      </SectionCard>
 
-      <SectionCard title="Personal Details">
-        <Grid
-          templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
-          gap={STANDARD_SPACING.sm}
-        >
           <Field.Root>
             <Field.Label>Date of Birth</Field.Label>
             <Input
@@ -311,14 +262,7 @@ const LifePlanApplication1 = ({
               }
             />
           </Field.Root>
-        </Grid>
-      </SectionCard>
 
-      <SectionCard title="Demographics">
-        <Grid
-          templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
-          gap={STANDARD_SPACING.sm}
-        >
           <Field.Root>
             <Select.Root
               collection={genderCollection}
@@ -388,14 +332,7 @@ const LifePlanApplication1 = ({
               }
             />
           </Field.Root>
-        </Grid>
-      </SectionCard>
 
-      <SectionCard title="Contact Information">
-        <Grid
-          templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
-          gap={STANDARD_SPACING.sm}
-        >
           <Field.Root>
             <FloatingLabelInput
               id="mobileNumber"
@@ -443,14 +380,7 @@ const LifePlanApplication1 = ({
               }
             />
           </Field.Root>
-        </Grid>
-      </SectionCard>
 
-      <SectionCard title="Insurability">
-        <Grid
-          templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
-          gap={STANDARD_SPACING.sm}
-        >
           <Field.Root>
             <FloatingLabelInput
               id="insurability"
@@ -460,9 +390,7 @@ const LifePlanApplication1 = ({
               readOnly
             />
           </Field.Root>
-        </Grid>
-      </SectionCard>
-    </VStack>
+    </Grid>
   );
 };
 

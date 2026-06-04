@@ -207,7 +207,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 fontWeight="800"
                 letterSpacing="wide"
                 onClick={() =>
-                  router.push(`/plan-details/${encodeURIComponent(title)}`)
+                  router.push(`/plan-details/${encodeURIComponent(title || "")}`)
                 }
                 _hover={{
                   bg: "green.700",

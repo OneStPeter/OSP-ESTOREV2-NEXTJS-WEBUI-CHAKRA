@@ -37,8 +37,12 @@ export const StickyNavbar = ({ children }: { children: ReactNode }) => {
     };
 
     // capture: true intercepts scroll from any nested scrollable element
-    document.addEventListener("scroll", handler, { capture: true, passive: true });
-    return () => document.removeEventListener("scroll", handler, { capture: true });
+    document.addEventListener("scroll", handler, {
+      capture: true,
+      passive: true,
+    });
+    return () =>
+      document.removeEventListener("scroll", handler, { capture: true });
   }, []);
 
   return (
@@ -47,14 +51,12 @@ export const StickyNavbar = ({ children }: { children: ReactNode }) => {
       bottom="1.25rem"
       left={0}
       right={0}
-      display="flex"
+      display={{ base: "flex", md: "none" }}
       justifyContent="center"
       zIndex={100}
       pointerEvents="none"
     >
       <Box position="relative" display="flex" justifyContent="center">
-
-        {/* ── Full navbar pill ── */}
         <Box
           pointerEvents={minimized ? "none" : "auto"}
           style={{
@@ -86,7 +88,6 @@ export const StickyNavbar = ({ children }: { children: ReactNode }) => {
           </Flex>
         </Box>
 
-        {/* ── Minimized dot pill ── */}
         <Flex
           position="absolute"
           bottom={0}
@@ -135,7 +136,6 @@ export const StickyNavbar = ({ children }: { children: ReactNode }) => {
             />
           ))}
         </Flex>
-
       </Box>
     </Box>
   );

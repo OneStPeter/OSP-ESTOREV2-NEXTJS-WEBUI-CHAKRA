@@ -69,6 +69,7 @@ import { IoLeaf, IoLeafOutline } from "react-icons/io5";
 import type { IconType } from "react-icons";
 import type { NavItem } from "../app-layout.type";
 import { useColorMode } from "@/components/ui/color-mode";
+import { useDemoAuth } from "@/components/ui/demo-auth";
 
 const toast = {
   error: (_message: string) => undefined,
@@ -428,6 +429,7 @@ export function AppBottomNavBar({
   const pathname = usePathname();
   const router = useRouter();
   const isMobile = useBreakpointValue({ base: true, lg: false });
+  const { isLoggedIn } = useDemoAuth();
 
   // Dialog + view state (controlled from parent when prop provided)
   const [profileOpenInternal, setProfileOpenInternal] = useState(false);
@@ -663,50 +665,62 @@ export function AppBottomNavBar({
                   onClickEvent={() => router.push(item.href)}
                 />
               ))}
-          <Box
-            as="button"
-            onClick={() => setProfileOpen(true)}
-            px="14px"
-            py="10px"
-            borderRadius="2xl"
-            cursor="pointer"
-            outline="none"
-            userSelect="none"
-            color="gray.700"
-            _hover={{ bg: "rgba(0,0,0,0.04)" }}
-            _active={{ transform: "scale(0.88)" }}
-            _dark={{ color: "gray.400" }}
-            style={{ transition: "transform 0.14s ease" }}
-          >
-            <Flex direction="column" align="center" gap="4px">
-              <Avatar.Root
-                size="2xs"
-                colorPalette={pickPalette(displayName || "U")}
-                outline="2px solid"
-                outlineColor="#808080"
-              >
-                <Avatar.Image
-                  src="https://lh3.googleusercontent.com/a-/ALV-UjWzjMfUgpdzCgxwydW7PAI1Q7uDo4ZAiE_cl8CjH9bXKkUzqAs=s40-p"
-                  alt={displayName}
-                />
-                <Avatar.Fallback name={displayName || "U"} />
-              </Avatar.Root>
-              <Box
-                mt={1}
-                fontSize="xs"
-                fontWeight="500"
-                letterSpacing="0.06em"
-                lineHeight="1"
-                maxW="52px"
-                overflow="hidden"
-                whiteSpace="nowrap"
-                textOverflow="ellipsis"
-                style={{ opacity: 0.45, transition: "opacity 0.2s ease" }}
-              >
-                Profile
-              </Box>
-            </Flex>
-          </Box>
+          {/* Profile (logged in) or Guest (not logged in) */}
+          {isLoggedIn ? (
+            <Box
+              as="button"
+              onClick={() => router.push("/account/profile")}
+              px="14px"
+              py="10px"
+              borderRadius="2xl"
+              cursor="pointer"
+              outline="none"
+              userSelect="none"
+              _hover={{ bg: "rgba(0,0,0,0.04)" }}
+              _active={{ transform: "scale(0.88)" }}
+              style={{ transition: "transform 0.14s ease" }}
+            >
+              <Flex direction="column" align="center" gap="4px">
+                <Box
+                  w="24px"
+                  h="24px"
+                  borderRadius="full"
+                  overflow="hidden"
+                  outline="2px solid"
+                  outlineColor="var(--chakra-colors-primary)"
+                  flexShrink={0}
+                >
+                  <img
+                    src="/images/profile.jpg"
+                    alt="Profile"
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                </Box>
+                <Box
+                  mt={1}
+                  fontSize="xs"
+                  fontWeight="500"
+                  letterSpacing="0.06em"
+                  lineHeight="1"
+                  maxW="52px"
+                  overflow="hidden"
+                  whiteSpace="nowrap"
+                  textOverflow="ellipsis"
+                  color="var(--chakra-colors-primary)"
+                  style={{ opacity: 1, transition: "opacity 0.2s ease" }}
+                >
+                  Profile
+                </Box>
+              </Flex>
+            </Box>
+          ) : (
+            <StickyNavbarBtn
+              btnChildren={LuUser}
+              title="Login"
+              isActive={pathname === "/login"}
+              onClickEvent={() => router.push("/login")}
+            />
+          )}
         </StickyNavbar>
       </Show>
 

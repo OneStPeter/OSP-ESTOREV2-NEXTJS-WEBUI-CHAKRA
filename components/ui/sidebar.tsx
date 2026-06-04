@@ -1,176 +1,173 @@
 "use client";
 
-import { Box, VStack, HStack, Text, Icon } from "@chakra-ui/react";
-import { MenuRoot, MenuTrigger, MenuContent, MenuItem } from "@chakra-ui/react";
-import { useState } from "react";
 import {
-  FaUser,
-  FaFileAlt,
-  FaCreditCard,
-  FaClipboard,
-  FaFolder,
-  FaCheckCircle,
-  FaFile,
-  FaClock,
-  FaSignOutAlt,
-  FaChevronDown,
-} from "react-icons/fa";
+  Box,
+  Collapsible,
+  Flex,
+  HStack,
+  Icon,
+  IconButton,
+  Separator,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import type { IconType } from "react-icons";
+import { FaLeaf } from "react-icons/fa";
+import {
+  LuChevronDown,
+  LuCircleDollarSign,
+  LuFileX2,
+  LuLayoutGrid,
+  LuUsers,
+  LuX,
+} from "react-icons/lu";
 
-const SideBar = () => {
+interface SubItem {
+  label: string;
+  href: string;
+}
+
+interface SidebarItem {
+  icon: IconType;
+  label: string;
+  href?: string;
+  submenu?: SubItem[];
+}
+
+interface SideBarProps {
+  onClose?: () => void;
+}
+
+const sidebarItems: SidebarItem[] = [
+  { icon: LuLayoutGrid, label: "Dashboard", href: "/dashboard" },
+  { icon: LuCircleDollarSign, label: "View MCPR", href: "/mcpr" },
+  {
+    icon: LuCircleDollarSign,
+    label: "Payment",
+    submenu: [
+      { label: "Encode Payment", href: "/payment/encode" },
+      { label: "Payment History", href: "/payment/history" },
+    ],
+  },
+  { icon: LuLayoutGrid, label: "Disbursement", href: "/disbursement" },
+  {
+    icon: LuUsers,
+    label: "Plan Management",
+    submenu: [
+      { label: "Update Plan", href: "/plan-management/update" },
+      { label: "Transfer Plan", href: "/plan-management/transfer" },
+    ],
+  },
+  {
+    icon: LuFileX2,
+    label: "Document Cancellation",
+    href: "/document-cancellation",
+  },
+];
+
+const SideBar = ({ onClose }: SideBarProps) => {
   const router = useRouter();
-  const [showLabels, setShowLabels] = useState(false);
-
-  const sidebarItems = [
-    { icon: FaUser, label: "My Account", href: "/account" },
-    {
-      icon: FaFileAlt,
-      label: "Account Details",
-      submenu: [
-        { label: "Profile", href: "/account/details/personal" },
-        { label: "Account Summary ", href: "/account/details/contact" },
-        {
-          label: "Certificate of Full Payment ",
-          href: "/account/details/contact",
-        },
-      ],
-    },
-    { icon: FaCreditCard, label: "Pay My Plan", href: "/account/pay-my-plan" },
-    {
-      icon: FaClipboard,
-      label: "Auto-Payment Enrollment",
-      href: "/account/auto-payment",
-    },
-    {
-      icon: FaFolder,
-      label: "Request Plan Documents",
-      href: "/account/request-documents",
-    },
-    {
-      icon: FaFolder,
-      label: "Manage My Plan",
-      submenu: [
-        {
-          label: "Update My Information",
-          href: "/account/manage-plan/update-info",
-        },
-        { label: "Reinstate My Plan", href: "/reinstatement" },
-        {
-          label: "Plan Termination Value",
-          href: "/account/manage-plan/termination-value",
-        },
-        { label: "Assign My Plan", href: "/account/manage-plan/assign" },
-        { label: "Cancel My Plan", href: "/account/manage-plan/cancel" },
-        { label: "Change of Mode", href: "/change-mode" },
-        { label: "Transfer My Plan", href: "/account/manage-plan/transfer" },
-        {
-          label: "Update My Beneficiary",
-          href: "/account/manage-plan/update-beneficiary",
-        },
-      ],
-    },
-    {
-      icon: FaCheckCircle,
-      label: "Claim Applications",
-      submenu: [
-        // { label: "Dismemberment", href: "/account/claims/file" },
-        { label: "File A Claim", href: "/claims" },
-      ],
-    },
-    { icon: FaFile, label: "ROP Application", href: "/rop" },
-    {
-      icon: FaClipboard,
-      label: "Application Status",
-      href: "/account/status",
-    },
-    {
-      icon: FaClock,
-      label: "Transaction History",
-      href: "/account/transactions",
-    },
-    { icon: FaSignOutAlt, label: "Sign Out", href: "/logout" },
-  ];
 
   return (
     <Box
       as="aside"
-      boxShadow="md"
-      w="16"
-      _hover={{ w: "64" }}
-      transition="all 0.3s"
-      overflow="hidden"
+      w="full "
+      bg="white"
       rounded="xl"
-      paddingY={4}
-      onMouseEnter={() => setShowLabels(true)}
-      onMouseLeave={() => setShowLabels(false)}
+      boxShadow="md"
+      borderWidth="1px"
+      borderColor="gray.200"
+      overflow="hidden"
     >
-      <VStack align="stretch" gap={1} mt={2}>
+      {/* Logo + Close button */}
+      <Flex align="center" justify="space-between" px={4} py={4}>
+        <HStack gap={2}>
+          <Icon as={FaLeaf} boxSize={6} color="green.600" />
+          <Box lineHeight="1.1">
+            <Text fontWeight="bold" color="black" fontSize="md">
+              One St. Peter
+            </Text>
+            <Text fontStyle="italic" color="green.600" fontSize="sm">
+              Life Plan
+            </Text>
+          </Box>
+        </HStack>
+
+        <IconButton
+          aria-label="Close sidebar"
+          size="sm"
+          variant="ghost"
+          color="gray.600"
+          onClick={onClose}
+        >
+          <LuX />
+        </IconButton>
+      </Flex>
+
+      <Separator borderColor="gray.200" />
+
+      {/* Menu label */}
+      <Text pt={4} pb={1} color="gray.500">
+        Menu
+      </Text>
+
+      {/* Navigation */}
+      <VStack align="stretch" gap={1} px={2} pb={4}>
         {sidebarItems.map((item, idx) =>
           item.submenu ? (
-            // Dropdown Menu Item
-            <MenuRoot key={idx}>
-              <MenuTrigger asChild>
+            // Collapsible item with submenu
+            <Collapsible.Root key={idx}>
+              <Collapsible.Trigger asChild>
                 <HStack
-                  px={4}
+                  // px={3}
                   py={3}
+                  gap={3}
+                  rounded="md"
                   cursor="pointer"
-                  _hover={{ bg: "gray.300" }}
-                  gap={4}
-                  w="full"
+                  _hover={{ bg: "gray.100" }}
                 >
                   <Icon as={item.icon} boxSize={5} color="green.600" />
-                  <HStack gap={2} flex={1}>
-                    <Text
-                      color="black"
-                      fontWeight="medium"
-                      opacity={showLabels ? 1 : 0}
-                      transition="all 0.3s"
-                      whiteSpace="nowrap"
-                    >
-                      {item.label}
-                    </Text>
-                    <Icon
-                      as={FaChevronDown}
-                      boxSize={3}
-                      color="green.600"
-                      opacity={showLabels ? 1 : 0}
-                      transition="all 0.3s"
-                    />
-                  </HStack>
+                  {/* <Text flex={1} color="black" fontWeight="medium">
+                    {item.label}
+                  </Text> */}
+                  <Icon as={LuChevronDown} boxSize={4} color="gray.500" />
                 </HStack>
-              </MenuTrigger>
-              <MenuContent>
-                {item.submenu.map((submenuItem, submenuIdx) => (
-                  <MenuItem
-                    key={submenuIdx}
-                    value={submenuItem.label}
-                    onClick={() => router.push(submenuItem.href)}
-                  >
-                    {submenuItem.label}
-                  </MenuItem>
-                ))}
-              </MenuContent>
-            </MenuRoot>
+              </Collapsible.Trigger>
+              <Collapsible.Content>
+                <VStack align="stretch" gap={1} pl={10} py={1}>
+                  {item.submenu.map((sub, subIdx) => (
+                    <Text
+                      key={subIdx}
+                      py={2}
+                      px={3}
+                      rounded="md"
+                      fontSize="sm"
+                      color="gray.700"
+                      cursor="pointer"
+                      _hover={{ bg: "gray.100" }}
+                      onClick={() => router.push(sub.href)}
+                    >
+                      {sub.label}
+                    </Text>
+                  ))}
+                </VStack>
+              </Collapsible.Content>
+            </Collapsible.Root>
           ) : (
-            // Regular Menu Item
+            // Regular item
             <HStack
               key={idx}
-              px={4}
+              px={3}
               py={3}
+              gap={3}
+              rounded="md"
               cursor="pointer"
-              _hover={{ bg: "gray.300" }}
-              onClick={() => router.push(item.href)}
-              gap={4}
+              _hover={{ bg: "gray.100" }}
+              onClick={() => item.href && router.push(item.href)}
             >
               <Icon as={item.icon} boxSize={5} color="green.600" />
-
-              <Text
-                color="black"
-                fontWeight="medium"
-                opacity={showLabels ? 1 : 0}
-                transition="all 0.3s"
-                whiteSpace="nowrap"
-              >
+              <Text color="black" fontWeight="medium">
                 {item.label}
               </Text>
             </HStack>

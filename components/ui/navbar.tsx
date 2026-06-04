@@ -11,6 +11,9 @@ import {
   Text,
   CloseButton,
   Flex,
+  Dialog,
+  Input,
+  InputGroup,
 } from "@chakra-ui/react";
 import type { IconType } from "react-icons";
 
@@ -26,7 +29,7 @@ import {
   MdArrowDropDown,
 } from "react-icons/md";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useCartCount } from "@/hooks/useCartCount";
 import { BaseButton, ContactUsButton, LoginButton } from "st-peter-ui";
 import Link from "next/link";
@@ -54,60 +57,15 @@ const mobileMenuItems: Array<{
   { label: "Contact Us", href: "/contact-us", icon: MdOutlineMessage },
 ];
 
-const pageTitles: Record<string, string> = {
-  "/account": "Account",
-  "/account/manage-plan/transfer": "Transfer My Plan",
-  "/account/pay-my-plan": "Pay My Plan",
-  "/account/profile": "Profile",
-  "/booking": "Memorial Service Booking",
-  "/change-mode": "Change Mode",
-  "/claims": "Claim",
-  "/contact-us": "Contact Us",
-  "/get-started": "Get Started",
-  "/lifeplan-application": "Life Plan Application",
-  "/login": "Log In",
-  "/news-updates": "News & Blog",
-  "/order-summary": "Order Summary",
-  "/pay-my-plan": "Pay My Plan",
-  "/pay-my-plan/details": "Pay My Plan",
-  "/plan-comparison": "Plan Comparison",
-  "/plan-details": "Plan Details",
-  "/plans": "Life Plans",
-  "/reinstatement": "Reinstatement",
-  "/rop": "Return of Premium",
-  "/rop-payout": "Return of Premium",
-  "/success": "Payment Success",
-  "/transaction": "Transaction",
-};
-
-const getPageTitle = (pathname: string) => {
-  if (pathname === "/") return "";
-
-  const matchedPath = Object.keys(pageTitles)
-    .sort((a, b) => b.length - a.length)
-    .find((path) => pathname === path || pathname.startsWith(`${path}/`));
-
-  if (matchedPath) return pageTitles[matchedPath];
-
-  const segment = pathname.split("/").filter(Boolean).at(-1) ?? "";
-
-  return segment
-    .split("-")
-    .filter(Boolean)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-};
-
 const Navbar = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const count = useCartCount();
   const { isLoggedIn } = useDemoAuth();
-  const isHomePage = pathname === "/";
-  const pageTitle = useMemo(() => getPageTitle(pathname), [pathname]);
 
   const isActiveMobileMenuItem = (href: string) => {
     if (href === "/") return pathname === href;
@@ -156,33 +114,30 @@ const Navbar = () => {
         </IconButton>
 
         <Flex flex="1" minW={0} align="center">
-          {isHomePage ? (
-            <Image
-              src="https://www.stpeter.com.ph/images/logo2gold.png"
-              alt="E-Store Logo"
-              cursor="pointer"
-              onClick={() => router.push("/")}
-              w={{ base: "142px", sm: "160px" }}
-              h="auto"
-              maxW="100%"
-              objectFit="contain"
-            />
-          ) : (
-            <Text
-              color={BRAND_COLORS.black}
-              fontSize={{ base: "17px", sm: "18px" }}
-              fontWeight="500"
-              lineHeight="1.15"
-              overflow="hidden"
-              textOverflow="ellipsis"
-              whiteSpace="nowrap"
-            >
-              {pageTitle}
-            </Text>
-          )}
+          <Image
+            src="/icons/icon-stpeter.png"
+            alt="E-Store Logo"
+            cursor="pointer"
+            onClick={() => router.push("/")}
+            w={{ base: "30px", sm: "30px" }}
+            h="auto"
+            maxW="100%"
+            objectFit="contain"
+          />
         </Flex>
 
         <Flex gap={2} align="center">
+          <IconButton
+            aria-label="Search"
+            variant="ghost"
+            minW="40px"
+            h="40px"
+            px={0}
+            borderRadius={STANDARD_RADIUS.md}
+            onClick={() => setSearchOpen(true)}
+          >
+            <IoSearchOutline />
+          </IconButton>
           <IconButton
             aria-label="Toggle theme"
             variant="ghost"
@@ -337,7 +292,7 @@ const Navbar = () => {
 
         <Box px={STANDARD_SPACING.sm} pt={STANDARD_SPACING.sm}>
           <Text
-            fontSize="12px"
+            fontSize="14px"
             fontWeight="500"
             color={BRAND_COLORS.grey}
             mb={STANDARD_SPACING.xs}
@@ -359,7 +314,7 @@ const Navbar = () => {
                     minH="44px"
                     align="center"
                     gap={STANDARD_SPACING.xs}
-                    px={STANDARD_SPACING.sm}
+                    // px={STANDARD_SPACING.sm}
                     borderRadius={STANDARD_RADIUS.sm}
                     bg={active ? BRAND_COLORS.primaryGreen : "transparent"}
                     color={
@@ -380,7 +335,7 @@ const Navbar = () => {
                       }
                       flexShrink={0}
                     />
-                    <Text fontSize="13px" fontWeight={active ? "700" : "500"}>
+                    <Text fontSize="14px" fontWeight={active ? "700" : "400"}>
                       {item.label}
                     </Text>
                   </Flex>
@@ -543,7 +498,11 @@ const Navbar = () => {
           </HStack>
 
           <HStack gap={4}>
-            <IconButton aria-label="Search" variant="ghost">
+            <IconButton
+              aria-label="Search"
+              variant="ghost"
+              onClick={() => setSearchOpen(true)}
+            >
               <IoSearchOutline />
             </IconButton>
 
@@ -653,6 +612,50 @@ const Navbar = () => {
           <Icon as={MdOutlineShoppingCart} boxSize={6} color="white" />
         </Flex>
       </Button> */}
+      {/* Search Dialog */}
+      <Dialog.Root
+        open={searchOpen}
+        onOpenChange={(e) => setSearchOpen(e.open)}
+        size="full"
+        motionPreset="slide-in-bottom"
+      >
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Header>
+                <InputGroup
+                  flex="1"
+                  startElement={<IoSearchOutline />}
+                  endElement={
+                    <Dialog.CloseTrigger>
+                      <Box
+                        py={1}
+                        px={2}
+                        bg="gray.100"
+                        borderRadius="md"
+                        cursor="pointer"
+                        _hover={{ bg: "gray.200" }}
+                      >
+                        Cancel
+                      </Box>
+                    </Dialog.CloseTrigger>
+                  }
+                >
+                  <Input placeholder="Search . . ." />
+                </InputGroup>
+              </Dialog.Header>
+              <Dialog.Body>
+                <Text textAlign="center" py={5}>
+                  No recent searches
+                </Text>
+              </Dialog.Body>
+              <Dialog.Footer />
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
+
       <ShoppingCart open={cartOpen} onClose={() => setCartOpen(false)} />
     </>
   );

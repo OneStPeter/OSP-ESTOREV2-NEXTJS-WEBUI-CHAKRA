@@ -75,24 +75,25 @@ export default function Hero() {
       <Box
         position="relative"
         zIndex={1}
-        w="100%"
+        w={{ base: "full", md: "7xl" }}
         maxW={RESPONSIVE_LAYOUT_TOKENS.grid.desktop.contentMaxWidth}
-        minH="100dvh"
+        minH={{ base: "90dvh", md: "100dvh" }}
         mx="auto"
-        px={PAGE_PADDING}
+        px={{ base: PAGE_PADDING.base, md: PAGE_PADDING.lg }}
+        // py="16"
         display="flex"
         flexDirection="column"
         justifyContent="center"
-        pt={{
-          base: `calc(${STANDARD_SPACING.xl} + ${RESPONSIVE_LAYOUT_TOKENS.navigationOffset.md})`,
-          md: `calc(${STANDARD_SPACING.section} + ${RESPONSIVE_LAYOUT_TOKENS.navigationOffset.lg})`,
-          lg: `calc(${STANDARD_SPACING.section} + ${STANDARD_SPACING.md})`,
-        }}
-        pb={{
-          base: STANDARD_SPACING.xl,
-          md: SECTION_GAP.md,
-          lg: SECTION_GAP.lg,
-        }}
+        // pt={{
+        //   base: `calc(${STANDARD_SPACING.xl} + ${RESPONSIVE_LAYOUT_TOKENS.navigationOffset.md})`,
+        //   md: `calc(${STANDARD_SPACING.section} + ${RESPONSIVE_LAYOUT_TOKENS.navigationOffset.lg})`,
+        //   lg: `calc(${STANDARD_SPACING.section} + ${STANDARD_SPACING.md})`,
+        // }}
+        // pb={{
+        //   base: STANDARD_SPACING.xl,
+        //   md: SECTION_GAP.md,
+        //   lg: SECTION_GAP.lg,
+        // }}
       >
         <Box
           display="grid"

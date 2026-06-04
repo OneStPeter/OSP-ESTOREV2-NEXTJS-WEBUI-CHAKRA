@@ -233,12 +233,12 @@ const LifePlanApplication2 = ({
   const OCRValue =
     typeof window === "undefined" ? null : localStorage.getItem("ocrResult");
   const { runOCR, data } = useOcr();
-  const [lot, setLot] = useState("");
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [province, setProvince] = useState("");
-  const [district, setDistrict] = useState("");
-  const [barangay, setBarangay] = useState("");
+  const [lot, setLot] = useState("123");
+  const [street, setStreet] = useState("Mabini Street");
+  const [city, setCity] = useState("Makati");
+  const [province, setProvince] = useState("Metro Manila");
+  const [district, setDistrict] = useState("Taguig");
+  const [barangay, setBarangay] = useState("San Juan");
 
   const parseAddress = async (address: string) => {
     if (!address) return;
@@ -284,15 +284,15 @@ const LifePlanApplication2 = ({
 
   return (
     <Box
-      bg={BRAND_COLORS.white}
-      borderWidth="1px"
-      borderColor={BRAND_COLORS.neutralBorder}
-      borderRadius={STANDARD_RADIUS.lg}
-      boxShadow={STANDARD_SHADOWS.level1}
+      // bg={BRAND_COLORS.white}
+      // borderWidth="1px"
+      // borderColor={BRAND_COLORS.neutralBorder}
+      // borderRadius={STANDARD_RADIUS.lg}
+      // boxShadow={STANDARD_SHADOWS.level1}
       p={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
     >
       <VStack align="stretch" gap={STANDARD_SPACING.md}>
-        <Box>
+        {/* <Box>
           <Text
             color={BRAND_COLORS.neutralText}
             fontSize={{ base: "18px", md: "20px" }}
@@ -301,7 +301,7 @@ const LifePlanApplication2 = ({
           >
             Residential Address
           </Text>
-        </Box>
+        </Box> */}
 
         <SimpleGrid columns={{ base: 1, md: 2 }} gap={STANDARD_SPACING.sm}>
           <Field.Root>

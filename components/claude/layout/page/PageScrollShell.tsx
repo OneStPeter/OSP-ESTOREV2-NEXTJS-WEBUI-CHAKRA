@@ -3,8 +3,9 @@
 
 import { Box, Flex, type BoxProps } from "@chakra-ui/react";
 import React from "react";
-import Caption from "@/components/texts/Caption";
+
 import BackButton from "./BackButton";
+import Caption from "../../texts/Caption";
 
 type PageScrollShellProps = {
   title: React.ReactNode;

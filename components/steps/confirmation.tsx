@@ -1,5 +1,6 @@
 "use client";
 import {
+  Accordion,
   Avatar,
   Badge,
   Box,
@@ -13,7 +14,6 @@ import {
   Portal,
   Separator,
   Span,
-  Tabs,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -37,7 +37,7 @@ import { LuPencil } from "react-icons/lu";
 import type { IconType } from "react-icons";
 export type ConfirmationProps = {
   onAllAcceptedChange?: (allAccepted: boolean) => void;
-  onEdit?: () => void;
+  onEdit?: (section?: string) => void;
 };
 
 const modeLabel = (mode?: string) => {
@@ -158,31 +158,119 @@ type TabItem = {
   page: React.ReactNode;
 };
 
-const Tab = ({ tabItems }: { tabItems: TabItem[] }) => (
-  <Tabs.Root defaultValue={tabItems[0]?.value} variant="enclosed" maxW="full">
-    <Tabs.List gap="2" overflowX="auto" mb={4}>
-      {tabItems.map((item) => (
-        <Tabs.Trigger
-          key={item.value}
-          value={item.value}
-          minW={{ base: "140px", md: "160px" }}
-          textWrap="nowrap"
-        >
-          <Flex align="center" gap={2}>
-            <Icon as={item.icon} boxSize="15px" />
-            <Text as="span">{item.label}</Text>
-          </Flex>
-        </Tabs.Trigger>
-      ))}
-    </Tabs.List>
+const ApplicationAccordion = ({
+  items,
+  onEdit,
+}: {
+  items: TabItem[];
+  onEdit?: (section?: string) => void;
+}) => {
+  const [openSections, setOpenSections] = useState<string[]>(
+    items[0] ? [items[0].value] : [],
+  );
 
-    {tabItems.map((item) => (
-      <Tabs.Content key={item.value} value={item.value}>
-        {item.page}
-      </Tabs.Content>
-    ))}
-  </Tabs.Root>
-);
+  return (
+    <Accordion.Root
+      value={openSections}
+      onValueChange={(details) => setOpenSections(details.value)}
+      multiple
+      collapsible
+    >
+      <VStack align="stretch" gap={3}>
+        {items.map((item) => {
+          const isOpen = openSections.includes(item.value);
+
+          return (
+            <Accordion.Item key={item.value} value={item.value} border="none">
+              <Box
+                bg="white"
+                borderWidth="1px"
+                borderColor={isOpen ? "green.500" : "gray.200"}
+                rounded="xl"
+                overflow="hidden"
+                transition="border-color 0.15s ease, box-shadow 0.15s ease"
+                shadow={isOpen ? "sm" : "none"}
+              >
+                <Flex align="center" pr={{ base: 2, md: 3 }}>
+                  <Accordion.ItemTrigger
+                    flex="1"
+                    minW={0}
+                    px={{ base: 4, md: 5 }}
+                    py={3}
+                    cursor="pointer"
+                    _hover={{ bg: "gray.50" }}
+                    transition="background 0.15s ease"
+                  >
+                    <Flex align="center" gap={3} w="full">
+                      <Flex
+                        w="38px"
+                        h="38px"
+                        rounded="lg"
+                        align="center"
+                        justify="center"
+                        flexShrink={0}
+                        bg={isOpen ? "green.500" : "green.50"}
+                        color={isOpen ? "white" : "green.600"}
+                        transition="background 0.15s ease, color 0.15s ease"
+                      >
+                        <Icon as={item.icon} boxSize="18px" />
+                      </Flex>
+                      <Box flex="1" minW={0} textAlign="left">
+                        <Text fontWeight="700" color="gray.900" lineHeight="1.2">
+                          {item.label}
+                        </Text>
+                      </Box>
+                    </Flex>
+                  </Accordion.ItemTrigger>
+
+                  {/* Edit → jump back to this section in the form */}
+                  <Box display={{ base: "none", md: "block" }}>
+                    <EditButton
+                      onClick={(e: React.MouseEvent) => {
+                        e.stopPropagation();
+                        onEdit?.(item.value);
+                      }}
+                    />
+                  </Box>
+                  <Button
+                    display={{ base: "inline-flex", md: "none" }}
+                    variant="ghost"
+                    p={0}
+                    minW="32px"
+                    h="32px"
+                    borderRadius="md"
+                    aria-label={`Edit ${item.label}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit?.(item.value);
+                    }}
+                  >
+                    <Icon as={LuPencil} boxSize={4} />
+                  </Button>
+
+                  <Accordion.ItemIndicator color="gray.500" ml={2} />
+                </Flex>
+
+                <Accordion.ItemContent>
+                  <Accordion.ItemBody
+                    px={{ base: 4, md: 5 }}
+                    pb={{ base: 4, md: 5 }}
+                    pt={0}
+                    borderTopWidth="1px"
+                    borderColor="gray.200"
+                    mt={1}
+                  >
+                    <Box pt={3}>{item.page}</Box>
+                  </Accordion.ItemBody>
+                </Accordion.ItemContent>
+              </Box>
+            </Accordion.Item>
+          );
+        })}
+      </VStack>
+    </Accordion.Root>
+  );
+};
 
 const Confirmation = ({ onAllAcceptedChange, onEdit }: ConfirmationProps) => {
   const [cartItems, setCartItems] = useState<CartItem[] | null>(null);
@@ -710,8 +798,9 @@ const Confirmation = ({ onAllAcceptedChange, onEdit }: ConfirmationProps) => {
           </Card.Root> */}
           <Card.Root title="Life Plan Application">
             <Card.MainContent>
-              <Tab
-                tabItems={[
+              <ApplicationAccordion
+                onEdit={onEdit}
+                items={[
                   {
                     icon: FaRegUser,
                     label: "Personal Info",

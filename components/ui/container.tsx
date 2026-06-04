@@ -6,8 +6,8 @@ interface ContainerProps {
 const Container = ({ children }: ContainerProps) => {
   return (
     <Box
-      px={{ base: 8, md: 0 }}
-      mt={{ base: 16, md: 40 }}
+      px={{ base: 8, md: 8 }}
+      mt={{ base: 16, md: 32 }}
       mb={{ base: 32, md: 16 }}
       maxW={"7xl"}
       mx={"auto"}

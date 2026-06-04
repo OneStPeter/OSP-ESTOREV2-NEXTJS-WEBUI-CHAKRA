@@ -6,14 +6,25 @@ import HealthDeclaration from "@/components/steps/HealthDeclaration";
 import LifePlanApplicationWrapper from "@/components/steps/LifePlanApplicationFormWrapper";
 
 export const createLifePlanSteps = (
-  confirmationProps?: ConfirmationProps & { onEdit?: () => void },
+  confirmationProps?: ConfirmationProps & {
+    onEdit?: (section?: string) => void;
+    applicationSection?: string;
+    applicationSectionKey?: number;
+    onApplicationValidChange?: (valid: boolean) => void;
+  },
 ) => [
   {
     id: "1",
     header: "Life Plan Application",
     title: "Application",
     description: "Complete the application form",
-    component: <LifePlanApplicationWrapper />,
+    component: (
+      <LifePlanApplicationWrapper
+        openSection={confirmationProps?.applicationSection}
+        openSectionKey={confirmationProps?.applicationSectionKey}
+        onValidChange={confirmationProps?.onApplicationValidChange}
+      />
+    ),
   },
 
   {
