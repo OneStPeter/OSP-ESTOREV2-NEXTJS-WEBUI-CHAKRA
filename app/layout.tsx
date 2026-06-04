@@ -2,21 +2,10 @@ import type { Metadata } from "next";
 import { StPeterProvider } from "st-peter-ui";
 //@ts-ignore
 import "./globals.css";
-import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
-import BottomNav from "@/components/ui/bottom-nav";
 import ServiceWorkerRegister from "@/components/service-worker";
 import { DemoAuthProvider } from "@/components/ui/demo-auth";
-
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
+import { AppLayoutWrapper } from "@/components/claude/layout/app-layout-wrapper";
 
 export const metadata: Metadata = {
   title: "E-store V2",
@@ -48,10 +37,10 @@ export default function RootLayout({
         <ServiceWorkerRegister />
         <StPeterProvider theme="green" font="Open Sans">
           <DemoAuthProvider>
-            <Navbar />
-            {children}
-            <BottomNav />
-            <Footer />
+            <AppLayoutWrapper>
+              {children}
+              <Footer />
+            </AppLayoutWrapper>
           </DemoAuthProvider>
         </StPeterProvider>
       </body>

@@ -79,7 +79,7 @@ export function AppLayout({
           p={0}
           overflow="auto"
           ref={scrollRef}
-          px={2}
+          px={0}
           pb={"100px"}
         >
           <StickyNavbarContext refParent={scrollRef}>
