@@ -193,9 +193,11 @@ const Section: React.FC<SectionProps> = ({
                 </Box>
 
                 <Box>
-                  <BuyNowButton
-                    onClick={() => router.push(`/plan-details/${planDesc}`)}
-                  />
+                    <BuyNowButton
+                      onClick={() =>
+                        router.push(`/plan-details/${encodeURIComponent(planDesc)}`)
+                      }
+                    />
                 </Box>
               </Flex>
             </Box>

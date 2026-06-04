@@ -1123,12 +1123,6 @@ function MobileProfileSettings(props: {
 
       <Box bg={BRAND_COLORS.white} px={STANDARD_SPACING.sm} py={5}>
         <MobileSectionLabel>Account</MobileSectionLabel>
-        {/* <MobileSettingRow
-          icon={FiUser}
-          title="Account Details"
-          subtitle={props.email}
-          onClick={props.onEditEmail}
-        /> */}
         <MobileSettingRow
           icon={FiMail}
           title="Email Address"

@@ -34,17 +34,29 @@ import dummyPlans from "@/data/plansection_dummy.json";
 
 const plans = dummyPlans as any[];
 
+const normalizePlanDesc = (value: string) => {
+  try {
+    return decodeURIComponent(value).trim().toUpperCase();
+  } catch {
+    return value.trim().toUpperCase();
+  }
+};
+
 export async function getModeAndName(planDesc: string, selectedPlan: string) {
+  const normalizedPlanDesc = normalizePlanDesc(planDesc);
+  const normalizedMode = selectedPlan.trim().toUpperCase();
+
   return plans.filter(
     (p) =>
-      p.planDesc.trim().toUpperCase() === planDesc.trim().toUpperCase() &&
-      p.mode.trim().toUpperCase() === selectedPlan.trim().toUpperCase(),
+      normalizePlanDesc(p.planDesc) === normalizedPlanDesc &&
+      p.mode.trim().toUpperCase() === normalizedMode,
   );
 }
 
 export async function getProductByName(planDesc: string) {
+  const normalizedPlanDesc = normalizePlanDesc(planDesc);
   const results = plans.filter(
-    (p) => p.planDesc.trim().toUpperCase() === planDesc.trim().toUpperCase(),
+    (p) => normalizePlanDesc(p.planDesc) === normalizedPlanDesc,
   );
   return Array.isArray(results) ? results : [results];
 }

@@ -161,6 +161,7 @@ const PayMyPlan = () => {
     );
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [expandedPlans, setExpandedPlans] = useState<Set<string>>(new Set());
+  const [summaryExpanded, setSummaryExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [planModeFilter, setPlanModeFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("Due");
@@ -336,14 +337,14 @@ const PayMyPlan = () => {
 
         <Box
           bg={BRAND_COLORS.white}
-          borderWidth="1px"
-          borderColor={BRAND_COLORS.neutralBorder}
-          borderRadius={STANDARD_RADIUS.lg}
-          boxShadow={STANDARD_SHADOWS.level1}
-          p={{
-            base: RESPONSIVE_LAYOUT_TOKENS.card.mobilePadding.base,
-            md: RESPONSIVE_LAYOUT_TOKENS.card.padding.md,
-          }}
+          // borderWidth="1px"
+          // borderColor={BRAND_COLORS.neutralBorder}
+          // borderRadius={STANDARD_RADIUS.lg}
+          // boxShadow={STANDARD_SHADOWS.level1}
+          // p={{
+          //   base: RESPONSIVE_LAYOUT_TOKENS.card.mobilePadding.base,
+          //   md: RESPONSIVE_LAYOUT_TOKENS.card.padding.md,
+          // }}
         >
           <VStack
             align="stretch"
@@ -358,13 +359,13 @@ const PayMyPlan = () => {
               >
                 Pay My Plan
               </H4> */}
-              <Body color={BRAND_COLORS.neutralText} mt={STANDARD_SPACING.xs}>
+              {/* <Body color={BRAND_COLORS.neutralText} mt={STANDARD_SPACING.xs}>
                 Account No.: SPLPI-22-000021
-              </Body>
-              <H3 mt={STANDARD_SPACING.xs}>
-                Select one or more active plans to prepare your payment in one
-                go.
-              </H3>
+              </Body> */}
+              <H4 mt={STANDARD_SPACING.xs}>
+                Listed below are your active St. Peter Life Plan, please select
+                the plan/s you wish to pay.
+              </H4>
             </Box>
 
             <Grid
@@ -374,7 +375,7 @@ const PayMyPlan = () => {
                 md: RESPONSIVE_LAYOUT_TOKENS.card.gap.md,
               }}
             >
-              <Box
+              {/* <Box
                 bg={BRAND_COLORS.subtleBg}
                 borderWidth="1px"
                 borderColor={BRAND_COLORS.neutralBorder}
@@ -396,9 +397,9 @@ const PayMyPlan = () => {
                 >
                   {activePlans.length}
                 </Text>
-              </Box>
+              </Box> */}
 
-              <Box
+              {/* <Box
                 bg={BRAND_COLORS.subtleBg}
                 borderWidth="1px"
                 borderColor={BRAND_COLORS.neutralBorder}
@@ -420,7 +421,7 @@ const PayMyPlan = () => {
                 >
                   P {formatCurrency(totalSelectedAmount)}
                 </Text>
-              </Box>
+              </Box> */}
             </Grid>
           </VStack>
         </Box>
@@ -980,18 +981,19 @@ const PayMyPlan = () => {
           </Flex>
         </Box>
 
+        {/* ── MOBILE COMPACT LIST ──────────────────────────────────────────── */}
         <VStack
           display={{ base: "flex", lg: "none" }}
           align="stretch"
-          gap={RESPONSIVE_LAYOUT_TOKENS.card.gap.base}
+          gap={STANDARD_SPACING.xs}
         >
           {activePlans.map((plan) => {
             const isSelected = isPlanSelected(plan.contractNo);
-            const isExpanded = expandedPlans.has(plan.contractNo);
 
             return (
               <Box
                 key={plan.contractNo}
+                bg={isSelected ? BRAND_COLORS.successBg : BRAND_COLORS.white}
                 borderWidth="1px"
                 borderColor={
                   isSelected
@@ -999,282 +1001,326 @@ const PayMyPlan = () => {
                     : BRAND_COLORS.neutralBorder
                 }
                 borderRadius={STANDARD_RADIUS.lg}
-                bg={isSelected ? BRAND_COLORS.successBg : BRAND_COLORS.white}
                 overflow="hidden"
-                boxShadow={isSelected ? STANDARD_SHADOWS.level1 : "none"}
+                boxShadow={STANDARD_SHADOWS.level1}
+                transition="border-color 150ms ease-out, background 150ms ease-out"
               >
-                <Box p={RESPONSIVE_LAYOUT_TOKENS.card.mobilePadding.base}>
-                  <VStack align="stretch" gap={STANDARD_SPACING.sm}>
-                    <Flex
-                      justify="space-between"
-                      align="flex-start"
-                      gap={STANDARD_SPACING.sm}
-                    >
-                      <Box flex="1" minW={0}>
-                        <Small
-                          color={BRAND_COLORS.primaryGreen}
-                          fontWeight="700"
-                        >
-                          {plan.contractNo}
-                        </Small>
-                        <Text
-                          color={BRAND_COLORS.neutralText}
-                          fontWeight="700"
-                          fontSize="18px"
-                          lineHeight="1.25"
-                          mt={STANDARD_SPACING.xs}
-                        >
-                          {plan.plan}
-                        </Text>
-                        <Badge
-                          mt={STANDARD_SPACING.xs}
-                          bg={BRAND_COLORS.mutedBg}
-                          color={BRAND_COLORS.grey}
-                          borderRadius={STANDARD_RADIUS.md}
-                          px={STANDARD_SPACING.xs}
-                          py="2px"
-                        >
-                          {plan.mode}
-                        </Badge>
-                      </Box>
-
-                      <Checkbox.Root
-                        checked={isSelected}
-                        onCheckedChange={() => toggleContract(plan)}
-                        minW="96px"
-                        justifyContent="flex-end"
-                      >
-                        <Checkbox.HiddenInput />
-                        <Checkbox.Control />
-                        <Checkbox.Label>
-                          {isSelected ? "Selected" : "Select"}
-                        </Checkbox.Label>
-                      </Checkbox.Root>
-                    </Flex>
-
-                    <Flex
-                      justify="space-between"
-                      align="center"
-                      gap={STANDARD_SPACING.sm}
-                      p={STANDARD_SPACING.sm}
-                      bg={BRAND_COLORS.subtleBg}
-                      borderWidth="1px"
-                      borderColor={BRAND_COLORS.neutralBorder}
-                      borderRadius={STANDARD_RADIUS.md}
-                    >
-                      <Box minW={0}>
-                        <Small color={BRAND_COLORS.grey} fontWeight="600">
-                          Amount Due
-                        </Small>
-                        <Text
-                          color={BRAND_COLORS.darkGreen}
-                          fontWeight="700"
-                          fontSize="18px"
-                          lineHeight="1.25"
-                        >
-                          P {formatCurrency(getSelectedPlanTotal(plan))}
-                        </Text>
-                      </Box>
-
-                      <Badge
-                        bg={BRAND_COLORS.errorRed}
-                        color={BRAND_COLORS.white}
-                        borderRadius={STANDARD_RADIUS.md}
-                        px={STANDARD_SPACING.xs}
-                        py="2px"
-                      >
-                        Due
-                      </Badge>
-                    </Flex>
-
-                    <Flex
-                      justify="space-between"
-                      align="center"
-                      gap={STANDARD_SPACING.sm}
-                    >
-                      <Small color={BRAND_COLORS.grey} fontWeight="600">
-                        Installment No.
-                      </Small>
-                      <HStack
-                        gap={STANDARD_SPACING.xs}
-                        bg={BRAND_COLORS.white}
-                        borderWidth="1px"
-                        borderColor={BRAND_COLORS.neutralBorder}
-                        borderRadius={STANDARD_RADIUS.md}
-                        p="4px"
-                      >
-                        <Button
-                          w={STANDARD_SIZES.iconButton.sm}
-                          minW={STANDARD_SIZES.iconButton.sm}
-                          h={STANDARD_SIZES.iconButton.sm}
-                          variant="outline"
-                          borderColor={BRAND_COLORS.primaryGreen}
-                          color={BRAND_COLORS.primaryGreen}
-                          onClick={() =>
-                            updateInstallmentNumber(plan.contractNo, -1)
-                          }
-                          disabled={getInstallmentNumber(plan.contractNo) <= 1}
-                        >
-                          -
-                        </Button>
-                        <Text
-                          color={BRAND_COLORS.neutralText}
-                          fontWeight="700"
-                          minW={STANDARD_SIZES.iconButton.sm}
-                          textAlign="center"
-                        >
-                          {getInstallmentNumber(plan.contractNo)}
-                        </Text>
-                        <Button
-                          w={STANDARD_SIZES.iconButton.sm}
-                          minW={STANDARD_SIZES.iconButton.sm}
-                          h={STANDARD_SIZES.iconButton.sm}
-                          variant="outline"
-                          borderColor={BRAND_COLORS.primaryGreen}
-                          color={BRAND_COLORS.primaryGreen}
-                          onClick={() =>
-                            updateInstallmentNumber(plan.contractNo, 1)
-                          }
-                        >
-                          +
-                        </Button>
-                      </HStack>
-                    </Flex>
-                  </VStack>
-                </Box>
-
-                <Separator borderColor={BRAND_COLORS.neutralBorder} />
-                <Button
-                  variant="plain"
-                  w="full"
-                  h="44px"
-                  borderRadius={0}
-                  bg={BRAND_COLORS.subtleBg}
-                  color={BRAND_COLORS.primaryGreen}
-                  fontSize={STANDARD_SIZES.button.md.fontSize}
-                  fontWeight="600"
-                  justifyContent="center"
-                  gap={STANDARD_SPACING.xs}
-                  aria-expanded={isExpanded}
-                  _hover={{ bg: BRAND_COLORS.mutedBg }}
-                  onClick={() => togglePlanExpanded(plan.contractNo)}
+                {/* Top row: checkbox + thumbnail + plan info */}
+                <HStack
+                  gap={STANDARD_SPACING.sm}
+                  p={STANDARD_SPACING.sm}
+                  align="start"
                 >
-                  {isExpanded ? "Hide details" : "View details"}
-                  <Box
-                    as={FaChevronDown}
-                    transition="transform 0.2s ease-out"
-                    transform={isExpanded ? "rotate(180deg)" : "rotate(0deg)"}
-                  />
-                </Button>
+                  {/* Checkbox */}
+                  <Checkbox.Root
+                    checked={isSelected}
+                    onCheckedChange={() => toggleContract(plan)}
+                    mt="2px"
+                    flexShrink={0}
+                  >
+                    <Checkbox.HiddenInput />
+                    <Checkbox.Control />
+                  </Checkbox.Root>
 
-                {isExpanded ? (
-                  <>
-                    <Separator borderColor={BRAND_COLORS.neutralBorder} />
-                    <VStack
-                      align="stretch"
-                      gap={0}
-                      p={RESPONSIVE_LAYOUT_TOKENS.card.mobilePadding.base}
-                      bg={BRAND_COLORS.white}
+                  {/* Thumbnail */}
+                  <Box
+                    w="60px"
+                    h="60px"
+                    borderRadius={STANDARD_RADIUS.md}
+                    overflow="hidden"
+                    flexShrink={0}
+                    bg={BRAND_COLORS.subtleBg}
+                  >
+                    <img
+                      src={`/images/plan-images/${plan.plan}.jpg`}
+                      alt={plan.plan}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  </Box>
+
+                  {/* Plan info */}
+                  <VStack align="start" gap="3px" flex="1" minW={0}>
+                    <Text
+                      fontWeight="700"
+                      fontSize="15px"
+                      color={BRAND_COLORS.neutralText}
+                      lineClamp={1}
                     >
-                      <Flex
-                        justify="space-between"
-                        align="center"
-                        gap={STANDARD_SPACING.sm}
-                        py={STANDARD_SPACING.xs}
+                      {plan.plan}
+                    </Text>
+                    <Text
+                      fontSize="12px"
+                      color={BRAND_COLORS.primaryGreen}
+                      fontWeight="600"
+                    >
+                      {plan.contractNo}
+                    </Text>
+                    <Text fontSize="12px" color={BRAND_COLORS.grey}>
+                      Mode: {plan.mode}
+                    </Text>
+                    <Text fontSize="12px" color={BRAND_COLORS.grey}>
+                      Effective Date: {plan.effectiveDate}
+                    </Text>
+                  </VStack>
+                </HStack>
+
+                {/* Divider */}
+                <Box h="1px" bg={BRAND_COLORS.neutralBorder} />
+
+                {/* Bottom row: amount due + stepper */}
+                <HStack
+                  justify="space-between"
+                  align="center"
+                  px={STANDARD_SPACING.sm}
+                  py="10px"
+                >
+                  <VStack align="start" gap="1px">
+                    <Text
+                      fontSize="11px"
+                      color={BRAND_COLORS.grey}
+                      fontWeight="600"
+                      textTransform="uppercase"
+                      letterSpacing="0.04em"
+                    >
+                      Amount Due
+                    </Text>
+                    <Text
+                      fontWeight="700"
+                      fontSize="15px"
+                      color={BRAND_COLORS.darkGreen}
+                    >
+                      ₱ {formatCurrency(getSelectedPlanTotal(plan))}
+                    </Text>
+                  </VStack>
+
+                  {/* Installment stepper */}
+                  <HStack
+                    gap={0}
+                    borderWidth="1px"
+                    borderColor={BRAND_COLORS.neutralBorder}
+                    borderRadius={STANDARD_RADIUS.md}
+                    overflow="hidden"
+                    bg={BRAND_COLORS.white}
+                  >
+                    <Button
+                      aria-label="Decrease installment"
+                      variant="ghost"
+                      w="38px"
+                      minW="38px"
+                      h="38px"
+                      borderRadius="0"
+                      color={BRAND_COLORS.primaryGreen}
+                      _hover={{ bg: BRAND_COLORS.subtleBg }}
+                      onClick={() =>
+                        updateInstallmentNumber(plan.contractNo, -1)
+                      }
+                      disabled={getInstallmentNumber(plan.contractNo) <= 1}
+                    >
+                      −
+                    </Button>
+
+                    <Box
+                      w="38px"
+                      h="38px"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      borderLeftWidth="1px"
+                      borderRightWidth="1px"
+                      borderColor={BRAND_COLORS.neutralBorder}
+                    >
+                      <Text
+                        fontSize="14px"
+                        fontWeight="700"
+                        color={BRAND_COLORS.neutralText}
                       >
-                        <Small color={BRAND_COLORS.grey} fontWeight="600">
-                          Effective Date
-                        </Small>
-                        <Body fontWeight="600" color={BRAND_COLORS.neutralText}>
-                          {plan.effectiveDate}
-                        </Body>
-                      </Flex>
-                      <Separator borderColor={BRAND_COLORS.neutralBorder} />
-                      <Flex
-                        justify="space-between"
-                        align="center"
-                        gap={STANDARD_SPACING.sm}
-                        py={STANDARD_SPACING.xs}
-                      >
-                        <Small color={BRAND_COLORS.grey} fontWeight="600">
-                          Due Date
-                        </Small>
-                        <Body fontWeight="600" color={BRAND_COLORS.neutralText}>
-                          {plan.dueDate}
-                        </Body>
-                      </Flex>
-                      <Separator borderColor={BRAND_COLORS.neutralBorder} />
-                      <Flex
-                        justify="space-between"
-                        align="center"
-                        gap={STANDARD_SPACING.sm}
-                        py={STANDARD_SPACING.xs}
-                      >
-                        <Small color={BRAND_COLORS.grey} fontWeight="600">
-                          Balance
-                        </Small>
-                        <Body fontWeight="700" color={BRAND_COLORS.neutralText}>
-                          P {plan.balance}
-                        </Body>
-                      </Flex>
-                    </VStack>
-                  </>
-                ) : null}
+                        {getInstallmentNumber(plan.contractNo)}
+                      </Text>
+                    </Box>
+
+                    <Button
+                      aria-label="Increase installment"
+                      variant="ghost"
+                      w="38px"
+                      minW="38px"
+                      h="38px"
+                      borderRadius="0"
+                      color={BRAND_COLORS.primaryGreen}
+                      _hover={{ bg: BRAND_COLORS.subtleBg }}
+                      onClick={() =>
+                        updateInstallmentNumber(plan.contractNo, 1)
+                      }
+                    >
+                      +
+                    </Button>
+                  </HStack>
+                </HStack>
               </Box>
             );
           })}
         </VStack>
       </VStack>
 
-      <Box
-        position="fixed"
-        bottom={{
-          base: "calc(5rem + env(safe-area-inset-bottom))",
-          md: STANDARD_SPACING.sm,
-        }}
-        left="50%"
-        transform="translateX(-50%)"
-        w={{ base: "calc(100% - 32px)", md: "min(720px, calc(100% - 64px))" }}
-        maxW="720px"
-        bg={BRAND_COLORS.white}
-        borderWidth="1px"
-        borderColor={BRAND_COLORS.neutralBorder}
-        borderRadius={STANDARD_RADIUS.lg}
-        px={STANDARD_SPACING.sm}
-        py={STANDARD_SPACING.sm}
-        boxShadow={STANDARD_SHADOWS.level3}
-        zIndex="20"
-      >
-        <Flex
-          align={{ base: "stretch", sm: "center" }}
-          justify="space-between"
-          direction={{ base: "column", sm: "row" }}
-          gap={STANDARD_SPACING.sm}
+      {/* ── PAYMENT SUMMARY — only visible when ≥1 plan is selected ────── */}
+      {selectedPlans.length > 0 && (
+        <Box
+          position="fixed"
+          bottom={{
+            base: "calc(5rem + env(safe-area-inset-bottom))",
+            md: STANDARD_SPACING.sm,
+          }}
+          left="50%"
+          transform="translateX(-50%)"
+          w={{ base: "calc(100% - 32px)", md: "min(720px, calc(100% - 64px))" }}
+          maxW="720px"
+          bg={BRAND_COLORS.white}
+          borderWidth="1px"
+          borderColor={BRAND_COLORS.neutralBorder}
+          borderRadius={STANDARD_RADIUS.lg}
+          boxShadow={STANDARD_SHADOWS.level3}
+          zIndex="20"
+          overflow="hidden"
+          css={{
+            "@keyframes slideUp": {
+              from: { opacity: 0, transform: "translateX(-50%) translateY(16px)" },
+              to:   { opacity: 1, transform: "translateX(-50%) translateY(0)" },
+            },
+            animation: "slideUp 180ms ease-out",
+          }}
         >
-          <Box minW={0}>
-            <Small color={BRAND_COLORS.primaryGreen}>Payment Summary</Small>
-            <Text
-              color={BRAND_COLORS.neutralText}
-              fontWeight="700"
-              fontSize={{ base: "14px", md: "18px" }}
-              lineHeight="1.35"
+          {/* Expandable breakdown — mobile only, hidden by default */}
+          {summaryExpanded && (
+            <Box
+              display={{ base: "block", md: "none" }}
+              borderBottomWidth="1px"
+              borderColor={BRAND_COLORS.neutralBorder}
+              bg={BRAND_COLORS.subtleBg}
+              px={STANDARD_SPACING.sm}
+              py={STANDARD_SPACING.sm}
             >
-              {selectedPlans.length} plan(s) - P{" "}
-              {formatCurrency(totalSelectedAmount)}
-            </Text>
-          </Box>
+              <VStack align="stretch" gap={STANDARD_SPACING.xs}>
+                {selectedPlans.map((plan, idx) => (
+                  <Flex
+                    key={plan.contractNo}
+                    justify="space-between"
+                    align="center"
+                    gap={STANDARD_SPACING.sm}
+                  >
+                    <HStack gap="8px" minW={0}>
+                      <Text
+                        fontSize="22px"
+                        fontWeight="800"
+                        color={BRAND_COLORS.primaryGreen}
+                        lineHeight="1"
+                        flexShrink={0}
+                      >
+                        {idx + 1}
+                      </Text>
+                      <VStack align="start" gap={0} minW={0}>
+                        <Text
+                          fontSize="13px"
+                          fontWeight="700"
+                          color={BRAND_COLORS.neutralText}
+                          lineClamp={1}
+                        >
+                          {plan.plan}
+                        </Text>
+                        <Text fontSize="11px" color={BRAND_COLORS.grey} lineClamp={1}>
+                          {plan.contractNo} · {plan.mode} × {installmentNumbers[plan.contractNo] ?? 1}
+                        </Text>
+                      </VStack>
+                    </HStack>
+                    <Text
+                      fontSize="13px"
+                      fontWeight="700"
+                      color={BRAND_COLORS.darkGreen}
+                      flexShrink={0}
+                    >
+                      ₱ {formatCurrency(getSelectedPlanTotal(plan))}
+                    </Text>
+                  </Flex>
+                ))}
 
-          <BaseButton
-            w={{ base: "100%", sm: "auto" }}
-            minW={{ base: "100%", sm: "180px" }}
-            h={STANDARD_SIZES.button.lg.height}
-            disabled={selectedPlans.length === 0 || isCheckingOut}
-            onClick={handleCheckout}
+                {/* Total row */}
+                <Box
+                  borderTopWidth="1px"
+                  borderColor={BRAND_COLORS.neutralBorder}
+                  pt={STANDARD_SPACING.xs}
+                >
+                  <Flex justify="space-between" align="center">
+                    <Text fontSize="12px" fontWeight="700" color={BRAND_COLORS.grey} textTransform="uppercase" letterSpacing="0.05em">
+                      Total
+                    </Text>
+                    <Text fontSize="15px" fontWeight="800" color={BRAND_COLORS.darkGreen}>
+                      ₱ {formatCurrency(totalSelectedAmount)}
+                    </Text>
+                  </Flex>
+                </Box>
+              </VStack>
+            </Box>
+          )}
+
+          {/* Compact summary row + CTA — always visible */}
+          <Flex
+            align="center"
+            justify="space-between"
+            gap={STANDARD_SPACING.sm}
+            px={STANDARD_SPACING.sm}
+            py="12px"
           >
-            {isCheckingOut ? "Processing..." : "Payment"}
-          </BaseButton>
-        </Flex>
-      </Box>
+            {/* Left: tap area to expand breakdown on mobile */}
+            <HStack
+              gap="6px"
+              minW={0}
+              flex="1"
+              cursor={{ base: "pointer", md: "default" }}
+              onClick={() => setSummaryExpanded((v) => !v)}
+              display={{ base: "flex", md: "none" }}
+            >
+              <VStack align="start" gap={0} minW={0}>
+                <Text fontSize="11px" fontWeight="600" color={BRAND_COLORS.primaryGreen}>
+                  {selectedPlans.length} plan{selectedPlans.length > 1 ? "s" : ""} selected
+                </Text>
+                <Text fontSize="16px" fontWeight="800" color={BRAND_COLORS.neutralText} lineHeight="1.3">
+                  ₱ {formatCurrency(totalSelectedAmount)}
+                </Text>
+              </VStack>
+              <Box
+                as={LuChevronDown}
+                boxSize="16px"
+                color={BRAND_COLORS.grey}
+                flexShrink={0}
+                transition="transform 200ms ease"
+                transform={summaryExpanded ? "rotate(180deg)" : "rotate(0deg)"}
+              />
+            </HStack>
+
+            {/* Left: desktop (no expand toggle) */}
+            <Box minW={0} display={{ base: "none", md: "block" }}>
+              <Text fontSize="12px" fontWeight="600" color={BRAND_COLORS.primaryGreen}>
+                {selectedPlans.length} plan{selectedPlans.length > 1 ? "s" : ""} selected
+              </Text>
+              <Text fontSize="18px" fontWeight="800" color={BRAND_COLORS.neutralText} lineHeight="1.3">
+                ₱ {formatCurrency(totalSelectedAmount)}
+              </Text>
+            </Box>
+
+            <BaseButton
+              flexShrink={0}
+              minW={{ base: "110px", sm: "150px" }}
+              h={STANDARD_SIZES.button.lg.height}
+              disabled={isCheckingOut}
+              onClick={handleCheckout}
+            >
+              {isCheckingOut ? "Processing..." : "Pay Now"}
+            </BaseButton>
+          </Flex>
+        </Box>
+      )}
     </Container>
   );
 };

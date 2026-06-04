@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <title>St. Peter eStore</title>
+        <title>St. Peter E-Store</title>
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"

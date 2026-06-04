@@ -173,7 +173,7 @@ const AllProductsCopy = ({
   };
 
   const openPlan = (planDesc: string) => {
-    router.push(`/plan-details/${planDesc}`);
+    router.push(`/plan-details/${encodeURIComponent(planDesc)}`);
   };
 
   const getActiveScrollElement = useCallback(

@@ -8,7 +8,6 @@ export const usePlanSection = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-
     const fetchData = async () => {
       try {
         const result = await ProductService.getPlansSection();
@@ -32,10 +31,21 @@ export const useModeName = (planDesc: string, selectedPlan: string) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!planDesc || !selectedPlan) {
+      setData([]);
+      setLoading(false);
+      return;
+    }
 
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
-        const result = await ProductService.getModeAndName(planDesc, selectedPlan);
+        const result = await ProductService.getModeAndName(
+          planDesc,
+          selectedPlan,
+        );
         setData(result);
       } catch (err) {
         setError("Failed to fetch mode and name");
@@ -45,7 +55,7 @@ export const useModeName = (planDesc: string, selectedPlan: string) => {
     };
 
     fetchData();
-  }, []);
+  }, [planDesc, selectedPlan]);
 
   return { data, loading, error };
 };
@@ -55,8 +65,16 @@ export const useProductByName = (planDesc: string) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!planDesc) {
+      setData([]);
+      setLoading(false);
+      return;
+    }
 
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
         const result = await ProductService.getProductByName(planDesc);
         setData(result);
@@ -68,7 +86,7 @@ export const useProductByName = (planDesc: string) => {
     };
 
     fetchData();
-  }, []);
+  }, [planDesc]);
 
   return { data, loading, error };
 };

@@ -1,6 +1,14 @@
 import { NextResponse } from "next/server";
 import dummyPlans from "@/data/plansection_dummy.json";
 
+const normalizePlanDesc = (value: string) => {
+  try {
+    return decodeURIComponent(value).trim().toUpperCase();
+  } catch {
+    return value.trim().toUpperCase();
+  }
+};
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const planDesc = searchParams.get("planDesc")?.trim();
@@ -37,10 +45,13 @@ export async function GET(req: Request) {
   // }
   // ---------------------------------------------------------------------------
 
+  const normalizedPlanDesc = normalizePlanDesc(planDesc);
+  const normalizedMode = mode.trim().toUpperCase();
+
   const results = (dummyPlans as any[]).filter(
     (p) =>
-      p.planDesc.trim().toUpperCase() === planDesc.toUpperCase() &&
-      p.mode.trim().toUpperCase() === mode.toUpperCase(),
+      normalizePlanDesc(p.planDesc) === normalizedPlanDesc &&
+      p.mode.trim().toUpperCase() === normalizedMode,
   );
 
   return NextResponse.json(results);

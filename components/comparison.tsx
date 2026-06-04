@@ -246,7 +246,9 @@ const Comparison = ({ compareList, plans, removeItem }: ComparisonProps) => {
                     mt={4}
                     mb={4}
                     w="100%"
-                    onClick={() => router.push(`/plan-details/${planDesc}`)}
+                    onClick={() =>
+                      router.push(`/plan-details/${encodeURIComponent(planDesc)}`)
+                    }
                   >
                     BUY NOW
                   </PrimaryMdButton>
