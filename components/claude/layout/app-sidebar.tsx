@@ -391,7 +391,7 @@ export default function Sidebar({
                 whiteSpace="nowrap"
                 opacity={isSidebarOpen ? 1 : 0}
                 transition="opacity 0.2s"
-                color="primary"
+                color="gray.800"
               >
                 {appName}
               </Body>

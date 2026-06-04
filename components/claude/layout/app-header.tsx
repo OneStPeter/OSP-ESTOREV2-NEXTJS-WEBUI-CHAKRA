@@ -187,7 +187,7 @@ export default function AppHeader({
                 fontWeight="bold"
                 whiteSpace="nowrap"
                 transition="opacity 0.2s"
-                color="primary"
+                color="gray.800"
               >
                 {appName}
               </Body>
