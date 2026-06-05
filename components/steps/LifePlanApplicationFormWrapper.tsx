@@ -70,24 +70,30 @@ const LifePlanApplicationFormWrapper = ({
   openSectionKey?: number;
   onValidChange?: (valid: boolean) => void;
 }) => {
+  // Start from empty data so the server-rendered HTML matches the first client
+  // render. Saved data is loaded from localStorage after mount (see effect
+  // below); reading it during render would cause a hydration mismatch.
   const [applicationData, setApplicationData] = useState<IApplicationData>(
-    () => {
-      if (typeof window === "undefined") {
-        return createEmptyApplicationData();
-      }
-
-      return (
-        loadApplicationDataFromLocalStorage() ?? createEmptyApplicationData()
-      );
-    },
+    createEmptyApplicationData,
   );
+  const [hydrated, setHydrated] = useState(false);
 
   // Keep the first section open by default; allow multiple to stay expanded.
   const [openSections, setOpenSections] = useState<string[]>(["personal"]);
 
+  // Load any previously saved application data once, on the client only.
   useEffect(() => {
+    const saved = loadApplicationDataFromLocalStorage();
+    if (saved) setApplicationData(saved);
+    setHydrated(true);
+  }, []);
+
+  // Persist changes, but only after the initial load so the empty starting
+  // state doesn't overwrite previously saved data.
+  useEffect(() => {
+    if (!hydrated) return;
     saveApplicationDataToLocalStorage(applicationData);
-  }, [applicationData]);
+  }, [applicationData, hydrated]);
 
   // Report whether the required sub-forms (Personal, Address) are complete so
   // the wizard can gate the "Next" button. Employment is optional and does not
@@ -308,7 +314,9 @@ const LifePlanApplicationFormWrapper = ({
                       borderColor={BRAND_COLORS.neutralBorder}
                       mt={STANDARD_SPACING.xs}
                     >
-                      <Box pt={STANDARD_SPACING.sm}>{section.page}</Box>
+                      <Box pt={STANDARD_SPACING.sm}>
+                        {hydrated ? section.page : null}
+                      </Box>
                     </Accordion.ItemBody>
                   </Accordion.ItemContent>
                 </Box>

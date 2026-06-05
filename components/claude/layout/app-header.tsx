@@ -43,7 +43,7 @@ import { useCartCount } from "@/hooks/useCartCount";
 import { useDemoAuth } from "@/components/ui/demo-auth";
 import { useRouter } from "next/navigation";
 
-import logoIcon from "@/public/icons/icon-192.png";
+import logoIcon from "@/public/icons/icon-stpeter.png";
 
 const DEFAULT_NOTIF_ICON = {
   Icon: LuBell as React.ElementType,
@@ -204,7 +204,7 @@ export default function AppHeader({
                   {appName}
                 </Body>
                 {appSubtitle && (
-                  <Small mt={"-5px"} color={"primary"} fontStyle={"italic"}>
+                  <Small mt={"-5px"} color={"primary"}>
                     {appSubtitle}
                   </Small>
                 )}

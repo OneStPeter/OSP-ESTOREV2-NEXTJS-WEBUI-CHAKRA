@@ -1170,7 +1170,9 @@ const PayMyPlan = () => {
         <Box
           position="fixed"
           bottom={{
-            base: "calc(5rem + env(safe-area-inset-bottom))",
+            // Clear the floating bottom-nav pill (sits at 1.25rem, ~75px tall)
+            // so the summary never overlaps it on mobile.
+            base: "calc(7rem + env(safe-area-inset-bottom))",
             md: STANDARD_SPACING.sm,
           }}
           left="50%"

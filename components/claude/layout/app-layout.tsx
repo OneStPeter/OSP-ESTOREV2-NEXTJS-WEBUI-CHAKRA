@@ -1,6 +1,7 @@
 "use client";
 import { Box, Flex } from "@chakra-ui/react";
 import Sidebar from "./app-sidebar";
+import Navbar from "@/components/ui/navbar";
 import AppHeader from "./app-header";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { NavItem, NotificationDataProps } from "./app-layout.type";
@@ -44,59 +45,64 @@ export function AppLayout({
   }, []);
 
   return (
-    <Flex
-      h="100vh"
-      fontFamily={font ? `'${font}', sans-serif` : undefined}
-      bg={"white"}
-      overflow="hidden"
-      display={display ?? "flex"}
-    >
-      {/* LEFT: Sidebar — mobile/tablet only (desktop uses navbar.tsx floating pill) */}
-      <Box display={{ base: "block", lg: "none" }}>
-        <Sidebar
-          isOpen={isSidebarOpen}
-          onClose={closeSidebar}
-          navItems={navItems}
-          appName={appName}
-          appSubtitle={appSubtitle}
-        />
+    <>
+      {/* Desktop top navbar — floating pill design from components/ui/navbar (lg and up) */}
+      <Box display={{ base: "none", lg: "block" }}>
+        <Navbar />
       </Box>
 
-      {/* RIGHT: Navbar + content */}
-      <Flex flex="1" direction="column" minW={0}>
-        {/* Top Navbar */}
-        <AppHeader
-          onToggleSidebar={toggleSidebar}
-          notifications={notifications}
-          onOpenProfile={() => setProfileOpen(true)}
-          appName={appName}
-          appSubtitle={appSubtitle}
-        />
-
-        {/* Page content */}
-        <Box
-          flex="1"
-          minW={0}
-          bg="bg"
-          p={0}
-          overflow="auto"
-          ref={scrollRef}
-          px={0}
-          pb={"100px"}
-          pt={0}
-        >
-          <StickyNavbarContext refParent={scrollRef}>
-            {children}
-            <AppBottomNavBar
-              onToggleSidebar={toggleSidebar}
-              notifications={notifications}
-              profileOpen={profileOpen}
-              onProfileOpenChange={setProfileOpen}
-              navItems={navItems}
-            />
-          </StickyNavbarContext>
+      <Flex
+        h="100vh"
+        fontFamily={font ? `'${font}', sans-serif` : undefined}
+        bg={"white"}
+        overflow="hidden"
+        display={display ?? "flex"}
+      >
+        {/* LEFT: Sidebar — mobile/tablet only (desktop uses the navbar.tsx floating pill) */}
+        <Box display={{ base: "block", lg: "none" }}>
+          <Sidebar
+            isOpen={isSidebarOpen}
+            onClose={closeSidebar}
+            navItems={navItems}
+            appName={appName}
+            appSubtitle={appSubtitle}
+          />
         </Box>
+
+        {/* RIGHT: Navbar + content */}
+        <Flex flex="1" direction="column" minW={0}>
+          {/* Top Navbar */}
+          <AppHeader
+            onToggleSidebar={toggleSidebar}
+            notifications={notifications}
+            onOpenProfile={() => setProfileOpen(true)}
+            appName={appName}
+            appSubtitle={appSubtitle}
+          />
+
+          {/* Page content */}
+          <Box
+            flex="1"
+            minW={0}
+            bg="bg"
+            p={0}
+            overflow="auto"
+            ref={scrollRef}
+            pb={0}
+          >
+            <StickyNavbarContext refParent={scrollRef}>
+              {children}
+              <AppBottomNavBar
+                onToggleSidebar={toggleSidebar}
+                notifications={notifications}
+                profileOpen={profileOpen}
+                onProfileOpenChange={setProfileOpen}
+                navItems={navItems}
+              />
+            </StickyNavbarContext>
+          </Box>
+        </Flex>
       </Flex>
-    </Flex>
+    </>
   );
 }

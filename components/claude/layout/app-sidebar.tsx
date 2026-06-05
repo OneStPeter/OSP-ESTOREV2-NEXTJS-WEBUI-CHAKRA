@@ -22,7 +22,7 @@ import { usePathname } from "next/navigation";
 import { RiCloseLine } from "react-icons/ri";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { NavItem, SidebarProps } from "./app-layout.type";
-import logoIcon from "@/public/icons/icon-192.png";
+import logoIcon from "@/public/icons/icon-stpeter.png";
 import { Body, Small } from "st-peter-ui";
 
 interface NavItemRowProps {

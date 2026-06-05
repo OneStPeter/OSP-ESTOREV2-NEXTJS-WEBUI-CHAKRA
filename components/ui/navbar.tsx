@@ -114,16 +114,41 @@ const Navbar = () => {
         </IconButton>
 
         <Flex flex="1" minW={0} align="center">
-          <Image
-            src="/icons/icon-stpeter.png"
-            alt="E-Store Logo"
+          <Flex
+            align="center"
+            gap={3}
             cursor="pointer"
             onClick={() => router.push("/")}
-            w={{ base: "30px", sm: "30px" }}
-            h="auto"
-            maxW="100%"
-            objectFit="contain"
-          />
+            minW={0}
+          >
+            <Image
+              src="/icons/icon-stpeter.png"
+              alt="E-Store Logo"
+              w={{ base: "25px", sm: "30px" }}
+              h="auto"
+              objectFit="contain"
+            />
+            <Box minW={0}>
+              <Text
+                color="black"
+                p={0}
+                fontWeight={700}
+                fontSize={{ base: "14px", sm: "16px" }}
+                // noOfLines={1}
+              >
+                One St. Peter
+              </Text>
+              <Text
+                p={0}
+                color="#2AA64F"
+                fontStyle="italic"
+                fontSize={{ base: "11px", sm: "12px" }}
+                // noOfLines={1}
+              >
+                eStore
+              </Text>
+            </Box>
+          </Flex>
         </Flex>
 
         <Flex gap={2} align="center">
