@@ -29,6 +29,7 @@ export function AppLayout({
 }: AppLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [isContentScrolled, setIsContentScrolled] = useState(false);
 
   const toggleSidebar = () => setIsSidebarOpen((v) => !v);
   const closeSidebar = () => setIsSidebarOpen(false);
@@ -42,6 +43,24 @@ export function AppLayout({
     };
     const fontPref = localStorage.getItem("font-size-pref") ?? "md";
     document.documentElement.style.fontSize = fontSizeMap[fontPref] ?? "16px";
+  }, []);
+
+  useEffect(() => {
+    const scrollElement = scrollRef.current;
+    if (!scrollElement) return;
+
+    const updateScrollState = () => {
+      setIsContentScrolled(scrollElement.scrollTop > 4);
+    };
+
+    updateScrollState();
+    scrollElement.addEventListener("scroll", updateScrollState, {
+      passive: true,
+    });
+
+    return () => {
+      scrollElement.removeEventListener("scroll", updateScrollState);
+    };
   }, []);
 
   return (
@@ -78,6 +97,7 @@ export function AppLayout({
             onOpenProfile={() => setProfileOpen(true)}
             appName={appName}
             appSubtitle={appSubtitle}
+            isScrolled={isContentScrolled}
           />
 
           {/* Page content */}

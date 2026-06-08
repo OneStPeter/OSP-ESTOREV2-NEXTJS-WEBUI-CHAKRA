@@ -104,6 +104,7 @@ export default function AppHeader({
   appName = "App",
   appSubtitle,
   breadcrumb,
+  isScrolled = false,
 }: {
   onToggleSidebar: () => void;
   notifications: NotificationDataProps[];
@@ -111,6 +112,7 @@ export default function AppHeader({
   appName?: string;
   appSubtitle?: string;
   breadcrumb?: React.ReactNode;
+  isScrolled?: boolean;
 }) {
   const isMobileBreak = useBreakpointValue({ base: true, lg: false });
   const [isMounted, setIsMounted] = useState(false);
@@ -151,9 +153,13 @@ export default function AppHeader({
         align="center"
         justify="space-between"
         bg="bg"
+        position="relative"
+        zIndex={20}
+        boxShadow={isScrolled ? "0 8px 24px rgba(15, 23, 42, 0.14)" : "none"}
+        transition="box-shadow 180ms ease-out"
         _dark={{ bg: "rgba(20, 24, 36, 0.88)" }}
         // borderBottom="1px solid"
-        borderColor="gray.200"
+        // borderColor="gray.200"
         display={{ base: "flex", lg: "none" }}
       >
         {/* Left side */}
