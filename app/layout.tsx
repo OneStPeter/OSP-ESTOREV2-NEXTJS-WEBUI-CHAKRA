@@ -7,7 +7,7 @@ import Footer from "@/components/ui/footer";
 import BottomNav from "@/components/ui/bottom-nav";
 import ServiceWorkerRegister from "@/components/service-worker";
 import { DemoAuthProvider } from "@/components/ui/demo-auth";
-import { AppLayoutWrapper } from "@/components/claude/layout/app-layout-wrapper";
+import { AppLayoutWrapper } from "@/components/layout/app-layout-wrapper";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",

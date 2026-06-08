@@ -40,7 +40,7 @@ import {
   type CarouselApi,
   ProductCarousel,
 } from "@/components/ui/product-carousel";
-import Page from "@/components/claude/layout/page/Page";
+import Page from "@/components/layout/page/Page";
 
 type AccountPlan = {
   contractNo: string;
@@ -398,16 +398,16 @@ const Account = () => {
           */}
 
           <VStack align="stretch" gap={{ base: 4, md: 8 }}>
-        <Box
-          bg={pageBg}
-          // borderWidth="1px"
-          // borderColor={borderColor}
-          borderRadius="2xl"
-          // p={{ base: 4, md: 6 }}
-        >
-          <Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap={8}>
-            <Box>
-              {/* <Badge
+            <Box
+              bg={pageBg}
+              // borderWidth="1px"
+              // borderColor={borderColor}
+              borderRadius="2xl"
+              // p={{ base: 4, md: 6 }}
+            >
+              <Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap={8}>
+                <Box>
+                  {/* <Badge
                 bg="green.100"
                 color="#177D54"
                 px="3"
@@ -418,12 +418,12 @@ const Account = () => {
                 Quick Glance
               </Badge> */}
 
-              <H4 mt="4">Life Plans</H4>
-              <Body color={labelColor} mt="2" maxW="2xl">
-                A compact view of the life plan products available.
-              </Body>
+                  <H4 mt="4">Life Plans</H4>
+                  <Body color={labelColor} mt="2" maxW="2xl">
+                    A compact view of the life plan products available.
+                  </Body>
 
-              {/* <HStack gap={3} mt={5} flexWrap="wrap">
+                  {/* <HStack gap={3} mt={5} flexWrap="wrap">
                 <PrimaryMdButton onClick={() => router.push("/plans")}>
                   EXPLORE PLANS
                 </PrimaryMdButton>
@@ -433,9 +433,9 @@ const Account = () => {
                   MANAGE PAYMENTS
                 </SecondaryMdButton>
               </HStack> */}
-            </Box>
+                </Box>
 
-            {/* <Box
+                {/* <Box
               bg={softBg}
               borderWidth="1px"
               borderColor={borderColor}
@@ -474,167 +474,176 @@ const Account = () => {
                 </Flex>
               </VStack>
             </Box> */}
-          </Grid>
-        </Box>
+              </Grid>
+            </Box>
 
-        <Box
-          bg={cardBg}
-          borderWidth="1px"
-          borderColor={borderColor}
-          borderRadius="xl"
-          boxShadow="0 14px 28px rgba(15, 23, 42, 0.12)"
-          p={{ base: 3, sm: 4 }}
-          maxW={{ base: "440px", md: "full" }}
-          w="full"
-        >
-          <Text color="#0F8E49" fontSize="sm" fontWeight="700">
-            List of Plan(s)
-          </Text>
-          <Separator borderColor={borderColor} my="2" />
-
-          <Box display={{ base: "block", md: "none" }}>
-            <ProductCarousel
-              setApi={setPlanCarouselApi}
-              opts={{
-                align: "center",
-                loop: false,
-                dragFree: false,
-                containScroll: "trimSnaps",
-              }}
-              className="w-full"
+            <Box
+              bg={cardBg}
+              borderWidth="1px"
+              borderColor={borderColor}
+              borderRadius="xl"
+              boxShadow="0 14px 28px rgba(15, 23, 42, 0.12)"
+              p={{ base: 3, sm: 4 }}
+              maxW={{ base: "440px", md: "full" }}
+              w="full"
             >
-              <CarouselContent>
-                {accountPlans.map((plan) => (
-                  <CarouselItem key={plan.contractNo}>
-                    {renderPlanCard(plan)}
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious
-                display="flex"
-                top="50%"
-                left="0"
-                w="30px"
-                h="30px"
-                minW="30px"
-                bg="#E4F7EC"
-                color="#159B50"
-                borderColor="#BFE9D0"
-                transform="translate(-50%, -50%)"
-                _hover={{ bg: "#D5F2E2" }}
-              />
-              <CarouselNext
-                display="flex"
-                top="50%"
-                right="0"
-                w="30px"
-                h="30px"
-                minW="30px"
-                bg="white"
-                color="#159B50"
-                borderColor="#159B50"
-                transform="translate(50%, -50%)"
-                _hover={{ bg: "green.50" }}
-              />
-            </ProductCarousel>
+              <Text color="#0F8E49" fontSize="sm" fontWeight="700">
+                List of Plan(s)
+              </Text>
+              <Separator borderColor={borderColor} my="2" />
 
-            <HStack justify="center" gap="2" mt="-1">
-              {accountPlans.map((plan, index) => (
-                <Box
-                  key={plan.contractNo}
-                  w={index === currentPlanIndex ? "34px" : "7px"}
-                  h="6px"
-                  borderRadius="full"
-                  bg={index === currentPlanIndex ? "gray.200" : "gray.100"}
-                  transition="all 0.2s ease"
-                />
-              ))}
-            </HStack>
-          </Box>
+              <Box display={{ base: "block", md: "none" }}>
+                <ProductCarousel
+                  setApi={setPlanCarouselApi}
+                  opts={{
+                    align: "center",
+                    loop: false,
+                    dragFree: false,
+                    containScroll: "trimSnaps",
+                  }}
+                  className="w-full"
+                >
+                  <CarouselContent>
+                    {accountPlans.map((plan) => (
+                      <CarouselItem key={plan.contractNo}>
+                        {renderPlanCard(plan)}
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious
+                    display="flex"
+                    top="50%"
+                    left="0"
+                    w="30px"
+                    h="30px"
+                    minW="30px"
+                    bg="#E4F7EC"
+                    color="#159B50"
+                    borderColor="#BFE9D0"
+                    transform="translate(-50%, -50%)"
+                    _hover={{ bg: "#D5F2E2" }}
+                  />
+                  <CarouselNext
+                    display="flex"
+                    top="50%"
+                    right="0"
+                    w="30px"
+                    h="30px"
+                    minW="30px"
+                    bg="white"
+                    color="#159B50"
+                    borderColor="#159B50"
+                    transform="translate(50%, -50%)"
+                    _hover={{ bg: "green.50" }}
+                  />
+                </ProductCarousel>
 
-          <Grid
-            display={{ base: "none", md: "grid" }}
-            templateColumns={{
-              md: "repeat(2, minmax(0, 1fr))",
-              xl: "repeat(3, minmax(0, 1fr))",
-            }}
-            gap={4}
-          >
-            {accountPlans.map((plan) => (
-              <Box key={plan.contractNo} minW={0}>
-                {renderPlanCard(plan)}
+                <HStack justify="center" gap="2" mt="-1">
+                  {accountPlans.map((plan, index) => (
+                    <Box
+                      key={plan.contractNo}
+                      w={index === currentPlanIndex ? "34px" : "7px"}
+                      h="6px"
+                      borderRadius="full"
+                      bg={index === currentPlanIndex ? "gray.200" : "gray.100"}
+                      transition="all 0.2s ease"
+                    />
+                  ))}
+                </HStack>
               </Box>
-            ))}
-          </Grid>
-        </Box>
 
-        <Box
-          bg={pageBg}
-          // borderWidth="1px"
-          // borderColor={borderColor}
-          borderRadius="2xl"
-          // p={{ base: 4, md: 6 }}
-        >
-          <H4>eServices</H4>
-          <Body color={labelColor} mt="2" maxW="2xl">
-            Manage your plan requests in one place, from filing a claim and
-            paying your plan to transferring ownership or changing your mode.
-          </Body>
-
-          <Grid
-            templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(2, 1fr)" }}
-            gap={4}
-            mt={5}
-          >
-            {eServices.map((service) => (
-              <Box
-                key={service.title}
-                bg={cardBg}
-                borderWidth="1px"
-                borderColor={borderColor}
-                borderRadius="2xl"
-                p={{ base: 4, md: 5 }}
-                cursor="pointer"
-                role="button"
-                tabIndex={0}
-                onClick={() => router.push(service.href)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    router.push(service.href);
-                  }
+              <Grid
+                display={{ base: "none", md: "grid" }}
+                templateColumns={{
+                  md: "repeat(2, minmax(0, 1fr))",
+                  xl: "repeat(3, minmax(0, 1fr))",
                 }}
-                transition="transform 0.2s ease, box-shadow 0.2s ease"
-                _hover={{ transform: "translateY(-2px)" }}
+                gap={4}
               >
-                <HStack justify="space-between" align="start">
-                  {/* <Badge bg="green.100" color="#177D54" rounded="full">
-                    E-SERVICE
-                  </Badge> */}
+                {accountPlans.map((plan) => (
+                  <Box key={plan.contractNo} minW={0}>
+                    {renderPlanCard(plan)}
+                  </Box>
+                ))}
+              </Grid>
+            </Box>
+
+            <Box
+              bg={pageBg}
+              // borderWidth="1px"
+              // borderColor={borderColor}
+              borderRadius="2xl"
+              // p={{ base: 4, md: 6 }}
+            >
+              <H4>eServices</H4>
+              <Body color={labelColor} mt="2" maxW="2xl">
+                Manage your plan requests in one place, from filing a claim and
+                paying your plan to transferring ownership or changing your
+                mode.
+              </Body>
+
+              <Grid
+                templateColumns={{
+                  base: "repeat(2, 1fr)",
+                  md: "repeat(2, 1fr)",
+                }}
+                gap={4}
+                mt={5}
+              >
+                {eServices.map((service) => (
                   <Box
-                    boxSize="10"
-                    rounded="full"
-                    bg={softBg}
+                    key={service.title}
+                    bg={cardBg}
                     borderWidth="1px"
                     borderColor={borderColor}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    color="#177D54"
+                    borderRadius="2xl"
+                    p={{ base: 4, md: 5 }}
+                    cursor="pointer"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => router.push(service.href)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        router.push(service.href);
+                      }
+                    }}
+                    transition="transform 0.2s ease, box-shadow 0.2s ease"
+                    _hover={{ transform: "translateY(-2px)" }}
                   >
-                    <Box as={service.icon} />
+                    <HStack justify="space-between" align="start">
+                      {/* <Badge bg="green.100" color="#177D54" rounded="full">
+                    E-SERVICE
+                  </Badge> */}
+                      <Box
+                        boxSize="10"
+                        rounded="full"
+                        bg={softBg}
+                        borderWidth="1px"
+                        borderColor={borderColor}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        color="#177D54"
+                      >
+                        <Box as={service.icon} />
+                      </Box>
+                    </HStack>
+                    <Text
+                      fontWeight="700"
+                      color={valueColor}
+                      mt="3"
+                      fontSize="lg"
+                    >
+                      {service.title}
+                    </Text>
+                    <Text color={labelColor} fontSize="sm" mt="2">
+                      {service.description}
+                    </Text>
                   </Box>
-                </HStack>
-                <Text fontWeight="700" color={valueColor} mt="3" fontSize="lg">
-                  {service.title}
-                </Text>
-                <Text color={labelColor} fontSize="sm" mt="2">
-                  {service.description}
-                </Text>
-              </Box>
-            ))}
-          </Grid>
-        </Box>
+                ))}
+              </Grid>
+            </Box>
           </VStack>
         </Page.Row>
       </Page.MainContent>

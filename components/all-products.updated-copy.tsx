@@ -38,7 +38,7 @@ import {
 } from "@/lib/theme/standard-design-tokens";
 import { PrimaryMdButton, SecondaryMdButton } from "st-peter-ui";
 import NextImage from "next/image";
-import Page from "@/components/claude/layout/page/Page";
+import Page from "@/components/layout/page/Page";
 
 type GroupedPlan = {
   planDesc: string;

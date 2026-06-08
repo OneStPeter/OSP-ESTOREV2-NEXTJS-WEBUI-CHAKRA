@@ -43,7 +43,7 @@ import { useRouter } from "next/navigation";
 import { addToCart } from "@/lib/utils/cart";
 import Container from "./ui/container";
 import { DetailAccordion } from "./ui/accordion";
-import Page from "@/components/claude/layout/page/Page";
+import Page from "@/components/layout/page/Page";
 
 type PaymentOption = {
   mode?: string;

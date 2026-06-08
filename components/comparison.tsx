@@ -11,18 +11,13 @@ import {
   Span,
   Badge,
   Heading,
-  Button,
 } from "@chakra-ui/react/";
 import { useRouter } from "next/navigation";
 import { IPlans } from "@/types/product";
-import { Breadcrumb, PrimaryMdButton } from "st-peter-ui";
+import { PrimaryMdButton } from "st-peter-ui";
 import { MdCheck, MdClose } from "react-icons/md";
 import { parseCasketDescription } from "@/lib/utils/plan";
 import { useMemo } from "react";
-import { BreadcrumbTracker } from "./ui/breadcrumb-tracker";
-import { usePathname } from "next/navigation";
-import { FaArrowLeft } from "react-icons/fa6";
-import Container from "./ui/container";
 
 interface ComparisonProps {
   compareList: string[];
@@ -32,7 +27,6 @@ interface ComparisonProps {
 
 const Comparison = ({ compareList, plans, removeItem }: ComparisonProps) => {
   const router = useRouter();
-  const pathname = usePathname();
   const descByPlanDesc = useMemo(() => {
     const map = new Map<string, ReturnType<typeof parseCasketDescription>>();
     for (const p of plans) {
@@ -69,68 +63,41 @@ const Comparison = ({ compareList, plans, removeItem }: ComparisonProps) => {
     () => new Set(selectedDescs.map((d) => d.urn)).size > 1,
     [selectedDescs],
   );
-  const breadcrumbItems = [
-    { label: "Home", href: "/" },
-    { label: "Plans", href: "/plans" },
-    { label: "Comparison", href: pathname },
-  ];
   return (
-    <Container>
-      <Flex justify="center" align="start" flexDirection="column" gap={4}>
-        {/* <BreadcrumbTracker /> */}
-        <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 0 }}>
-          <Button
-            variant="ghost"
-            size="md"
-            onClick={() => router.back()}
-            px={0}
-          >
-            <FaArrowLeft color="#177D54" />
-            Back
-          </Button>
-        </Box>
-        {/* Desktop breadcrumb */}
-        <Box display={{ base: "none", md: "block" }}>
-          <Breadcrumb items={breadcrumbItems} />
-        </Box>
-        <Heading fontWeight="semibold">Plan Comparison</Heading>
-        <Text>
-          Compare our memorial plans and choose the one that best suits your
-          needs
-        </Text>
-        <Box shadow="sm" borderRadius="md" p={{ base: 0, md: 8 }} w="full">
-          <Grid
-            templateColumns={{
-              base: "repeat(1, 1fr)",
-              md: `repeat(${compareList.length}, 1fr)`,
-            }}
-            gap={8}
-          >
-            {compareList.map((planDesc, index) => {
-              const plan = plans.find((p) => p.planDesc === planDesc);
-              const desc = descByPlanDesc.get(planDesc);
+    <Flex justify="center" align="start" flexDirection="column" gap={4} w="full">
+      <Box shadow="sm" borderRadius="md" p={{ base: 0, md: 8 }} w="full">
+        <Grid
+          templateColumns={{
+            base: "repeat(1, 1fr)",
+            md: `repeat(${compareList.length}, 1fr)`,
+          }}
+          gap={8}
+        >
+          {compareList.map((planDesc, index) => {
+            const plan = plans.find((p) => p.planDesc === planDesc);
+            const desc = descByPlanDesc.get(planDesc);
 
-              return (
-                <GridItem
-                  key={planDesc}
-                  textAlign="center"
-                  px={{ base: 4, md: 8 }}
-                  position="relative"
-                  borderRight={{
-                    base: "none",
-                    md:
-                      index < compareList.length - 1
-                        ? "1px solid #E2E8F0"
-                        : "none",
-                  }}
-                  borderBottom={{
-                    base:
-                      index < compareList.length - 1
-                        ? "1px solid #E2E8F0"
-                        : "none",
-                    md: "none",
-                  }}
-                >
+            return (
+              <GridItem
+                key={planDesc}
+                textAlign="center"
+                px={{ base: 4, md: 8 }}
+                position="relative"
+                borderRight={{
+                  base: "none",
+                  md:
+                    index < compareList.length - 1
+                      ? "1px solid #E2E8F0"
+                      : "none",
+                }}
+                borderBottom={{
+                  base:
+                    index < compareList.length - 1
+                      ? "1px solid #E2E8F0"
+                      : "none",
+                  md: "none",
+                }}
+              >
                   {compareList.length > 2 && (
                     <MdClose
                       onClick={() => removeItem(planDesc)}
@@ -364,7 +331,6 @@ const Comparison = ({ compareList, plans, removeItem }: ComparisonProps) => {
           </Grid>
         </Box>
       </Flex>
-    </Container>
   );
 };
 

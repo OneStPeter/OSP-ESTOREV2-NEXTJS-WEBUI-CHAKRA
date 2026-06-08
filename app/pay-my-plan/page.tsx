@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { Body, Box, H3, H4, PrimaryMdFlexButton } from "st-peter-ui";
+import { Body, PrimaryMdFlexButton } from "st-peter-ui";
 import {
+  Box,
   VStack,
   Grid,
   Button,
@@ -11,12 +12,16 @@ import {
   Field,
 } from "@chakra-ui/react";
 import FloatingLabelInput from "@/components/ui/floating-label-input";
-import { FaArrowLeft } from "react-icons/fa";
-import { Breadcrumb } from "st-peter-ui";
 import { useSearchPlanholder } from "@/hooks/planholder/useSearchPlanholder";
 
 import { useRouter } from "next/navigation";
-import Container from "@/components/ui/container";
+import Page from "@/components/layout/page/Page";
+import { BRAND_COLORS } from "@/lib/theme/brand-colors";
+import {
+  STANDARD_RADIUS,
+  STANDARD_SHADOWS,
+  STANDARD_SPACING,
+} from "@/lib/theme/standard-design-tokens";
 
 const PayMyPlan = () => {
   const router = useRouter();
@@ -101,122 +106,211 @@ const PayMyPlan = () => {
     sessionStorage.setItem("payMyPlanDetails", JSON.stringify(result));
     router.push("/pay-my-plan/details");
   };
-  const breadcrumbItems = [
-    {
-      label: "Home",
-      href: "/",
-    },
-    {
-      label: "Pay My Plan",
-      href: "/pay-my-plan",
-    },
-  ];
-
   return (
-    <Container>
-      <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 4 }}>
-        <Button variant="ghost" size="md" onClick={() => router.back()} px={0}>
-          <FaArrowLeft color="#177D54" />
-          Back
-        </Button>
-      </Box>
-      <Box display={{ base: "none", md: "block" }}>
-        <Breadcrumb items={breadcrumbItems} />
-      </Box>
-      <Box>
-        <H3 display={{ base: "none", md: "block" }}>Pay My Plan</H3>
-        <H4>
-          Search for your St. Peter Life Plan account to view details and manage
-          your plan.
-        </H4>
-      </Box>
+    <Page.Root
+      title="Pay My Plan"
+      description="Search for your St. Peter Life Plan account to view details and manage your plan."
+    >
+      <Page.MainContent>
+        <Page.Row>
+          <Box
+            w="full"
+            // maxW="760px"
+            bg={BRAND_COLORS.white}
+            // borderWidth="1px"
+            // borderColor={BRAND_COLORS.neutralBorder}
+            borderRadius={STANDARD_RADIUS.lg}
+            // boxShadow={STANDARD_SHADOWS.level1}
+            // p={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.lg }}
+          >
+            <VStack gap={6} align="stretch" w="full">
+              <Grid templateColumns="1fr" gap={8}>
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="lpaNumber"
+                    name="lpaNumber"
+                    type="text"
+                    label="LPA Number"
+                    value={formData.lpaNumber}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+              </Grid>
 
-      <VStack gap={6} mt={8} align="stretch" w="full">
-        {/* LPA Number Section */}
-        <Grid templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }} gap={8}>
-          <Field.Root>
-            <FloatingLabelInput
-              id="lpaNumber"
-              name="lpaNumber"
-              type="text"
-              label="LPA Number"
-              value={formData.lpaNumber}
-              onChange={handleChange}
-            />
-          </Field.Root>
-        </Grid>
+              <Grid
+                templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+                gap={8}
+              >
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="firstName"
+                    name="firstName"
+                    type="text"
+                    label="First Name"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="middleName"
+                    name="middleName"
+                    type="text"
+                    label="Middle Name"
+                    value={formData.middleName}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+              </Grid>
 
-        {/* Full Name Section */}
+              <Grid templateColumns="1fr" gap={8}>
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    label="Last Name"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+              </Grid>
 
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
-          <Field.Root>
-            <FloatingLabelInput
-              id="firstName"
-              name="firstName"
-              type="text"
-              label="First Name"
-              value={formData.firstName}
-              onChange={handleChange}
-            />
-          </Field.Root>
-          <Field.Root>
-            <FloatingLabelInput
-              id="middleName"
-              name="middleName"
-              type="text"
-              label="Middle Name"
-              value={formData.middleName}
-              onChange={handleChange}
-            />
-          </Field.Root>
-        </Grid>
+              <Grid templateColumns="1fr" gap={8}>
+                <Field.Root>
+                  <Field.Label>Date of Birth</Field.Label>
+                  <Input
+                    id="dateOfBirth"
+                    name="dateOfBirth"
+                    type="date"
+                    value={formData.dateOfBirth}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+              </Grid>
 
-        <Grid templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }} gap={8}>
-          <Field.Root>
-            <FloatingLabelInput
-              id="lastName"
-              name="lastName"
-              type="text"
-              label="Last Name"
-              value={formData.lastName}
-              onChange={handleChange}
-            />
-          </Field.Root>
-        </Grid>
+              <Separator />
 
-        <Grid templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }} gap={8}>
-          <Field.Root>
-            <Field.Label>Date of Birth</Field.Label>
-            <Input
-              id="dateOfBirth"
-              name="dateOfBirth"
-              type="date"
-              value={formData.dateOfBirth}
-              onChange={handleChange}
-            />
-          </Field.Root>
-        </Grid>
+              {(validationError || error) && (
+                <Body color="red.500">{validationError ?? error}</Body>
+              )}
 
-        <Separator />
+              <PrimaryMdFlexButton onClick={handleSearch} disabled={loading}>
+                SEARCH
+              </PrimaryMdFlexButton>
 
-        {(validationError || error) && (
-          <Body color="red.500">{validationError ?? error}</Body>
-        )}
-
-        {/* Search Button */}
-        <PrimaryMdFlexButton onClick={handleSearch} disabled={loading}>
-          SEARCH
-        </PrimaryMdFlexButton>
-
-        {/* Use My Saved Templates Link */}
-        <Box textAlign="center">
-          <Button w="full" variant="outline">
-            Use My Saved Templates
-          </Button>
-        </Box>
-      </VStack>
-    </Container>
+              <Box textAlign="center">
+                <Button w="full" variant="outline">
+                  Use My Saved Templates
+                </Button>
+              </Box>
+            </VStack>
+          </Box>
+        </Page.Row>
+      </Page.MainContent>
+    </Page.Root>
   );
+
+  // return (
+  //   <Container>
+  //     <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 4 }}>
+  //       <Button variant="ghost" size="md" onClick={() => router.back()} px={0}>
+  //         <FaArrowLeft color="#177D54" />
+  //         Back
+  //       </Button>
+  //     </Box>
+  //     <Box display={{ base: "none", md: "block" }}>
+  //       <Breadcrumb items={breadcrumbItems} />
+  //     </Box>
+  //     <Box>
+  //       <H3 display={{ base: "none", md: "block" }}>Pay My Plan</H3>
+  //       <H4>
+  //         Search for your St. Peter Life Plan account to view details and manage
+  //         your plan.
+  //       </H4>
+  //     </Box>
+  //
+  //     <VStack gap={6} mt={8} align="stretch" w="full">
+  //       <Grid templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }} gap={8}>
+  //         <Field.Root>
+  //           <FloatingLabelInput
+  //             id="lpaNumber"
+  //             name="lpaNumber"
+  //             type="text"
+  //             label="LPA Number"
+  //             value={formData.lpaNumber}
+  //             onChange={handleChange}
+  //           />
+  //         </Field.Root>
+  //       </Grid>
+  //
+  //       <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
+  //         <Field.Root>
+  //           <FloatingLabelInput
+  //             id="firstName"
+  //             name="firstName"
+  //             type="text"
+  //             label="First Name"
+  //             value={formData.firstName}
+  //             onChange={handleChange}
+  //           />
+  //         </Field.Root>
+  //         <Field.Root>
+  //           <FloatingLabelInput
+  //             id="middleName"
+  //             name="middleName"
+  //             type="text"
+  //             label="Middle Name"
+  //             value={formData.middleName}
+  //             onChange={handleChange}
+  //           />
+  //         </Field.Root>
+  //       </Grid>
+  //
+  //       <Grid templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }} gap={8}>
+  //         <Field.Root>
+  //           <FloatingLabelInput
+  //             id="lastName"
+  //             name="lastName"
+  //             type="text"
+  //             label="Last Name"
+  //             value={formData.lastName}
+  //             onChange={handleChange}
+  //           />
+  //         </Field.Root>
+  //       </Grid>
+  //
+  //       <Grid templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }} gap={8}>
+  //         <Field.Root>
+  //           <Field.Label>Date of Birth</Field.Label>
+  //           <Input
+  //             id="dateOfBirth"
+  //             name="dateOfBirth"
+  //             type="date"
+  //             value={formData.dateOfBirth}
+  //             onChange={handleChange}
+  //           />
+  //         </Field.Root>
+  //       </Grid>
+  //
+  //       <Separator />
+  //
+  //       {(validationError || error) && (
+  //         <Body color="red.500">{validationError ?? error}</Body>
+  //       )}
+  //
+  //       <PrimaryMdFlexButton onClick={handleSearch} disabled={loading}>
+  //         SEARCH
+  //       </PrimaryMdFlexButton>
+  //
+  //       <Box textAlign="center">
+  //         <Button w="full" variant="outline">
+  //           Use My Saved Templates
+  //         </Button>
+  //       </Box>
+  //     </VStack>
+  //   </Container>
+  // );
 };
 
 export default PayMyPlan;

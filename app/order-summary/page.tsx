@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { CartItem } from "@/types/cartItem";
 import Container from "@/components/ui/container";
 import { Breadcrumb } from "st-peter-ui";
-import Page from "@/components/claude/layout/page/Page";
+import Page from "@/components/layout/page/Page";
 
 const OrderSummaryPage = () => {
   const router = useRouter();

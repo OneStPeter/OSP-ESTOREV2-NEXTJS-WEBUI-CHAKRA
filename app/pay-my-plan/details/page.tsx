@@ -17,6 +17,13 @@ import { useRouter } from "next/navigation";
 import { CartItem } from "@/types/cartItem";
 import Container from "@/components/ui/container";
 import { FaArrowLeft } from "react-icons/fa6";
+import { BRAND_COLORS } from "@/lib/theme/brand-colors";
+import {
+  STANDARD_RADIUS,
+  STANDARD_SHADOWS,
+  STANDARD_SPACING,
+} from "@/lib/theme/standard-design-tokens";
+
 const DetailsPayMyPlan = () => {
   const breadcrumbItems = [
     { label: "Home", href: "/" },
@@ -199,7 +206,7 @@ const DetailsPayMyPlan = () => {
       <Box display={{ base: "none", md: "block" }}>
         <Breadcrumb items={breadcrumbItems} />
       </Box>
-      <Box>
+      <Box maxW="760px">
         <H3>Pay My Plan</H3>
         <Body>
           Review the details of your plan and proceed to payment. Please ensure
@@ -207,322 +214,371 @@ const DetailsPayMyPlan = () => {
         </Body>
       </Box>
 
-      <VStack gap={6} mt={8} align="stretch" w="full">
-        {/* Plan Details Section */}
-        <VStack mb={0} align="stretch">
-          <Body fontWeight="bold">Plan Details</Body>
-        </VStack>
-
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
-          <Field.Root>
-            <FloatingLabelInput
-              id="contractNo"
-              name="contractNo"
-              type="text"
-              label="Contract No."
-              value={formData.contractNo}
-              onChange={handleChange}
-            />
-          </Field.Root>
-          <Field.Root>
-            <FloatingLabelInput
-              id="planType"
-              name="planType"
-              type="text"
-              label="Plan Type"
-              value={formData.planType}
-              onChange={handleChange}
-            />
-          </Field.Root>
-        </Grid>
-
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
-          <Field.Root>
-            <FloatingLabelInput
-              id="firstName"
-              name="firstName"
-              type="text"
-              label="First Name"
-              value={formData.firstName}
-              onChange={handleChange}
-            />
-          </Field.Root>
-          <Field.Root>
-            <FloatingLabelInput
-              id="middleName"
-              name="middleName"
-              type="text"
-              label="Middle Name"
-              value={formData.middleName}
-              onChange={handleChange}
-            />
-          </Field.Root>
-        </Grid>
-
-        <Grid templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }} gap={8}>
-          <Field.Root>
-            <FloatingLabelInput
-              id="lastName"
-              name="lastName"
-              type="text"
-              label="Last Name"
-              value={formData.lastName}
-              onChange={handleChange}
-            />
-          </Field.Root>
-        </Grid>
-
-        <Separator />
-
-        {/* Address Section */}
-        <VStack mb={0} align="stretch">
-          <Body fontWeight="bold">Address</Body>
-        </VStack>
-
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
-          <Field.Root>
-            <FloatingLabelInput
-              id="lotNo"
-              name="lotNo"
-              type="text"
-              label="Lot #"
-              value={formData.lotNo}
-              onChange={handleChange}
-            />
-          </Field.Root>
-          <Field.Root>
-            <FloatingLabelInput
-              id="street"
-              name="street"
-              type="text"
-              label="Street"
-              value={formData.street}
-              onChange={handleChange}
-            />
-          </Field.Root>
-        </Grid>
-
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
-          <Field.Root>
-            <FloatingLabelInput
-              id="province"
-              name="province"
-              type="text"
-              label="Province"
-              value={formData.province}
-              onChange={handleChange}
-            />
-          </Field.Root>
-          <Field.Root>
-            <FloatingLabelInput
-              id="city"
-              name="city"
-              type="text"
-              label="City"
-              value={formData.city}
-              onChange={handleChange}
-            />
-          </Field.Root>
-        </Grid>
-
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
-          <Field.Root>
-            <FloatingLabelInput
-              id="district"
-              name="district"
-              type="text"
-              label="District"
-              value={formData.district}
-              onChange={handleChange}
-            />
-          </Field.Root>
-          <Field.Root>
-            <FloatingLabelInput
-              id="zipCode"
-              name="zipCode"
-              type="text"
-              label="ZipCode"
-              value={formData.zipCode}
-              onChange={handleChange}
-            />
-          </Field.Root>
-        </Grid>
-
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
-          <Field.Root>
-            <FloatingLabelInput
-              id="barangay"
-              name="barangay"
-              type="text"
-              label="Barangay"
-              value={formData.barangay}
-              onChange={handleChange}
-            />
-          </Field.Root>
-          {/* <Box display="flex" alignItems="flex-end">
-            <Link
-              color="red.500"
-              fontWeight="600"
-              fontSize="sm"
-              cursor="pointer"
-              onClick={handleClearAddress}
-              _hover={{
-                textDecoration: "underline",
-              }}
-            >
-              🗑️ Clear Address
-            </Link>
-          </Box> */}
-        </Grid>
-
-        <Separator />
-
-        {/* Contact Details Section */}
-        <VStack mb={0} align="stretch">
-          <Body fontWeight="bold">Contact Details</Body>
-        </VStack>
-
-        <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
-          <Field.Root>
-            <FloatingLabelInput
-              id="email"
-              name="email"
-              type="email"
-              label="Email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-          </Field.Root>
-          <Field.Root>
-            <FloatingLabelInput
-              id="mobileNo"
-              name="mobileNo"
-              type="text"
-              label="Mobile No."
-              value={formData.mobileNo}
-              onChange={handleChange}
-            />
-          </Field.Root>
-        </Grid>
-
-        <Separator />
-
-        {/* Payment Type Section */}
-        <VStack mb={0} align="stretch">
-          <Body>Select your desired payment type.</Body>
-        </VStack>
-
-        <Field.Root>
-          <RadioGroup.Root
-            value={formData.paymentType}
-            onValueChange={(e: any) =>
-              setFormData((prev) => {
-                const paymentType =
-                  typeof e === "string"
-                    ? e
-                    : typeof e?.value === "string"
-                      ? e.value
-                      : "";
-
-                return {
-                  ...prev,
-                  paymentType,
-                };
-              })
-            }
+      <Grid
+        templateColumns={{ base: "1fr", lg: "minmax(0, 760px) 360px" }}
+        gap={{ base: STANDARD_SPACING.md, lg: STANDARD_SPACING.lg }}
+        alignItems="start"
+        mt={8}
+        w="full"
+      >
+        <VStack gap={STANDARD_SPACING.md} align="stretch" w="full" maxW="760px">
+          <Box
+            bg={BRAND_COLORS.white}
+            borderWidth="1px"
+            borderColor={BRAND_COLORS.neutralBorder}
+            borderRadius={STANDARD_RADIUS.lg}
+            boxShadow={STANDARD_SHADOWS.level1}
+            p={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
           >
-            <VStack gap={6} w="full">
-              {/* Installment Section */}
-              <VStack align="stretch" gap={4} w="full">
-                <Body fontWeight="bold" color="gray.600">
-                  INSTALLMENT
-                </Body>
-                <RadioGroup.Item value="installment">
-                  <RadioGroup.ItemHiddenInput />
-                  <RadioGroup.ItemControl />
-                  <RadioGroup.ItemText>
-                    Installment Number To Be Paid
-                  </RadioGroup.ItemText>
-                </RadioGroup.Item>
+            <VStack gap={STANDARD_SPACING.formFieldGap} align="stretch">
+              <Body fontWeight="bold">Plan Details</Body>
+              <Grid
+                templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+                gap={STANDARD_SPACING.formFieldGap}
+              >
                 <Field.Root>
-                  <Input
-                    type="number"
-                    placeholder="1"
-                    value={formData.installmentNumber}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        installmentNumber: e.target.value,
-                      }))
-                    }
-                    w="120px"
+                  <FloatingLabelInput
+                    id="contractNo"
+                    name="contractNo"
+                    type="text"
+                    label="Contract No."
+                    value={formData.contractNo}
+                    onChange={handleChange}
                   />
                 </Field.Root>
-              </VStack>
-
-              {/* Pay The Balance Section */}
-              <VStack align="stretch" gap={4} w="full">
-                <Body fontWeight="bold" color="gray.600">
-                  PAY THE BALANCE
-                </Body>
-                <RadioGroup.Item value="activePlan">
-                  <RadioGroup.ItemHiddenInput />
-                  <RadioGroup.ItemControl />
-                  <RadioGroup.ItemText>For Active Plan</RadioGroup.ItemText>
-                </RadioGroup.Item>
-                <RadioGroup.Item value="memorialService">
-                  <RadioGroup.ItemHiddenInput />
-                  <RadioGroup.ItemControl />
-                  <RadioGroup.ItemText>
-                    For Memorial Service
-                  </RadioGroup.ItemText>
-                </RadioGroup.Item>
-                <Body fontSize="sm" color="gray.500">
-                  Enter the name of the deceased
-                </Body>
-                <Grid
-                  templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
-                  gap={4}
-                >
-                  <Field.Root>
-                    <FloatingLabelInput
-                      id="deceasedLastName"
-                      name="deceasedLastName"
-                      type="text"
-                      label="Last Name"
-                      value={formData.deceasedLastName}
-                      onChange={handleChange}
-                    />
-                  </Field.Root>
-                  <Field.Root>
-                    <FloatingLabelInput
-                      id="deceasedFirstName"
-                      name="deceasedFirstName"
-                      type="text"
-                      label="First Name"
-                      value={formData.deceasedFirstName}
-                      onChange={handleChange}
-                    />
-                  </Field.Root>
-                </Grid>
-              </VStack>
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="planType"
+                    name="planType"
+                    type="text"
+                    label="Plan Type"
+                    value={formData.planType}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+              </Grid>
+              <Grid
+                templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+                gap={STANDARD_SPACING.formFieldGap}
+              >
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="firstName"
+                    name="firstName"
+                    type="text"
+                    label="First Name"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="middleName"
+                    name="middleName"
+                    type="text"
+                    label="Middle Name"
+                    value={formData.middleName}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+              </Grid>
+              <Grid templateColumns="1fr" gap={STANDARD_SPACING.formFieldGap}>
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    label="Last Name"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+              </Grid>
             </VStack>
-          </RadioGroup.Root>
-        </Field.Root>
+          </Box>
 
-        <Box textAlign="center" mt={8}>
-          <Body fontWeight="bold" fontSize="lg">
-            TOTAL AMOUNT: <span>{formatCurrency(selectedDisplayAmount)}</span>
-          </Body>
+          <Box
+            bg={BRAND_COLORS.white}
+            borderWidth="1px"
+            borderColor={BRAND_COLORS.neutralBorder}
+            borderRadius={STANDARD_RADIUS.lg}
+            boxShadow={STANDARD_SHADOWS.level1}
+            p={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
+          >
+            <VStack gap={STANDARD_SPACING.formFieldGap} align="stretch">
+              <Body fontWeight="bold">Address</Body>
+              <Grid
+                templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+                gap={STANDARD_SPACING.formFieldGap}
+              >
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="lotNo"
+                    name="lotNo"
+                    type="text"
+                    label="Lot #"
+                    value={formData.lotNo}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="street"
+                    name="street"
+                    type="text"
+                    label="Street"
+                    value={formData.street}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+              </Grid>
+              <Grid
+                templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+                gap={STANDARD_SPACING.formFieldGap}
+              >
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="province"
+                    name="province"
+                    type="text"
+                    label="Province"
+                    value={formData.province}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="city"
+                    name="city"
+                    type="text"
+                    label="City"
+                    value={formData.city}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+              </Grid>
+              <Grid
+                templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+                gap={STANDARD_SPACING.formFieldGap}
+              >
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="district"
+                    name="district"
+                    type="text"
+                    label="District"
+                    value={formData.district}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="zipCode"
+                    name="zipCode"
+                    type="text"
+                    label="ZipCode"
+                    value={formData.zipCode}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+              </Grid>
+              <Grid
+                templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+                gap={STANDARD_SPACING.formFieldGap}
+              >
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="barangay"
+                    name="barangay"
+                    type="text"
+                    label="Barangay"
+                    value={formData.barangay}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+              </Grid>
+            </VStack>
+          </Box>
+
+          <Box
+            bg={BRAND_COLORS.white}
+            borderWidth="1px"
+            borderColor={BRAND_COLORS.neutralBorder}
+            borderRadius={STANDARD_RADIUS.lg}
+            boxShadow={STANDARD_SHADOWS.level1}
+            p={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
+          >
+            <VStack gap={STANDARD_SPACING.formFieldGap} align="stretch">
+              <Body fontWeight="bold">Contact Details</Body>
+              <Grid
+                templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+                gap={STANDARD_SPACING.formFieldGap}
+              >
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="email"
+                    name="email"
+                    type="email"
+                    label="Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+                <Field.Root>
+                  <FloatingLabelInput
+                    id="mobileNo"
+                    name="mobileNo"
+                    type="text"
+                    label="Mobile No."
+                    value={formData.mobileNo}
+                    onChange={handleChange}
+                  />
+                </Field.Root>
+              </Grid>
+            </VStack>
+          </Box>
+
+          <Box
+            bg={BRAND_COLORS.white}
+            borderWidth="1px"
+            borderColor={BRAND_COLORS.neutralBorder}
+            borderRadius={STANDARD_RADIUS.lg}
+            boxShadow={STANDARD_SHADOWS.level1}
+            p={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
+          >
+            <VStack gap={STANDARD_SPACING.formFieldGap} align="stretch">
+              <Body>Select your desired payment type.</Body>
+              <Field.Root>
+                <RadioGroup.Root
+                  value={formData.paymentType}
+                  onValueChange={(e: unknown) =>
+                    setFormData((prev) => {
+                      const paymentType =
+                        typeof e === "string"
+                          ? e
+                          : typeof e === "object" &&
+                              e !== null &&
+                              "value" in e &&
+                              typeof e.value === "string"
+                            ? e.value
+                            : "";
+
+                      return {
+                        ...prev,
+                        paymentType,
+                      };
+                    })
+                  }
+                >
+                  <VStack gap={6} w="full" align="stretch">
+                    <VStack align="stretch" gap={4} w="full">
+                      <Body fontWeight="bold" color="gray.600">
+                        INSTALLMENT
+                      </Body>
+                      <RadioGroup.Item value="installment">
+                        <RadioGroup.ItemHiddenInput />
+                        <RadioGroup.ItemControl />
+                        <RadioGroup.ItemText>
+                          Installment Number To Be Paid
+                        </RadioGroup.ItemText>
+                      </RadioGroup.Item>
+                      <Field.Root>
+                        <Input
+                          type="number"
+                          placeholder="1"
+                          value={formData.installmentNumber}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              installmentNumber: e.target.value,
+                            }))
+                          }
+                          w="120px"
+                        />
+                      </Field.Root>
+                    </VStack>
+                    <Separator />
+                    <VStack align="stretch" gap={4} w="full">
+                      <Body fontWeight="bold" color="gray.600">
+                        PAY THE BALANCE
+                      </Body>
+                      <RadioGroup.Item value="activePlan">
+                        <RadioGroup.ItemHiddenInput />
+                        <RadioGroup.ItemControl />
+                        <RadioGroup.ItemText>For Active Plan</RadioGroup.ItemText>
+                      </RadioGroup.Item>
+                      <RadioGroup.Item value="memorialService">
+                        <RadioGroup.ItemHiddenInput />
+                        <RadioGroup.ItemControl />
+                        <RadioGroup.ItemText>
+                          For Memorial Service
+                        </RadioGroup.ItemText>
+                      </RadioGroup.Item>
+                      <Body fontSize="sm" color="gray.500">
+                        Enter the name of the deceased
+                      </Body>
+                      <Grid
+                        templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+                        gap={STANDARD_SPACING.formFieldGap}
+                      >
+                        <Field.Root>
+                          <FloatingLabelInput
+                            id="deceasedLastName"
+                            name="deceasedLastName"
+                            type="text"
+                            label="Last Name"
+                            value={formData.deceasedLastName}
+                            onChange={handleChange}
+                          />
+                        </Field.Root>
+                        <Field.Root>
+                          <FloatingLabelInput
+                            id="deceasedFirstName"
+                            name="deceasedFirstName"
+                            type="text"
+                            label="First Name"
+                            value={formData.deceasedFirstName}
+                            onChange={handleChange}
+                          />
+                        </Field.Root>
+                      </Grid>
+                    </VStack>
+                  </VStack>
+                </RadioGroup.Root>
+              </Field.Root>
+            </VStack>
+          </Box>
+        </VStack>
+
+        <Box
+          w="full"
+          maxW={{ base: "full", lg: "360px" }}
+          bg={BRAND_COLORS.subtleBg}
+          borderWidth="1px"
+          borderColor={BRAND_COLORS.neutralBorder}
+          borderRadius={STANDARD_RADIUS.lg}
+          boxShadow={STANDARD_SHADOWS.level1}
+          p={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
+          position={{ base: "static", lg: "sticky" }}
+          top="112px"
+        >
+          <VStack gap={STANDARD_SPACING.md} align="stretch">
+            <Body fontWeight="bold" color={BRAND_COLORS.darkGreen}>
+              TOTAL AMOUNT
+            </Body>
+            <Body fontWeight="bold" fontSize="lg">
+              <span>{formatCurrency(selectedDisplayAmount)}</span>
+            </Body>
+            <Separator />
+            <PrimaryMdFlexButton
+              onClick={handleProceed}
+              disabled={isCheckingOut}
+            >
+              Proceed
+            </PrimaryMdFlexButton>
+          </VStack>
         </Box>
-
-        <Separator />
-
-        {/* Proceed Button */}
-        <PrimaryMdFlexButton onClick={handleProceed} disabled={isCheckingOut}>
-          Proceed
-        </PrimaryMdFlexButton>
-      </VStack>
+      </Grid>
     </Container>
   );
 };

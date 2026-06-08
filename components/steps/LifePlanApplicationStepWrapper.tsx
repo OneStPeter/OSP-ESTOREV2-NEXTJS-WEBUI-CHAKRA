@@ -13,7 +13,7 @@ import {
   createEmptyApplicationData,
   loadApplicationDataFromLocalStorage,
 } from "@/lib/utils/applicationDataFactory";
-import Page from "@/components/claude/layout/page/Page";
+import Page from "@/components/layout/page/Page";
 
 const LifePlanApplicationStepWrapper = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -99,11 +99,7 @@ const LifePlanApplicationStepWrapper = () => {
     >
       <Page.MainContent>
         <Page.Row>
-          <Box
-            w="full"
-            overflowX="hidden"
-            pb={{ base: "24px", lg: "0" }}
-          >
+          <Box w="full" overflowX="hidden" pb={{ base: "24px", lg: "0" }}>
             <HorizontalStepper
               steps={steps}
               activeStep={currentStep}

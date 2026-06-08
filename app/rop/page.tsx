@@ -35,7 +35,7 @@ const page = () => {
       <Box maxW={"7xl"} mx={"auto"}>
         <Box
           display={{ base: "block", md: "none" }}
-          // px={{ base: 4, md: 0 }}
+          px={{ base: 4, md: 0 }}
           mb={{ base: 4, md: 0 }}
         >
           <Button
@@ -51,7 +51,7 @@ const page = () => {
         <Box display={{ base: "none", md: "block" }}>
           <Breadcrumb items={breadcrumbItems} />
         </Box>{" "}
-        <Box>
+        <Box px={{ base: 4, md: 0 }}>
           <RopPage onClick={() => router.push("/rop-payout")} />
         </Box>
       </Box>

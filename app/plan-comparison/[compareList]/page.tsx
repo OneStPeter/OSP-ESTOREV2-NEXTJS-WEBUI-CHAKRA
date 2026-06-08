@@ -4,6 +4,7 @@ import { IPlans } from "@/types/product";
 import { useEffect, useState, useMemo } from "react";
 import { ProductService } from "@/services/API/ProductService";
 import Comparison from "@/components/comparison";
+import Page from "@/components/layout/page/Page";
 
 const PlanComparisonPage = () => {
   const router = useRouter();
@@ -44,13 +45,20 @@ const PlanComparisonPage = () => {
   }, [compareList]);
 
   return (
-    <>
-      <Comparison
-        compareList={compareList}
-        plans={plans}
-        removeItem={removeItem}
-      />
-    </>
+    <Page.Root
+      title="Plan Comparison"
+      description="Compare our memorial plans and choose the one that best suits your needs."
+    >
+      <Page.MainContent>
+        <Page.Row>
+          <Comparison
+            compareList={compareList}
+            plans={plans}
+            removeItem={removeItem}
+          />
+        </Page.Row>
+      </Page.MainContent>
+    </Page.Root>
   );
 };
 

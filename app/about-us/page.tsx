@@ -93,6 +93,73 @@ const CORE_VALUES = [
   },
 ];
 
+const STORY_MILESTONES = [
+  {
+    year: "1970",
+    range: "1970-2006",
+    color: "#F04455",
+    items: [
+      "First St. Peter Chapel (1970)",
+      "St. Peter Head Office",
+      "St. Peter E-Burol (2006)",
+    ],
+  },
+  {
+    year: "2007",
+    range: "2007-2009",
+    color: "#F27C22",
+    items: [
+      "First St. Peter Advertisement (2007)",
+      "St. Peter E-Libing (2009)",
+      "Heaven Address (2009)",
+      "Photo Contest (2009)",
+      "Pink Casket (2009)",
+    ],
+  },
+  {
+    year: "2010",
+    range: "2010-2015",
+    color: "#13AFA8",
+    items: [
+      "St. Peter Soul Trees - Laoag (Part 1-2010)",
+      "St. Peter Forest - Tagum (2015)",
+      "SAF 44 - Check Distribution (2015)",
+      "St. Peter Soul Trees - Laoag (Part 2- 2015)",
+      "Parang Natutulog Lang Ad (2015)",
+    ],
+  },
+  {
+    year: "2016",
+    range: "2016-2020",
+    color: "#0F5B72",
+    items: [
+      "St. Peter Facebook",
+      "Viral USB Pink Casket (2018)",
+      "Viral GCQ Post (June 2020)",
+      "St. Peter Mobile App",
+      "St. Peter Tribute",
+      "St. Peter's Gate",
+      "St. Peter Chapel virtual tour",
+      "Sandigan TVC",
+      "Vision & eVision",
+      "New St. Peter Head Office (2018)",
+      "eCommerce Website",
+      "Caspi Mascot Launch (2019)",
+      "DeathCare Week Mall Activation",
+    ],
+  },
+];
+
+const RECORDS = [
+  { year: "2011", rank: "TOP 381" },
+  { year: "2012", rank: "TOP 263" },
+  { year: "2013", rank: "TOP 208" },
+  { year: "2014", rank: "TOP 177" },
+  { year: "2015", rank: "TOP 168" },
+  { year: "2017", rank: "TOP 140" },
+  { year: "2018", rank: "TOP 134" },
+];
+
 const SectionHeading = ({
   eyebrow,
   title,
@@ -131,11 +198,70 @@ const SectionHeading = ({
   </VStack>
 );
 
+const MilestoneCard = ({
+  milestone,
+}: {
+  milestone: (typeof STORY_MILESTONES)[number];
+}) => (
+  <Box
+    bg={BRAND_COLORS.white}
+    borderWidth="1px"
+    borderColor={BRAND_COLORS.neutralBorder}
+    borderRadius={STANDARD_RADIUS.lg}
+    boxShadow={STANDARD_SHADOWS.level1}
+    p={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
+    borderTopWidth="4px"
+    borderTopColor={milestone.color}
+    h="full"
+  >
+    <Flex align="center" justify="space-between" gap={STANDARD_SPACING.sm}>
+      <Heading
+        as="h3"
+        fontSize={{ base: "18px", md: "20px" }}
+        fontWeight="800"
+        color={BRAND_COLORS.neutralText}
+      >
+        {milestone.range}
+      </Heading>
+      <Badge
+        bg={`${milestone.color}1A`}
+        color={milestone.color}
+        borderRadius={STANDARD_RADIUS.full}
+        px="10px"
+        py="5px"
+        fontSize="12px"
+        fontWeight="800"
+      >
+        {milestone.year}
+      </Badge>
+    </Flex>
+    <VStack align="start" gap="8px" mt={STANDARD_SPACING.sm}>
+      {milestone.items.map((item) => (
+        <Flex key={item} align="start" gap="10px">
+          <Box
+            boxSize="7px"
+            borderRadius={STANDARD_RADIUS.full}
+            bg={milestone.color}
+            mt="9px"
+            flexShrink={0}
+          />
+          <Text
+            color={BRAND_COLORS.neutralText}
+            fontSize={{ base: "14px", md: "15px" }}
+            lineHeight="1.55"
+          >
+            {item}
+          </Text>
+        </Flex>
+      ))}
+    </VStack>
+  </Box>
+);
+
 const AboutUsPage = () => {
   return (
     <Container>
       <VStack align="stretch" gap={{ base: "40px", md: "64px" }}>
-        {/* Hero */}
         <Box
           position="relative"
           borderRadius={STANDARD_RADIUS.xl}
@@ -200,7 +326,6 @@ const AboutUsPage = () => {
           </Flex>
         </Box>
 
-        {/* Who We Are */}
         <Box as="section">
           <SectionHeading
             eyebrow="Who We Are"
@@ -218,7 +343,6 @@ const AboutUsPage = () => {
               </Text>
             ))}
 
-            {/* Highlighted tagline */}
             <Flex
               align="start"
               gap={STANDARD_SPACING.sm}
@@ -248,7 +372,208 @@ const AboutUsPage = () => {
           </Stack>
         </Box>
 
-        {/* Trusted Banking Partners */}
+        <Box as="section">
+          <SectionHeading
+            eyebrow="Our Story"
+            title="Milestones that shaped One St. Peter"
+          />
+          <Text
+            color={BRAND_COLORS.grey}
+            fontSize={{ base: "15px", md: "16px" }}
+            lineHeight="1.7"
+            maxW="760px"
+            mb={STANDARD_SPACING.lg}
+          >
+            From the first chapel in 1970 to digital services and nationwide
+            campaigns, these moments show how St. Peter continued to make
+            DeathCare more accessible to Filipino families.
+          </Text>
+
+          <Box display={{ base: "none", md: "block" }} position="relative">
+            <Box
+              position="absolute"
+              top="0"
+              bottom="0"
+              left="50%"
+              w="2px"
+              bg={BRAND_COLORS.neutralBorder}
+              transform="translateX(-50%)"
+            />
+            <VStack align="stretch" gap={STANDARD_SPACING.lg}>
+              {STORY_MILESTONES.map((milestone, index) => {
+                const isLeft = index % 2 === 0;
+
+                return (
+                  <SimpleGrid
+                    key={milestone.year}
+                    columns={3}
+                    gap={STANDARD_SPACING.md}
+                    alignItems="center"
+                    templateColumns="minmax(0, 1fr) 96px minmax(0, 1fr)"
+                  >
+                    <Box>
+                      {isLeft && <MilestoneCard milestone={milestone} />}
+                    </Box>
+                    <Flex align="center" justify="center" position="relative">
+                      <Flex
+                        align="center"
+                        justify="center"
+                        boxSize="76px"
+                        borderRadius={STANDARD_RADIUS.full}
+                        bg={BRAND_COLORS.white}
+                        borderWidth="8px"
+                        borderColor={milestone.color}
+                        boxShadow={STANDARD_SHADOWS.level2}
+                        color={milestone.color}
+                        fontSize="20px"
+                        fontWeight="900"
+                        zIndex={1}
+                      >
+                        {milestone.year}
+                      </Flex>
+                    </Flex>
+                    <Box>
+                      {!isLeft && <MilestoneCard milestone={milestone} />}
+                    </Box>
+                  </SimpleGrid>
+                );
+              })}
+            </VStack>
+          </Box>
+
+          <VStack
+            display={{ base: "flex", md: "none" }}
+            align="stretch"
+            gap={4}
+          >
+            {STORY_MILESTONES.map((milestone) => (
+              <Flex
+                key={milestone.year}
+                align="stretch"
+                gap={STANDARD_SPACING.sm}
+              >
+                <VStack gap="8px" flexShrink={0}>
+                  <Flex
+                    align="center"
+                    justify="center"
+                    boxSize="52px"
+                    borderRadius={STANDARD_RADIUS.full}
+                    bg={BRAND_COLORS.white}
+                    borderWidth="5px"
+                    borderColor={milestone.color}
+                    color={milestone.color}
+                    fontSize="14px"
+                    fontWeight="900"
+                    boxShadow={STANDARD_SHADOWS.level1}
+                  >
+                    {milestone.year}
+                  </Flex>
+                  <Box w="2px" flex="1" bg={BRAND_COLORS.neutralBorder} />
+                </VStack>
+                <Box flex="1" minW={0}>
+                  <MilestoneCard milestone={milestone} />
+                </Box>
+              </Flex>
+            ))}
+          </VStack>
+        </Box>
+
+        <Box
+          as="section"
+          bg={BRAND_COLORS.subtleBg}
+          borderWidth="1px"
+          borderColor={BRAND_COLORS.neutralBorder}
+          borderRadius={STANDARD_RADIUS.xl}
+          p={{ base: STANDARD_SPACING.md, md: STANDARD_SPACING.lg }}
+        >
+          <SimpleGrid columns={{ base: 1, lg: 2 }} gap={STANDARD_SPACING.lg}>
+            <Box>
+              <SectionHeading eyebrow="Records" title="Recognized growth" />
+              <Text
+                color={BRAND_COLORS.grey}
+                fontSize={{ base: "15px", md: "16px" }}
+                lineHeight="1.7"
+              >
+                St. Peter continued to rise among the Philippines&apos; top
+                companies, reflecting years of wider reach, stronger service,
+                and growing planholder trust.
+              </Text>
+            </Box>
+            <Box
+              bg={BRAND_COLORS.white}
+              borderRadius={STANDARD_RADIUS.lg}
+              borderWidth="1px"
+              borderColor={BRAND_COLORS.neutralBorder}
+              boxShadow={STANDARD_SHADOWS.level1}
+              p={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
+            >
+              <Flex
+                align="center"
+                justify="space-between"
+                gap={STANDARD_SPACING.sm}
+                mb={STANDARD_SPACING.sm}
+                wrap="wrap"
+              >
+                <Heading
+                  as="h3"
+                  fontSize={{ base: "18px", md: "22px" }}
+                  fontWeight="800"
+                  lineHeight="1.25"
+                  color={BRAND_COLORS.neutralText}
+                >
+                  Top 1000 Companies
+                </Heading>
+                <Badge
+                  bg={BRAND_COLORS.successBg}
+                  color={BRAND_COLORS.darkGreen}
+                  borderRadius={STANDARD_RADIUS.full}
+                  px="10px"
+                  py="5px"
+                  fontWeight="800"
+                >
+                  2011-2018
+                </Badge>
+              </Flex>
+              <SimpleGrid
+                columns={{ base: 1, sm: 2, xl: 3 }}
+                gap={STANDARD_SPACING.sm}
+              >
+                {RECORDS.map((record) => (
+                  <Box
+                    key={record.year}
+                    bg={BRAND_COLORS.subtleBg}
+                    borderWidth="1px"
+                    borderColor={BRAND_COLORS.neutralBorder}
+                    borderRadius={STANDARD_RADIUS.md}
+                    px={STANDARD_SPACING.sm}
+                    py={STANDARD_SPACING.sm}
+                    borderLeftWidth="4px"
+                    borderLeftColor={BRAND_COLORS.primaryGreen}
+                  >
+                    <Text
+                      color={BRAND_COLORS.grey}
+                      fontSize="12px"
+                      fontWeight="800"
+                      lineHeight="1"
+                      mb="8px"
+                    >
+                      {record.year}
+                    </Text>
+                    <Text
+                      color={BRAND_COLORS.neutralText}
+                      fontSize={{ base: "17px", md: "18px" }}
+                      fontWeight="900"
+                      lineHeight="1.2"
+                    >
+                      {record.rank}
+                    </Text>
+                  </Box>
+                ))}
+              </SimpleGrid>
+            </Box>
+          </SimpleGrid>
+        </Box>
+
         <Box as="section">
           <SectionHeading
             eyebrow="Security & Trust"
@@ -294,7 +619,6 @@ const AboutUsPage = () => {
           </Wrap>
         </Box>
 
-        {/* Vision & Mission */}
         <Box as="section">
           <SectionHeading eyebrow="What Drives Us" title="Vision & Mission" />
           <SimpleGrid columns={{ base: 1, md: 2 }} gap={STANDARD_SPACING.md}>
@@ -341,7 +665,6 @@ const AboutUsPage = () => {
           </SimpleGrid>
         </Box>
 
-        {/* Core Values (GETICEP) */}
         <Box as="section">
           <SectionHeading eyebrow="GETICEP" title="Our Core Values" />
           <SimpleGrid

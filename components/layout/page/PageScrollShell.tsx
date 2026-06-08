@@ -27,7 +27,7 @@ const PageScrollShell = ({
     // lg: "36px 44px 56px"
     <Box
       w={{ base: "100vw", lg: "7xl" }}
-      p={{ base: "0px 16px 96px", lg: "80px 0px 56px" }}
+      p={{ base: "0px 16px 96px", lg: "80px 8px 56px" }}
       {...boxProps}
       mx="auto"
       // h="100%"
@@ -51,7 +51,7 @@ const PageScrollShell = ({
           gap={{ base: "10px", lg: "24px" }}
           pb="24px"
         >
-          <Box minW={0} flex="1">
+          <Box minW={0} flex="1" px="8px">
             <BackButton />
             {subtitle && (
               <Box
