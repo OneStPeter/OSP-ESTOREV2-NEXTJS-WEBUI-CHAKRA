@@ -1,6 +1,7 @@
 "use client";
 import {
   HStack,
+  Avatar,
   Menu,
   Portal,
   Image,
@@ -43,6 +44,7 @@ import {
   STANDARD_SHADOWS,
   STANDARD_SPACING,
 } from "@/lib/theme/standard-design-tokens";
+import ProfilePage from "@/app/account/profile/page";
 
 const mobileMenuItems: Array<{
   label: string;
@@ -62,6 +64,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const count = useCartCount();
@@ -601,6 +604,21 @@ const Navbar = () => {
                     </Box>
                   )}
                 </Box>
+
+                {/* Profile avatar — opens full-screen profile dialog */}
+                <Avatar.Root
+                  size="sm"
+                  cursor="pointer"
+                  onClick={() => setProfileOpen(true)}
+                  outline="2px solid"
+                  outlineColor={BRAND_COLORS.primaryGreen}
+                  outlineOffset="2px"
+                  aria-label="Open profile"
+                  _active={{ opacity: 0.8 }}
+                >
+                  <Avatar.Image src="/images/profile.jpg" alt="Profile" />
+                  <Avatar.Fallback name="User" />
+                </Avatar.Root>
               </Flex>
             ) : (
               <LoginButton onClick={() => router.push("/login")} />
@@ -676,6 +694,36 @@ const Navbar = () => {
                 </Text>
               </Dialog.Body>
               <Dialog.Footer />
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
+
+      {/* Profile dialog — full-screen, same as the mobile bottom navbar */}
+      <Dialog.Root
+        open={profileOpen}
+        onOpenChange={(e) => setProfileOpen(e.open)}
+        size="full"
+        motionPreset="slide-in-bottom"
+        scrollBehavior="inside"
+      >
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.CloseTrigger
+                asChild
+                position="fixed"
+                top={3}
+                right={3}
+                zIndex={20}
+              >
+                <CloseButton size="md" bg="whiteAlpha.700" />
+              </Dialog.CloseTrigger>
+
+              <Dialog.Body p={0} overflowY="auto">
+                <ProfilePage />
+              </Dialog.Body>
             </Dialog.Content>
           </Dialog.Positioner>
         </Portal>

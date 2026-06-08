@@ -40,6 +40,7 @@ import {
   type CarouselApi,
   ProductCarousel,
 } from "@/components/ui/product-carousel";
+import Page from "@/components/claude/layout/page/Page";
 
 type AccountPlan = {
   contractNo: string;
@@ -358,19 +359,45 @@ const Account = () => {
     </Box>
   );
 
-  return (
-    <Container>
-      <Box display={{ base: "none", md: "block" }}>
-        <Breadcrumb items={breadcrumbItems} />
-      </Box>
-      <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 0 }}>
-        <Button variant="ghost" size="md" onClick={() => router.back()} px={0}>
-          <FaArrowLeft color="#177D54" />
-          Back
-        </Button>
-      </Box>
+  // ===== ORIGINAL SHELL (replaced by the Page component below) =====
+  // return (
+  //   <Container>
+  //     <Box display={{ base: "none", md: "block" }}>
+  //       <Breadcrumb items={breadcrumbItems} />
+  //     </Box>
+  //     <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 0 }}>
+  //       <Button variant="ghost" size="md" onClick={() => router.back()} px={0}>
+  //         <FaArrowLeft color="#177D54" />
+  //         Back
+  //       </Button>
+  //     </Box>
+  //     <VStack align="stretch" gap={{ base: 4, md: 8 }}>
+  //       ...page body...
+  //     </VStack>
+  //   </Container>
+  // );
 
-      <VStack align="stretch" gap={{ base: 4, md: 8 }}>
+  return (
+    <Page.Root
+      title="Account"
+      description="Review your active plans and manage your eService requests."
+    >
+      <Page.MainContent>
+        <Page.Row>
+          {/* Original desktop Breadcrumb + mobile Back button — the Page
+              component now provides its own BackButton and title header.
+          <Box display={{ base: "none", md: "block" }}>
+            <Breadcrumb items={breadcrumbItems} />
+          </Box>
+          <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 0 }}>
+            <Button variant="ghost" size="md" onClick={() => router.back()} px={0}>
+              <FaArrowLeft color="#177D54" />
+              Back
+            </Button>
+          </Box>
+          */}
+
+          <VStack align="stretch" gap={{ base: 4, md: 8 }}>
         <Box
           bg={pageBg}
           // borderWidth="1px"
@@ -608,8 +635,10 @@ const Account = () => {
             ))}
           </Grid>
         </Box>
-      </VStack>
-    </Container>
+          </VStack>
+        </Page.Row>
+      </Page.MainContent>
+    </Page.Root>
   );
 };
 

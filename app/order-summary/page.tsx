@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { CartItem } from "@/types/cartItem";
 import Container from "@/components/ui/container";
 import { Breadcrumb } from "st-peter-ui";
+import Page from "@/components/claude/layout/page/Page";
 
 const OrderSummaryPage = () => {
   const router = useRouter();
@@ -53,40 +54,55 @@ const OrderSummaryPage = () => {
     );
   }
 
-  return (
-    <Container>
-      <Box
-        p={{ base: 0, md: 8 }}
-        borderRadius="lg"
-        shadow={{ base: "none", md: "md" }}
-        bg="white"
-        maxW={{ base: "full", md: "4xl" }}
-        mx="auto"
-        w={{ base: "full", md: "90%" }}
-      >
-        {cartItems && cartItems.length > 0 ? (
-          <OrderSummary cartItems={cartItems} />
-        ) : (
-          <Box textAlign="center" py={12}>
-            <Box mb={4}>Your cart is empty</Box>
-            <Button onClick={() => router.push("/plans")}>Browse Plans</Button>
-          </Box>
-        )}
+  // ===== ORIGINAL SHELL (replaced by the Page component below) =====
+  // return (
+  //   <Container>
+  //     <Box p={{ base: 0, md: 8 }} ...order summary card...>
+  //       ...page body...
+  //     </Box>
+  //   </Container>
+  // );
 
-        <Box textAlign="end" w="full" mt={8}>
-          <Button
-            mt={8}
-            w="full"
-            onClick={() => {
-              router.push("/get-started");
-            }}
-            disabled={!cartItems || cartItems.length === 0}
+  return (
+    <Page.Root title="Order Summary">
+      <Page.MainContent>
+        <Page.Row>
+          <Box
+            // p={{ base: 0, md: 8 }}
+            // borderRadius="lg"
+            // shadow={{ base: "none", md: "md" }}
+            // bg="white"
+            // maxW={{ base: "full", md: "4xl" }}
+            // mx="auto"
+            w={{ base: "full", md: "full" }}
           >
-            Continue
-          </Button>
-        </Box>
-      </Box>
-    </Container>
+            {cartItems && cartItems.length > 0 ? (
+              <OrderSummary cartItems={cartItems} />
+            ) : (
+              <Box textAlign="center" py={12}>
+                <Box mb={4}>Your cart is empty</Box>
+                <Button onClick={() => router.push("/plans")}>
+                  Browse Plans
+                </Button>
+              </Box>
+            )}
+
+            <Box textAlign="end" w="full" mt={8}>
+              <Button
+                mt={8}
+                w="full"
+                onClick={() => {
+                  router.push("/get-started");
+                }}
+                disabled={!cartItems || cartItems.length === 0}
+              >
+                Continue
+              </Button>
+            </Box>
+          </Box>
+        </Page.Row>
+      </Page.MainContent>
+    </Page.Root>
   );
 };
 

@@ -6,14 +6,10 @@ import {
   H3,
   NextButton,
   PrimaryMdButton,
-  PrimaryMdFlexButton,
 } from "st-peter-ui";
-import { DmsUploadRequirements } from "@splpi/dms-estore-upload";
 import {
   Box,
   VStack,
-  Flex,
-  Span,
   FileUpload,
   Icon,
   useFileUploadContext,
@@ -24,7 +20,7 @@ import {
   Input,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { LuUpload } from "react-icons/lu";
 import Container from "@/components/ui/container";
 import { FaArrowLeft } from "react-icons/fa";
@@ -53,65 +49,126 @@ const ConditionalDropzone = () => {
     </FileUpload.Dropzone>
   );
 };
-const fileToBytes = (file: File): Promise<Uint8Array> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const arrayBuffer = reader.result as ArrayBuffer;
-      const bytes = new Uint8Array(arrayBuffer);
-      resolve(bytes);
-    };
-
-    reader.onerror = (err) => reject(err);
-
-    reader.readAsArrayBuffer(file);
-  });
-};
 
 const GetStarted = () => {
   const router = useRouter();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [referralDialogOpen, setReferralDialogOpen] = useState(false);
-  const uploadRef = useRef<() => Promise<any> | undefined>(null);
+  const [idFiles, setIdFiles] = useState<File[]>([]);
+  const [signatureFiles, setSignatureFiles] = useState<File[]>([]);
 
-  //FUNCTION TO HANDLE FILE UPLOAD AND API CALL
   const handleFile = async (file: File) => {
     if (!file) return;
 
     try {
-      const formData = new FormData();
-      formData.append("ImgFile", file);
+      // const formData = new FormData();
+      // formData.append("ImgFile", file);
 
-      const response = await fetch(
-        "http://192.168.2.10:8010/api/EstoreV2/PostOCRUpload",
-        {
-          method: "POST",
-          body: formData,
+      // const response = await fetch(
+      //   "http://192.168.2.10:8010/api/EstoreV2/PostOCRUpload",
+      //   {
+      //     method: "POST",
+      //     body: formData,
+      //   },
+      // );
+
+      // if (!response.ok) {
+      //   throw new Error("Upload failed");
+      // }
+
+      // const result = await response.json();
+      const result = {
+        success: true,
+        source: "dummy",
+        uploadedAt: new Date().toISOString(),
+        file: {
+          name: file.name,
+          size: file.size,
+          type: file.type || "application/octet-stream",
         },
-      );
+        extractedData: {
+          firstName: "Juan",
+          middleName: "Santos",
+          lastName: "Dela Cruz",
+          birthDate: "1990-01-01",
+          nationality: "Filipino",
+          mobileNumber: "09171234567",
+          emailAddress: "juan.delacruz@example.com",
+          completeAddress: "123 Sample Street, Quezon City",
+        },
+      };
 
-      if (!response.ok) {
-        throw new Error("Upload failed");
-      }
-
-      const result = await response.json();
-      console.log("API Response:", result);
-      // localStorage.removeItem("ocrResult");
+      console.log("Dummy upload response:", result);
       localStorage.setItem("ocrResult", JSON.stringify(result));
     } catch (error) {
       console.error("Upload error:", error);
     }
   };
 
+  const handleDummyRequirementsUpload = async () => {
+    const selectedIdFile = idFiles[0];
+
+    if (selectedIdFile) {
+      await handleFile(selectedIdFile);
+    } else {
+      localStorage.setItem(
+        "ocrResult",
+        JSON.stringify({
+          success: true,
+          source: "dummy",
+          uploadedAt: new Date().toISOString(),
+          file: {
+            name: "sample-government-id.jpg",
+            size: 245760,
+            type: "image/jpeg",
+          },
+          extractedData: {
+            firstName: "Juan",
+            middleName: "Santos",
+            lastName: "Dela Cruz",
+            birthDate: "1990-01-01",
+            nationality: "Filipino",
+            mobileNumber: "09171234567",
+            emailAddress: "juan.delacruz@example.com",
+            completeAddress: "123 Sample Street, Quezon City",
+          },
+        }),
+      );
+    }
+
+    localStorage.setItem(
+      "uploadRequirements",
+      JSON.stringify({
+        success: true,
+        source: "dummy",
+        uploadedBy: "testuser",
+        uploadedAt: new Date().toISOString(),
+        documents: {
+          governmentId: idFiles.map((file) => ({
+            name: file.name,
+            size: file.size,
+            type: file.type || "application/octet-stream",
+          })),
+          specimenSignature: signatureFiles.map((file) => ({
+            name: file.name,
+            size: file.size,
+            type: file.type || "application/octet-stream",
+          })),
+        },
+      }),
+    );
+
+    return { success: true };
+  };
+
   return (
     <Container>
-      <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 4 }}>
+      {/* <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 4 }}>
         <Button variant="ghost" onClick={() => router.back()} px={0}>
           <FaArrowLeft color="#177D54" />
           Back
         </Button>
-      </Box>
+      </Box> */}
 
       <Box
         p={{ base: 0, md: 8 }}
@@ -353,23 +410,52 @@ const GetStarted = () => {
                   {/* </VStack>
                   </Dialog.Body> */}
 
-                  {/* DMS COMPONENT */}
                   <Dialog.Body>
-                    <DmsUploadRequirements
-                      onChange={handleFile}
-                      apiBase="http://192.168.23.126:5129"
-                      uploadedBy={"testuser"}
-                      PrimaryMdButton={PrimaryMdButton}
-                      onBeforeNext={(uploadFn: any) => {
-                        uploadRef.current = uploadFn;
-                      }}
-                      onIdUploadComplete={(result: any) =>
-                        console.log("ID:", result)
-                      }
-                      onSignatureUploadComplete={(result: any) =>
-                        console.log("Sig:", result)
-                      }
-                    />
+                    <VStack gap={6} align="stretch">
+                      <Box>
+                        <Body fontWeight="bold">
+                          Upload Government-issued ID
+                        </Body>
+                        <FileUpload.Root
+                          maxW="full"
+                          alignItems="stretch"
+                          maxFiles={MAX_FILES}
+                          accept={[
+                            "image/png",
+                            "image/jpeg",
+                            "application/pdf",
+                          ]}
+                          onFileChange={(details) =>
+                            setIdFiles(details.acceptedFiles)
+                          }
+                        >
+                          <FileUpload.HiddenInput />
+                          <ConditionalDropzone />
+                          <FileUpload.List clearable />
+                        </FileUpload.Root>
+                      </Box>
+
+                      <Box>
+                        <Body fontWeight="bold">Upload Specimen Signature</Body>
+                        <FileUpload.Root
+                          maxW="full"
+                          alignItems="stretch"
+                          maxFiles={MAX_FILES}
+                          accept={[
+                            "image/png",
+                            "image/jpeg",
+                            "application/pdf",
+                          ]}
+                          onFileChange={(details) =>
+                            setSignatureFiles(details.acceptedFiles)
+                          }
+                        >
+                          <FileUpload.HiddenInput />
+                          <ConditionalDropzone />
+                          <FileUpload.List clearable />
+                        </FileUpload.Root>
+                      </Box>
+                    </VStack>
                   </Dialog.Body>
 
                   {/* <NextButton
@@ -389,10 +475,9 @@ const GetStarted = () => {
                     </Dialog.ActionTrigger>
                     <NextButton
                       onClick={async () => {
-                        if (uploadRef.current) {
-                          const result = await uploadRef.current();
-                          if (!result.success) return;
-                        }
+                        const result = await handleDummyRequirementsUpload();
+                        if (!result.success) return;
+
                         setUploadDialogOpen(false);
                         setReferralDialogOpen(true);
                       }}

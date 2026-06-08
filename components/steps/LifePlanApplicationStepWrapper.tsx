@@ -1,12 +1,9 @@
 "use client";
 
-import { Box, Button } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import HorizontalStepper from "@/components/ui/horizontal-stepper";
 import { createLifePlanSteps } from "@/data/lifePlanSteps";
 import { useState } from "react";
-import { Body, H3 } from "st-peter-ui";
-import { FaArrowLeft } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 import { CartItem } from "@/types/cartItem";
 import {
   TransactionService,
@@ -16,21 +13,15 @@ import {
   createEmptyApplicationData,
   loadApplicationDataFromLocalStorage,
 } from "@/lib/utils/applicationDataFactory";
-import Container from "../ui/container";
-import { BRAND_COLORS } from "@/lib/theme/brand-colors";
-import { STANDARD_SPACING } from "@/lib/theme/standard-design-tokens";
+import Page from "@/components/claude/layout/page/Page";
 
 const LifePlanApplicationStepWrapper = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [allAgreementsAccepted, setAllAgreementsAccepted] = useState(false);
   const [applicationSection, setApplicationSection] = useState<string>();
-  // Bumped on every "Edit" so repeat clicks on the same section re-trigger
-  // the open/scroll effect (steps stay mounted between navigations).
   const [applicationSectionKey, setApplicationSectionKey] = useState(0);
-  // Whether all application sub-forms (Personal, Address, Employment) are filled.
   const [applicationValid, setApplicationValid] = useState(false);
-  const router = useRouter();
 
   const steps = createLifePlanSteps({
     onAllAcceptedChange: setAllAgreementsAccepted,
@@ -38,14 +29,12 @@ const LifePlanApplicationStepWrapper = () => {
     applicationSectionKey,
     onApplicationValidChange: setApplicationValid,
     onEdit: (section) => {
-      // Open the matching section, then return to the application form step.
       setApplicationSection(section ?? "personal");
       setApplicationSectionKey((key) => key + 1);
       setCurrentStep(0);
     },
   });
 
-  // Block advancing past the application step until every field is filled.
   const nextDisabled = currentStep === 0 && !applicationValid;
 
   const handleCheckout = async () => {
@@ -104,42 +93,17 @@ const LifePlanApplicationStepWrapper = () => {
     }
   };
   return (
-    <Container>
-      <Box
-        p={0}
-        w="full"
-        // bg={BRAND_COLORS.white}
-        // borderWidth="1px"
-        // borderColor={BRAND_COLORS.neutralBorder}
-        // borderRadius={STANDARD_RADIUS.lg}
-        // boxShadow={STANDARD_SHADOWS.level1}
-        // p={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
-      >
-        <Box maxW="7xl" mx="auto" w="full">
-          <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 0 }}>
-            <Button
-              variant="ghost"
-              onClick={() => router.back()}
-              px={0}
-              color={BRAND_COLORS.primaryGreen}
-              fontWeight="600"
-            >
-              <FaArrowLeft />
-              Back
-            </Button>
-          </Box>
-
+    <Page.Root
+      title="Life Plan Application"
+      description="Please fill out the form below to apply for a life plan."
+    >
+      <Page.MainContent>
+        <Page.Row>
           <Box
-            mb={{ base: STANDARD_SPACING.md, md: STANDARD_SPACING.lg }}
-            textAlign="start"
+            w="full"
+            overflowX="hidden"
+            pb={{ base: "24px", lg: "0" }}
           >
-            <H3 color={BRAND_COLORS.neutralText}>Life Plan Application</H3>
-            <Body color={BRAND_COLORS.grey} mt={STANDARD_SPACING.xs}>
-              Please fill out the form below to apply for a life plan.
-            </Body>
-          </Box>
-
-          <Box>
             <HorizontalStepper
               steps={steps}
               activeStep={currentStep}
@@ -149,9 +113,9 @@ const LifePlanApplicationStepWrapper = () => {
               nextDisabled={nextDisabled}
             />
           </Box>
-        </Box>
-      </Box>
-    </Container>
+        </Page.Row>
+      </Page.MainContent>
+    </Page.Root>
   );
 };
 

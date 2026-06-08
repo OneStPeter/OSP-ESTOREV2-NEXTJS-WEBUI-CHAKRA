@@ -29,7 +29,7 @@ import {
 
 const INTRO_PARAGRAPHS = [
   "St. Peter Life Plan, Inc. is a Pre-Need DeathCare company that offers affordable traditional memorial life plans to all segments of society. Since 1970, it has maintained its leadership and excelled in its role as DeathCare experts through the continuous development of its wide range of memorial products and services attuned to the changing needs of Philippine society.",
-  "St. Peter Life Plan has several branches in key cities and municipalities nationwide. It is supported by the largest network of memorial chapels in the country — St. Peter Chapels — in the delivery of reliable and world-class DeathCare services.",
+  "St. Peter Life Plan has several branches in key cities and municipalities nationwide. It is supported by the largest network of memorial chapels in the country. ",
 ];
 
 const BANKING_PARTNERS = [
@@ -46,7 +46,7 @@ const VISION_MISSION = [
   {
     icon: FaRegEye,
     label: "Our Vision",
-    text: "The St. Peter Group of Companies are DeathCare Experts — the choice of every Filipino in the delivery of world-class DeathCare services, and a progressive partner in nation building.",
+    text: "The St. Peter Group of Companies are DeathCare Experts the choice of every Filipino in the delivery of world-class DeathCare services, and a progressive partner in nation building.",
   },
   {
     icon: FaBullseye,
@@ -194,7 +194,7 @@ const AboutUsPage = () => {
               maxW="640px"
               lineHeight="1.6"
             >
-              DeathCare Experts since 1970 — bringing affordable, world-class
+              DeathCare Experts since 1970 bringing affordable, world-class
               memorial life plans closer to every Filipino family.
             </Text>
           </Flex>

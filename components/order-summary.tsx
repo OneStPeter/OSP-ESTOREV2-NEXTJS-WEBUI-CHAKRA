@@ -49,15 +49,15 @@ const OrderSummary: React.FC<{ cartItems?: CartItem[] }> = ({ cartItems }) => {
 
   return (
     <Box>
-      <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 0 }}>
+      {/* <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 0 }}>
         <Button variant="ghost" onClick={() => router.back()} px={0}>
           <FaArrowLeft color="#177D54" />
           Back
         </Button>
-      </Box>
-      <Text fontWeight="semibold" fontSize="2xl" mb={4}>
+      </Box> */}
+      {/* <Text fontWeight="semibold" fontSize="2xl" mb={4}>
         Order Summary
-      </Text>
+      </Text> */}
 
       <VStack gap={6} align="stretch">
         {cartItems.map((item, idx) => (

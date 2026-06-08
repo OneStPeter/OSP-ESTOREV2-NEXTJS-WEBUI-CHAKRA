@@ -70,6 +70,7 @@ import type { IconType } from "react-icons";
 import type { NavItem } from "../app-layout.type";
 import { useColorMode } from "@/components/ui/color-mode";
 import { useDemoAuth } from "@/components/ui/demo-auth";
+import ProfilePage from "@/app/account/profile/page";
 
 const toast = {
   error: (_message: string) => undefined,
@@ -441,6 +442,9 @@ export function AppBottomNavBar({
   };
   const [profileView, setProfileView] = useState<ProfileView>("main");
 
+  // Full-screen dialog that hosts the /account/profile page (instead of routing)
+  const [profilePageOpen, setProfilePageOpen] = useState(false);
+
   // User info
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
@@ -669,7 +673,7 @@ export function AppBottomNavBar({
           {isLoggedIn ? (
             <Box
               as="button"
-              onClick={() => router.push("/account/profile")}
+              onClick={() => setProfilePageOpen(true)}
               px="14px"
               py="10px"
               borderRadius="2xl"
@@ -693,7 +697,11 @@ export function AppBottomNavBar({
                   <img
                     src="/images/profile.jpg"
                     alt="Profile"
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
                   />
                 </Box>
                 <Box
@@ -1185,7 +1193,7 @@ export function AppBottomNavBar({
                     </Box>
 
                     {/* Avatar */}
-                    <Box textAlign="center" pt={6} pb={4}>
+                    <Box textAlign="center" pt={2} pb={4}>
                       <Avatar.Root size="xl" mx="auto" mb={1}>
                         <Avatar.Image
                           src="/images/profile.jpg"
@@ -1195,64 +1203,96 @@ export function AppBottomNavBar({
                       </Avatar.Root>
                     </Box>
 
-                    {/* Form */}
-                    <VStack gap={4} px={4} pb={10}>
-                      <Box w="full">
-                        <Text
-                          fontSize="xs"
-                          fontWeight="semibold"
-                          color="gray.500"
-                          mb={1.5}
-                        >
-                          Display Name
-                        </Text>
-                        <Input
-                          value={editName}
-                          onChange={(e) => setEditName(e.target.value)}
-                          placeholder="Your name"
-                          size="md"
-                        />
-                      </Box>
+                    {/* Form — related fields joined into one connected group */}
+                    <VStack gap={4} px={4} pb={10} align="stretch">
+                      <Box
+                        w="full"
+                        borderWidth="1px"
+                        borderColor="gray.200"
+                        borderRadius="lg"
+                        overflow="hidden"
+                      >
+                        {/* Display Name */}
+                        <Box px={3} py={2.5}>
+                          <Text
+                            fontSize="xs"
+                            fontWeight="semibold"
+                            color="gray.500"
+                          >
+                            Display Name
+                          </Text>
+                          <Input
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                            placeholder="Your name"
+                            border="none"
+                            px={0}
+                            h="auto"
+                            py={1}
+                            _focusVisible={{
+                              boxShadow: "none",
+                              outline: "none",
+                            }}
+                          />
+                        </Box>
 
-                      <Box w="full">
-                        <Text
-                          fontSize="xs"
-                          fontWeight="semibold"
-                          color="gray.500"
-                          mb={1.5}
-                        >
-                          Email
-                        </Text>
-                        <Input
-                          value={email}
-                          readOnly
-                          opacity={0.55}
-                          cursor="not-allowed"
-                          size="md"
-                        />
-                      </Box>
+                        <Separator />
 
-                      <Box w="full">
-                        <Text
-                          fontSize="xs"
-                          fontWeight="semibold"
-                          color="gray.500"
-                          mb={1.5}
-                        >
-                          Role
-                        </Text>
-                        <Input
-                          value={ROLE_LABELS[role] ?? role}
-                          readOnly
-                          opacity={0.55}
-                          cursor="not-allowed"
-                          size="md"
-                        />
+                        {/* Email */}
+                        <Box px={3} py={2.5}>
+                          <Text
+                            fontSize="xs"
+                            fontWeight="semibold"
+                            color="gray.500"
+                          >
+                            Email
+                          </Text>
+                          <Input
+                            value={email}
+                            readOnly
+                            opacity={0.6}
+                            cursor="not-allowed"
+                            border="none"
+                            px={0}
+                            h="auto"
+                            py={1}
+                            _focusVisible={{
+                              boxShadow: "none",
+                              outline: "none",
+                            }}
+                          />
+                        </Box>
+
+                        <Separator />
+
+                        {/* Role */}
+                        <Box px={3} py={2.5}>
+                          <Text
+                            fontSize="xs"
+                            fontWeight="semibold"
+                            color="gray.500"
+                          >
+                            Role
+                          </Text>
+                          <Input
+                            value={ROLE_LABELS[role] ?? role}
+                            readOnly
+                            opacity={0.6}
+                            cursor="not-allowed"
+                            border="none"
+                            px={0}
+                            h="auto"
+                            py={1}
+                            _focusVisible={{
+                              boxShadow: "none",
+                              outline: "none",
+                            }}
+                          />
+                        </Box>
                       </Box>
 
                       <Button
                         w="full"
-                        mt={2}
                         bg="var(--chakra-colors-primary)"
                         color="white"
                         _hover={{ opacity: 0.9 }}
@@ -1820,6 +1860,36 @@ export function AppBottomNavBar({
                     </Box>
                   </>
                 )}
+              </Dialog.Body>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
+
+      {/* Full-screen profile page, opened as a dialog instead of a route */}
+      <Dialog.Root
+        open={profilePageOpen}
+        onOpenChange={(e) => setProfilePageOpen(e.open)}
+        size="full"
+        motionPreset="slide-in-bottom"
+        scrollBehavior="inside"
+      >
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.CloseTrigger
+                asChild
+                position="fixed"
+                top={3}
+                right={3}
+                zIndex={20}
+              >
+                <CloseButton size="md" color="white" />
+              </Dialog.CloseTrigger>
+
+              <Dialog.Body p={0} overflowY="auto">
+                <ProfilePage />
               </Dialog.Body>
             </Dialog.Content>
           </Dialog.Positioner>

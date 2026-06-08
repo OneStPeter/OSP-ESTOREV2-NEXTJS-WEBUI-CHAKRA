@@ -315,8 +315,9 @@ export default function AppHeader({
               </Badge>
             )}
           </Box>
-          {/* Notifications */}
-          {isMobile ? (
+          {/* Notifications — only shown when logged in */}
+          {isLoggedIn &&
+            (isMobile ? (
             <Dialog.Root size="full" motionPreset="slide-in-bottom">
               <Dialog.Trigger asChild>
                 <Box position="relative" display="inline-flex">
@@ -747,7 +748,7 @@ export default function AppHeader({
                 </Popover.Positioner>
               </Portal>
             </Popover.Root>
-          )}
+            ))}
 
           {/* Profile avatar (logged in) or Guest login button */}
           {/* {isLoggedIn ? (
