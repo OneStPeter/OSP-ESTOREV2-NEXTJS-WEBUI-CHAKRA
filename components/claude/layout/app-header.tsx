@@ -145,17 +145,19 @@ export default function AppHeader({
       <Flex
         className="no-print"
         h="58px"
-        px={4}
+        pt={4}
+        py={4}
+        px={2}
         align="center"
         justify="space-between"
         bg="bg"
         _dark={{ bg: "rgba(20, 24, 36, 0.88)" }}
-        borderBottom="1px solid"
+        // borderBottom="1px solid"
         borderColor="gray.200"
         display={{ base: "flex", lg: "none" }}
       >
         {/* Left side */}
-        <Flex align="center" gap={2}>
+        <Flex align="center" gap={2} flex="1" minW={0}>
           {/* Sidebar toggle */}
           <Show when={!isMobile}>
             <IconButton
@@ -170,19 +172,21 @@ export default function AppHeader({
             {breadcrumb}
           </Show>
           <Show when={isMobile}>
-            <Flex align="center" gap={2}>
+            <Flex align="center" gap={2} minW={0} flex="1">
               <IconButton
                 color={"gray.fg"}
                 aria-label="Toggle sidebar"
                 size="sm"
                 variant="ghost"
                 onClick={onToggleSidebar}
+                flexShrink={0}
               >
                 <LuMenu />
               </IconButton>
               <Box
                 w="24px"
                 h="24px"
+                flexShrink={0}
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
@@ -194,19 +198,20 @@ export default function AppHeader({
                   style={{ objectFit: "contain" }}
                 />
               </Box>
-              <Box overflow="hidden" transition="width 0.2s">
-                <Body
+              <Box minW={0} flex="1" maxW={{ base: "128px", sm: "156px" }}>
+                <Text
                   fontWeight="bold"
                   whiteSpace="nowrap"
-                  transition="opacity 0.2s"
-                  color="gray.800"
+                  color="gray.900"
+                  fontSize="md"
+                  lineHeight="1.1"
                 >
                   {appName}
-                </Body>
+                </Text>
                 {appSubtitle && (
-                  <Small mt={"-5px"} color={"primary"}>
+                  <Text color="black" fontSize="sm" lineHeight="1.1">
                     {appSubtitle}
-                  </Small>
+                  </Text>
                 )}
               </Box>
             </Flex>
@@ -214,7 +219,7 @@ export default function AppHeader({
         </Flex>
 
         {/* Right side */}
-        <Flex align="center">
+        <Flex align="center" flexShrink={0}>
           {/* <IconButton
           color="gray.fg"
           aria-label="Page tour"
@@ -318,74 +323,308 @@ export default function AppHeader({
           {/* Notifications — only shown when logged in */}
           {isLoggedIn &&
             (isMobile ? (
-            <Dialog.Root size="full" motionPreset="slide-in-bottom">
-              <Dialog.Trigger asChild>
-                <Box position="relative" display="inline-flex">
-                  <IconButton
-                    color="gray.fg"
-                    aria-label="Notifications"
-                    size="xl"
-                    variant="ghost"
-                  >
-                    <LuBell />
-                  </IconButton>
-                  {unreadCount > 0 && (
-                    <Badge
-                      bg="#ef4444"
-                      color="white"
-                      borderRadius="full"
-                      fontSize="xs"
-                      position="absolute"
-                      top="6px"
-                      right="6px"
-                      minW="4"
-                      h="4"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
+              <Dialog.Root size="full" motionPreset="slide-in-bottom">
+                <Dialog.Trigger asChild>
+                  <Box position="relative" display="inline-flex">
+                    <IconButton
+                      color="gray.fg"
+                      aria-label="Notifications"
+                      size="xl"
+                      variant="ghost"
                     >
-                      {unreadCount}
-                    </Badge>
-                  )}
-                </Box>
-              </Dialog.Trigger>
-              <Portal>
-                <Dialog.Backdrop />
-                <Dialog.Positioner>
-                  <Dialog.Content>
-                    {/* Header */}
-                    <Dialog.Header
-                      p={0}
-                      borderBottomWidth="1px"
-                      borderColor="gray.200"
-                    >
-                      <Flex
-                        px={4}
-                        py={3}
-                        align="center"
-                        justify="space-between"
-                        w="full"
+                      <LuBell />
+                    </IconButton>
+                    {unreadCount > 0 && (
+                      <Badge
+                        bg="#ef4444"
+                        color="white"
+                        borderRadius="full"
+                        fontSize="xs"
+                        position="absolute"
+                        top="6px"
+                        right="6px"
+                        minW="4"
+                        h="4"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
                       >
-                        <Flex align="center" gap={2}>
-                          <Dialog.Title fontWeight="bold" fontSize="md">
-                            Notifications
-                          </Dialog.Title>
-                          {unreadCount > 0 && (
-                            <Badge
-                              bg="var(--chakra-colors-primary)"
-                              color="white"
+                        {unreadCount}
+                      </Badge>
+                    )}
+                  </Box>
+                </Dialog.Trigger>
+                <Portal>
+                  <Dialog.Backdrop />
+                  <Dialog.Positioner>
+                    <Dialog.Content>
+                      {/* Header */}
+                      <Dialog.Header
+                        p={0}
+                        borderBottomWidth="1px"
+                        borderColor="gray.200"
+                      >
+                        <Flex
+                          px={4}
+                          py={3}
+                          align="center"
+                          justify="space-between"
+                          w="full"
+                        >
+                          <Flex align="center" gap={2}>
+                            <Dialog.Title fontWeight="bold" fontSize="md">
+                              Notifications
+                            </Dialog.Title>
+                            {unreadCount > 0 && (
+                              <Badge
+                                bg="var(--chakra-colors-primary)"
+                                color="white"
+                                borderRadius="full"
+                                fontSize="xs"
+                                px={1.5}
+                                h="18px"
+                                display="flex"
+                                alignItems="center"
+                              >
+                                {unreadCount}
+                              </Badge>
+                            )}
+                          </Flex>
+                          <Flex align="center" gap={1}>
+                            {unreadCount > 0 && (
+                              <Button
+                                size="xs"
+                                variant="ghost"
+                                fontSize="xs"
+                                fontWeight="medium"
+                                color="var(--chakra-colors-primary)"
+                                onClick={markAllRead}
+                              >
+                                Mark all read
+                              </Button>
+                            )}
+                            <Dialog.CloseTrigger asChild>
+                              <IconButton
+                                size="sm"
+                                variant="ghost"
+                                aria-label="Close"
+                                position="static"
+                              >
+                                <LuX />
+                              </IconButton>
+                            </Dialog.CloseTrigger>
+                          </Flex>
+                        </Flex>
+                      </Dialog.Header>
+                      {/* Body */}
+                      <Dialog.Body p={0} overflowY="auto">
+                        {notifications.length > 0 ? (
+                          <VStack gap={0} align="stretch">
+                            {notifications.map((n, idx) => {
+                              const cfg =
+                                NOTIF_ICON_MAP[n.type] ?? DEFAULT_NOTIF_ICON;
+                              const isUnread = !readIds.has(n.id);
+                              const NotifIcon = cfg.Icon;
+                              return (
+                                <React.Fragment key={n.id}>
+                                  <Box
+                                    px={4}
+                                    py={3}
+                                    bg={isUnread ? "bg.subtle" : "bg"}
+                                    _hover={{
+                                      bg: "bg.muted",
+                                      cursor: "pointer",
+                                    }}
+                                    transition="background 150ms ease-out"
+                                  >
+                                    <Flex gap={3} align="flex-start">
+                                      {/* Unread dot column */}
+                                      <Flex
+                                        w="8px"
+                                        flexShrink={0}
+                                        justify="center"
+                                        pt="15px"
+                                      >
+                                        {isUnread && (
+                                          <Box
+                                            w="6px"
+                                            h="6px"
+                                            borderRadius="full"
+                                            bg="var(--chakra-colors-primary)"
+                                          />
+                                        )}
+                                      </Flex>
+                                      {/* Icon circle */}
+                                      <Box
+                                        w="40px"
+                                        h="40px"
+                                        borderRadius="full"
+                                        flexShrink={0}
+                                        bg={cfg.bg}
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="center"
+                                      >
+                                        <NotifIcon
+                                          size={18}
+                                          color={cfg.color}
+                                        />
+                                      </Box>
+                                      {/* Content */}
+                                      <Box flex={1} minW={0}>
+                                        <Flex
+                                          justify="space-between"
+                                          align="flex-start"
+                                          gap={2}
+                                        >
+                                          <Text
+                                            fontSize="sm"
+                                            fontWeight={
+                                              isUnread ? "semibold" : "medium"
+                                            }
+                                            color="gray.fg"
+                                            lineHeight="1.3"
+                                          >
+                                            {n.title}
+                                          </Text>
+                                          <Text
+                                            fontSize="xs"
+                                            color="gray.400"
+                                            flexShrink={0}
+                                            lineHeight="1.5"
+                                          >
+                                            {n.timestamp}
+                                          </Text>
+                                        </Flex>
+                                        <Text
+                                          fontSize="xs"
+                                          color="gray.500"
+                                          mt={0.5}
+                                          lineHeight="1.5"
+                                        >
+                                          {n.description}
+                                        </Text>
+                                      </Box>
+                                    </Flex>
+                                  </Box>
+                                  {idx !== notifications.length - 1 && (
+                                    <Separator />
+                                  )}
+                                </React.Fragment>
+                              );
+                            })}
+                          </VStack>
+                        ) : (
+                          <Box py={20} textAlign="center">
+                            <Box
+                              w="56px"
+                              h="56px"
                               borderRadius="full"
-                              fontSize="xs"
-                              px={1.5}
-                              h="18px"
+                              bg="gray.100"
                               display="flex"
                               alignItems="center"
+                              justifyContent="center"
+                              mx="auto"
+                              mb={3}
                             >
-                              {unreadCount}
-                            </Badge>
-                          )}
-                        </Flex>
-                        <Flex align="center" gap={1}>
+                              <LuBell size={24} color="#9CA3AF" />
+                            </Box>
+                            <Text
+                              fontSize="sm"
+                              fontWeight="semibold"
+                              color="gray.fg"
+                            >
+                              All caught up!
+                            </Text>
+                            <Text fontSize="xs" color="gray.400" mt={1}>
+                              No new notifications
+                            </Text>
+                          </Box>
+                        )}
+                      </Dialog.Body>
+                    </Dialog.Content>
+                  </Dialog.Positioner>
+                </Portal>
+              </Dialog.Root>
+            ) : (
+              <Popover.Root
+                lazyMount
+                unmountOnExit
+                open={notifOpen}
+                onOpenChange={(e) => setNotifOpen(e.open)}
+              >
+                <Popover.Trigger asChild>
+                  <Box position="relative" display="inline-flex">
+                    <IconButton
+                      color="gray.fg"
+                      aria-label="Notifications"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setNotifOpen(!notifOpen)}
+                    >
+                      <LuBell />
+                    </IconButton>
+                    {unreadCount > 0 && (
+                      <Badge
+                        bg="#ef4444"
+                        color="white"
+                        borderRadius="full"
+                        fontSize="xs"
+                        position="absolute"
+                        top="2px"
+                        right="2px"
+                        minW="4"
+                        h="4"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        {unreadCount}
+                      </Badge>
+                    )}
+                  </Box>
+                </Popover.Trigger>
+                <Portal>
+                  <Popover.Positioner>
+                    <Popover.Content
+                      w="340px"
+                      p={0}
+                      borderRadius="xl"
+                      shadow="xl"
+                      overflow="hidden"
+                    >
+                      <Popover.Arrow />
+                      {/* Header */}
+                      <Box borderBottomWidth="1px" borderColor="gray.200">
+                        <Flex
+                          px={3}
+                          py={2.5}
+                          align="center"
+                          justify="space-between"
+                        >
+                          <Flex align="center" gap={2}>
+                            <Text
+                              fontSize="sm"
+                              fontWeight="bold"
+                              color="gray.fg"
+                            >
+                              Notifications
+                            </Text>
+                            {unreadCount > 0 && (
+                              <Badge
+                                bg="var(--chakra-colors-primary)"
+                                color="white"
+                                borderRadius="full"
+                                fontSize="xs"
+                                px={1.5}
+                                h="18px"
+                                display="flex"
+                                alignItems="center"
+                              >
+                                {unreadCount}
+                              </Badge>
+                            )}
+                          </Flex>
                           {unreadCount > 0 && (
                             <Button
                               size="xs"
@@ -398,356 +637,138 @@ export default function AppHeader({
                               Mark all read
                             </Button>
                           )}
-                          <Dialog.CloseTrigger asChild>
-                            <IconButton
-                              size="sm"
-                              variant="ghost"
-                              aria-label="Close"
-                              position="static"
-                            >
-                              <LuX />
-                            </IconButton>
-                          </Dialog.CloseTrigger>
                         </Flex>
-                      </Flex>
-                    </Dialog.Header>
-                    {/* Body */}
-                    <Dialog.Body p={0} overflowY="auto">
-                      {notifications.length > 0 ? (
-                        <VStack gap={0} align="stretch">
-                          {notifications.map((n, idx) => {
-                            const cfg =
-                              NOTIF_ICON_MAP[n.type] ?? DEFAULT_NOTIF_ICON;
-                            const isUnread = !readIds.has(n.id);
-                            const NotifIcon = cfg.Icon;
-                            return (
-                              <React.Fragment key={n.id}>
-                                <Box
-                                  px={4}
-                                  py={3}
-                                  bg={isUnread ? "bg.subtle" : "bg"}
-                                  _hover={{ bg: "bg.muted", cursor: "pointer" }}
-                                  transition="background 150ms ease-out"
-                                >
-                                  <Flex gap={3} align="flex-start">
-                                    {/* Unread dot column */}
-                                    <Flex
-                                      w="8px"
-                                      flexShrink={0}
-                                      justify="center"
-                                      pt="15px"
-                                    >
-                                      {isUnread && (
-                                        <Box
-                                          w="6px"
-                                          h="6px"
-                                          borderRadius="full"
-                                          bg="var(--chakra-colors-primary)"
-                                        />
-                                      )}
-                                    </Flex>
-                                    {/* Icon circle */}
-                                    <Box
-                                      w="40px"
-                                      h="40px"
-                                      borderRadius="full"
-                                      flexShrink={0}
-                                      bg={cfg.bg}
-                                      display="flex"
-                                      alignItems="center"
-                                      justifyContent="center"
-                                    >
-                                      <NotifIcon size={18} color={cfg.color} />
-                                    </Box>
-                                    {/* Content */}
-                                    <Box flex={1} minW={0}>
+                      </Box>
+                      {/* List */}
+                      <Box maxH="380px" overflowY="auto">
+                        {notifications.length > 0 ? (
+                          <VStack gap={0} align="stretch">
+                            {notifications.map((n, idx) => {
+                              const cfg =
+                                NOTIF_ICON_MAP[n.type] ?? DEFAULT_NOTIF_ICON;
+                              const isUnread = !readIds.has(n.id);
+                              const NotifIcon = cfg.Icon;
+                              return (
+                                <React.Fragment key={n.id}>
+                                  <Box
+                                    px={3}
+                                    py={2.5}
+                                    bg={isUnread ? "bg.subtle" : "bg"}
+                                    _hover={{
+                                      bg: "bg.muted",
+                                      cursor: "pointer",
+                                    }}
+                                    transition="background 150ms ease-out"
+                                  >
+                                    <Flex gap={3} align="flex-start">
+                                      {/* Unread dot column */}
                                       <Flex
-                                        justify="space-between"
-                                        align="flex-start"
-                                        gap={2}
+                                        w="8px"
+                                        flexShrink={0}
+                                        justify="center"
+                                        pt="13px"
                                       >
-                                        <Text
-                                          fontSize="sm"
-                                          fontWeight={
-                                            isUnread ? "semibold" : "medium"
-                                          }
-                                          color="gray.fg"
-                                          lineHeight="1.3"
+                                        {isUnread && (
+                                          <Box
+                                            w="6px"
+                                            h="6px"
+                                            borderRadius="full"
+                                            bg="var(--chakra-colors-primary)"
+                                          />
+                                        )}
+                                      </Flex>
+                                      {/* Icon circle */}
+                                      <Box
+                                        w="36px"
+                                        h="36px"
+                                        borderRadius="full"
+                                        flexShrink={0}
+                                        bg={cfg.bg}
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="center"
+                                      >
+                                        <NotifIcon
+                                          size={16}
+                                          color={cfg.color}
+                                        />
+                                      </Box>
+                                      {/* Content */}
+                                      <Box flex={1} minW={0}>
+                                        <Flex
+                                          justify="space-between"
+                                          align="flex-start"
+                                          gap={2}
                                         >
-                                          {n.title}
-                                        </Text>
+                                          <Text
+                                            fontSize="sm"
+                                            fontWeight={
+                                              isUnread ? "semibold" : "medium"
+                                            }
+                                            color="gray.fg"
+                                            lineHeight="1.3"
+                                          >
+                                            {n.title}
+                                          </Text>
+                                          <Text
+                                            fontSize="xs"
+                                            color="gray.400"
+                                            flexShrink={0}
+                                            lineHeight="1.5"
+                                          >
+                                            {n.timestamp}
+                                          </Text>
+                                        </Flex>
                                         <Text
                                           fontSize="xs"
-                                          color="gray.400"
-                                          flexShrink={0}
+                                          color="gray.500"
+                                          mt={0.5}
                                           lineHeight="1.5"
                                         >
-                                          {n.timestamp}
+                                          {n.description}
                                         </Text>
-                                      </Flex>
-                                      <Text
-                                        fontSize="xs"
-                                        color="gray.500"
-                                        mt={0.5}
-                                        lineHeight="1.5"
-                                      >
-                                        {n.description}
-                                      </Text>
-                                    </Box>
-                                  </Flex>
-                                </Box>
-                                {idx !== notifications.length - 1 && (
-                                  <Separator />
-                                )}
-                              </React.Fragment>
-                            );
-                          })}
-                        </VStack>
-                      ) : (
-                        <Box py={20} textAlign="center">
-                          <Box
-                            w="56px"
-                            h="56px"
-                            borderRadius="full"
-                            bg="gray.100"
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            mx="auto"
-                            mb={3}
-                          >
-                            <LuBell size={24} color="#9CA3AF" />
-                          </Box>
-                          <Text
-                            fontSize="sm"
-                            fontWeight="semibold"
-                            color="gray.fg"
-                          >
-                            All caught up!
-                          </Text>
-                          <Text fontSize="xs" color="gray.400" mt={1}>
-                            No new notifications
-                          </Text>
-                        </Box>
-                      )}
-                    </Dialog.Body>
-                  </Dialog.Content>
-                </Dialog.Positioner>
-              </Portal>
-            </Dialog.Root>
-          ) : (
-            <Popover.Root
-              lazyMount
-              unmountOnExit
-              open={notifOpen}
-              onOpenChange={(e) => setNotifOpen(e.open)}
-            >
-              <Popover.Trigger asChild>
-                <Box position="relative" display="inline-flex">
-                  <IconButton
-                    color="gray.fg"
-                    aria-label="Notifications"
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setNotifOpen(!notifOpen)}
-                  >
-                    <LuBell />
-                  </IconButton>
-                  {unreadCount > 0 && (
-                    <Badge
-                      bg="#ef4444"
-                      color="white"
-                      borderRadius="full"
-                      fontSize="xs"
-                      position="absolute"
-                      top="2px"
-                      right="2px"
-                      minW="4"
-                      h="4"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      {unreadCount}
-                    </Badge>
-                  )}
-                </Box>
-              </Popover.Trigger>
-              <Portal>
-                <Popover.Positioner>
-                  <Popover.Content
-                    w="340px"
-                    p={0}
-                    borderRadius="xl"
-                    shadow="xl"
-                    overflow="hidden"
-                  >
-                    <Popover.Arrow />
-                    {/* Header */}
-                    <Box borderBottomWidth="1px" borderColor="gray.200">
-                      <Flex
-                        px={3}
-                        py={2.5}
-                        align="center"
-                        justify="space-between"
-                      >
-                        <Flex align="center" gap={2}>
-                          <Text fontSize="sm" fontWeight="bold" color="gray.fg">
-                            Notifications
-                          </Text>
-                          {unreadCount > 0 && (
-                            <Badge
-                              bg="var(--chakra-colors-primary)"
-                              color="white"
+                                      </Box>
+                                    </Flex>
+                                  </Box>
+                                  {idx !== notifications.length - 1 && (
+                                    <Separator />
+                                  )}
+                                </React.Fragment>
+                              );
+                            })}
+                          </VStack>
+                        ) : (
+                          <Box py={12} textAlign="center">
+                            <Box
+                              w="48px"
+                              h="48px"
                               borderRadius="full"
-                              fontSize="xs"
-                              px={1.5}
-                              h="18px"
+                              bg="gray.100"
                               display="flex"
                               alignItems="center"
+                              justifyContent="center"
+                              mx="auto"
+                              mb={3}
                             >
-                              {unreadCount}
-                            </Badge>
-                          )}
-                        </Flex>
-                        {unreadCount > 0 && (
-                          <Button
-                            size="xs"
-                            variant="ghost"
-                            fontSize="xs"
-                            fontWeight="medium"
-                            color="var(--chakra-colors-primary)"
-                            onClick={markAllRead}
-                          >
-                            Mark all read
-                          </Button>
-                        )}
-                      </Flex>
-                    </Box>
-                    {/* List */}
-                    <Box maxH="380px" overflowY="auto">
-                      {notifications.length > 0 ? (
-                        <VStack gap={0} align="stretch">
-                          {notifications.map((n, idx) => {
-                            const cfg =
-                              NOTIF_ICON_MAP[n.type] ?? DEFAULT_NOTIF_ICON;
-                            const isUnread = !readIds.has(n.id);
-                            const NotifIcon = cfg.Icon;
-                            return (
-                              <React.Fragment key={n.id}>
-                                <Box
-                                  px={3}
-                                  py={2.5}
-                                  bg={isUnread ? "bg.subtle" : "bg"}
-                                  _hover={{ bg: "bg.muted", cursor: "pointer" }}
-                                  transition="background 150ms ease-out"
-                                >
-                                  <Flex gap={3} align="flex-start">
-                                    {/* Unread dot column */}
-                                    <Flex
-                                      w="8px"
-                                      flexShrink={0}
-                                      justify="center"
-                                      pt="13px"
-                                    >
-                                      {isUnread && (
-                                        <Box
-                                          w="6px"
-                                          h="6px"
-                                          borderRadius="full"
-                                          bg="var(--chakra-colors-primary)"
-                                        />
-                                      )}
-                                    </Flex>
-                                    {/* Icon circle */}
-                                    <Box
-                                      w="36px"
-                                      h="36px"
-                                      borderRadius="full"
-                                      flexShrink={0}
-                                      bg={cfg.bg}
-                                      display="flex"
-                                      alignItems="center"
-                                      justifyContent="center"
-                                    >
-                                      <NotifIcon size={16} color={cfg.color} />
-                                    </Box>
-                                    {/* Content */}
-                                    <Box flex={1} minW={0}>
-                                      <Flex
-                                        justify="space-between"
-                                        align="flex-start"
-                                        gap={2}
-                                      >
-                                        <Text
-                                          fontSize="sm"
-                                          fontWeight={
-                                            isUnread ? "semibold" : "medium"
-                                          }
-                                          color="gray.fg"
-                                          lineHeight="1.3"
-                                        >
-                                          {n.title}
-                                        </Text>
-                                        <Text
-                                          fontSize="xs"
-                                          color="gray.400"
-                                          flexShrink={0}
-                                          lineHeight="1.5"
-                                        >
-                                          {n.timestamp}
-                                        </Text>
-                                      </Flex>
-                                      <Text
-                                        fontSize="xs"
-                                        color="gray.500"
-                                        mt={0.5}
-                                        lineHeight="1.5"
-                                      >
-                                        {n.description}
-                                      </Text>
-                                    </Box>
-                                  </Flex>
-                                </Box>
-                                {idx !== notifications.length - 1 && (
-                                  <Separator />
-                                )}
-                              </React.Fragment>
-                            );
-                          })}
-                        </VStack>
-                      ) : (
-                        <Box py={12} textAlign="center">
-                          <Box
-                            w="48px"
-                            h="48px"
-                            borderRadius="full"
-                            bg="gray.100"
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            mx="auto"
-                            mb={3}
-                          >
-                            <LuBell size={20} color="#9CA3AF" />
+                              <LuBell size={20} color="#9CA3AF" />
+                            </Box>
+                            <Text
+                              fontSize="sm"
+                              fontWeight="semibold"
+                              color="gray.fg"
+                            >
+                              All caught up!
+                            </Text>
+                            <Text fontSize="xs" color="gray.400" mt={1}>
+                              No new notifications
+                            </Text>
                           </Box>
-                          <Text
-                            fontSize="sm"
-                            fontWeight="semibold"
-                            color="gray.fg"
-                          >
-                            All caught up!
-                          </Text>
-                          <Text fontSize="xs" color="gray.400" mt={1}>
-                            No new notifications
-                          </Text>
-                        </Box>
-                      )}
-                    </Box>
-                  </Popover.Content>
-                </Popover.Positioner>
-              </Portal>
-            </Popover.Root>
+                        )}
+                      </Box>
+                    </Popover.Content>
+                  </Popover.Positioner>
+                </Portal>
+              </Popover.Root>
             ))}
 
           {/* Profile avatar (logged in) or Guest login button */}
