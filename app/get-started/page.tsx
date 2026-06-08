@@ -230,14 +230,14 @@ const GetStarted = () => {
             </VStack>
           </Box>
         </VStack>
-        <Box mt={6} textAlign="end">
+        <Box textAlign="end">
           {/* <ContinueButton
             onClick={() => {
               router.push("/lifeplan-application");
             }}
           /> */}
           <Dialog.Root
-            size="lg"
+            size={{ mdDown: "full", md: "md" }}
             open={uploadDialogOpen}
             onOpenChange={(details) => setUploadDialogOpen(details.open)}
           >
@@ -469,7 +469,7 @@ const GetStarted = () => {
                     }}
                   /> */}
 
-                  <Dialog.Footer>
+                  <Dialog.Footer display="flex" justifyContent="space-between">
                     <Dialog.ActionTrigger asChild>
                       <CancelButton />
                     </Dialog.ActionTrigger>
@@ -510,7 +510,7 @@ const GetStarted = () => {
                       <Input placeholder="Enter agent name" />
                     </VStack>
                   </Dialog.Body>
-                  <Dialog.Footer>
+                  <Dialog.Footer display="flex" justifyContent="space-between">
                     <Button
                       variant="outline"
                       onClick={() => {
