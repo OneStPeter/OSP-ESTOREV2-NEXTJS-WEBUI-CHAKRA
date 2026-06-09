@@ -44,7 +44,7 @@ export function AppLayoutWrapper({
   return (
     <AppLayout
       navItems={navItems}
-      appName="eStore"
+      appName="St. Peter eStore"
       appSubtitle="Online Store"
       font="Open Sans"
       display={display}
