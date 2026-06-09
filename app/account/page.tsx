@@ -379,7 +379,7 @@ const Account = () => {
   // );
 
   return (
-    <Page.Root title="" description="">
+    <Page.Root title="" description="" hideBackButton={true}>
       <Page.MainContent>
         <Page.Row>
           {/* Original desktop Breadcrumb + mobile Back button — the Page

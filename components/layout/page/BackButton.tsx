@@ -7,7 +7,7 @@ import { LuChevronLeft } from "react-icons/lu";
 
 const LAYOUT_EASE = "cubic-bezier(0.4, 0, 0.2, 1)";
 
-const BackButton = () => {
+const BackButton = ({ enabled = true }: { enabled?: boolean }) => {
   const pathname = usePathname() ?? "/";
   const router = useRouter();
   const segments = pathname.split("/").filter(Boolean);
@@ -20,6 +20,10 @@ const BackButton = () => {
         : "/" + segments.slice(0, -1).join("/");
 
   const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    setVisible(enabled);
+  }, [enabled]);
 
   //   useEffect(() => {
   //     if (!parentPath) { setVisible(false); return; }
@@ -53,7 +57,7 @@ const BackButton = () => {
         gap="3px"
         onClick={() => router.back()}
         cursor="pointer"
-        color="green"
+        color="gray.400"
         fontFamily="var(--font-dm-sans), system-ui, sans-serif"
         fontSize="12px"
         fontWeight="500"

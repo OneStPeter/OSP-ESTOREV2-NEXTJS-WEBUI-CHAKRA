@@ -10,6 +10,7 @@ type PageScrollShellProps = {
   title: React.ReactNode;
   subtitle?: React.ReactNode;
   description?: React.ReactNode;
+  hideBackButton: boolean;
   toolContent?: React.ReactNode;
   mainContent?: React.ReactNode;
   boxProps?: BoxProps;
@@ -19,40 +20,38 @@ const PageScrollShell = ({
   title,
   subtitle,
   description,
+  hideBackButton,
   toolContent,
   mainContent,
   boxProps,
 }: PageScrollShellProps) => {
   return (
-    // lg: "36px 44px 56px"
     <Box
-      w={{ base: "100vw", lg: "7xl" }}
-      p={{ base: "0px 16px 96px", lg: "80px 8px 56px" }}
+      w="100%"
+      p={{ base: "0px 16px 96px", lg: "36px 44px 56px" }}
       {...boxProps}
-      mx="auto"
-      // h="100%"
-      // maxH="100%"
-      // overflowY="auto"
-      // overflowX="hidden"
-      // scrollBehavior="smooth"
+      h="100%"
+      maxH="100%"
+      overflowY="auto"
+      overflowX="hidden"
+      scrollBehavior="smooth"
       bg={"#fff"}
     >
       <Box
         mx={{ base: "-16px", lg: "-44px" }}
-        px={{ base: "16px", lg: "0" }}
+        px={{ base: "16px", lg: "66px" }}
         pt={{ base: "20px", lg: "36px" }}
         mb="0px"
       >
         <Flex
-          direction="column"
-          align="start"
-          w={{ base: "calc(100vw - 32px)", lg: "7xl" }}
-          mx="auto"
-          gap={{ base: "10px", lg: "24px" }}
-          pb="24px"
+          direction="row"
+          align="center"
+          justify="space-between"
+          gap={{ base: "10px", lg: "32px" }}
+          pb={!hideBackButton ? "0" : ""}
         >
-          <Box minW={0} flex="1" px="8px">
-            <BackButton />
+          <Box minW={0} flex="1">
+            <BackButton enabled={!hideBackButton} />
             {subtitle && (
               <Box
                 fontFamily="var(--font-dm-sans), system-ui, sans-serif"

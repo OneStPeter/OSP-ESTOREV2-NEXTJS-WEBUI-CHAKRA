@@ -37,6 +37,7 @@ type RootProps = Omit<BoxProps, RootStyleProps> & {
   title: React.ReactNode;
   subtitle?: React.ReactNode;
   description?: React.ReactNode;
+  hideBackButton?: boolean;
   children: React.ReactNode;
 };
 
@@ -45,6 +46,7 @@ const Root = ({
   title,
   subtitle,
   description,
+  hideBackButton = false,
   ...rest
 }: RootProps) => {
   let toolContent: React.ReactNode = null;
@@ -61,6 +63,7 @@ const Root = ({
       title={title}
       subtitle={subtitle}
       description={description}
+      hideBackButton={hideBackButton}
       toolContent={toolContent}
       mainContent={mainContent}
       boxProps={rest}
