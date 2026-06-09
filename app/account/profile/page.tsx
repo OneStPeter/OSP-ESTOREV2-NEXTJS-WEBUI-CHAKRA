@@ -837,7 +837,7 @@ const Profile = () => {
         <Separator />
 
         {/* Referral Code */}
-        <Box
+        {/* <Box
           as="button"
           w="full"
           textAlign="left"
@@ -871,12 +871,12 @@ const Profile = () => {
             </Flex>
             <LuChevronRight size={16} color="var(--chakra-colors-gray-400)" />
           </Flex>
-        </Box>
+        </Box> */}
 
         <Separator />
 
         {/* My Agent/s */}
-        <Box
+        {/* <Box
           as="button"
           w="full"
           textAlign="left"
@@ -910,10 +910,10 @@ const Profile = () => {
             </Flex>
             <LuChevronRight size={16} color="var(--chakra-colors-gray-400)" />
           </Flex>
-        </Box>
+        </Box> */}
       </Box>
 
-      <Separator mx={4} />
+      {/* <Separator mx={4} /> */}
 
       {/* Preferences section */}
       <Box px={4} pt={4} pb={2}>
@@ -999,7 +999,7 @@ const Profile = () => {
         <Separator />
 
         {/* Text size */}
-        <Flex justify="space-between" align="center" py={3}>
+        {/* <Flex justify="space-between" align="center" py={3}>
           <Flex align="center" gap={3}>
             <Box
               w="38px"
@@ -1057,7 +1057,7 @@ const Profile = () => {
               );
             })}
           </HStack>
-        </Flex>
+        </Flex> */}
 
         <Separator />
 
