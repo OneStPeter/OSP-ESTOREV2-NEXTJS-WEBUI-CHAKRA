@@ -3,9 +3,18 @@
 import LifePlanApplication1 from "./LifePlanApplication1";
 import LifePlanApplication2 from "./LifePlanApplication2";
 import LifePlanApplication3 from "./LifePlanApplication3";
-import { Accordion, Box, Flex, Icon, Text, VStack } from "@chakra-ui/react";
+import {
+  Accordion,
+  Box,
+  Button,
+  Flex,
+  Icon,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import { FaCheckCircle, FaRegAddressCard, FaRegUser } from "react-icons/fa";
 import { IoIosInformationCircleOutline } from "react-icons/io";
+import { LuPlus, LuMinus } from "react-icons/lu";
 import { useCallback, useEffect, useState } from "react";
 import {
   IAddress,
@@ -24,6 +33,7 @@ import {
   STANDARD_SHADOWS,
   STANDARD_SPACING,
 } from "@/lib/theme/standard-design-tokens";
+import { InfoCard } from "../ui/info-card";
 
 const hasText = (value: unknown) => String(value ?? "").trim() !== "";
 
@@ -186,15 +196,62 @@ const LifePlanApplicationFormWrapper = ({
     },
   ];
 
+  const expandAll = () => setOpenSections(sections.map((s) => s.value));
+  const collapseAll = () => setOpenSections([]);
+
   return (
     <Box w="full">
+      {/* Expand / Collapse controls */}
+      <Flex
+        direction={{ base: "column", sm: "row" }}
+        align={{ base: "stretch", sm: "center" }}
+        justify="space-between"
+        gap={STANDARD_SPACING.sm}
+        mb={STANDARD_SPACING.sm}
+      >
+        <InfoCard>
+          Sections below are expandable and collapsible. Use them to focus only
+          on relevant details.
+        </InfoCard>
+        <Flex gap={STANDARD_SPACING.xs} flexShrink={0}>
+          <Button
+            size="sm"
+            variant="outline"
+            borderColor={BRAND_COLORS.primaryGreen}
+            color={BRAND_COLORS.primaryGreen}
+            borderRadius={STANDARD_RADIUS.sm}
+            fontWeight="500"
+            fontSize="12px"
+            onClick={expandAll}
+            _hover={{ bg: BRAND_COLORS.successBg }}
+          >
+            <Icon as={LuPlus} boxSize="14px" />
+            EXPAND ALL
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            borderColor={BRAND_COLORS.primaryGreen}
+            color={BRAND_COLORS.primaryGreen}
+            borderRadius={STANDARD_RADIUS.sm}
+            fontWeight="500"
+            fontSize="12px"
+            onClick={collapseAll}
+            _hover={{ bg: BRAND_COLORS.successBg }}
+          >
+            <Icon as={LuMinus} boxSize="14px" />
+            COLLAPSE ALL
+          </Button>
+        </Flex>
+      </Flex>
+
       <Accordion.Root
         value={openSections}
         onValueChange={(details) => setOpenSections(details.value)}
         multiple
         collapsible
       >
-        <VStack align="stretch" gap={STANDARD_SPACING.sm}>
+        <VStack align="stretch" gap={0}>
           {sections.map((section, index) => {
             const isOpen = openSections.includes(section.value);
 
@@ -214,7 +271,7 @@ const LifePlanApplicationFormWrapper = ({
                       ? BRAND_COLORS.primaryGreen
                       : BRAND_COLORS.neutralBorder
                   }
-                  borderRadius={STANDARD_RADIUS.lg}
+                  borderRadius={STANDARD_RADIUS.sm}
                   boxShadow={
                     isOpen ? STANDARD_SHADOWS.level2 : STANDARD_SHADOWS.level1
                   }

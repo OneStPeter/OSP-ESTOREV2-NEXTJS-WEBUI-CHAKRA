@@ -464,7 +464,7 @@ const Profile = () => {
     [role],
   );
 
-  const displayName = "Tejima, Yhuan Shin F.";
+  const displayName = "Joyce Basilio-Ramos";
 
   const resetPasswordForm = () => {
     setCurrentPw("");

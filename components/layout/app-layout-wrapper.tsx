@@ -20,34 +20,18 @@ import {
 } from "react-icons/ri";
 
 const navItems: NavItem[] = [
-  { label: "Home", href: "/", icon: RiHome4Line, activeIcon: RiHome4Fill },
-  { label: "Products", href: "/plans", icon: IoLeafOutline, activeIcon: IoLeaf },
+  { label: "Home", href: "/", icon: RiHome4Line },
+  { label: "Products", href: "/plans", icon: IoLeafOutline },
   {
     label: "Pay My Plan",
     href: "/pay-my-plan",
     icon: FiCreditCard,
-    activeIcon: RiBankCardFill,
     displayName: "Pay",
   },
-  {
-    label: "Claim",
-    href: "/claims",
-    icon: FiFileText,
-    activeIcon: RiFileTextFill,
-  },
-  {
-    label: "News & Blog",
-    href: "/news-updates",
-    icon: IoNewspaperOutline,
-    activeIcon: IoNewspaper,
-  },
-  { label: "About Us", href: "/about-us", icon: FiInfo, activeIcon: RiInformationFill },
-  {
-    label: "Contact Us",
-    href: "/contact-us",
-    icon: MdOutlineMessage,
-    activeIcon: MdMessage,
-  },
+  { label: "Claim", href: "/claims", icon: FiFileText },
+  { label: "News & Blog", href: "/news-updates", icon: IoNewspaperOutline },
+  { label: "About Us", href: "/about-us", icon: FiInfo },
+  { label: "Contact Us", href: "/contact-us", icon: MdOutlineMessage },
 ];
 
 export function AppLayoutWrapper({
@@ -60,7 +44,7 @@ export function AppLayoutWrapper({
   return (
     <AppLayout
       navItems={navItems}
-      appName="One St. Peter"
+      appName="eStore"
       appSubtitle="Online Store"
       font="Open Sans"
       display={display}

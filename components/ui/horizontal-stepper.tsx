@@ -52,9 +52,10 @@ const HorizontalStepper = ({
         onStepChange={(index) => {
           handleStepChange(index.step);
         }}
+        maxW="7xl"
+        mt={8}
         count={steps.length}
         colorPalette="green"
-        m="auto "
       >
         {/* Mobile: compact progress ring with current + next step */}
         <Flex

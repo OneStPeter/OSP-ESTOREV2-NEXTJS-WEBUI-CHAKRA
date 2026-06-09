@@ -214,7 +214,12 @@ export default function AppHeader({
                   {appName}
                 </Text>
                 {appSubtitle && (
-                  <Text color="black" fontSize="sm" lineHeight="1.1">
+                  <Text
+                    color="black"
+                    fontSize="sm"
+                    lineHeight="1.1"
+                    textWrap="nowrap"
+                  >
                     {appSubtitle}
                   </Text>
                 )}

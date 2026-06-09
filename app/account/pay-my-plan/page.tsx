@@ -23,10 +23,10 @@ import {
   STANDARD_SPACING,
 } from "@/lib/theme/standard-design-tokens";
 import { BaseButton, Body, H3, H4, PrimaryMdButton, Small } from "st-peter-ui";
-import { HiInformationCircle } from "react-icons/hi";
 import { useEffect, useMemo, useState } from "react";
 import { PayMongoService } from "@/services/API/PayMongoService";
 import Container from "@/components/ui/container";
+import { InfoCard } from "@/components/ui/info-card";
 import { useDemoAuth } from "@/components/ui/demo-auth";
 import { FaArrowLeft, FaChevronDown, FaEllipsisH } from "react-icons/fa";
 import {
@@ -426,26 +426,10 @@ const PayMyPlan = () => {
           </VStack>
         </Box>
 
-        <HStack
-          gap={STANDARD_SPACING.sm}
-          align="center"
-          p={STANDARD_SPACING.sm}
-          borderRadius={STANDARD_RADIUS.md}
-          bg={BRAND_COLORS.successBg}
-          borderWidth="1px"
-          borderColor={BRAND_COLORS.softGreen}
-          color={BRAND_COLORS.darkGreen}
-        >
-          <Box
-            as={HiInformationCircle}
-            boxSize={STANDARD_SIZES.iconButton.sm}
-            flexShrink={0}
-          />
-          <Body color={BRAND_COLORS.darkGreen}>
-            Tap Add / Checkbox to include a plan. You can remove it anytime
-            before checkout.
-          </Body>
-        </HStack>
+        <InfoCard>
+          Tap Add / Checkbox to include a plan. You can remove it anytime before
+          checkout.
+        </InfoCard>
 
         <Box
           display={{ base: "none", lg: "block" }}

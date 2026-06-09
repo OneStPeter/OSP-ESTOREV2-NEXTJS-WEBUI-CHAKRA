@@ -96,6 +96,9 @@ const LifePlanApplicationStepWrapper = () => {
     <Page.Root
       title="Life Plan Application"
       description="Please fill out the form below to apply for a life plan."
+      w={{ base: "full", lg: "7xl" }}
+      mt={{ base: 0, lg: 8 }}
+      mx="auto"
     >
       <Page.MainContent>
         <Page.Row>

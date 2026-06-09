@@ -172,7 +172,6 @@ const Account = () => {
   }, []);
 
   useEffect(() => {
-    // Demo behavior: treat visiting /account as an authenticated entry.
     login();
   }, [login]);
 
@@ -394,7 +393,7 @@ const Account = () => {
             </Button>
           </Box>
           */}
-          <UserWelcomeBanner firstName="Yhuan Shin" branch="Zamboanga West" />
+          <UserWelcomeBanner firstName="Joyce" branch="Zamboanga West" />
           <VStack align="stretch" gap={{ base: 4, md: 8 }}>
             <Box
               bg={pageBg}
