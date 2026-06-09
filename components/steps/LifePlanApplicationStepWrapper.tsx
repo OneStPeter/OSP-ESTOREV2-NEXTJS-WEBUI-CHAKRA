@@ -96,13 +96,13 @@ const LifePlanApplicationStepWrapper = () => {
     <Page.Root
       title="Life Plan Application"
       description="Please fill out the form below to apply for a life plan."
-      w={{ base: "full", lg: "7xl" }}
-      mt={{ base: 0, lg: 8 }}
-      mx="auto"
+      // w={{ base: "full", lg: "7xl" }}
+      // mt={{ base: 0, lg: 8 }}
+      // mx="auto"
     >
       <Page.MainContent>
         <Page.Row>
-          <Box w="full" overflowX="hidden" pb={{ base: "24px", lg: "0" }}>
+          <Box w="full" overflowX="hidden">
             <HorizontalStepper
               steps={steps}
               activeStep={currentStep}

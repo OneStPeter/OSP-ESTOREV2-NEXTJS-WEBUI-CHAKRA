@@ -24,6 +24,7 @@ import { useState } from "react";
 import { LuUpload } from "react-icons/lu";
 import Container from "@/components/ui/container";
 import { FaArrowLeft } from "react-icons/fa";
+import InfoCard from "@/components/ui/info-card";
 const MAX_FILES = 3;
 
 const ConditionalDropzone = () => {
@@ -412,6 +413,10 @@ const GetStarted = () => {
 
                   <Dialog.Body>
                     <VStack gap={6} align="stretch">
+                      <InfoCard>
+                        To continue, please upload a valid ID. The system will
+                        use it to populate your information automatically.
+                      </InfoCard>
                       <Box>
                         <Body fontWeight="bold">
                           Upload Government-issued ID

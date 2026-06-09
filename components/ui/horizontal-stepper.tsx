@@ -61,7 +61,7 @@ const HorizontalStepper = ({
         <Flex
           display={{ base: "flex", md: "none" }}
           align="center"
-          gap={3}
+          gap={4}
           borderWidth="1px"
           borderColor="gray.200"
           borderRadius="lg"
@@ -97,7 +97,7 @@ const HorizontalStepper = ({
 
         {/* Desktop: full horizontal step list */}
         <Steps.List
-          gap={{ base: 2, md: 4 }}
+          gap={{ base: 4, md: 4 }}
           display={{ base: "none", md: "flex" }}
         >
           {steps.map((step, index) => (
@@ -110,7 +110,7 @@ const HorizontalStepper = ({
         </Steps.List>
 
         {steps.map((step, index) => (
-          <Steps.Content key={index} index={index} mt={8}>
+          <Steps.Content key={index} index={index} mt={{ base: 4, md: 8 }}>
             {step.component ?? step.description}
           </Steps.Content>
         ))}
