@@ -41,6 +41,7 @@ import {
   ProductCarousel,
 } from "@/components/ui/product-carousel";
 import Page from "@/components/layout/page/Page";
+import UserWelcomeBanner from "@/components/ui/user-welcome-banner";
 
 type AccountPlan = {
   contractNo: string;
@@ -378,10 +379,7 @@ const Account = () => {
   // );
 
   return (
-    <Page.Root
-      title="Account"
-      description="Review your active plans and manage your eService requests."
-    >
+    <Page.Root title="" description="">
       <Page.MainContent>
         <Page.Row>
           {/* Original desktop Breadcrumb + mobile Back button — the Page
@@ -396,7 +394,7 @@ const Account = () => {
             </Button>
           </Box>
           */}
-
+          <UserWelcomeBanner firstName="Yhuan Shin" branch="Zamboanga West" />
           <VStack align="stretch" gap={{ base: 4, md: 8 }}>
             <Box
               bg={pageBg}
@@ -417,11 +415,11 @@ const Account = () => {
               >
                 Quick Glance
               </Badge> */}
-
+                  {/* 
                   <H4 mt="4">Life Plans</H4>
                   <Body color={labelColor} mt="2" maxW="2xl">
                     A compact view of the life plan products available.
-                  </Body>
+                  </Body> */}
 
                   {/* <HStack gap={3} mt={5} flexWrap="wrap">
                 <PrimaryMdButton onClick={() => router.push("/plans")}>
@@ -477,7 +475,7 @@ const Account = () => {
               </Grid>
             </Box>
 
-            <Box
+            {/* <Box
               bg={cardBg}
               borderWidth="1px"
               borderColor={borderColor}
@@ -566,84 +564,7 @@ const Account = () => {
                   </Box>
                 ))}
               </Grid>
-            </Box>
-
-            <Box
-              bg={pageBg}
-              // borderWidth="1px"
-              // borderColor={borderColor}
-              borderRadius="2xl"
-              // p={{ base: 4, md: 6 }}
-            >
-              <H4>eServices</H4>
-              <Body color={labelColor} mt="2" maxW="2xl">
-                Manage your plan requests in one place, from filing a claim and
-                paying your plan to transferring ownership or changing your
-                mode.
-              </Body>
-
-              <Grid
-                templateColumns={{
-                  base: "repeat(2, 1fr)",
-                  md: "repeat(2, 1fr)",
-                }}
-                gap={4}
-                mt={5}
-              >
-                {eServices.map((service) => (
-                  <Box
-                    key={service.title}
-                    bg={cardBg}
-                    borderWidth="1px"
-                    borderColor={borderColor}
-                    borderRadius="2xl"
-                    p={{ base: 4, md: 5 }}
-                    cursor="pointer"
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => router.push(service.href)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        router.push(service.href);
-                      }
-                    }}
-                    transition="transform 0.2s ease, box-shadow 0.2s ease"
-                    _hover={{ transform: "translateY(-2px)" }}
-                  >
-                    <HStack justify="space-between" align="start">
-                      {/* <Badge bg="green.100" color="#177D54" rounded="full">
-                    E-SERVICE
-                  </Badge> */}
-                      <Box
-                        boxSize="10"
-                        rounded="full"
-                        bg={softBg}
-                        borderWidth="1px"
-                        borderColor={borderColor}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        color="#177D54"
-                      >
-                        <Box as={service.icon} />
-                      </Box>
-                    </HStack>
-                    <Text
-                      fontWeight="700"
-                      color={valueColor}
-                      mt="3"
-                      fontSize="lg"
-                    >
-                      {service.title}
-                    </Text>
-                    <Text color={labelColor} fontSize="sm" mt="2">
-                      {service.description}
-                    </Text>
-                  </Box>
-                ))}
-              </Grid>
-            </Box>
+            </Box> */}
           </VStack>
         </Page.Row>
       </Page.MainContent>

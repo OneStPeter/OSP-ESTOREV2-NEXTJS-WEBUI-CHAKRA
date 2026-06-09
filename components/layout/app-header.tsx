@@ -146,16 +146,15 @@ export default function AppHeader({
     <>
       <Flex
         className="no-print"
-        h="58px"
+        h="65px"
         pt={4}
-        py={4}
         px={2}
         align="center"
         justify="space-between"
         bg="bg"
         position="relative"
         zIndex={20}
-        boxShadow={isScrolled ? "0 8px 24px rgba(15, 23, 42, 0.14)" : "none"}
+        // boxShadow={isScrolled ? "0 8px 24px rgba(15, 23, 42, 0.14)" : "none"}
         transition="box-shadow 180ms ease-out"
         _dark={{ bg: "rgba(20, 24, 36, 0.88)" }}
         // borderBottom="1px solid"
