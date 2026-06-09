@@ -604,7 +604,6 @@ const Navbar = () => {
                     </Box>
                   )}
                 </Box>
-
                 {/* Profile avatar — opens full-screen profile dialog */}
                 <Avatar.Root
                   size="sm"
@@ -703,22 +702,30 @@ const Navbar = () => {
       <Dialog.Root
         open={profileOpen}
         onOpenChange={(e) => setProfileOpen(e.open)}
-        size="full"
+        size="xl"
         motionPreset="slide-in-bottom"
         scrollBehavior="inside"
       >
         <Portal>
           <Dialog.Backdrop />
           <Dialog.Positioner>
-            <Dialog.Content>
+            <Dialog.Content position="relative">
               <Dialog.CloseTrigger
                 asChild
-                position="fixed"
-                top={3}
-                right={3}
-                zIndex={20}
+                position="absolute"
+                top={{ base: 3, md: 4 }}
+                right={{ base: 3, md: 4 }}
+                zIndex={2}
               >
-                <CloseButton size="md" bg="whiteAlpha.700" />
+                <CloseButton
+                  size="md"
+                  bg={BRAND_COLORS.white}
+                  color={BRAND_COLORS.neutralText}
+                  borderWidth="1px"
+                  borderColor={BRAND_COLORS.neutralBorder}
+                  boxShadow={STANDARD_SHADOWS.level1}
+                  _hover={{ bg: BRAND_COLORS.subtleBg }}
+                />
               </Dialog.CloseTrigger>
 
               <Dialog.Body p={0} overflowY="auto">

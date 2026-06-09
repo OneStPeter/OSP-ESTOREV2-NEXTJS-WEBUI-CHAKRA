@@ -610,487 +610,459 @@ const Profile = () => {
 
   const mainContent = (
     <>
-          {/* Profile header */}
-          <Box
-            bg="var(--chakra-colors-primary)"
-            pt={12}
-            pb={8}
-            px={4}
-            textAlign="center"
-          >
-            <Avatar.Root
-              size="2xl"
-              mx="auto"
-              mb={4}
-              colorPalette={pickPalette(displayName || "U")}
-            >
-              <Avatar.Image src="/images/profile.jpg" alt={displayName} />
-              <Avatar.Fallback name={displayName} />
-            </Avatar.Root>
-            <Text
+      {/* Profile header */}
+      <Box
+        bg="var(--chakra-colors-primary)"
+        pt={12}
+        pb={8}
+        px={4}
+        textAlign="center"
+      >
+        <Avatar.Root
+          size="2xl"
+          mx="auto"
+          mb={4}
+          colorPalette={pickPalette(displayName || "U")}
+        >
+          <Avatar.Image src="/images/profile.jpg" alt={displayName} />
+          <Avatar.Fallback name={displayName} />
+        </Avatar.Root>
+        <Text
+          color="white"
+          fontWeight="bold"
+          fontSize="xl"
+          lineHeight="1.2"
+          mb={1}
+        >
+          {displayName}
+        </Text>
+        {email && (
+          <Text color="rgba(255,255,255,0.75)" fontSize="sm" mb={2}>
+            {email}
+          </Text>
+        )}
+        {role && (
+          <Box display="inline-flex">
+            <Badge
+              bg="rgba(255,255,255,0.15)"
               color="white"
-              fontWeight="bold"
-              fontSize="xl"
-              lineHeight="1.2"
-              mb={1}
-            >
-              {displayName}
-            </Text>
-            {email && (
-              <Text color="rgba(255,255,255,0.75)" fontSize="sm" mb={2}>
-                {email}
-              </Text>
-            )}
-            {role && (
-              <Box display="inline-flex">
-                <Badge
-                  bg="rgba(255,255,255,0.15)"
-                  color="white"
-                  borderRadius="full"
-                  px={3}
-                  py={0.5}
-                  fontSize="xs"
-                  fontWeight="medium"
-                  border="1px solid rgba(255,255,255,0.3)"
-                >
-                  {ROLE_LABELS[role] ?? role}
-                </Badge>
-              </Box>
-            )}
-          </Box>
-
-          {/* Account section */}
-          <Box px={4} pt={5} pb={1}>
-            <Text
+              borderRadius="full"
+              px={3}
+              py={0.5}
               fontSize="xs"
-              fontWeight="bold"
-              color="gray.500"
-              textTransform="uppercase"
-              letterSpacing="widest"
-              mb={3}
+              fontWeight="medium"
+              border="1px solid rgba(255,255,255,0.3)"
             >
-              Account
-            </Text>
+              {ROLE_LABELS[role] ?? role}
+            </Badge>
+          </Box>
+        )}
+      </Box>
 
-            <Box
-              as="button"
-              w="full"
-              textAlign="left"
-              _hover={{ opacity: 0.7 }}
-              transition="opacity 0.15s"
-              onClick={() => setProfileView("edit-account")}
-            >
-              <Flex
-                justify="space-between"
-                align="center"
-                py={3}
-                px={isDesktop ? 2 : 0}
-                borderRadius="lg"
-                bg={
-                  isDesktop && profileView === "edit-account"
-                    ? "gray.100"
-                    : undefined
-                }
-              >
-                <Flex align="center" gap={3}>
-                  <Box
-                    w="38px"
-                    h="38px"
-                    borderRadius="xl"
-                    bg="gray.100"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    color="gray.600"
-                    flexShrink={0}
-                  >
-                    <LuUser size={16} />
-                  </Box>
-                  <Box>
-                    <Text fontSize="sm" fontWeight="semibold">
-                      Edit Account
-                    </Text>
-                    <Text fontSize="xs" color="gray.500">
-                      Update your email, and mobile number
-                    </Text>
-                  </Box>
-                </Flex>
-                <LuChevronRight
-                  size={16}
-                  color="var(--chakra-colors-gray-400)"
-                />
-              </Flex>
-            </Box>
+      {/* Account section */}
+      <Box px={4} pt={5} pb={1}>
+        <Text
+          fontSize="xs"
+          fontWeight="bold"
+          color="gray.500"
+          textTransform="uppercase"
+          letterSpacing="widest"
+          mb={3}
+        >
+          Account
+        </Text>
 
-            <Separator />
-
-            <Box
-              as="button"
-              w="full"
-              textAlign="left"
-              _hover={{ opacity: 0.7 }}
-              transition="opacity 0.15s"
-              onClick={() => {
-                resetPasswordForm();
-                setProfileView("change-password");
-              }}
-            >
-              <Flex
-                justify="space-between"
-                align="center"
-                py={3}
-                px={isDesktop ? 2 : 0}
-                borderRadius="lg"
-                bg={
-                  isDesktop && profileView === "change-password"
-                    ? "gray.100"
-                    : undefined
-                }
-              >
-                <Flex align="center" gap={3}>
-                  <Box
-                    w="38px"
-                    h="38px"
-                    borderRadius="xl"
-                    bg="gray.100"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    color="gray.600"
-                    flexShrink={0}
-                  >
-                    <LuLock size={16} />
-                  </Box>
-                  <Box>
-                    <Text fontSize="sm" fontWeight="semibold">
-                      Change Password
-                    </Text>
-                    <Text fontSize="xs" color="gray.500">
-                      Update your login password
-                    </Text>
-                  </Box>
-                </Flex>
-                <LuChevronRight
-                  size={16}
-                  color="var(--chakra-colors-gray-400)"
-                />
-              </Flex>
-            </Box>
-
-            <Separator />
-
-            {/* Two Factor Authentication */}
-            <Flex justify="space-between" align="center" py={3}>
-              <Flex align="center" gap={3}>
-                <Box
-                  w="38px"
-                  h="38px"
-                  borderRadius="xl"
-                  bg="gray.100"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  color="gray.600"
-                  flexShrink={0}
-                >
-                  <LuShield size={16} />
-                </Box>
-                <Box>
-                  <Text fontSize="sm" fontWeight="semibold">
-                    Two Factor Authentication
-                  </Text>
-                  <Text fontSize="xs" color="gray.500">
-                    {twoFactorEnabled ? "Enabled" : "Disabled"}
-                  </Text>
-                </Box>
-              </Flex>
+        <Box
+          as="button"
+          w="full"
+          textAlign="left"
+          _hover={{ opacity: 0.7 }}
+          transition="opacity 0.15s"
+          onClick={() => setProfileView("edit-account")}
+        >
+          <Flex
+            justify="space-between"
+            align="center"
+            py={3}
+            px={isDesktop ? 2 : 0}
+            borderRadius="lg"
+            bg={
+              isDesktop && profileView === "edit-account"
+                ? "gray.100"
+                : undefined
+            }
+          >
+            <Flex align="center" gap={3}>
               <Box
-                role="switch"
-                aria-checked={twoFactorEnabled}
-                aria-label="Toggle two factor authentication"
-                tabIndex={0}
-                onClick={() => setTwoFactorEnabled((v) => !v)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    setTwoFactorEnabled((v) => !v);
-                  }
-                }}
-                w="44px"
-                h="26px"
-                borderRadius="full"
-                bg={
-                  twoFactorEnabled
-                    ? "var(--chakra-colors-primary)"
-                    : "gray.300"
-                }
-                position="relative"
-                transition="background 0.15s"
-                cursor="pointer"
+                w="38px"
+                h="38px"
+                borderRadius="xl"
+                bg="gray.100"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                color="gray.600"
                 flexShrink={0}
-                outline="none"
               >
-                <Box
-                  position="absolute"
-                  top="3px"
-                  left={twoFactorEnabled ? "21px" : "3px"}
-                  w="20px"
-                  h="20px"
-                  borderRadius="full"
-                  bg="white"
-                  boxShadow="sm"
-                  transition="left 0.15s"
-                />
+                <LuUser size={16} />
+              </Box>
+              <Box>
+                <Text fontSize="sm" fontWeight="semibold">
+                  Edit Account
+                </Text>
+                <Text fontSize="xs" color="gray.500">
+                  Update your email, and mobile number
+                </Text>
               </Box>
             </Flex>
+            <LuChevronRight size={16} color="var(--chakra-colors-gray-400)" />
+          </Flex>
+        </Box>
 
-            <Separator />
+        <Separator />
 
-            {/* Referral Code */}
+        <Box
+          as="button"
+          w="full"
+          textAlign="left"
+          _hover={{ opacity: 0.7 }}
+          transition="opacity 0.15s"
+          onClick={() => {
+            resetPasswordForm();
+            setProfileView("change-password");
+          }}
+        >
+          <Flex
+            justify="space-between"
+            align="center"
+            py={3}
+            px={isDesktop ? 2 : 0}
+            borderRadius="lg"
+            bg={
+              isDesktop && profileView === "change-password"
+                ? "gray.100"
+                : undefined
+            }
+          >
+            <Flex align="center" gap={3}>
+              <Box
+                w="38px"
+                h="38px"
+                borderRadius="xl"
+                bg="gray.100"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                color="gray.600"
+                flexShrink={0}
+              >
+                <LuLock size={16} />
+              </Box>
+              <Box>
+                <Text fontSize="sm" fontWeight="semibold">
+                  Change Password
+                </Text>
+                <Text fontSize="xs" color="gray.500">
+                  Update your login password
+                </Text>
+              </Box>
+            </Flex>
+            <LuChevronRight size={16} color="var(--chakra-colors-gray-400)" />
+          </Flex>
+        </Box>
+
+        <Separator />
+
+        {/* Two Factor Authentication */}
+        <Flex justify="space-between" align="center" py={3}>
+          <Flex align="center" gap={3}>
             <Box
-              as="button"
-              w="full"
-              textAlign="left"
-              _hover={{ opacity: 0.7 }}
-              transition="opacity 0.15s"
-              onClick={copyReferralCode}
+              w="38px"
+              h="38px"
+              borderRadius="xl"
+              bg="gray.100"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              color="gray.600"
+              flexShrink={0}
             >
-              <Flex justify="space-between" align="center" py={3}>
-                <Flex align="center" gap={3}>
-                  <Box
-                    w="38px"
-                    h="38px"
-                    borderRadius="xl"
-                    bg="gray.100"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    color="gray.600"
-                    flexShrink={0}
-                  >
-                    <LuLayoutGrid size={16} />
-                  </Box>
-                  <Box>
-                    <Text fontSize="sm" fontWeight="semibold">
-                      Referral Code
-                    </Text>
-                    <Text fontSize="xs" color="gray.500">
-                      {REFERRAL_CODE}
-                    </Text>
-                  </Box>
-                </Flex>
-                <LuChevronRight
-                  size={16}
-                  color="var(--chakra-colors-gray-400)"
-                />
-              </Flex>
+              <LuShield size={16} />
             </Box>
-
-            <Separator />
-
-            {/* My Agent/s */}
+            <Box>
+              <Text fontSize="sm" fontWeight="semibold">
+                Two Factor Authentication
+              </Text>
+              <Text fontSize="xs" color="gray.500">
+                {twoFactorEnabled ? "Enabled" : "Disabled"}
+              </Text>
+            </Box>
+          </Flex>
+          <Box
+            role="switch"
+            aria-checked={twoFactorEnabled}
+            aria-label="Toggle two factor authentication"
+            tabIndex={0}
+            onClick={() => setTwoFactorEnabled((v) => !v)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setTwoFactorEnabled((v) => !v);
+              }
+            }}
+            w="44px"
+            h="26px"
+            borderRadius="full"
+            bg={twoFactorEnabled ? "var(--chakra-colors-primary)" : "gray.300"}
+            position="relative"
+            transition="background 0.15s"
+            cursor="pointer"
+            flexShrink={0}
+            outline="none"
+          >
             <Box
-              as="button"
-              w="full"
-              textAlign="left"
-              _hover={{ opacity: 0.7 }}
-              transition="opacity 0.15s"
-              onClick={() => router.push("/account/profile/agents")}
-            >
-              <Flex justify="space-between" align="center" py={3}>
-                <Flex align="center" gap={3}>
-                  <Box
-                    w="38px"
-                    h="38px"
-                    borderRadius="xl"
-                    bg="gray.100"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    color="gray.600"
-                    flexShrink={0}
-                  >
-                    <LuUsers size={16} />
-                  </Box>
-                  <Box>
-                    <Text fontSize="sm" fontWeight="semibold">
-                      My Agent/s
-                    </Text>
-                    <Text fontSize="xs" color="gray.500">
-                      Assigned referral agent records
-                    </Text>
-                  </Box>
-                </Flex>
-                <LuChevronRight
-                  size={16}
-                  color="var(--chakra-colors-gray-400)"
-                />
-              </Flex>
-            </Box>
+              position="absolute"
+              top="3px"
+              left={twoFactorEnabled ? "21px" : "3px"}
+              w="20px"
+              h="20px"
+              borderRadius="full"
+              bg="white"
+              boxShadow="sm"
+              transition="left 0.15s"
+            />
           </Box>
+        </Flex>
 
-          <Separator mx={4} />
+        <Separator />
 
-          {/* Preferences section */}
-          <Box px={4} pt={4} pb={2}>
-            <Text
-              fontSize="xs"
-              fontWeight="bold"
-              color="gray.500"
-              textTransform="uppercase"
-              letterSpacing="widest"
-              mb={3}
+        {/* Referral Code */}
+        <Box
+          as="button"
+          w="full"
+          textAlign="left"
+          _hover={{ opacity: 0.7 }}
+          transition="opacity 0.15s"
+          onClick={copyReferralCode}
+        >
+          <Flex justify="space-between" align="center" py={3}>
+            <Flex align="center" gap={3}>
+              <Box
+                w="38px"
+                h="38px"
+                borderRadius="xl"
+                bg="gray.100"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                color="gray.600"
+                flexShrink={0}
+              >
+                <LuLayoutGrid size={16} />
+              </Box>
+              <Box>
+                <Text fontSize="sm" fontWeight="semibold">
+                  Referral Code
+                </Text>
+                <Text fontSize="xs" color="gray.500">
+                  {REFERRAL_CODE}
+                </Text>
+              </Box>
+            </Flex>
+            <LuChevronRight size={16} color="var(--chakra-colors-gray-400)" />
+          </Flex>
+        </Box>
+
+        <Separator />
+
+        {/* My Agent/s */}
+        <Box
+          as="button"
+          w="full"
+          textAlign="left"
+          _hover={{ opacity: 0.7 }}
+          transition="opacity 0.15s"
+          onClick={() => router.push("/account/profile/agents")}
+        >
+          <Flex justify="space-between" align="center" py={3}>
+            <Flex align="center" gap={3}>
+              <Box
+                w="38px"
+                h="38px"
+                borderRadius="xl"
+                bg="gray.100"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                color="gray.600"
+                flexShrink={0}
+              >
+                <LuUsers size={16} />
+              </Box>
+              <Box>
+                <Text fontSize="sm" fontWeight="semibold">
+                  My Agent/s
+                </Text>
+                <Text fontSize="xs" color="gray.500">
+                  Assigned referral agent records
+                </Text>
+              </Box>
+            </Flex>
+            <LuChevronRight size={16} color="var(--chakra-colors-gray-400)" />
+          </Flex>
+        </Box>
+      </Box>
+
+      <Separator mx={4} />
+
+      {/* Preferences section */}
+      <Box px={4} pt={4} pb={2}>
+        <Text
+          fontSize="xs"
+          fontWeight="bold"
+          color="gray.500"
+          textTransform="uppercase"
+          letterSpacing="widest"
+          mb={3}
+        >
+          Preferences
+        </Text>
+
+        {/* Appearance */}
+        <Flex justify="space-between" align="center" py={3}>
+          <Flex align="center" gap={3}>
+            <Box
+              w="38px"
+              h="38px"
+              borderRadius="xl"
+              bg="gray.100"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              color="gray.600"
+              flexShrink={0}
             >
-              Preferences
-            </Text>
-
-            {/* Appearance */}
-            <Flex justify="space-between" align="center" py={3}>
-              <Flex align="center" gap={3}>
-                <Box
-                  w="38px"
-                  h="38px"
-                  borderRadius="xl"
-                  bg="gray.100"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  color="gray.600"
-                  flexShrink={0}
+              {colorMode === "dark" ? (
+                <LuMoon size={16} />
+              ) : (
+                <LuSun size={16} />
+              )}
+            </Box>
+            <Box>
+              <Text fontSize="sm" fontWeight="semibold">
+                Appearance
+              </Text>
+              <Text fontSize="xs" color="gray.500">
+                {colorMode === "light" ? "Light mode" : "Dark mode"}
+              </Text>
+            </Box>
+          </Flex>
+          <HStack gap={1.5}>
+            {(["light", "dark"] as const).map((mode) => {
+              const isActive = colorMode === mode;
+              return (
+                <Button
+                  key={mode}
+                  size="sm"
+                  variant="outline"
+                  px={3}
+                  h="34px"
+                  gap={1.5}
+                  bg={isActive ? "var(--chakra-colors-primary)" : "transparent"}
+                  color={isActive ? "white" : "gray.600"}
+                  borderColor={
+                    isActive ? "var(--chakra-colors-primary)" : "gray.200"
+                  }
+                  _hover={{
+                    bg: isActive ? "var(--chakra-colors-primary)" : "gray.50",
+                  }}
+                  onClick={() => handleColorMode(mode)}
                 >
-                  {colorMode === "dark" ? (
-                    <LuMoon size={16} />
+                  {mode === "light" ? (
+                    <LuSun size={13} />
                   ) : (
-                    <LuSun size={16} />
+                    <LuMoon size={13} />
                   )}
-                </Box>
-                <Box>
-                  <Text fontSize="sm" fontWeight="semibold">
-                    Appearance
+                  <Text
+                    fontSize="xs"
+                    textTransform="capitalize"
+                    fontWeight="medium"
+                  >
+                    {mode}
                   </Text>
-                  <Text fontSize="xs" color="gray.500">
-                    {colorMode === "light" ? "Light mode" : "Dark mode"}
-                  </Text>
-                </Box>
-              </Flex>
-              <HStack gap={1.5}>
-                {(["light", "dark"] as const).map((mode) => {
-                  const isActive = colorMode === mode;
-                  return (
-                    <Button
-                      key={mode}
-                      size="sm"
-                      variant="outline"
-                      px={3}
-                      h="34px"
-                      gap={1.5}
-                      bg={
-                        isActive
-                          ? "var(--chakra-colors-primary)"
-                          : "transparent"
-                      }
-                      color={isActive ? "white" : "gray.600"}
-                      borderColor={
-                        isActive ? "var(--chakra-colors-primary)" : "gray.200"
-                      }
-                      _hover={{
-                        bg: isActive
-                          ? "var(--chakra-colors-primary)"
-                          : "gray.50",
-                      }}
-                      onClick={() => handleColorMode(mode)}
-                    >
-                      {mode === "light" ? (
-                        <LuSun size={13} />
-                      ) : (
-                        <LuMoon size={13} />
-                      )}
-                      <Text
-                        fontSize="xs"
-                        textTransform="capitalize"
-                        fontWeight="medium"
-                      >
-                        {mode}
-                      </Text>
-                    </Button>
-                  );
-                })}
-              </HStack>
-            </Flex>
+                </Button>
+              );
+            })}
+          </HStack>
+        </Flex>
 
-            <Separator />
+        <Separator />
 
-            {/* Text size */}
-            <Flex justify="space-between" align="center" py={3}>
-              <Flex align="center" gap={3}>
-                <Box
-                  w="38px"
-                  h="38px"
-                  borderRadius="xl"
-                  bg="gray.100"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  color="gray.600"
-                  fontWeight="bold"
-                  fontSize="15px"
-                  flexShrink={0}
+        {/* Text size */}
+        <Flex justify="space-between" align="center" py={3}>
+          <Flex align="center" gap={3}>
+            <Box
+              w="38px"
+              h="38px"
+              borderRadius="xl"
+              bg="gray.100"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              color="gray.600"
+              fontWeight="bold"
+              fontSize="15px"
+              flexShrink={0}
+            >
+              A
+            </Box>
+            <Box>
+              <Text fontSize="sm" fontWeight="semibold">
+                Text Size
+              </Text>
+              <Text fontSize="xs" color="gray.500">
+                {fontSizeLabel}
+              </Text>
+            </Box>
+          </Flex>
+          <HStack gap={1}>
+            {FONT_SIZES.map((opt) => {
+              const isActive = fontSize === opt.value;
+              return (
+                <Button
+                  key={opt.value}
+                  size="sm"
+                  variant="outline"
+                  w="40px"
+                  h="34px"
+                  p={0}
+                  bg={isActive ? "var(--chakra-colors-primary)" : "transparent"}
+                  color={isActive ? "white" : "gray.600"}
+                  borderColor={
+                    isActive ? "var(--chakra-colors-primary)" : "gray.200"
+                  }
+                  _hover={{
+                    bg: isActive ? "var(--chakra-colors-primary)" : "gray.50",
+                  }}
+                  onClick={() => handleFontSize(opt.value)}
+                  title={opt.title}
                 >
-                  A
-                </Box>
-                <Box>
-                  <Text fontSize="sm" fontWeight="semibold">
-                    Text Size
+                  <Text
+                    fontWeight={isActive ? "bold" : "normal"}
+                    style={{ fontSize: `${opt.scale * 13}px` }}
+                  >
+                    A
                   </Text>
-                  <Text fontSize="xs" color="gray.500">
-                    {fontSizeLabel}
-                  </Text>
-                </Box>
-              </Flex>
-              <HStack gap={1}>
-                {FONT_SIZES.map((opt) => {
-                  const isActive = fontSize === opt.value;
-                  return (
-                    <Button
-                      key={opt.value}
-                      size="sm"
-                      variant="outline"
-                      w="40px"
-                      h="34px"
-                      p={0}
-                      bg={
-                        isActive
-                          ? "var(--chakra-colors-primary)"
-                          : "transparent"
-                      }
-                      color={isActive ? "white" : "gray.600"}
-                      borderColor={
-                        isActive ? "var(--chakra-colors-primary)" : "gray.200"
-                      }
-                      _hover={{
-                        bg: isActive
-                          ? "var(--chakra-colors-primary)"
-                          : "gray.50",
-                      }}
-                      onClick={() => handleFontSize(opt.value)}
-                      title={opt.title}
-                    >
-                      <Text
-                        fontWeight={isActive ? "bold" : "normal"}
-                        style={{ fontSize: `${opt.scale * 13}px` }}
-                      >
-                        A
-                      </Text>
-                    </Button>
-                  );
-                })}
-              </HStack>
-            </Flex>
+                </Button>
+              );
+            })}
+          </HStack>
+        </Flex>
 
-            <Separator />
+        <Separator />
 
-            {/* Quick Navigation */}
-            {/* <Box
+        {/* Quick Navigation */}
+        {/* <Box
               as="button"
               w="full"
               textAlign="left"
@@ -1128,68 +1100,62 @@ const Profile = () => {
                 />
               </Flex>
             </Box> */}
-          </Box>
+      </Box>
 
-          {/* <Separator mx={4} /> */}
+      {/* <Separator mx={4} /> */}
 
-          {/* Actions */}
-          <Box px={4} pt={4} pb={10}>
-            <VStack gap={2.5}>
-              {/* <PrimaryMdButton w="full" onClick={() => router.push("/profile")}>
+      {/* Actions */}
+      <Box px={4} pt={4} pb={10}>
+        <VStack gap={2.5}>
+          {/* <PrimaryMdButton w="full" onClick={() => router.push("/profile")}>
                 Manage Account
               </PrimaryMdButton> */}
-              <Button
-                w="full"
-                variant="outline"
-                color="red.600"
-                borderColor="red.200"
-                _hover={{ bg: "red.50" }}
-                onClick={handleSignOut}
-              >
-                Sign Out
-              </Button>
-            </VStack>
-          </Box>
-        </>
+          <Button
+            w="full"
+            variant="outline"
+            color="red.600"
+            borderColor="red.200"
+            _hover={{ bg: "red.50" }}
+            onClick={handleSignOut}
+          >
+            Sign Out
+          </Button>
+        </VStack>
+      </Box>
+    </>
   );
 
   const editAccountContent = (
     <>
-          {/* Sub-view header */}
-          <Box
-            px={4}
-            pt={4}
-            pb={3}
-            borderBottomWidth="1px"
-            borderColor="gray.200"
+      {/* Sub-view header */}
+      <Box px={4} pt={4} pb={3} borderBottomWidth="1px" borderColor="gray.200">
+        <Flex align="center" gap={2} pr={10}>
+          <IconButton
+            size="sm"
+            variant="ghost"
+            aria-label="Back"
+            color="gray.600"
+            onClick={() => setProfileView("main")}
           >
-            <Flex align="center" gap={2} pr={10}>
-              <IconButton
-                size="sm"
-                variant="ghost"
-                aria-label="Back"
-                color="gray.600"
-                onClick={() => setProfileView("main")}
-              >
-                <LuChevronLeft />
-              </IconButton>
-              <Text fontWeight="bold" fontSize="md">
-                Edit Account
-              </Text>
-            </Flex>
-          </Box>
+            <LuChevronLeft />
+          </IconButton>
+          <Text fontWeight="bold" fontSize="md">
+            Edit Account
+          </Text>
+        </Flex>
+      </Box>
 
-          {/* Avatar */}
-          <Box textAlign="center" pt={2} pb={4}>
-            <Avatar.Root size="xl" mx="auto" mb={1}>
-              <Avatar.Image src="/images/profile.jpg" alt={editName} />
-              <Avatar.Fallback name={editName} />
-            </Avatar.Root>
-          </Box>
+      {/* Avatar */}
+      <Box textAlign="center" pt={2} pb={4}>
+        <Avatar.Root size="xl" mx="auto" mb={1}>
+          <Avatar.Image src="/images/profile.jpg" alt={editName} />
+          <Avatar.Fallback name={editName} />
+        </Avatar.Root>
+      </Box>
 
-          {/* Form */}
-          <VStack gap={4} px={4} pb={10} align="stretch">
-            {/* <Box w="full">
+      {/* Form */}
+      <VStack gap={4} px={4} pb={10} align="stretch">
+        {/* <Box w="full">
               <Text
                 fontSize="xs"
                 fontWeight="semibold"
@@ -1206,268 +1172,229 @@ const Profile = () => {
               />
             </Box> */}
 
-            <Box w="full">
-              <Text
-                fontSize="xs"
-                fontWeight="semibold"
-                color="gray.500"
-                mb={1.5}
-              >
-                Email
-              </Text>
-              <Input
-                value={email}
-                readOnly
-                opacity={0.55}
-                cursor="not-allowed"
-                size="md"
-              />
-            </Box>
+        <Box w="full">
+          <Text fontSize="xs" fontWeight="semibold" color="gray.500" mb={1.5}>
+            Email
+          </Text>
+          <Input
+            value={email}
+            readOnly
+            opacity={0.55}
+            cursor="not-allowed"
+            size="md"
+          />
+        </Box>
 
-            <Box w="full">
-              <Text
-                fontSize="xs"
-                fontWeight="semibold"
-                color="gray.500"
-                mb={1.5}
-              >
-                Mobile Number
-              </Text>
-              <Input
-                // value={ROLE_LABELS[role] ?? role}
-                readOnly
-                opacity={0.55}
-                cursor="not-allowed"
-                size="md"
-              />
-            </Box>
+        <Box w="full">
+          <Text fontSize="xs" fontWeight="semibold" color="gray.500" mb={1.5}>
+            Mobile Number
+          </Text>
+          <Input
+            // value={ROLE_LABELS[role] ?? role}
+            readOnly
+            opacity={0.55}
+            cursor="not-allowed"
+            size="md"
+          />
+        </Box>
 
-            <Button
-              w="full"
-              mt={2}
-              bg="var(--chakra-colors-primary)"
-              color="white"
-              _hover={{ opacity: 0.9 }}
-              loading={editLoading}
-              onClick={handleSaveAccount}
-            >
-              Save Changes
-            </Button>
-          </VStack>
-        </>
+        <Button
+          w="full"
+          mt={2}
+          bg="var(--chakra-colors-primary)"
+          color="white"
+          _hover={{ opacity: 0.9 }}
+          loading={editLoading}
+          onClick={handleSaveAccount}
+        >
+          Save Changes
+        </Button>
+      </VStack>
+    </>
   );
 
   const changePasswordContent = (
     <>
-          {/* Sub-view header */}
-          <Box
-            px={4}
-            pt={4}
-            pb={3}
-            borderBottomWidth="1px"
-            borderColor="gray.200"
+      {/* Sub-view header */}
+      <Box px={4} pt={4} pb={3} borderBottomWidth="1px" borderColor="gray.200">
+        <Flex align="center" gap={2} pr={10}>
+          <IconButton
+            size="sm"
+            variant="ghost"
+            aria-label="Back"
+            color="gray.600"
+            onClick={() => setProfileView("main")}
           >
-            <Flex align="center" gap={2} pr={10}>
+            <LuChevronLeft />
+          </IconButton>
+          <Text fontWeight="bold" fontSize="md">
+            Change Password
+          </Text>
+        </Flex>
+      </Box>
+
+      {/* Form */}
+      <VStack gap={5} px={4} pt={6} pb={10}>
+        {/* Current password */}
+        <Box w="full">
+          <Text fontSize="xs" fontWeight="semibold" color="gray.500" mb={1.5}>
+            Current Password
+          </Text>
+          <InputGroup
+            endElement={
               <IconButton
-                size="sm"
+                size="xs"
                 variant="ghost"
-                aria-label="Back"
-                color="gray.600"
-                onClick={() => setProfileView("main")}
+                color="gray.500"
+                aria-label="Toggle visibility"
+                onClick={() => setShowCurrentPw(!showCurrentPw)}
               >
-                <LuChevronLeft />
+                {showCurrentPw ? <LuEyeOff size={15} /> : <LuEye size={15} />}
               </IconButton>
-              <Text fontWeight="bold" fontSize="md">
-                Change Password
-              </Text>
-            </Flex>
-          </Box>
+            }
+          >
+            <Input
+              type={showCurrentPw ? "text" : "password"}
+              value={currentPw}
+              onChange={(e) => setCurrentPw(e.target.value)}
+              placeholder="Enter current password"
+              size="md"
+            />
+          </InputGroup>
+        </Box>
 
-          {/* Form */}
-          <VStack gap={5} px={4} pt={6} pb={10}>
-            {/* Current password */}
-            <Box w="full">
-              <Text
-                fontSize="xs"
-                fontWeight="semibold"
+        {/* New password */}
+        <Box w="full">
+          <Text fontSize="xs" fontWeight="semibold" color="gray.500" mb={1.5}>
+            New Password
+          </Text>
+          <InputGroup
+            endElement={
+              <IconButton
+                size="xs"
+                variant="ghost"
                 color="gray.500"
-                mb={1.5}
+                aria-label="Toggle visibility"
+                onClick={() => setShowNewPw(!showNewPw)}
               >
-                Current Password
-              </Text>
-              <InputGroup
-                endElement={
-                  <IconButton
-                    size="xs"
-                    variant="ghost"
-                    color="gray.500"
-                    aria-label="Toggle visibility"
-                    onClick={() => setShowCurrentPw(!showCurrentPw)}
-                  >
-                    {showCurrentPw ? (
-                      <LuEyeOff size={15} />
-                    ) : (
-                      <LuEye size={15} />
-                    )}
-                  </IconButton>
-                }
-              >
-                <Input
-                  type={showCurrentPw ? "text" : "password"}
-                  value={currentPw}
-                  onChange={(e) => setCurrentPw(e.target.value)}
-                  placeholder="Enter current password"
-                  size="md"
-                />
-              </InputGroup>
-            </Box>
+                {showNewPw ? <LuEyeOff size={15} /> : <LuEye size={15} />}
+              </IconButton>
+            }
+          >
+            <Input
+              type={showNewPw ? "text" : "password"}
+              value={newPw}
+              onChange={(e) => setNewPw(e.target.value)}
+              placeholder="Enter new password"
+              size="md"
+            />
+          </InputGroup>
 
-            {/* New password */}
-            <Box w="full">
-              <Text
-                fontSize="xs"
-                fontWeight="semibold"
+          {/* Strength meter */}
+          {newPw && (
+            <Box mt={2}>
+              <Flex gap={1} mb={1}>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Box
+                    key={i}
+                    flex={1}
+                    h="3px"
+                    borderRadius="full"
+                    bg={i <= pwStrength ? pwMeta.color : "gray.200"}
+                    transition="background 0.2s"
+                  />
+                ))}
+              </Flex>
+              <Text fontSize="xs" color={pwMeta.color} fontWeight="medium">
+                {pwMeta.label}
+              </Text>
+            </Box>
+          )}
+        </Box>
+
+        {/* Confirm password */}
+        <Box w="full">
+          <Text fontSize="xs" fontWeight="semibold" color="gray.500" mb={1.5}>
+            Confirm New Password
+          </Text>
+          <InputGroup
+            endElement={
+              <IconButton
+                size="xs"
+                variant="ghost"
                 color="gray.500"
-                mb={1.5}
+                aria-label="Toggle visibility"
+                onClick={() => setShowConfirmPw(!showConfirmPw)}
               >
-                New Password
-              </Text>
-              <InputGroup
-                endElement={
-                  <IconButton
-                    size="xs"
-                    variant="ghost"
-                    color="gray.500"
-                    aria-label="Toggle visibility"
-                    onClick={() => setShowNewPw(!showNewPw)}
-                  >
-                    {showNewPw ? <LuEyeOff size={15} /> : <LuEye size={15} />}
-                  </IconButton>
-                }
-              >
-                <Input
-                  type={showNewPw ? "text" : "password"}
-                  value={newPw}
-                  onChange={(e) => setNewPw(e.target.value)}
-                  placeholder="Enter new password"
-                  size="md"
-                />
-              </InputGroup>
+                {showConfirmPw ? <LuEyeOff size={15} /> : <LuEye size={15} />}
+              </IconButton>
+            }
+          >
+            <Input
+              type={showConfirmPw ? "text" : "password"}
+              value={confirmPw}
+              onChange={(e) => setConfirmPw(e.target.value)}
+              placeholder="Confirm new password"
+              size="md"
+            />
+          </InputGroup>
+          {confirmPw && confirmPw !== newPw && (
+            <Text fontSize="xs" color="red.500" mt={1}>
+              Passwords do not match
+            </Text>
+          )}
+        </Box>
 
-              {/* Strength meter */}
-              {newPw && (
-                <Box mt={2}>
-                  <Flex gap={1} mb={1}>
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <Box
-                        key={i}
-                        flex={1}
-                        h="3px"
-                        borderRadius="full"
-                        bg={i <= pwStrength ? pwMeta.color : "gray.200"}
-                        transition="background 0.2s"
-                      />
-                    ))}
-                  </Flex>
-                  <Text fontSize="xs" color={pwMeta.color} fontWeight="medium">
-                    {pwMeta.label}
-                  </Text>
-                </Box>
-              )}
-            </Box>
-
-            {/* Confirm password */}
-            <Box w="full">
-              <Text
-                fontSize="xs"
-                fontWeight="semibold"
-                color="gray.500"
-                mb={1.5}
-              >
-                Confirm New Password
-              </Text>
-              <InputGroup
-                endElement={
-                  <IconButton
-                    size="xs"
-                    variant="ghost"
-                    color="gray.500"
-                    aria-label="Toggle visibility"
-                    onClick={() => setShowConfirmPw(!showConfirmPw)}
-                  >
-                    {showConfirmPw ? (
-                      <LuEyeOff size={15} />
-                    ) : (
-                      <LuEye size={15} />
-                    )}
-                  </IconButton>
-                }
-              >
-                <Input
-                  type={showConfirmPw ? "text" : "password"}
-                  value={confirmPw}
-                  onChange={(e) => setConfirmPw(e.target.value)}
-                  placeholder="Confirm new password"
-                  size="md"
-                />
-              </InputGroup>
-              {confirmPw && confirmPw !== newPw && (
-                <Text fontSize="xs" color="red.500" mt={1}>
-                  Passwords do not match
-                </Text>
-              )}
-            </Box>
-
-            <Button
-              w="full"
-              mt={1}
-              bg="var(--chakra-colors-primary)"
-              color="white"
-              _hover={{ opacity: 0.9 }}
-              disabled={
-                !currentPw ||
-                !newPw ||
-                !confirmPw ||
-                newPw !== confirmPw ||
-                pwStrength < 2
-              }
-              loading={pwLoading}
-              onClick={handleChangePassword}
-            >
-              Update Password
-            </Button>
-          </VStack>
-        </>
+        <Button
+          w="full"
+          mt={1}
+          bg="var(--chakra-colors-primary)"
+          color="white"
+          _hover={{ opacity: 0.9 }}
+          disabled={
+            !currentPw ||
+            !newPw ||
+            !confirmPw ||
+            newPw !== confirmPw ||
+            pwStrength < 2
+          }
+          loading={pwLoading}
+          onClick={handleChangePassword}
+        >
+          Update Password
+        </Button>
+      </VStack>
+    </>
   );
 
   const navbarCustomizeContent = (
     <>
-          {/* Sub-view header */}
-          <Box
-            px={4}
-            pt={4}
-            pb={3}
-            borderBottomWidth="1px"
-            borderColor="gray.200"
-            position="sticky"
-            top={0}
-            bg="bg"
-            zIndex={1}
+      {/* Sub-view header */}
+      <Box
+        px={4}
+        pt={4}
+        pb={3}
+        borderBottomWidth="1px"
+        borderColor="gray.200"
+        position="sticky"
+        top={0}
+        bg="bg"
+        zIndex={1}
+      >
+        <Flex align="center" gap={2} pr={10}>
+          <IconButton
+            size="sm"
+            variant="ghost"
+            aria-label="Back"
+            color="gray.600"
+            onClick={() => {
+              setReplacingIdx(null);
+              setProfileView("main");
+            }}
           >
-            <Flex align="center" gap={2} pr={10}>
-              <IconButton
-                size="sm"
-                variant="ghost"
-                aria-label="Back"
-                color="gray.600"
-                onClick={() => {
-                  setReplacingIdx(null);
-                  setProfileView("main");
-                }}
-              >
-                <LuChevronLeft />
-              </IconButton>
-              {/* <Box>
+            <LuChevronLeft />
+          </IconButton>
+          {/* <Box>
                 <Text fontWeight="bold" fontSize="md">
                   Quick Navigation
                 </Text>
@@ -1475,291 +1402,285 @@ const Profile = () => {
                   Choose up to 4 shortcuts for the bottom bar
                 </Text>
               </Box> */}
-            </Flex>
-          </Box>
+        </Flex>
+      </Box>
 
-          {/* Pinned items */}
-          <Box px={4} pt={5} pb={2}>
-            <Flex align="center" justify="space-between" mb={3}>
+      {/* Pinned items */}
+      <Box px={4} pt={5} pb={2}>
+        <Flex align="center" justify="space-between" mb={3}>
+          <Text
+            fontSize="xs"
+            fontWeight="bold"
+            color="gray.500"
+            textTransform="uppercase"
+            letterSpacing="widest"
+          >
+            Pinned
+          </Text>
+          <Text
+            fontSize="xs"
+            color={quickNavHrefs.length >= 4 ? "orange.500" : "gray.400"}
+            fontWeight="medium"
+          >
+            {quickNavHrefs.length} / 4
+          </Text>
+        </Flex>
+
+        {quickNavHrefs.length === 0 ? (
+          <Flex
+            align="center"
+            justify="center"
+            py={6}
+            borderRadius="xl"
+            borderWidth="1px"
+            borderStyle="dashed"
+            borderColor="gray.200"
+          >
+            <Text fontSize="sm" color="gray.400">
+              No items pinned — add from below
+            </Text>
+          </Flex>
+        ) : (
+          <VStack gap={0}>
+            {quickNavHrefs.map((href, idx) => {
+              const option = availableOptions.find((o) => o.key === href);
+              if (!option) return null;
+              const ItemIcon = option.Icon;
+              const isFirst = idx === 0;
+              const isLast = idx === quickNavHrefs.length - 1;
+              const isReplacing = replacingIdx === idx;
+              return (
+                <Box key={href} w="full">
+                  <Flex
+                    justify="space-between"
+                    align="center"
+                    py={2.5}
+                    px={isReplacing ? 2 : 0}
+                    borderRadius={isReplacing ? "lg" : undefined}
+                    bg={isReplacing ? "orange.50" : undefined}
+                    borderWidth={isReplacing ? "1px" : undefined}
+                    borderColor={isReplacing ? "orange.200" : undefined}
+                    transition="all 0.15s"
+                  >
+                    <Flex align="center" gap={3}>
+                      <Box
+                        w="36px"
+                        h="36px"
+                        borderRadius="lg"
+                        bg={
+                          isReplacing
+                            ? "orange.400"
+                            : "var(--chakra-colors-primary)"
+                        }
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        color="white"
+                        flexShrink={0}
+                      >
+                        <ItemIcon size={15} />
+                      </Box>
+                      <Box>
+                        <Text fontSize="sm" fontWeight="medium">
+                          {option.title}
+                        </Text>
+                        {isReplacing && (
+                          <Text
+                            fontSize="xs"
+                            color="orange.500"
+                            fontWeight="medium"
+                          >
+                            Select replacement below
+                          </Text>
+                        )}
+                      </Box>
+                    </Flex>
+                    <HStack gap={0.5}>
+                      <IconButton
+                        size="xs"
+                        variant="ghost"
+                        aria-label="Move up"
+                        color="gray.500"
+                        disabled={isFirst || isReplacing}
+                        onClick={() => moveNavItem(idx, -1)}
+                      >
+                        <LuChevronUp size={14} />
+                      </IconButton>
+                      <IconButton
+                        size="xs"
+                        variant="ghost"
+                        aria-label="Move down"
+                        color="gray.500"
+                        disabled={isLast || isReplacing}
+                        onClick={() => moveNavItem(idx, 1)}
+                      >
+                        <LuChevronDown size={14} />
+                      </IconButton>
+                      <IconButton
+                        size="xs"
+                        variant={isReplacing ? "solid" : "ghost"}
+                        aria-label={
+                          isReplacing ? "Cancel replace" : "Replace item"
+                        }
+                        bg={isReplacing ? "orange.400" : undefined}
+                        color={isReplacing ? "white" : "gray.500"}
+                        _hover={{
+                          bg: isReplacing ? "orange.500" : "gray.100",
+                        }}
+                        onClick={() =>
+                          setReplacingIdx(isReplacing ? null : idx)
+                        }
+                      >
+                        <LuArrowLeftRight size={13} />
+                      </IconButton>
+                      <IconButton
+                        size="xs"
+                        variant="ghost"
+                        aria-label="Remove"
+                        color="red.400"
+                        _hover={{ bg: "red.50" }}
+                        disabled={isReplacing}
+                        onClick={() => removeNavItem(href)}
+                      >
+                        <LuX size={14} />
+                      </IconButton>
+                    </HStack>
+                  </Flex>
+                  {!isLast && <Separator />}
+                </Box>
+              );
+            })}
+          </VStack>
+        )}
+      </Box>
+
+      <Separator mx={4} my={1} />
+
+      {/* Available items */}
+      <Box px={4} pt={4} pb={10}>
+        <Flex align="center" justify="space-between" mb={3}>
+          {replacingIdx !== null ? (
+            <Box>
               <Text
                 fontSize="xs"
                 fontWeight="bold"
-                color="gray.500"
+                color="orange.500"
                 textTransform="uppercase"
                 letterSpacing="widest"
               >
-                Pinned
+                Select Replacement
               </Text>
-              <Text
-                fontSize="xs"
-                color={quickNavHrefs.length >= 4 ? "orange.500" : "gray.400"}
-                fontWeight="medium"
-              >
-                {quickNavHrefs.length} / 4
+              <Text fontSize="xs" color="gray.500" mt={0.5}>
+                for &quot;
+                {
+                  availableOptions.find(
+                    (o) => o.key === quickNavHrefs[replacingIdx],
+                  )?.title
+                }
+                &quot;
               </Text>
-            </Flex>
+            </Box>
+          ) : (
+            <Text
+              fontSize="xs"
+              fontWeight="bold"
+              color="gray.500"
+              textTransform="uppercase"
+              letterSpacing="widest"
+            >
+              Available
+            </Text>
+          )}
+          {replacingIdx !== null && (
+            <Button
+              size="xs"
+              variant="ghost"
+              color="gray.500"
+              onClick={() => setReplacingIdx(null)}
+            >
+              Cancel
+            </Button>
+          )}
+        </Flex>
 
-            {quickNavHrefs.length === 0 ? (
-              <Flex
-                align="center"
-                justify="center"
-                py={6}
-                borderRadius="xl"
-                borderWidth="1px"
-                borderStyle="dashed"
-                borderColor="gray.200"
-              >
-                <Text fontSize="sm" color="gray.400">
-                  No items pinned — add from below
-                </Text>
-              </Flex>
-            ) : (
-              <VStack gap={0}>
-                {quickNavHrefs.map((href, idx) => {
-                  const option = availableOptions.find((o) => o.key === href);
-                  if (!option) return null;
-                  const ItemIcon = option.Icon;
-                  const isFirst = idx === 0;
-                  const isLast = idx === quickNavHrefs.length - 1;
-                  const isReplacing = replacingIdx === idx;
-                  return (
-                    <Box key={href} w="full">
-                      <Flex
-                        justify="space-between"
-                        align="center"
-                        py={2.5}
-                        px={isReplacing ? 2 : 0}
-                        borderRadius={isReplacing ? "lg" : undefined}
-                        bg={isReplacing ? "orange.50" : undefined}
-                        borderWidth={isReplacing ? "1px" : undefined}
-                        borderColor={isReplacing ? "orange.200" : undefined}
-                        transition="all 0.15s"
+        {unpinnedOptions.length === 0 ? (
+          <Text fontSize="sm" color="gray.400" py={3} textAlign="center">
+            All available items are pinned
+          </Text>
+        ) : (
+          <VStack gap={0}>
+            {unpinnedOptions.map((option, idx) => {
+              const ItemIcon = option.Icon;
+              const isLast = idx === unpinnedOptions.length - 1;
+              const isReplacingMode = replacingIdx !== null;
+              const canAdd = quickNavHrefs.length < 4;
+              const actionEnabled = isReplacingMode || canAdd;
+              return (
+                <Box key={option.key} w="full">
+                  <Flex justify="space-between" align="center" py={2.5}>
+                    <Flex align="center" gap={3}>
+                      <Box
+                        w="36px"
+                        h="36px"
+                        borderRadius="lg"
+                        bg={isReplacingMode ? "orange.50" : "gray.100"}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        color={isReplacingMode ? "orange.500" : "gray.500"}
+                        flexShrink={0}
                       >
-                        <Flex align="center" gap={3}>
-                          <Box
-                            w="36px"
-                            h="36px"
-                            borderRadius="lg"
-                            bg={
-                              isReplacing
-                                ? "orange.400"
-                                : "var(--chakra-colors-primary)"
-                            }
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            color="white"
-                            flexShrink={0}
-                          >
-                            <ItemIcon size={15} />
-                          </Box>
-                          <Box>
-                            <Text fontSize="sm" fontWeight="medium">
-                              {option.title}
-                            </Text>
-                            {isReplacing && (
-                              <Text
-                                fontSize="xs"
-                                color="orange.500"
-                                fontWeight="medium"
-                              >
-                                Select replacement below
-                              </Text>
-                            )}
-                          </Box>
-                        </Flex>
-                        <HStack gap={0.5}>
-                          <IconButton
-                            size="xs"
-                            variant="ghost"
-                            aria-label="Move up"
-                            color="gray.500"
-                            disabled={isFirst || isReplacing}
-                            onClick={() => moveNavItem(idx, -1)}
-                          >
-                            <LuChevronUp size={14} />
-                          </IconButton>
-                          <IconButton
-                            size="xs"
-                            variant="ghost"
-                            aria-label="Move down"
-                            color="gray.500"
-                            disabled={isLast || isReplacing}
-                            onClick={() => moveNavItem(idx, 1)}
-                          >
-                            <LuChevronDown size={14} />
-                          </IconButton>
-                          <IconButton
-                            size="xs"
-                            variant={isReplacing ? "solid" : "ghost"}
-                            aria-label={
-                              isReplacing ? "Cancel replace" : "Replace item"
-                            }
-                            bg={isReplacing ? "orange.400" : undefined}
-                            color={isReplacing ? "white" : "gray.500"}
-                            _hover={{
-                              bg: isReplacing ? "orange.500" : "gray.100",
-                            }}
-                            onClick={() =>
-                              setReplacingIdx(isReplacing ? null : idx)
-                            }
-                          >
-                            <LuArrowLeftRight size={13} />
-                          </IconButton>
-                          <IconButton
-                            size="xs"
-                            variant="ghost"
-                            aria-label="Remove"
-                            color="red.400"
-                            _hover={{ bg: "red.50" }}
-                            disabled={isReplacing}
-                            onClick={() => removeNavItem(href)}
-                          >
-                            <LuX size={14} />
-                          </IconButton>
-                        </HStack>
-                      </Flex>
-                      {!isLast && <Separator />}
-                    </Box>
-                  );
-                })}
-              </VStack>
-            )}
-          </Box>
-
-          <Separator mx={4} my={1} />
-
-          {/* Available items */}
-          <Box px={4} pt={4} pb={10}>
-            <Flex align="center" justify="space-between" mb={3}>
-              {replacingIdx !== null ? (
-                <Box>
-                  <Text
-                    fontSize="xs"
-                    fontWeight="bold"
-                    color="orange.500"
-                    textTransform="uppercase"
-                    letterSpacing="widest"
-                  >
-                    Select Replacement
-                  </Text>
-                  <Text fontSize="xs" color="gray.500" mt={0.5}>
-                    for &quot;
-                    {
-                      availableOptions.find(
-                        (o) => o.key === quickNavHrefs[replacingIdx],
-                      )?.title
-                    }
-                    &quot;
-                  </Text>
+                        <ItemIcon size={15} />
+                      </Box>
+                      <Text
+                        fontSize="sm"
+                        fontWeight="medium"
+                        color={actionEnabled ? "inherit" : "gray.400"}
+                      >
+                        {option.title}
+                      </Text>
+                    </Flex>
+                    {isReplacingMode ? (
+                      <IconButton
+                        size="xs"
+                        variant="outline"
+                        aria-label="Use as replacement"
+                        borderColor="orange.300"
+                        color="orange.500"
+                        _hover={{ bg: "orange.50" }}
+                        onClick={() => replaceNavItem(replacingIdx, option.key)}
+                      >
+                        <LuArrowLeftRight size={13} />
+                      </IconButton>
+                    ) : (
+                      <IconButton
+                        size="xs"
+                        variant="outline"
+                        aria-label="Pin item"
+                        disabled={!canAdd}
+                        borderColor={
+                          canAdd ? "var(--chakra-colors-primary)" : "gray.200"
+                        }
+                        color={
+                          canAdd ? "var(--chakra-colors-primary)" : "gray.300"
+                        }
+                        _hover={{
+                          bg: canAdd ? "blue.50" : "transparent",
+                        }}
+                        onClick={() => addNavItem(option.key)}
+                      >
+                        <LuPlus size={13} />
+                      </IconButton>
+                    )}
+                  </Flex>
+                  {!isLast && <Separator />}
                 </Box>
-              ) : (
-                <Text
-                  fontSize="xs"
-                  fontWeight="bold"
-                  color="gray.500"
-                  textTransform="uppercase"
-                  letterSpacing="widest"
-                >
-                  Available
-                </Text>
-              )}
-              {replacingIdx !== null && (
-                <Button
-                  size="xs"
-                  variant="ghost"
-                  color="gray.500"
-                  onClick={() => setReplacingIdx(null)}
-                >
-                  Cancel
-                </Button>
-              )}
-            </Flex>
-
-            {unpinnedOptions.length === 0 ? (
-              <Text fontSize="sm" color="gray.400" py={3} textAlign="center">
-                All available items are pinned
-              </Text>
-            ) : (
-              <VStack gap={0}>
-                {unpinnedOptions.map((option, idx) => {
-                  const ItemIcon = option.Icon;
-                  const isLast = idx === unpinnedOptions.length - 1;
-                  const isReplacingMode = replacingIdx !== null;
-                  const canAdd = quickNavHrefs.length < 4;
-                  const actionEnabled = isReplacingMode || canAdd;
-                  return (
-                    <Box key={option.key} w="full">
-                      <Flex justify="space-between" align="center" py={2.5}>
-                        <Flex align="center" gap={3}>
-                          <Box
-                            w="36px"
-                            h="36px"
-                            borderRadius="lg"
-                            bg={isReplacingMode ? "orange.50" : "gray.100"}
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            color={isReplacingMode ? "orange.500" : "gray.500"}
-                            flexShrink={0}
-                          >
-                            <ItemIcon size={15} />
-                          </Box>
-                          <Text
-                            fontSize="sm"
-                            fontWeight="medium"
-                            color={actionEnabled ? "inherit" : "gray.400"}
-                          >
-                            {option.title}
-                          </Text>
-                        </Flex>
-                        {isReplacingMode ? (
-                          <IconButton
-                            size="xs"
-                            variant="outline"
-                            aria-label="Use as replacement"
-                            borderColor="orange.300"
-                            color="orange.500"
-                            _hover={{ bg: "orange.50" }}
-                            onClick={() =>
-                              replaceNavItem(replacingIdx, option.key)
-                            }
-                          >
-                            <LuArrowLeftRight size={13} />
-                          </IconButton>
-                        ) : (
-                          <IconButton
-                            size="xs"
-                            variant="outline"
-                            aria-label="Pin item"
-                            disabled={!canAdd}
-                            borderColor={
-                              canAdd
-                                ? "var(--chakra-colors-primary)"
-                                : "gray.200"
-                            }
-                            color={
-                              canAdd
-                                ? "var(--chakra-colors-primary)"
-                                : "gray.300"
-                            }
-                            _hover={{
-                              bg: canAdd ? "blue.50" : "transparent",
-                            }}
-                            onClick={() => addNavItem(option.key)}
-                          >
-                            <LuPlus size={13} />
-                          </IconButton>
-                        )}
-                      </Flex>
-                      {!isLast && <Separator />}
-                    </Box>
-                  );
-                })}
-              </VStack>
-            )}
-          </Box>
-        </>
+              );
+            })}
+          </VStack>
+        )}
+      </Box>
+    </>
   );
 
   const subViewContent =
@@ -1832,7 +1753,7 @@ const Profile = () => {
                 <LuUser size={24} />
               </Box>
               <Text fontSize="md" fontWeight="semibold" color="gray.600">
-                Manage your account
+                {/* Manage your account */}
               </Text>
               <Text fontSize="sm" mt={1} maxW="280px">
                 Choose Edit Account, Change Password, or Quick Navigation from

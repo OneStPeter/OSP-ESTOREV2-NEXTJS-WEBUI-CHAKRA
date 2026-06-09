@@ -13,7 +13,7 @@ import {
   STANDARD_SIZES,
   STANDARD_SPACING,
 } from "@/lib/theme/standard-design-tokens";
-import { Icon, Image } from "@chakra-ui/react";
+import { Icon } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { FiCreditCard, FiGitBranch, FiShield } from "react-icons/fi";
 import {
@@ -80,26 +80,16 @@ export default function Hero() {
         minH={{ base: "90dvh", md: "100dvh" }}
         mx="auto"
         px={{ base: PAGE_PADDING.base, md: PAGE_PADDING.lg }}
-        // py="16"
         display="flex"
         flexDirection="column"
         justifyContent="center"
-        // pt={{
-        //   base: `calc(${STANDARD_SPACING.xl} + ${RESPONSIVE_LAYOUT_TOKENS.navigationOffset.md})`,
-        //   md: `calc(${STANDARD_SPACING.section} + ${RESPONSIVE_LAYOUT_TOKENS.navigationOffset.lg})`,
-        //   lg: `calc(${STANDARD_SPACING.section} + ${STANDARD_SPACING.md})`,
-        // }}
-        // pb={{
-        //   base: STANDARD_SPACING.xl,
-        //   md: SECTION_GAP.md,
-        //   lg: SECTION_GAP.lg,
-        // }}
       >
         <Box
           display="grid"
           gridTemplateColumns={{
             base: "1fr",
-            lg: "minmax(0, 0.9fr) minmax(420px, 1fr)",
+            lg: "minmax(0, 0.9fr) minmax(360px, 1fr)",
+            xl: "minmax(0, 0.85fr) minmax(460px, 1fr)",
           }}
           gap={{
             base: STANDARD_SPACING.lg,
@@ -245,13 +235,25 @@ export default function Hero() {
             <Box
               display={{ base: "none", md: "block" }}
               position="relative"
+              w="100%"
+              maxW={{ md: "720px", lg: "min(100%, 620px)", xl: "680px" }}
+              mx={{ md: "auto", lg: 0 }}
+              aspectRatio={{ md: 16 / 10, lg: 16 / 13, xl: 16 / 12 }}
+              h={{
+                md: "clamp(320px, 42vw, 440px)",
+                lg: "clamp(340px, 38vw, 520px)",
+                xl: "clamp(420px, 39vw, 560px)",
+              }}
+              maxH={{
+                lg: "calc(100dvh - 220px)",
+                xl: "calc(100dvh - 200px)",
+              }}
               borderRadius={{
                 base: STANDARD_RADIUS.xl,
                 md: "28px",
                 lg: "36px",
               }}
               overflow="hidden"
-              minH={{ base: "260px", sm: "320px", md: "420px", lg: "560px" }}
               boxShadow={STANDARD_SHADOWS.level4}
               borderWidth="1px"
               borderColor={`${BRAND_COLORS.white}CC`}
@@ -271,7 +273,7 @@ export default function Hero() {
                   priority
                   style={{
                     objectFit: "cover",
-                    objectPosition: "center",
+                    objectPosition: "center center",
                   }}
                 />
               </Box>
