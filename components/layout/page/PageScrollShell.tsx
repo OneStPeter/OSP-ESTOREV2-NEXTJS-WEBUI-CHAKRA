@@ -27,25 +27,25 @@ const PageScrollShell = ({
 }: PageScrollShellProps) => {
   return (
     <Box
-      w="100%"
+      maxW="7xl"
+      mx="auto"
       p={{ base: "0px 16px 96px", lg: "36px 44px 56px" }}
       {...boxProps}
-      h="100%"
-      maxH="100%"
-      overflowY="auto"
+      mt={{ base: 0, md: "40px" }}
       overflowX="hidden"
-      scrollBehavior="smooth"
       bg={"#fff"}
     >
       <Box
         mx={{ base: "-16px", lg: "-44px" }}
-        px={{ base: "16px", lg: "66px" }}
+        // px={{ base: "16px", lg: "66px" }}
+        px={{ base: "16px", lg: "0px" }}
+        maxW="7xl"
         pt={{ base: "20px", lg: "36px" }}
-        mb="0px"
+        mb={hideBackButton ? "" : "8"}
       >
         <Flex
-          direction="row"
-          align="center"
+          direction={{ base: "column", lg: "row" }}
+          align={{ base: "flex-start", lg: "center" }}
           justify="space-between"
           gap={{ base: "10px", lg: "32px" }}
           pb={!hideBackButton ? "0" : ""}

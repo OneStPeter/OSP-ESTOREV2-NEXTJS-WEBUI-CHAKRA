@@ -114,6 +114,7 @@ const PayMyPlan = () => {
       <Page.MainContent>
         <Page.Row>
           <Box
+            // mt={8}
             w="full"
             // maxW="760px"
             bg={BRAND_COLORS.white}

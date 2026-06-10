@@ -3,10 +3,10 @@
 import LifePlanApplication1 from "./LifePlanApplication1";
 import LifePlanApplication2 from "./LifePlanApplication2";
 import LifePlanApplication3 from "./LifePlanApplication3";
-import { Box, Button, Flex, Icon, VStack } from "@chakra-ui/react";
+import { Box, Flex, Icon, VStack } from "@chakra-ui/react";
 import { FaRegAddressCard, FaRegUser } from "react-icons/fa";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-import { LuChevronsDown, LuChevronsUp, LuMinus, LuPlus } from "react-icons/lu";
+import { LuChevronsDown, LuChevronsUp } from "react-icons/lu";
 import { useCallback, useEffect, useState } from "react";
 import {
   IAddress,
@@ -19,11 +19,7 @@ import {
   loadApplicationDataFromLocalStorage,
   saveApplicationDataToLocalStorage,
 } from "@/lib/utils/applicationDataFactory";
-import { BRAND_COLORS } from "@/lib/theme/brand-colors";
-import {
-  STANDARD_RADIUS,
-  STANDARD_SPACING,
-} from "@/lib/theme/standard-design-tokens";
+import { STANDARD_SPACING } from "@/lib/theme/standard-design-tokens";
 import { InfoCard } from "../ui/info-card";
 import { InputCardAccordion } from "../ui/input-card-accordion";
 import { TertiarySmButton } from "st-peter-ui";

@@ -7,14 +7,14 @@ import { useBreakpointValue } from "@chakra-ui/react";
 import {
   RiDashboardLine,
   RiDashboardFill,
-  RiCheckboxCircleLine,
-  RiCheckboxCircleFill,
   RiBookShelfLine,
   RiBookShelfFill,
-  RiMoneyDollarCircleLine,
-  RiMoneyDollarCircleFill,
   RiUser2Line,
   RiUser2Fill,
+  RiBankCardLine,
+  RiBankCardFill,
+  RiFileTextLine,
+  RiFileTextFill,
 } from "react-icons/ri";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -40,8 +40,6 @@ import {
   LuSun,
   LuMoon,
   LuHouse,
-  LuCreditCard,
-  LuFileText,
   LuChevronRight,
   LuChevronLeft,
   LuChevronUp,
@@ -124,8 +122,8 @@ const ALL_NAV_OPTIONS: NavOptionDef[] = [
     key: "/pay-my-plan",
     title: "Pay",
     href: "/pay-my-plan",
-    Icon: LuCreditCard,
-    activeIcon: LuCreditCard,
+    Icon: RiBankCardLine,
+    activeIcon: RiBankCardFill,
     match: (p) =>
       p.startsWith("/pay-my-plan") ||
       p.startsWith("/account/pay-my-plan") ||
@@ -136,8 +134,8 @@ const ALL_NAV_OPTIONS: NavOptionDef[] = [
     key: "/claims",
     title: "Claim",
     href: "/claims",
-    Icon: LuFileText,
-    activeIcon: LuFileText,
+    Icon: RiFileTextLine,
+    activeIcon: RiFileTextFill,
     match: (p) => p.startsWith("/claims"),
     roles: ["branch", "bmstl", "sales-agent"],
   },

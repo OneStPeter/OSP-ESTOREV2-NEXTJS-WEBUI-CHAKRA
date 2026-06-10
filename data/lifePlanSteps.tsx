@@ -4,6 +4,8 @@ import Confirmation, {
 } from "@/components/steps/confirmation";
 import HealthDeclaration from "@/components/steps/HealthDeclaration";
 import LifePlanApplicationWrapper from "@/components/steps/LifePlanApplicationFormWrapper";
+import { FaClipboardCheck, FaFileSignature, FaRegUser } from "react-icons/fa";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 
 export const createLifePlanSteps = (
   confirmationProps?: ConfirmationProps & {
@@ -18,6 +20,7 @@ export const createLifePlanSteps = (
     header: "Life Plan Application",
     title: "Application",
     description: "Complete the application form",
+    icon: FaFileSignature,
     component: (
       <LifePlanApplicationWrapper
         openSection={confirmationProps?.applicationSection}
@@ -32,6 +35,7 @@ export const createLifePlanSteps = (
     header: "Beneficiary Details",
     title: "Beneficiary",
     description: "Add Beneficiary Details",
+    icon: FaRegUser,
     component: <Beneficiary />,
   },
   {
@@ -39,6 +43,7 @@ export const createLifePlanSteps = (
     header: "Health Declaration & Terms and Conditions",
     title: "Terms",
     description: "Health Declaration & Terms and Conditions",
+    icon: FaClipboardCheck,
     component: <HealthDeclaration />,
   },
   // {
@@ -53,6 +58,7 @@ export const createLifePlanSteps = (
     header: "Review Summary",
     title: "Summary",
     description: "Review and confirm your application",
+    icon: IoIosInformationCircleOutline,
     component: <Confirmation {...confirmationProps} />,
   },
   // {

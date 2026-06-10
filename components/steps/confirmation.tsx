@@ -182,7 +182,7 @@ const Confirmation = ({ onAllAcceptedChange, onEdit }: ConfirmationProps) => {
 
   return (
     <Box minH="100vh">
-      <Box px={{ base: 2, md: 8 }} pb={{ base: 4, md: 8 }}>
+      <Box px={{ base: 0, md: 8 }} pb={{ base: 4, md: 8 }}>
         <VStack align="stretch" gap={3}>
           <InfoCardAccordion
             icon={<Icon as={IoIosInformationCircleOutline} boxSize="18px" />}
@@ -259,8 +259,7 @@ const Confirmation = ({ onAllAcceptedChange, onEdit }: ConfirmationProps) => {
                       },
                       {
                         label: "Landline Number",
-                        value:
-                          lifePlanApplication?.personalInfo.landLineNumber,
+                        value: lifePlanApplication?.personalInfo.landLineNumber,
                       },
                       {
                         label: "Mailing Address",
@@ -324,8 +323,7 @@ const Confirmation = ({ onAllAcceptedChange, onEdit }: ConfirmationProps) => {
                       },
                       {
                         label: "Employment Status",
-                        value:
-                          lifePlanApplication?.employment.employmentStatus,
+                        value: lifePlanApplication?.employment.employmentStatus,
                       },
                       {
                         label: "Office Address",

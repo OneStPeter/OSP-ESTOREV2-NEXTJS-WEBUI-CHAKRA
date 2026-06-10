@@ -6,40 +6,35 @@ import {
   Button,
   Checkbox,
   Flex,
-  Grid,
   HStack,
   Input,
   NativeSelect,
-  Separator,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import { BRAND_COLORS } from "@/lib/theme/brand-colors";
-import { RESPONSIVE_LAYOUT_TOKENS } from "@/lib/theme/layout-tokens";
 import {
   STANDARD_RADIUS,
   STANDARD_SHADOWS,
   STANDARD_SIZES,
   STANDARD_SPACING,
 } from "@/lib/theme/standard-design-tokens";
-import { BaseButton, Body, H3, H4, PrimaryMdButton, Small } from "st-peter-ui";
+import { BaseButton, PrimaryMdButton } from "st-peter-ui";
 import { useEffect, useMemo, useState } from "react";
 import { PayMongoService } from "@/services/API/PayMongoService";
-import Container from "@/components/ui/container";
 import { InfoCard } from "@/components/ui/info-card";
 import { useDemoAuth } from "@/components/ui/demo-auth";
-import { FaArrowLeft, FaChevronDown, FaEllipsisH } from "react-icons/fa";
+import { FaEllipsisH } from "react-icons/fa";
 import {
   LuChevronFirst,
   LuChevronLast,
   LuChevronDown,
   LuChevronLeft,
   LuChevronRight,
-  LuColumns3,
   LuListFilter,
   LuSearch,
 } from "react-icons/lu";
-import { useRouter } from "next/navigation";
+import Page from "@/components/layout/page/Page";
 
 const PAY_MY_PLAN_STORAGE_KEY = "payMyPlanSelectedItems";
 
@@ -150,7 +145,6 @@ const getInitialInstallmentNumbers = (selectedPlans: SelectedPlan[]) => {
 
 const PayMyPlan = () => {
   const { login } = useDemoAuth();
-  const router = useRouter();
 
   const [selectedPlans, setSelectedPlans] = useState<SelectedPlan[]>(() =>
     getStoredSelectedPlans(),
@@ -315,839 +309,741 @@ const PayMyPlan = () => {
   };
 
   return (
-    <Container>
-      <VStack
-        mb={{ base: 60, md: 0 }}
-        align="stretch"
-        gap={{ base: STANDARD_SPACING.md, md: STANDARD_SPACING.lg }}
+    <>
+      <Page.Root
+        title="Pay My Plan"
+        description="Listed below are your active St. Peter Life Plan, please select the plan/s you wish to pay."
       >
-        <Box display={{ base: "block", md: "none" }}>
-          <Button
-            variant="ghost"
-            onClick={() => router.back()}
-            px={0}
-            color={BRAND_COLORS.primaryGreen}
-            fontSize="14px"
-            fontWeight="600"
-          >
-            <FaArrowLeft />
-            Back
-          </Button>
-        </Box>
+        <Page.MainContent mb={{ base: 60, md: 0 }}>
+          {/* ── INFO CARD ──────────────────────────────────────────────────── */}
+          <Page.Row>
+            <InfoCard>
+              Tap Add / Checkbox to include a plan. You can remove it anytime
+              before checkout.
+            </InfoCard>
+          </Page.Row>
 
-        <Box
-          bg={BRAND_COLORS.white}
-          // borderWidth="1px"
-          // borderColor={BRAND_COLORS.neutralBorder}
-          // borderRadius={STANDARD_RADIUS.lg}
-          // boxShadow={STANDARD_SHADOWS.level1}
-          // p={{
-          //   base: RESPONSIVE_LAYOUT_TOKENS.card.mobilePadding.base,
-          //   md: RESPONSIVE_LAYOUT_TOKENS.card.padding.md,
-          // }}
-        >
-          <VStack
-            align="stretch"
-            gap={{ base: STANDARD_SPACING.md, md: STANDARD_SPACING.lg }}
-          >
-            <Box>
-              {/* <H4
-                as="h4"
-                color={BRAND_COLORS.neutralText}
-                lineHeight={{ base: "1.2", md: "1.15", lg: "1.1" }}
-                fontWeight="700"
-              >
-                Pay My Plan
-              </H4> */}
-              {/* <Body color={BRAND_COLORS.neutralText} mt={STANDARD_SPACING.xs}>
-                Account No.: SPLPI-22-000021
-              </Body> */}
-              <H4 mt={STANDARD_SPACING.xs}>
-                Listed below are your active St. Peter Life Plan, please select
-                the plan/s you wish to pay.
-              </H4>
-            </Box>
-
-            <Grid
-              templateColumns={{ base: "1fr", sm: "repeat(2, minmax(0, 1fr))" }}
-              gap={{
-                base: RESPONSIVE_LAYOUT_TOKENS.card.gap.base,
-                md: RESPONSIVE_LAYOUT_TOKENS.card.gap.md,
-              }}
+          {/* ── DESKTOP TABLE ──────────────────────────────────────────────── */}
+          <Page.Row>
+            <Box
+              display={{ base: "none", lg: "block" }}
+              borderWidth="1px"
+              borderColor={BRAND_COLORS.neutralBorder}
+              borderRadius={STANDARD_RADIUS.md}
+              overflow="hidden"
+              bg={BRAND_COLORS.white}
+              boxShadow={STANDARD_SHADOWS.level1}
             >
-              {/* <Box
-                bg={BRAND_COLORS.subtleBg}
-                borderWidth="1px"
+              {/* Filter bar */}
+              <Flex
+                align="flex-end"
+                justify="space-between"
+                gap={STANDARD_SPACING.md}
+                p={STANDARD_SPACING.sm}
+                borderBottomWidth="1px"
                 borderColor={BRAND_COLORS.neutralBorder}
-                borderRadius={STANDARD_RADIUS.md}
-                p={{
-                  base: RESPONSIVE_LAYOUT_TOKENS.card.mobilePadding.base,
-                  md: RESPONSIVE_LAYOUT_TOKENS.card.padding.md,
-                }}
-              >
-                <Small color={BRAND_COLORS.grey} fontWeight="600">
-                  Active Plans
-                </Small>
-                <Text
-                  color={BRAND_COLORS.primaryGreen}
-                  fontWeight="700"
-                  fontSize={{ base: "28px", md: "32px" }}
-                  lineHeight="1.2"
-                  mt={STANDARD_SPACING.xs}
-                >
-                  {activePlans.length}
-                </Text>
-              </Box> */}
-
-              {/* <Box
                 bg={BRAND_COLORS.subtleBg}
-                borderWidth="1px"
-                borderColor={BRAND_COLORS.neutralBorder}
-                borderRadius={STANDARD_RADIUS.md}
-                p={{
-                  base: RESPONSIVE_LAYOUT_TOKENS.card.mobilePadding.base,
-                  md: RESPONSIVE_LAYOUT_TOKENS.card.padding.md,
-                }}
               >
-                <Small color={BRAND_COLORS.grey} fontWeight="600">
-                  Amount to Pay
-                </Small>
-                <Text
-                  color={BRAND_COLORS.darkGreen}
-                  fontWeight="700"
-                  fontSize={{ base: "22px", md: "28px" }}
-                  lineHeight="1.2"
-                  mt={STANDARD_SPACING.xs}
-                >
-                  P {formatCurrency(totalSelectedAmount)}
-                </Text>
-              </Box> */}
-            </Grid>
-          </VStack>
-        </Box>
-
-        <InfoCard>
-          Tap Add / Checkbox to include a plan. You can remove it anytime before
-          checkout.
-        </InfoCard>
-
-        <Box
-          display={{ base: "none", lg: "block" }}
-          borderWidth="1px"
-          borderColor={BRAND_COLORS.neutralBorder}
-          borderRadius={STANDARD_RADIUS.md}
-          overflow="hidden"
-          bg={BRAND_COLORS.white}
-          boxShadow={STANDARD_SHADOWS.level1}
-        >
-          <Flex
-            align="flex-end"
-            justify="space-between"
-            gap={STANDARD_SPACING.md}
-            p={STANDARD_SPACING.sm}
-            borderBottomWidth="1px"
-            borderColor={BRAND_COLORS.neutralBorder}
-            bg={BRAND_COLORS.subtleBg}
-          >
-            <VStack align="stretch" gap="4px" w="260px">
-              <Text
-                color={BRAND_COLORS.grey}
-                fontSize="11px"
-                fontWeight="600"
-                lineHeight="1.2"
-              >
-                Plan Type
-              </Text>
-              <NativeSelect.Root w="full">
-                <NativeSelect.Field
-                  value={planModeFilter}
-                  onChange={(event) =>
-                    setPlanModeFilter(event.currentTarget.value)
-                  }
-                  w="full"
-                  h="40px"
-                  px={STANDARD_SPACING.xs}
-                  pr={STANDARD_SPACING.md}
-                  borderWidth="1px"
-                  borderColor={BRAND_COLORS.neutralBorder}
-                  borderRadius={STANDARD_RADIUS.sm}
-                  color={BRAND_COLORS.neutralText}
-                  fontSize="13px"
-                  bg={BRAND_COLORS.white}
-                  boxShadow="0px 1px 2px rgba(0,0,0,0.03)"
-                >
-                  <option value="All">All Active Plans</option>
-                  <option value="Monthly">Monthly</option>
-                  <option value="Annual">Annual</option>
-                </NativeSelect.Field>
-                <NativeSelect.Indicator />
-              </NativeSelect.Root>
-            </VStack>
-
-            <HStack gap={STANDARD_SPACING.xs} align="flex-end">
-              <Box position="relative" w="300px">
-                <Box
-                  as={LuSearch}
-                  position="absolute"
-                  left={STANDARD_SPACING.xs}
-                  top="50%"
-                  transform="translateY(-50%)"
-                  color={BRAND_COLORS.grey}
-                  boxSize="16px"
-                />
-                <Input
-                  value={searchQuery}
-                  onChange={(event) =>
-                    setSearchQuery(event.currentTarget.value)
-                  }
-                  placeholder="Search plans..."
-                  w="full"
-                  h="40px"
-                  pl="36px"
-                  pr={STANDARD_SPACING.xs}
-                  borderWidth="1px"
-                  borderColor={BRAND_COLORS.neutralBorder}
-                  borderRadius={STANDARD_RADIUS.sm}
-                  color={BRAND_COLORS.neutralText}
-                  fontSize="13px"
-                  bg={BRAND_COLORS.white}
-                  boxShadow="0px 1px 2px rgba(0,0,0,0.03)"
-                  outline="none"
-                  _focus={{
-                    borderColor: BRAND_COLORS.primaryGreen,
-                    boxShadow: "0 0 0 1px #109448",
-                  }}
-                />
-              </Box>
-              {/* 
-              <Button
-                variant="outline"
-                h="40px"
-                px={STANDARD_SPACING.sm}
-                borderColor={BRAND_COLORS.primaryGreen}
-                color={BRAND_COLORS.primaryGreen}
-                borderRadius={STANDARD_RADIUS.sm}
-                fontSize="12px"
-                fontWeight="700"
-                bg={BRAND_COLORS.white}
-                _hover={{ bg: BRAND_COLORS.successBg }}
-              >
-                <LuColumns3 />
-                COLUMNS
-              </Button> */}
-
-              <VStack align="stretch" gap="4px" w="140px">
-                <Text
-                  color={BRAND_COLORS.grey}
-                  fontSize="11px"
-                  fontWeight="600"
-                  lineHeight="1.2"
-                >
-                  Status
-                </Text>
-                <NativeSelect.Root w="full">
-                  <NativeSelect.Field
-                    value={statusFilter}
-                    onChange={(event) =>
-                      setStatusFilter(event.currentTarget.value)
-                    }
-                    w="full"
-                    h="40px"
-                    px={STANDARD_SPACING.xs}
-                    pr={STANDARD_SPACING.md}
-                    borderWidth="1px"
-                    borderColor={BRAND_COLORS.neutralBorder}
-                    borderRadius={STANDARD_RADIUS.sm}
-                    color={BRAND_COLORS.neutralText}
-                    fontSize="13px"
-                    bg={BRAND_COLORS.white}
-                    boxShadow="0px 1px 2px rgba(0,0,0,0.03)"
+                <VStack align="stretch" gap="4px" w="260px">
+                  <Text
+                    color={BRAND_COLORS.grey}
+                    fontSize="11px"
+                    fontWeight="600"
+                    lineHeight="1.2"
                   >
-                    <option value="Due">Due</option>
-                    <option value="All">All</option>
-                  </NativeSelect.Field>
-                  <NativeSelect.Indicator />
-                </NativeSelect.Root>
-              </VStack>
-            </HStack>
-          </Flex>
-
-          <Box
-            overflowX="auto"
-            css={{
-              "&::-webkit-scrollbar": {
-                height: "8px",
-              },
-              "&::-webkit-scrollbar-track": {
-                background: BRAND_COLORS.subtleBg,
-              },
-              "&::-webkit-scrollbar-thumb": {
-                background: BRAND_COLORS.neutralBorder,
-                borderRadius: STANDARD_RADIUS.full,
-              },
-            }}
-          >
-            <Box as="table" w="full" minW="1160px" borderCollapse="collapse">
-              <Box as="thead" bg={BRAND_COLORS.mutedBg}>
-                <Box as="tr">
-                  <Box
-                    as="th"
-                    w="44px"
-                    px={STANDARD_SPACING.xs}
-                    py="12px"
-                    borderBottomWidth="1px"
-                    borderColor={BRAND_COLORS.neutralBorder}
-                  >
-                    <Checkbox.Root>
-                      <Checkbox.HiddenInput />
-                      <Checkbox.Control />
-                    </Checkbox.Root>
-                  </Box>
-                  {desktopTableHeaders.map((header) => (
-                    <Box
-                      as="th"
-                      key={header.label}
-                      minW={header.minW}
-                      textAlign={header.textAlign ?? "left"}
+                    Plan Type
+                  </Text>
+                  <NativeSelect.Root w="full">
+                    <NativeSelect.Field
+                      value={planModeFilter}
+                      onChange={(event) =>
+                        setPlanModeFilter(event.currentTarget.value)
+                      }
+                      w="full"
+                      h="40px"
                       px={STANDARD_SPACING.xs}
-                      py="12px"
-                      fontSize="11px"
-                      fontWeight="700"
-                      color={BRAND_COLORS.grey}
-                      letterSpacing="0.5px"
-                      borderBottomWidth="1px"
+                      pr={STANDARD_SPACING.md}
+                      borderWidth="1px"
                       borderColor={BRAND_COLORS.neutralBorder}
-                      position={
-                        header.label === "ACTIONS" ? "sticky" : "static"
-                      }
-                      right={header.label === "ACTIONS" ? 0 : undefined}
-                      zIndex={header.label === "ACTIONS" ? 1 : undefined}
-                      bg={BRAND_COLORS.mutedBg}
+                      borderRadius={STANDARD_RADIUS.sm}
+                      color={BRAND_COLORS.neutralText}
+                      fontSize="13px"
+                      bg={BRAND_COLORS.white}
+                      boxShadow="0px 1px 2px rgba(0,0,0,0.03)"
                     >
-                      <HStack
-                        justify={
-                          header.textAlign === "right"
-                            ? "flex-end"
-                            : "flex-start"
-                        }
-                        gap="6px"
-                      >
-                        <Text as="span">{header.label}</Text>
-                        {header.label !== "ACTIONS" ? (
-                          <>
-                            <Box
-                              as={LuChevronDown}
-                              boxSize="10px"
-                              color={BRAND_COLORS.grey}
-                              opacity={0.5}
-                            />
-                            <Box
-                              as={LuListFilter}
-                              boxSize="12px"
-                              color={BRAND_COLORS.grey}
-                              opacity={0.7}
-                            />
-                          </>
-                        ) : null}
-                      </HStack>
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
+                      <option value="All">All Active Plans</option>
+                      <option value="Monthly">Monthly</option>
+                      <option value="Annual">Annual</option>
+                    </NativeSelect.Field>
+                    <NativeSelect.Indicator />
+                  </NativeSelect.Root>
+                </VStack>
 
-              <Box as="tbody">
-                {filteredActivePlans.length === 0 ? (
-                  <Box as="tr">
-                    <td
-                      colSpan={desktopTableHeaders.length + 1}
-                      style={{
-                        padding: `${STANDARD_SPACING.lg} ${STANDARD_SPACING.sm}`,
-                        textAlign: "center",
-                        color: BRAND_COLORS.grey,
-                        fontSize: "14px",
-                      }}
-                    >
-                      No Records Available
-                    </td>
-                  </Box>
-                ) : null}
-                {filteredActivePlans.map((plan) => {
-                  const isSelected = isPlanSelected(plan.contractNo);
-
-                  return (
+                <HStack gap={STANDARD_SPACING.xs} align="flex-end">
+                  <Box position="relative" w="300px">
                     <Box
-                      as="tr"
-                      key={plan.contractNo}
-                      bg={
-                        isSelected ? BRAND_COLORS.successBg : BRAND_COLORS.white
+                      as={LuSearch}
+                      position="absolute"
+                      left={STANDARD_SPACING.xs}
+                      top="50%"
+                      transform="translateY(-50%)"
+                      color={BRAND_COLORS.grey}
+                      boxSize="16px"
+                    />
+                    <Input
+                      value={searchQuery}
+                      onChange={(event) =>
+                        setSearchQuery(event.currentTarget.value)
                       }
-                      _hover={{ bg: BRAND_COLORS.subtleBg }}
-                      transition="background-color 0.2s ease-out"
-                    >
-                      <Box
-                        as="td"
-                        px={STANDARD_SPACING.xs}
-                        py="14px"
-                        borderBottomWidth="1px"
-                        borderColor={BRAND_COLORS.neutralBorder}
-                      >
-                        <Checkbox.Root
-                          checked={isSelected}
-                          onCheckedChange={() => toggleContract(plan)}
-                        >
-                          <Checkbox.HiddenInput />
-                          <Checkbox.Control />
-                        </Checkbox.Root>
-                      </Box>
-                      <Box
-                        as="td"
-                        px={STANDARD_SPACING.xs}
-                        py="14px"
-                        borderBottomWidth="1px"
-                        borderColor={BRAND_COLORS.neutralBorder}
-                      >
-                        <Text color={BRAND_COLORS.neutralText} fontSize="13px">
-                          {plan.contractNo}
-                        </Text>
-                      </Box>
-                      <Box
-                        as="td"
-                        px={STANDARD_SPACING.xs}
-                        py="14px"
-                        borderBottomWidth="1px"
-                        borderColor={BRAND_COLORS.neutralBorder}
-                      >
-                        <Text
-                          color={BRAND_COLORS.neutralText}
-                          fontWeight="600"
-                          fontSize="13px"
-                        >
-                          {plan.plan}
-                        </Text>
-                      </Box>
-                      <Box
-                        as="td"
-                        px={STANDARD_SPACING.xs}
-                        py="14px"
-                        borderBottomWidth="1px"
-                        borderColor={BRAND_COLORS.neutralBorder}
-                      >
-                        <Text color={BRAND_COLORS.neutralText} fontSize="13px">
-                          {plan.mode}
-                        </Text>
-                      </Box>
-                      <Box
-                        as="td"
-                        px={STANDARD_SPACING.xs}
-                        py="14px"
-                        borderBottomWidth="1px"
-                        borderColor={BRAND_COLORS.neutralBorder}
-                      >
-                        <HStack gap={STANDARD_SPACING.xs}>
-                          <Button
-                            w="34px"
-                            minW="34px"
-                            h="34px"
-                            variant="outline"
-                            borderColor={BRAND_COLORS.primaryGreen}
-                            color={BRAND_COLORS.primaryGreen}
-                            borderRadius={STANDARD_RADIUS.md}
-                            bg={BRAND_COLORS.white}
-                            _hover={{ bg: BRAND_COLORS.successBg }}
-                            onClick={() =>
-                              updateInstallmentNumber(plan.contractNo, -1)
-                            }
-                            disabled={
-                              getInstallmentNumber(plan.contractNo) <= 1
-                            }
-                          >
-                            -
-                          </Button>
-                          <Text
-                            color={BRAND_COLORS.neutralText}
-                            fontWeight="700"
-                            minW="28px"
-                            textAlign="center"
-                            fontSize="16px"
-                          >
-                            {getInstallmentNumber(plan.contractNo)}
-                          </Text>
-                          <Button
-                            w="34px"
-                            minW="34px"
-                            h="34px"
-                            variant="outline"
-                            borderColor={BRAND_COLORS.primaryGreen}
-                            color={BRAND_COLORS.primaryGreen}
-                            borderRadius={STANDARD_RADIUS.md}
-                            bg={BRAND_COLORS.white}
-                            _hover={{ bg: BRAND_COLORS.successBg }}
-                            onClick={() =>
-                              updateInstallmentNumber(plan.contractNo, 1)
-                            }
-                          >
-                            +
-                          </Button>
-                        </HStack>
-                      </Box>
-                      <Box
-                        as="td"
-                        px={STANDARD_SPACING.xs}
-                        py="14px"
-                        borderBottomWidth="1px"
-                        borderColor={BRAND_COLORS.neutralBorder}
-                        color={BRAND_COLORS.neutralText}
-                        fontSize="13px"
-                        textAlign="right"
-                      >
-                        P{formatCurrency(getSelectedPlanTotal(plan))}
-                      </Box>
-                      <Box
-                        as="td"
-                        px={STANDARD_SPACING.xs}
-                        py="14px"
-                        borderBottomWidth="1px"
-                        borderColor={BRAND_COLORS.neutralBorder}
-                        color={BRAND_COLORS.neutralText}
-                        fontSize="13px"
-                      >
-                        {plan.effectiveDate}
-                      </Box>
-                      <Box
-                        as="td"
-                        px={STANDARD_SPACING.xs}
-                        py="14px"
-                        borderBottomWidth="1px"
-                        borderColor={BRAND_COLORS.neutralBorder}
-                        color={BRAND_COLORS.neutralText}
-                        fontSize="13px"
-                      >
-                        {plan.dueDate}
-                      </Box>
-                      <Box
-                        as="td"
-                        px={STANDARD_SPACING.xs}
-                        py="14px"
-                        borderBottomWidth="1px"
-                        borderColor={BRAND_COLORS.neutralBorder}
-                        color={BRAND_COLORS.neutralText}
-                        fontWeight="600"
-                        fontSize="13px"
-                        textAlign="right"
-                      >
-                        P{plan.balance}
-                      </Box>
-                      <Box
-                        as="td"
-                        px={STANDARD_SPACING.xs}
-                        py="14px"
-                        borderBottomWidth="1px"
-                        borderColor={BRAND_COLORS.neutralBorder}
-                      >
-                        <Badge
-                          bg={BRAND_COLORS.errorBg}
-                          color={BRAND_COLORS.errorRed}
-                          borderWidth="1px"
-                          borderColor={BRAND_COLORS.errorRed}
-                          borderRadius={STANDARD_RADIUS.sm}
-                          px={STANDARD_SPACING.xs}
-                          py="2px"
-                          fontSize="11px"
-                          fontWeight="700"
-                          lineHeight="18px"
-                        >
-                          Due
-                        </Badge>
-                      </Box>
-                      <Box
-                        as="td"
-                        px={STANDARD_SPACING.xs}
-                        py="14px"
-                        borderBottomWidth="1px"
-                        borderColor={BRAND_COLORS.neutralBorder}
-                        textAlign="right"
-                        position="sticky"
-                        right={0}
-                        bg={
-                          isSelected
-                            ? BRAND_COLORS.successBg
-                            : BRAND_COLORS.white
-                        }
-                        boxShadow="-8px 0 12px rgba(255,255,255,0.86)"
-                      >
-                        <HStack justify="flex-end" gap={STANDARD_SPACING.xs}>
-                          <PrimaryMdButton
-                            minW="88px"
-                            h={STANDARD_SIZES.button.sm.height}
-                            borderRadius={STANDARD_RADIUS.sm}
-                            onClick={() => toggleContract(plan)}
-                          >
-                            {isSelected ? "REMOVE" : "Add"}
-                          </PrimaryMdButton>
-                          <Button
-                            w={STANDARD_SIZES.iconButton.sm}
-                            minW={STANDARD_SIZES.iconButton.sm}
-                            h={STANDARD_SIZES.iconButton.sm}
-                            variant="ghost"
-                            color={BRAND_COLORS.neutralText}
-                          >
-                            <FaEllipsisH />
-                          </Button>
-                        </HStack>
-                      </Box>
-                    </Box>
-                  );
-                })}
-              </Box>
-            </Box>
-          </Box>
-
-          <Flex
-            align="center"
-            justify="space-between"
-            gap={STANDARD_SPACING.md}
-            px={STANDARD_SPACING.sm}
-            py={STANDARD_SPACING.sm}
-            borderTopWidth="1px"
-            borderColor={BRAND_COLORS.neutralBorder}
-            bg={BRAND_COLORS.white}
-          >
-            <Text color={BRAND_COLORS.neutralText} fontSize="13px">
-              Showing {desktopResultStart}-{desktopResultEnd} of{" "}
-              {desktopResultEnd} records
-            </Text>
-
-            <HStack gap={STANDARD_SPACING.xs}>
-              <Text color={BRAND_COLORS.neutralText} fontSize="13px">
-                Rows per page
-              </Text>
-              <NativeSelect.Root w="64px">
-                <NativeSelect.Field
-                  value="10"
-                  onChange={() => undefined}
-                  h="36px"
-                  px={STANDARD_SPACING.xs}
-                  borderWidth="1px"
-                  borderColor={BRAND_COLORS.neutralBorder}
-                  borderRadius={STANDARD_RADIUS.sm}
-                  color={BRAND_COLORS.neutralText}
-                  fontSize="13px"
-                  bg={BRAND_COLORS.white}
-                >
-                  <option value="10">10</option>
-                </NativeSelect.Field>
-                <NativeSelect.Indicator />
-              </NativeSelect.Root>
-              <Text color={BRAND_COLORS.neutralText} fontSize="13px">
-                Page 1 of 1
-              </Text>
-              {[
-                LuChevronFirst,
-                LuChevronLeft,
-                LuChevronRight,
-                LuChevronLast,
-              ].map((Icon, index) => (
-                <Button
-                  key={index}
-                  w="34px"
-                  minW="34px"
-                  h="34px"
-                  variant="outline"
-                  borderColor={BRAND_COLORS.lightCyan}
-                  color={BRAND_COLORS.softGreen}
-                  borderRadius={STANDARD_RADIUS.sm}
-                  disabled
-                >
-                  <Icon />
-                </Button>
-              ))}
-            </HStack>
-          </Flex>
-        </Box>
-
-        {/* ── MOBILE COMPACT LIST ──────────────────────────────────────────── */}
-        <VStack
-          display={{ base: "flex", lg: "none" }}
-          align="stretch"
-          gap={STANDARD_SPACING.xs}
-        >
-          {activePlans.map((plan) => {
-            const isSelected = isPlanSelected(plan.contractNo);
-
-            return (
-              <Box
-                key={plan.contractNo}
-                bg={isSelected ? BRAND_COLORS.successBg : BRAND_COLORS.white}
-                borderWidth="1px"
-                borderColor={
-                  isSelected
-                    ? BRAND_COLORS.primaryGreen
-                    : BRAND_COLORS.neutralBorder
-                }
-                borderRadius={STANDARD_RADIUS.lg}
-                overflow="hidden"
-                boxShadow={STANDARD_SHADOWS.level1}
-                transition="border-color 150ms ease-out, background 150ms ease-out"
-              >
-                {/* Top row: checkbox + thumbnail + plan info */}
-                <HStack
-                  gap={STANDARD_SPACING.sm}
-                  p={STANDARD_SPACING.sm}
-                  align="start"
-                >
-                  {/* Checkbox */}
-                  <Checkbox.Root
-                    checked={isSelected}
-                    onCheckedChange={() => toggleContract(plan)}
-                    mt="2px"
-                    flexShrink={0}
-                  >
-                    <Checkbox.HiddenInput />
-                    <Checkbox.Control />
-                  </Checkbox.Root>
-
-                  {/* Thumbnail */}
-                  <Box
-                    w="60px"
-                    h="60px"
-                    borderRadius={STANDARD_RADIUS.md}
-                    overflow="hidden"
-                    flexShrink={0}
-                    bg={BRAND_COLORS.subtleBg}
-                  >
-                    <img
-                      src={`/images/plan-images/${plan.plan}.jpg`}
-                      alt={plan.plan}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
+                      placeholder="Search plans..."
+                      w="full"
+                      h="40px"
+                      pl="36px"
+                      pr={STANDARD_SPACING.xs}
+                      borderWidth="1px"
+                      borderColor={BRAND_COLORS.neutralBorder}
+                      borderRadius={STANDARD_RADIUS.sm}
+                      color={BRAND_COLORS.neutralText}
+                      fontSize="13px"
+                      bg={BRAND_COLORS.white}
+                      boxShadow="0px 1px 2px rgba(0,0,0,0.03)"
+                      outline="none"
+                      _focus={{
+                        borderColor: BRAND_COLORS.primaryGreen,
+                        boxShadow: "0 0 0 1px #109448",
                       }}
                     />
                   </Box>
 
-                  {/* Plan info */}
-                  <VStack align="start" gap="3px" flex="1" minW={0}>
+                  <VStack align="stretch" gap="4px" w="140px">
                     <Text
-                      fontWeight="700"
-                      fontSize="15px"
-                      color={BRAND_COLORS.neutralText}
-                      lineClamp={1}
-                    >
-                      {plan.plan}
-                    </Text>
-                    <Text
-                      fontSize="12px"
-                      color={BRAND_COLORS.primaryGreen}
-                      fontWeight="600"
-                    >
-                      {plan.contractNo}
-                    </Text>
-                    <Text fontSize="12px" color={BRAND_COLORS.grey}>
-                      Mode: {plan.mode}
-                    </Text>
-                    <Text fontSize="12px" color={BRAND_COLORS.grey}>
-                      Effective Date: {plan.effectiveDate}
-                    </Text>
-                  </VStack>
-                </HStack>
-
-                {/* Divider */}
-                <Box h="1px" bg={BRAND_COLORS.neutralBorder} />
-
-                {/* Bottom row: amount due + stepper */}
-                <HStack
-                  justify="space-between"
-                  align="center"
-                  px={STANDARD_SPACING.sm}
-                  py="10px"
-                >
-                  <VStack align="start" gap="1px">
-                    <Text
-                      fontSize="11px"
                       color={BRAND_COLORS.grey}
+                      fontSize="11px"
                       fontWeight="600"
-                      textTransform="uppercase"
-                      letterSpacing="0.04em"
+                      lineHeight="1.2"
                     >
-                      Amount Due
+                      Status
                     </Text>
-                    <Text
-                      fontWeight="700"
-                      fontSize="15px"
-                      color={BRAND_COLORS.darkGreen}
-                    >
-                      ₱ {formatCurrency(getSelectedPlanTotal(plan))}
-                    </Text>
-                  </VStack>
-
-                  {/* Installment stepper */}
-                  <HStack
-                    gap={0}
-                    borderWidth="1px"
-                    borderColor={BRAND_COLORS.neutralBorder}
-                    borderRadius={STANDARD_RADIUS.md}
-                    overflow="hidden"
-                    bg={BRAND_COLORS.white}
-                  >
-                    <Button
-                      aria-label="Decrease installment"
-                      variant="ghost"
-                      w="38px"
-                      minW="38px"
-                      h="38px"
-                      borderRadius="0"
-                      color={BRAND_COLORS.primaryGreen}
-                      _hover={{ bg: BRAND_COLORS.subtleBg }}
-                      onClick={() =>
-                        updateInstallmentNumber(plan.contractNo, -1)
-                      }
-                      disabled={getInstallmentNumber(plan.contractNo) <= 1}
-                    >
-                      −
-                    </Button>
-
-                    <Box
-                      w="38px"
-                      h="38px"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      borderLeftWidth="1px"
-                      borderRightWidth="1px"
-                      borderColor={BRAND_COLORS.neutralBorder}
-                    >
-                      <Text
-                        fontSize="14px"
-                        fontWeight="700"
+                    <NativeSelect.Root w="full">
+                      <NativeSelect.Field
+                        value={statusFilter}
+                        onChange={(event) =>
+                          setStatusFilter(event.currentTarget.value)
+                        }
+                        w="full"
+                        h="40px"
+                        px={STANDARD_SPACING.xs}
+                        pr={STANDARD_SPACING.md}
+                        borderWidth="1px"
+                        borderColor={BRAND_COLORS.neutralBorder}
+                        borderRadius={STANDARD_RADIUS.sm}
                         color={BRAND_COLORS.neutralText}
+                        fontSize="13px"
+                        bg={BRAND_COLORS.white}
+                        boxShadow="0px 1px 2px rgba(0,0,0,0.03)"
                       >
-                        {getInstallmentNumber(plan.contractNo)}
-                      </Text>
-                    </Box>
-
-                    <Button
-                      aria-label="Increase installment"
-                      variant="ghost"
-                      w="38px"
-                      minW="38px"
-                      h="38px"
-                      borderRadius="0"
-                      color={BRAND_COLORS.primaryGreen}
-                      _hover={{ bg: BRAND_COLORS.subtleBg }}
-                      onClick={() =>
-                        updateInstallmentNumber(plan.contractNo, 1)
-                      }
-                    >
-                      +
-                    </Button>
-                  </HStack>
+                        <option value="Due">Due</option>
+                        <option value="All">All</option>
+                      </NativeSelect.Field>
+                      <NativeSelect.Indicator />
+                    </NativeSelect.Root>
+                  </VStack>
                 </HStack>
+              </Flex>
+
+              {/* Table */}
+              <Box
+                overflowX="auto"
+                css={{
+                  "&::-webkit-scrollbar": { height: "8px" },
+                  "&::-webkit-scrollbar-track": {
+                    background: BRAND_COLORS.subtleBg,
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    background: BRAND_COLORS.neutralBorder,
+                    borderRadius: STANDARD_RADIUS.full,
+                  },
+                }}
+              >
+                <Box
+                  as="table"
+                  w="full"
+                  minW="1160px"
+                  borderCollapse="collapse"
+                >
+                  <Box as="thead" bg={BRAND_COLORS.mutedBg}>
+                    <Box as="tr">
+                      <Box
+                        as="th"
+                        w="44px"
+                        px={STANDARD_SPACING.xs}
+                        py="12px"
+                        borderBottomWidth="1px"
+                        borderColor={BRAND_COLORS.neutralBorder}
+                      >
+                        <Checkbox.Root>
+                          <Checkbox.HiddenInput />
+                          <Checkbox.Control />
+                        </Checkbox.Root>
+                      </Box>
+                      {desktopTableHeaders.map((header) => (
+                        <Box
+                          as="th"
+                          key={header.label}
+                          minW={header.minW}
+                          textAlign={header.textAlign ?? "left"}
+                          px={STANDARD_SPACING.xs}
+                          py="12px"
+                          fontSize="11px"
+                          fontWeight="700"
+                          color={BRAND_COLORS.grey}
+                          letterSpacing="0.5px"
+                          borderBottomWidth="1px"
+                          borderColor={BRAND_COLORS.neutralBorder}
+                          position={
+                            header.label === "ACTIONS" ? "sticky" : "static"
+                          }
+                          right={header.label === "ACTIONS" ? 0 : undefined}
+                          zIndex={header.label === "ACTIONS" ? 1 : undefined}
+                          bg={BRAND_COLORS.mutedBg}
+                        >
+                          <HStack
+                            justify={
+                              header.textAlign === "right"
+                                ? "flex-end"
+                                : "flex-start"
+                            }
+                            gap="6px"
+                          >
+                            <Text as="span">{header.label}</Text>
+                            {header.label !== "ACTIONS" ? (
+                              <>
+                                <Box
+                                  as={LuChevronDown}
+                                  boxSize="10px"
+                                  color={BRAND_COLORS.grey}
+                                  opacity={0.5}
+                                />
+                                <Box
+                                  as={LuListFilter}
+                                  boxSize="12px"
+                                  color={BRAND_COLORS.grey}
+                                  opacity={0.7}
+                                />
+                              </>
+                            ) : null}
+                          </HStack>
+                        </Box>
+                      ))}
+                    </Box>
+                  </Box>
+
+                  <Box as="tbody">
+                    {filteredActivePlans.length === 0 ? (
+                      <Box as="tr">
+                        <td
+                          colSpan={desktopTableHeaders.length + 1}
+                          style={{
+                            padding: `${STANDARD_SPACING.lg} ${STANDARD_SPACING.sm}`,
+                            textAlign: "center",
+                            color: BRAND_COLORS.grey,
+                            fontSize: "14px",
+                          }}
+                        >
+                          No Records Available
+                        </td>
+                      </Box>
+                    ) : null}
+                    {filteredActivePlans.map((plan) => {
+                      const isSelected = isPlanSelected(plan.contractNo);
+
+                      return (
+                        <Box
+                          as="tr"
+                          key={plan.contractNo}
+                          bg={
+                            isSelected
+                              ? BRAND_COLORS.successBg
+                              : BRAND_COLORS.white
+                          }
+                          _hover={{ bg: BRAND_COLORS.subtleBg }}
+                          transition="background-color 0.2s ease-out"
+                        >
+                          <Box
+                            as="td"
+                            px={STANDARD_SPACING.xs}
+                            py="14px"
+                            borderBottomWidth="1px"
+                            borderColor={BRAND_COLORS.neutralBorder}
+                          >
+                            <Checkbox.Root
+                              checked={isSelected}
+                              onCheckedChange={() => toggleContract(plan)}
+                            >
+                              <Checkbox.HiddenInput />
+                              <Checkbox.Control />
+                            </Checkbox.Root>
+                          </Box>
+                          <Box
+                            as="td"
+                            px={STANDARD_SPACING.xs}
+                            py="14px"
+                            borderBottomWidth="1px"
+                            borderColor={BRAND_COLORS.neutralBorder}
+                          >
+                            <Text
+                              color={BRAND_COLORS.neutralText}
+                              fontSize="13px"
+                            >
+                              {plan.contractNo}
+                            </Text>
+                          </Box>
+                          <Box
+                            as="td"
+                            px={STANDARD_SPACING.xs}
+                            py="14px"
+                            borderBottomWidth="1px"
+                            borderColor={BRAND_COLORS.neutralBorder}
+                          >
+                            <Text
+                              color={BRAND_COLORS.neutralText}
+                              fontWeight="600"
+                              fontSize="13px"
+                            >
+                              {plan.plan}
+                            </Text>
+                          </Box>
+                          <Box
+                            as="td"
+                            px={STANDARD_SPACING.xs}
+                            py="14px"
+                            borderBottomWidth="1px"
+                            borderColor={BRAND_COLORS.neutralBorder}
+                          >
+                            <Text
+                              color={BRAND_COLORS.neutralText}
+                              fontSize="13px"
+                            >
+                              {plan.mode}
+                            </Text>
+                          </Box>
+                          <Box
+                            as="td"
+                            px={STANDARD_SPACING.xs}
+                            py="14px"
+                            borderBottomWidth="1px"
+                            borderColor={BRAND_COLORS.neutralBorder}
+                          >
+                            <HStack gap={STANDARD_SPACING.xs}>
+                              <Button
+                                w="34px"
+                                minW="34px"
+                                h="34px"
+                                variant="outline"
+                                borderColor={BRAND_COLORS.primaryGreen}
+                                color={BRAND_COLORS.primaryGreen}
+                                borderRadius={STANDARD_RADIUS.md}
+                                bg={BRAND_COLORS.white}
+                                _hover={{ bg: BRAND_COLORS.successBg }}
+                                onClick={() =>
+                                  updateInstallmentNumber(plan.contractNo, -1)
+                                }
+                                disabled={
+                                  getInstallmentNumber(plan.contractNo) <= 1
+                                }
+                              >
+                                -
+                              </Button>
+                              <Text
+                                color={BRAND_COLORS.neutralText}
+                                fontWeight="700"
+                                minW="28px"
+                                textAlign="center"
+                                fontSize="16px"
+                              >
+                                {getInstallmentNumber(plan.contractNo)}
+                              </Text>
+                              <Button
+                                w="34px"
+                                minW="34px"
+                                h="34px"
+                                variant="outline"
+                                borderColor={BRAND_COLORS.primaryGreen}
+                                color={BRAND_COLORS.primaryGreen}
+                                borderRadius={STANDARD_RADIUS.md}
+                                bg={BRAND_COLORS.white}
+                                _hover={{ bg: BRAND_COLORS.successBg }}
+                                onClick={() =>
+                                  updateInstallmentNumber(plan.contractNo, 1)
+                                }
+                              >
+                                +
+                              </Button>
+                            </HStack>
+                          </Box>
+                          <Box
+                            as="td"
+                            px={STANDARD_SPACING.xs}
+                            py="14px"
+                            borderBottomWidth="1px"
+                            borderColor={BRAND_COLORS.neutralBorder}
+                            color={BRAND_COLORS.neutralText}
+                            fontSize="13px"
+                            textAlign="right"
+                          >
+                            P{formatCurrency(getSelectedPlanTotal(plan))}
+                          </Box>
+                          <Box
+                            as="td"
+                            px={STANDARD_SPACING.xs}
+                            py="14px"
+                            borderBottomWidth="1px"
+                            borderColor={BRAND_COLORS.neutralBorder}
+                            color={BRAND_COLORS.neutralText}
+                            fontSize="13px"
+                          >
+                            {plan.effectiveDate}
+                          </Box>
+                          <Box
+                            as="td"
+                            px={STANDARD_SPACING.xs}
+                            py="14px"
+                            borderBottomWidth="1px"
+                            borderColor={BRAND_COLORS.neutralBorder}
+                            color={BRAND_COLORS.neutralText}
+                            fontSize="13px"
+                          >
+                            {plan.dueDate}
+                          </Box>
+                          <Box
+                            as="td"
+                            px={STANDARD_SPACING.xs}
+                            py="14px"
+                            borderBottomWidth="1px"
+                            borderColor={BRAND_COLORS.neutralBorder}
+                            color={BRAND_COLORS.neutralText}
+                            fontWeight="600"
+                            fontSize="13px"
+                            textAlign="right"
+                          >
+                            P{plan.balance}
+                          </Box>
+                          <Box
+                            as="td"
+                            px={STANDARD_SPACING.xs}
+                            py="14px"
+                            borderBottomWidth="1px"
+                            borderColor={BRAND_COLORS.neutralBorder}
+                          >
+                            <Badge
+                              bg={BRAND_COLORS.errorBg}
+                              color={BRAND_COLORS.errorRed}
+                              borderWidth="1px"
+                              borderColor={BRAND_COLORS.errorRed}
+                              borderRadius={STANDARD_RADIUS.sm}
+                              px={STANDARD_SPACING.xs}
+                              py="2px"
+                              fontSize="11px"
+                              fontWeight="700"
+                              lineHeight="18px"
+                            >
+                              Due
+                            </Badge>
+                          </Box>
+                          <Box
+                            as="td"
+                            px={STANDARD_SPACING.xs}
+                            py="14px"
+                            borderBottomWidth="1px"
+                            borderColor={BRAND_COLORS.neutralBorder}
+                            textAlign="right"
+                            position="sticky"
+                            right={0}
+                            bg={
+                              isSelected
+                                ? BRAND_COLORS.successBg
+                                : BRAND_COLORS.white
+                            }
+                            boxShadow="-8px 0 12px rgba(255,255,255,0.86)"
+                          >
+                            <HStack
+                              justify="flex-end"
+                              gap={STANDARD_SPACING.xs}
+                            >
+                              <PrimaryMdButton
+                                minW="88px"
+                                h={STANDARD_SIZES.button.sm.height}
+                                borderRadius={STANDARD_RADIUS.sm}
+                                onClick={() => toggleContract(plan)}
+                              >
+                                {isSelected ? "REMOVE" : "Add"}
+                              </PrimaryMdButton>
+                              <Button
+                                w={STANDARD_SIZES.iconButton.sm}
+                                minW={STANDARD_SIZES.iconButton.sm}
+                                h={STANDARD_SIZES.iconButton.sm}
+                                variant="ghost"
+                                color={BRAND_COLORS.neutralText}
+                              >
+                                <FaEllipsisH />
+                              </Button>
+                            </HStack>
+                          </Box>
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                </Box>
               </Box>
-            );
-          })}
-        </VStack>
-      </VStack>
+
+              {/* Pagination */}
+              <Flex
+                align="center"
+                justify="space-between"
+                gap={STANDARD_SPACING.md}
+                px={STANDARD_SPACING.sm}
+                py={STANDARD_SPACING.sm}
+                borderTopWidth="1px"
+                borderColor={BRAND_COLORS.neutralBorder}
+                bg={BRAND_COLORS.white}
+              >
+                <Text color={BRAND_COLORS.neutralText} fontSize="13px">
+                  Showing {desktopResultStart}-{desktopResultEnd} of{" "}
+                  {desktopResultEnd} records
+                </Text>
+
+                <HStack gap={STANDARD_SPACING.xs}>
+                  <Text color={BRAND_COLORS.neutralText} fontSize="13px">
+                    Rows per page
+                  </Text>
+                  <NativeSelect.Root w="64px">
+                    <NativeSelect.Field
+                      value="10"
+                      onChange={() => undefined}
+                      h="36px"
+                      px={STANDARD_SPACING.xs}
+                      borderWidth="1px"
+                      borderColor={BRAND_COLORS.neutralBorder}
+                      borderRadius={STANDARD_RADIUS.sm}
+                      color={BRAND_COLORS.neutralText}
+                      fontSize="13px"
+                      bg={BRAND_COLORS.white}
+                    >
+                      <option value="10">10</option>
+                    </NativeSelect.Field>
+                    <NativeSelect.Indicator />
+                  </NativeSelect.Root>
+                  <Text color={BRAND_COLORS.neutralText} fontSize="13px">
+                    Page 1 of 1
+                  </Text>
+                  {[
+                    LuChevronFirst,
+                    LuChevronLeft,
+                    LuChevronRight,
+                    LuChevronLast,
+                  ].map((Icon, index) => (
+                    <Button
+                      key={index}
+                      w="34px"
+                      minW="34px"
+                      h="34px"
+                      variant="outline"
+                      borderColor={BRAND_COLORS.lightCyan}
+                      color={BRAND_COLORS.softGreen}
+                      borderRadius={STANDARD_RADIUS.sm}
+                      disabled
+                    >
+                      <Icon />
+                    </Button>
+                  ))}
+                </HStack>
+              </Flex>
+            </Box>
+          </Page.Row>
+
+          {/* ── MOBILE COMPACT LIST ──────────────────────────────────────────── */}
+          <Page.Row>
+            <VStack
+              display={{ base: "flex", lg: "none" }}
+              align="stretch"
+              gap={STANDARD_SPACING.xs}
+            >
+              {activePlans.map((plan) => {
+                const isSelected = isPlanSelected(plan.contractNo);
+
+                return (
+                  <Box
+                    key={plan.contractNo}
+                    bg={
+                      isSelected ? BRAND_COLORS.successBg : BRAND_COLORS.white
+                    }
+                    borderWidth="1px"
+                    borderColor={
+                      isSelected
+                        ? BRAND_COLORS.primaryGreen
+                        : BRAND_COLORS.neutralBorder
+                    }
+                    borderRadius={STANDARD_RADIUS.lg}
+                    overflow="hidden"
+                    boxShadow={STANDARD_SHADOWS.level1}
+                    transition="border-color 150ms ease-out, background 150ms ease-out"
+                  >
+                    {/* Top row: checkbox + thumbnail + plan info */}
+                    <HStack
+                      gap={STANDARD_SPACING.sm}
+                      p={STANDARD_SPACING.sm}
+                      align="start"
+                    >
+                      <Checkbox.Root
+                        checked={isSelected}
+                        onCheckedChange={() => toggleContract(plan)}
+                        mt="2px"
+                        flexShrink={0}
+                      >
+                        <Checkbox.HiddenInput />
+                        <Checkbox.Control />
+                      </Checkbox.Root>
+
+                      <Box
+                        w="60px"
+                        h="60px"
+                        borderRadius={STANDARD_RADIUS.md}
+                        overflow="hidden"
+                        flexShrink={0}
+                        bg={BRAND_COLORS.subtleBg}
+                      >
+                        <img
+                          src={`/images/plan-images/${plan.plan}.jpg`}
+                          alt={plan.plan}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </Box>
+
+                      <VStack align="start" gap="3px" flex="1" minW={0}>
+                        <Text
+                          fontWeight="700"
+                          fontSize="15px"
+                          color={BRAND_COLORS.neutralText}
+                          lineClamp={1}
+                        >
+                          {plan.plan}
+                        </Text>
+                        <Text
+                          fontSize="12px"
+                          color={BRAND_COLORS.primaryGreen}
+                          fontWeight="600"
+                        >
+                          {plan.contractNo}
+                        </Text>
+                        <Text fontSize="12px" color={BRAND_COLORS.grey}>
+                          Mode: {plan.mode}
+                        </Text>
+                        <Text fontSize="12px" color={BRAND_COLORS.grey}>
+                          Effective Date: {plan.effectiveDate}
+                        </Text>
+                      </VStack>
+                    </HStack>
+
+                    <Box h="1px" bg={BRAND_COLORS.neutralBorder} />
+
+                    {/* Bottom row: amount due + stepper */}
+                    <HStack
+                      justify="space-between"
+                      align="center"
+                      px={STANDARD_SPACING.sm}
+                      py="10px"
+                    >
+                      <VStack align="start" gap="1px">
+                        <Text
+                          fontSize="11px"
+                          color={BRAND_COLORS.grey}
+                          fontWeight="600"
+                          textTransform="uppercase"
+                          letterSpacing="0.04em"
+                        >
+                          Amount Due
+                        </Text>
+                        <Text
+                          fontWeight="700"
+                          fontSize="15px"
+                          color={BRAND_COLORS.darkGreen}
+                        >
+                          ₱ {formatCurrency(getSelectedPlanTotal(plan))}
+                        </Text>
+                      </VStack>
+
+                      <HStack
+                        gap={0}
+                        borderWidth="1px"
+                        borderColor={BRAND_COLORS.neutralBorder}
+                        borderRadius={STANDARD_RADIUS.md}
+                        overflow="hidden"
+                        bg={BRAND_COLORS.white}
+                      >
+                        <Button
+                          aria-label="Decrease installment"
+                          variant="ghost"
+                          w="38px"
+                          minW="38px"
+                          h="38px"
+                          borderRadius="0"
+                          color={BRAND_COLORS.primaryGreen}
+                          _hover={{ bg: BRAND_COLORS.subtleBg }}
+                          onClick={() =>
+                            updateInstallmentNumber(plan.contractNo, -1)
+                          }
+                          disabled={getInstallmentNumber(plan.contractNo) <= 1}
+                        >
+                          −
+                        </Button>
+
+                        <Box
+                          w="38px"
+                          h="38px"
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                          borderLeftWidth="1px"
+                          borderRightWidth="1px"
+                          borderColor={BRAND_COLORS.neutralBorder}
+                        >
+                          <Text
+                            fontSize="14px"
+                            fontWeight="700"
+                            color={BRAND_COLORS.neutralText}
+                          >
+                            {getInstallmentNumber(plan.contractNo)}
+                          </Text>
+                        </Box>
+
+                        <Button
+                          aria-label="Increase installment"
+                          variant="ghost"
+                          w="38px"
+                          minW="38px"
+                          h="38px"
+                          borderRadius="0"
+                          color={BRAND_COLORS.primaryGreen}
+                          _hover={{ bg: BRAND_COLORS.subtleBg }}
+                          onClick={() =>
+                            updateInstallmentNumber(plan.contractNo, 1)
+                          }
+                        >
+                          +
+                        </Button>
+                      </HStack>
+                    </HStack>
+                  </Box>
+                );
+              })}
+            </VStack>
+          </Page.Row>
+        </Page.MainContent>
+      </Page.Root>
 
       {/* ── PAYMENT SUMMARY — only visible when ≥1 plan is selected ────── */}
       {selectedPlans.length > 0 && (
@@ -1161,7 +1057,10 @@ const PayMyPlan = () => {
           }}
           left="50%"
           transform="translateX(-50%)"
-          w={{ base: "calc(100% - 32px)", md: "min(720px, calc(100% - 64px))" }}
+          w={{
+            base: "calc(100% - 32px)",
+            md: "min(720px, calc(100% - 64px))",
+          }}
           maxW="720px"
           bg={BRAND_COLORS.white}
           borderWidth="1px"
@@ -1172,8 +1071,14 @@ const PayMyPlan = () => {
           overflow="hidden"
           css={{
             "@keyframes slideUp": {
-              from: { opacity: 0, transform: "translateX(-50%) translateY(16px)" },
-              to:   { opacity: 1, transform: "translateX(-50%) translateY(0)" },
+              from: {
+                opacity: 0,
+                transform: "translateX(-50%) translateY(16px)",
+              },
+              to: {
+                opacity: 1,
+                transform: "translateX(-50%) translateY(0)",
+              },
             },
             animation: "slideUp 180ms ease-out",
           }}
@@ -1215,8 +1120,13 @@ const PayMyPlan = () => {
                         >
                           {plan.plan}
                         </Text>
-                        <Text fontSize="11px" color={BRAND_COLORS.grey} lineClamp={1}>
-                          {plan.contractNo} · {plan.mode} × {installmentNumbers[plan.contractNo] ?? 1}
+                        <Text
+                          fontSize="11px"
+                          color={BRAND_COLORS.grey}
+                          lineClamp={1}
+                        >
+                          {plan.contractNo} · {plan.mode} ×{" "}
+                          {installmentNumbers[plan.contractNo] ?? 1}
                         </Text>
                       </VStack>
                     </HStack>
@@ -1238,10 +1148,20 @@ const PayMyPlan = () => {
                   pt={STANDARD_SPACING.xs}
                 >
                   <Flex justify="space-between" align="center">
-                    <Text fontSize="12px" fontWeight="700" color={BRAND_COLORS.grey} textTransform="uppercase" letterSpacing="0.05em">
+                    <Text
+                      fontSize="12px"
+                      fontWeight="700"
+                      color={BRAND_COLORS.grey}
+                      textTransform="uppercase"
+                      letterSpacing="0.05em"
+                    >
                       Total
                     </Text>
-                    <Text fontSize="15px" fontWeight="800" color={BRAND_COLORS.darkGreen}>
+                    <Text
+                      fontSize="15px"
+                      fontWeight="800"
+                      color={BRAND_COLORS.darkGreen}
+                    >
                       ₱ {formatCurrency(totalSelectedAmount)}
                     </Text>
                   </Flex>
@@ -1268,10 +1188,20 @@ const PayMyPlan = () => {
               display={{ base: "flex", md: "none" }}
             >
               <VStack align="start" gap={0} minW={0}>
-                <Text fontSize="11px" fontWeight="600" color={BRAND_COLORS.primaryGreen}>
-                  {selectedPlans.length} plan{selectedPlans.length > 1 ? "s" : ""} selected
+                <Text
+                  fontSize="11px"
+                  fontWeight="600"
+                  color={BRAND_COLORS.primaryGreen}
+                >
+                  {selectedPlans.length} plan
+                  {selectedPlans.length > 1 ? "s" : ""} selected
                 </Text>
-                <Text fontSize="16px" fontWeight="800" color={BRAND_COLORS.neutralText} lineHeight="1.3">
+                <Text
+                  fontSize="16px"
+                  fontWeight="800"
+                  color={BRAND_COLORS.neutralText}
+                  lineHeight="1.3"
+                >
                   ₱ {formatCurrency(totalSelectedAmount)}
                 </Text>
               </VStack>
@@ -1287,10 +1217,20 @@ const PayMyPlan = () => {
 
             {/* Left: desktop (no expand toggle) */}
             <Box minW={0} display={{ base: "none", md: "block" }}>
-              <Text fontSize="12px" fontWeight="600" color={BRAND_COLORS.primaryGreen}>
-                {selectedPlans.length} plan{selectedPlans.length > 1 ? "s" : ""} selected
+              <Text
+                fontSize="12px"
+                fontWeight="600"
+                color={BRAND_COLORS.primaryGreen}
+              >
+                {selectedPlans.length} plan
+                {selectedPlans.length > 1 ? "s" : ""} selected
               </Text>
-              <Text fontSize="18px" fontWeight="800" color={BRAND_COLORS.neutralText} lineHeight="1.3">
+              <Text
+                fontSize="18px"
+                fontWeight="800"
+                color={BRAND_COLORS.neutralText}
+                lineHeight="1.3"
+              >
                 ₱ {formatCurrency(totalSelectedAmount)}
               </Text>
             </Box>
@@ -1307,7 +1247,7 @@ const PayMyPlan = () => {
           </Flex>
         </Box>
       )}
-    </Container>
+    </>
   );
 };
 

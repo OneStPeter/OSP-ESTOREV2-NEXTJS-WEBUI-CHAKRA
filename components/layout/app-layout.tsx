@@ -117,7 +117,6 @@ export function AppLayout({
                 notifications={notifications}
                 profileOpen={profileOpen}
                 onProfileOpenChange={setProfileOpen}
-                navItems={navItems}
               />
             </StickyNavbarContext>
           </Box>

@@ -1,7 +1,8 @@
 "use client";
 
 import { ReactNode } from "react";
-import { Box, HStack } from "@chakra-ui/react";
+import { Box, HStack, Text } from "@chakra-ui/react";
+
 import { Body } from "st-peter-ui";
 import { HiInformationCircle } from "react-icons/hi";
 import type { IconType } from "react-icons";
@@ -30,15 +31,22 @@ export const InfoCard = ({
     <HStack
       gap={STANDARD_SPACING.sm}
       align="center"
-      p={STANDARD_SPACING.sm}
+      p="8px"
       borderRadius={STANDARD_RADIUS.md}
-      bg={BRAND_COLORS.successBg}
+      bg="#ebf4fb"
       borderWidth="1px"
-      borderColor={BRAND_COLORS.softGreen}
+      borderColor="#1976d2"
       color={BRAND_COLORS.darkGreen}
     >
-      <Box as={icon} boxSize={STANDARD_SIZES.iconButton.sm} flexShrink={0} />
-      <Body color={BRAND_COLORS.darkGreen}>{children}</Body>
+      <Box
+        as={icon}
+        boxSize={STANDARD_SIZES.iconButton.sm}
+        color="#1976d2"
+        flexShrink={0}
+      />
+      <Text color="#1976d2" fontSize="xs">
+        {children}
+      </Text>
     </HStack>
   );
 };

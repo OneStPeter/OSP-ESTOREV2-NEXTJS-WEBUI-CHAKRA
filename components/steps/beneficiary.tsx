@@ -2,7 +2,6 @@ import {
   VStack,
   Box,
   Grid,
-  GridItem,
   CloseButton,
   Dialog,
   HStack,
@@ -23,15 +22,12 @@ import { LuPencil } from "react-icons/lu";
 import {
   Body,
   H4,
-  Small,
   DeleteSolidButton,
   SecondaryMdButton,
-  DynamicOutlineButton,
   PrimaryMdButton,
-  EditButton,
-  PrimaryMdFlexButton,
 } from "st-peter-ui";
 import { FloatingLabelInput } from "../ui/floating-label-input";
+import { RowItem } from "../ui/row-item";
 import { IBeneficiary } from "@/types/planholder";
 import {
   createEmptyApplicationData,
@@ -59,6 +55,18 @@ type SelectedBeneficiary = {
   type: "principal" | "contingent";
   index: number;
 };
+
+const ReviewRows = ({
+  rows,
+}: {
+  rows: { label: string; value?: React.ReactNode }[];
+}) => (
+  <VStack align="stretch" gap={1}>
+    {rows.map((row) => (
+      <RowItem key={row.label} label={row.label} value={row.value} />
+    ))}
+  </VStack>
+);
 
 interface BeneficiaryProps {
   onUpdate?: (
@@ -128,49 +136,54 @@ const Beneficiary = ({ onUpdate }: BeneficiaryProps) => {
   };
 
   useEffect(() => {
-    const currentData = loadApplicationDataFromLocalStorage();
-    if (!currentData) return;
+    const timeoutId = window.setTimeout(() => {
+      const currentData = loadApplicationDataFromLocalStorage();
+      if (!currentData) return;
 
-    const storedBeneficiaries = currentData.beneficiaries ?? [];
+      const storedBeneficiaries = currentData.beneficiaries ?? [];
 
-    let principalFromStorage = storedBeneficiaries.filter(
-      (beneficiary) => beneficiary.beneficiaryClass === "principal",
-    );
-    let contingentFromStorage = storedBeneficiaries.filter(
-      (beneficiary) => beneficiary.beneficiaryClass === "contingent",
-    );
+      let principalFromStorage = storedBeneficiaries.filter(
+        (beneficiary) => beneficiary.beneficiaryClass === "principal",
+      );
+      let contingentFromStorage = storedBeneficiaries.filter(
+        (beneficiary) => beneficiary.beneficiaryClass === "contingent",
+      );
 
-    if (storedBeneficiaries.length === 0) {
-      if (currentData.principalBeneficiary) {
-        principalFromStorage = [
-          {
-            ...currentData.principalBeneficiary,
-            beneficiaryClass:
-              currentData.principalBeneficiary.beneficiaryClass || "principal",
-          },
-        ];
+      if (storedBeneficiaries.length === 0) {
+        if (currentData.principalBeneficiary) {
+          principalFromStorage = [
+            {
+              ...currentData.principalBeneficiary,
+              beneficiaryClass:
+                currentData.principalBeneficiary.beneficiaryClass ||
+                "principal",
+            },
+          ];
+        }
+
+        if (currentData.contingentBeneficiary) {
+          contingentFromStorage = [
+            {
+              ...currentData.contingentBeneficiary,
+              beneficiaryClass:
+                currentData.contingentBeneficiary.beneficiaryClass ||
+                "contingent",
+            },
+          ];
+        }
       }
 
-      if (currentData.contingentBeneficiary) {
-        contingentFromStorage = [
-          {
-            ...currentData.contingentBeneficiary,
-            beneficiaryClass:
-              currentData.contingentBeneficiary.beneficiaryClass ||
-              "contingent",
-          },
-        ];
-      }
-    }
+      setPrincipalBeneficiaries(principalFromStorage);
+      setContingentBeneficiaries(contingentFromStorage);
 
-    setPrincipalBeneficiaries(principalFromStorage);
-    setContingentBeneficiaries(contingentFromStorage);
+      onUpdate?.(
+        principalFromStorage.length > 0 ? principalFromStorage[0] : undefined,
+        contingentFromStorage.length > 0 ? contingentFromStorage[0] : undefined,
+        [...principalFromStorage, ...contingentFromStorage],
+      );
+    }, 0);
 
-    onUpdate?.(
-      principalFromStorage.length > 0 ? principalFromStorage[0] : undefined,
-      contingentFromStorage.length > 0 ? contingentFromStorage[0] : undefined,
-      [...principalFromStorage, ...contingentFromStorage],
-    );
+    return () => window.clearTimeout(timeoutId);
   }, [onUpdate]);
 
   const handleSaveAddBeneficiary = () => {
@@ -511,7 +524,9 @@ const Beneficiary = ({ onUpdate }: BeneficiaryProps) => {
                 </Dialog.Body>
                 <Dialog.Footer>
                   <Stack
-                    direction={{ base: "column-reverse", sm: "row" }}
+                    display="flex"
+                    justifyContent="flex-end"
+                    direction={{ base: "row", sm: "row" }}
                     w={{ base: "full", sm: "auto" }}
                     gap={3}
                   >
@@ -567,61 +582,38 @@ const Beneficiary = ({ onUpdate }: BeneficiaryProps) => {
                   cursor="pointer"
                   onClick={() => handleOpenEdit("principal", idx, beneficiary)}
                 >
-                  <Grid
-                    templateColumns={{
-                      base: "1fr",
-                      md: "repeat(3, minmax(0, 1fr))",
-                    }}
-                    gap={{ base: 2, md: 4 }}
-                  >
-                    <GridItem>
-                      <VStack align="start" gap={0} minW={0}>
-                        <Small color="gray.500">Name</Small>
-                        <Body fontWeight="semibold">
-                          {formatFullName(beneficiary)}
-                        </Body>
-                      </VStack>
-                    </GridItem>
-
-                    <GridItem>
-                      <VStack align="start" gap={0}>
-                        <Small color="gray.500">Relationship</Small>
-                        <Body fontWeight="semibold">
-                          {beneficiary.relationship}
-                        </Body>
-                      </VStack>
-                    </GridItem>
-
-                    <GridItem>
-                      <VStack align="start" gap={0}>
-                        <Small color="gray.500">Date of Birth</Small>
-                        <Body fontWeight="semibold">
-                          {formatDateDisplay(beneficiary.birthDate)}
-                        </Body>
-                      </VStack>
-                    </GridItem>
-                  </Grid>
+                  <Body fontWeight="semibold" mb={1}>
+                    {formatFullName(beneficiary)}
+                  </Body>
+                  <ReviewRows
+                    rows={[
+                      {
+                        label: "Relationship",
+                        value: beneficiary.relationship,
+                      },
+                      {
+                        label: "Date of Birth",
+                        value: formatDateDisplay(beneficiary.birthDate),
+                      },
+                      {
+                        label: "Address",
+                        value: beneficiary.address,
+                      },
+                    ]}
+                  />
                 </Box>
 
                 <HStack gap={2} mt={{ base: 1, md: "auto" }}>
-                  {isMobile ? (
-                    <IconButton
-                      aria-label="Edit beneficiary"
-                      variant="ghost"
-                      // color="blue.500"
-                      onClick={() =>
-                        handleOpenEdit("principal", idx, beneficiary)
-                      }
-                    >
-                      <LuPencil />
-                    </IconButton>
-                  ) : (
-                    <EditButton
-                      onClick={() =>
-                        handleOpenEdit("principal", idx, beneficiary)
-                      }
-                    ></EditButton>
-                  )}
+                  <IconButton
+                    aria-label="Edit beneficiary"
+                    variant="ghost"
+                    color="green.600"
+                    onClick={() =>
+                      handleOpenEdit("principal", idx, beneficiary)
+                    }
+                  >
+                    <LuPencil />
+                  </IconButton>
                   {isMobile ? (
                     <IconButton
                       aria-label="Delete beneficiary"
@@ -676,61 +668,38 @@ const Beneficiary = ({ onUpdate }: BeneficiaryProps) => {
                   cursor="pointer"
                   onClick={() => handleOpenEdit("contingent", idx, beneficiary)}
                 >
-                  <Grid
-                    templateColumns={{
-                      base: "1fr",
-                      md: "repeat(3, minmax(0, 1fr))",
-                    }}
-                    gap={{ base: 2, md: 4 }}
-                  >
-                    <GridItem>
-                      <VStack align="start" gap={0} minW={0}>
-                        <Small color="gray.500">Name</Small>
-                        <Body fontWeight="semibold">
-                          {formatFullName(beneficiary)}
-                        </Body>
-                      </VStack>
-                    </GridItem>
-
-                    <GridItem>
-                      <VStack align="start" gap={0}>
-                        <Small color="gray.500">Relationship</Small>
-                        <Body fontWeight="semibold">
-                          {beneficiary.relationship}
-                        </Body>
-                      </VStack>
-                    </GridItem>
-
-                    <GridItem>
-                      <VStack align="start" gap={0}>
-                        <Small color="gray.500">Date of Birth</Small>
-                        <Body fontWeight="semibold">
-                          {formatDateDisplay(beneficiary.birthDate)}
-                        </Body>
-                      </VStack>
-                    </GridItem>
-                  </Grid>
+                  <Body fontWeight="semibold" mb={1}>
+                    {formatFullName(beneficiary)}
+                  </Body>
+                  <ReviewRows
+                    rows={[
+                      {
+                        label: "Relationship",
+                        value: beneficiary.relationship,
+                      },
+                      {
+                        label: "Date of Birth",
+                        value: formatDateDisplay(beneficiary.birthDate),
+                      },
+                      {
+                        label: "Address",
+                        value: beneficiary.address,
+                      },
+                    ]}
+                  />
                 </Box>
 
                 <HStack gap={2} mt={{ base: 1, md: "auto" }}>
-                  {isMobile ? (
-                    <IconButton
-                      aria-label="Edit beneficiary"
-                      variant="ghost"
-                      color="blue.500"
-                      onClick={() =>
-                        handleOpenEdit("contingent", idx, beneficiary)
-                      }
-                    >
-                      <LuPencil />
-                    </IconButton>
-                  ) : (
-                    <EditButton
-                      onClick={() =>
-                        handleOpenEdit("contingent", idx, beneficiary)
-                      }
-                    ></EditButton>
-                  )}
+                  <IconButton
+                    aria-label="Edit beneficiary"
+                    variant="ghost"
+                    color="green.600"
+                    onClick={() =>
+                      handleOpenEdit("contingent", idx, beneficiary)
+                    }
+                  >
+                    <LuPencil />
+                  </IconButton>
                   {isMobile ? (
                     <IconButton
                       aria-label="Delete beneficiary"
