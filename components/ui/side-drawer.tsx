@@ -33,13 +33,12 @@ export type SideDrawerSection = {
   title: string;
   subtitle?: string;
   rows: SideDrawerRow[];
-  /** Which tab this section belongs to. If omitted, shows on all tabs. */
-  tab?: string;
 };
 
 export type SideDrawerTab = {
   value: string;
   label: string;
+  sections: SideDrawerSection[];
 };
 
 export type SideDrawerBadge = {
@@ -61,11 +60,15 @@ export type SideDrawerProps = {
    * Accepts any React node.
    */
   headerChildren?: React.ReactNode;
-  /** When provided, a tab bar is rendered at the top of the scrollable body */
+  /**
+   * When provided, a tab bar is rendered at the top of the body.
+   * Each tab carries its own sections — content switches with the active tab.
+   */
   tabs?: SideDrawerTab[];
   activeTab?: string;
   onTabChange?: (value: string) => void;
-  sections: SideDrawerSection[];
+  /** Used when there are no tabs. Ignored when tabs are provided. */
+  sections?: SideDrawerSection[];
 };
 
 const getBadgeColors = (tone: SideDrawerBadge["tone"] = "neutral") => {
@@ -158,6 +161,10 @@ const SideDrawer = ({
 
   const hasTabs = tabs && tabs.length > 0;
 
+  const visibleSections = hasTabs
+    ? (tabs.find((t) => t.value === activeTab)?.sections ?? [])
+    : (sections ?? []);
+
   return (
     <Drawer.Root
       open={open}
@@ -187,7 +194,11 @@ const SideDrawer = ({
               borderBottomWidth="1px"
               borderColor={BRAND_COLORS.neutralBorder}
             >
-              <Box px={STANDARD_SPACING.sm} pt={STANDARD_SPACING.sm} pb={STANDARD_SPACING.sm}>
+              <Box
+                px={STANDARD_SPACING.sm}
+                pt={STANDARD_SPACING.sm}
+                pb={STANDARD_SPACING.sm}
+              >
                 {/* Row 1: eyebrow + title on left, actions on right */}
                 <Flex align="flex-start" justify="space-between" gap={2}>
                   <VStack align="start" gap="3px" flex={1} minW={0}>
@@ -255,7 +266,7 @@ const SideDrawer = ({
 
                 {/* Row 3: headerChildren (action buttons) */}
                 {headerChildren ? (
-                  <Box mt={STANDARD_SPACING.xs} w="full">
+                  <Box mt={4} w="full">
                     {headerChildren}
                   </Box>
                 ) : null}
@@ -265,10 +276,7 @@ const SideDrawer = ({
             {/* ── BODY ────────────────────────────────────────────────────
                 Tab bar (if provided) sits flush at the top, then sections.
             ─────────────────────────────────────────────────────────── */}
-            <Drawer.Body
-              p={0}
-              overflowY="auto"
-            >
+            <Drawer.Body p={0} overflowY="auto">
               {/* Tab bar — full-width, white, sticky feel */}
               {hasTabs ? (
                 <Box
@@ -316,7 +324,7 @@ const SideDrawer = ({
                 </Box>
               ) : null}
 
-              {/* Section cards — filtered by active tab when tabs are present */}
+              {/* Section cards — driven by active tab when tabs are present */}
               <VStack
                 align="stretch"
                 gap={3}
@@ -324,12 +332,7 @@ const SideDrawer = ({
                 pt={STANDARD_SPACING.sm}
                 pb={`calc(${STANDARD_SPACING.sm} + env(safe-area-inset-bottom))`}
               >
-                {(hasTabs
-                  ? sections.filter(
-                      (s) => !s.tab || s.tab === activeTab,
-                    )
-                  : sections
-                ).map((section) => (
+                {visibleSections.map((section) => (
                   <SectionCard key={section.title} section={section} />
                 ))}
               </VStack>

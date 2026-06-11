@@ -49,6 +49,7 @@ import {
   LuArrowLeftRight,
   LuShield,
   LuUsers,
+  LuExternalLink,
 } from "react-icons/lu";
 import { HiOutlineUsers, HiUsers } from "react-icons/hi2";
 import {
@@ -398,9 +399,9 @@ function calcPwStrength(pw: string): number {
   return score;
 }
 
-const Profile = () => {
+const Profile = ({ onClose }: { onClose?: () => void } = {}) => {
   const router = useRouter();
-  const { logout } = useDemoAuth();
+  const { logout, isLoggedIn } = useDemoAuth();
 
   const [profileView, setProfileView] = useState<ProfileView>("main");
 
@@ -671,6 +672,58 @@ const Profile = () => {
         >
           Account
         </Text>
+
+        {/* My Account — only shown when logged in */}
+        {isLoggedIn ? (
+          <>
+            <Box
+              as="button"
+              w="full"
+              textAlign="left"
+              _hover={{ opacity: 0.7 }}
+              transition="opacity 0.15s"
+              onClick={() => { onClose?.(); router.push("/account"); }}
+            >
+              <Flex
+                justify="space-between"
+                align="center"
+                py={3}
+                px={isDesktop ? 2 : 0}
+                borderRadius="lg"
+              >
+                <Flex align="center" gap={3}>
+                  <Box
+                    w="38px"
+                    h="38px"
+                    borderRadius="xl"
+                    bg="gray.100"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    color="gray.600"
+                    flexShrink={0}
+                  >
+                    <LuExternalLink size={16} />
+                  </Box>
+                  <Box>
+                    <Text fontSize="sm" fontWeight="semibold">
+                      My Account
+                    </Text>
+                    <Text fontSize="xs" color="gray.500">
+                      View your account dashboard
+                    </Text>
+                  </Box>
+                </Flex>
+                <LuChevronRight
+                  size={16}
+                  color="var(--chakra-colors-gray-400)"
+                />
+              </Flex>
+            </Box>
+
+            <Separator />
+          </>
+        ) : null}
 
         <Box
           as="button"

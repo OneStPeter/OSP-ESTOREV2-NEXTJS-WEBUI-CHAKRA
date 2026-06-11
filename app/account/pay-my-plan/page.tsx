@@ -1051,8 +1051,16 @@ const PayMyPlan = () => {
                 tabs={
                   sideDrawerPlan
                     ? [
-                        { label: "Information", value: "info" },
-                        { label: "Documents", value: "documents" },
+                        {
+                          label: "Information",
+                          value: "info",
+                          sections: [{ title: "Plan Information", rows: [] }],
+                        },
+                        {
+                          label: "Documents",
+                          value: "documents",
+                          sections: [],
+                        },
                       ]
                     : []
                 }
@@ -1060,7 +1068,12 @@ const PayMyPlan = () => {
                   sideDrawerPlan ? [{ label: "Due", tone: "error" }] : undefined
                 }
                 headerChildren={
-                  sideDrawerPlan ? <Button>Transfer Plan</Button> : null
+                  sideDrawerPlan ? (
+                    <HStack gap={STANDARD_SPACING.xs} wrap="wrap">
+                      <Button>Transfer Plan</Button>
+                      <Button variant="outline">Test Button</Button>
+                    </HStack>
+                  ) : null
                 }
                 sections={
                   sideDrawerPlan

@@ -1691,7 +1691,7 @@ export function AppBottomNavBar({
               </Dialog.CloseTrigger>
 
               <Dialog.Body p={0} overflowY="auto">
-                <ProfilePage />
+                <ProfilePage onClose={() => setProfilePageOpen(false)} />
               </Dialog.Body>
             </Dialog.Content>
           </Dialog.Positioner>
