@@ -76,11 +76,11 @@ const Account = () => {
             align="stretch"
             gap={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
           >
-            <UserWelcomeBanner firstName="Joyce" branch="Zamboanga West" />
+            <UserWelcomeBanner firstName="Joyce" branch="Quezon City" />
             <ProfileHeaderCard
-              name="Joyce Dela Rosa"
+              name="Joyce Basilio-Ramos"
               personId="1234567890"
-              homeAddress="12 Magsaysay Avenue, Sta. Maria, Zamboanga City, Zamboanga del Sur, 7000"
+              homeAddress="Quezon City, Metro Manila"
               contactNo="0917 123 4567"
               email=" test@gmail.com"
               isInsured={true}
