@@ -17,12 +17,15 @@ import { useRouter } from "next/navigation";
 import { CartItem } from "@/types/cartItem";
 import Container from "@/components/ui/container";
 import { FaArrowLeft } from "react-icons/fa6";
+import { FaRegUser, FaRegAddressCard } from "react-icons/fa";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 import { BRAND_COLORS } from "@/lib/theme/brand-colors";
 import {
   STANDARD_RADIUS,
   STANDARD_SHADOWS,
   STANDARD_SPACING,
 } from "@/lib/theme/standard-design-tokens";
+import SideDrawer from "@/components/ui/side-drawer";
 
 const DetailsPayMyPlan = () => {
   const breadcrumbItems = [
@@ -30,6 +33,7 @@ const DetailsPayMyPlan = () => {
     { label: "Pay My Plan", href: "/pay-my-plan" },
   ];
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [formData, setFormData] = useState({
     contractNo: "",
     planType: "",
@@ -195,6 +199,42 @@ const DetailsPayMyPlan = () => {
     }
   }, []);
 
+  const drawerSections = [
+    {
+      icon: IoIosInformationCircleOutline,
+      title: "Plan Details",
+      subtitle: formData.planType || undefined,
+      rows: [
+        { label: "Contract No.", value: formData.contractNo },
+        { label: "Plan Type", value: formData.planType },
+        { label: "First Name", value: formData.firstName },
+        { label: "Middle Name", value: formData.middleName },
+        { label: "Last Name", value: formData.lastName },
+      ],
+    },
+    {
+      icon: FaRegAddressCard,
+      title: "Address",
+      rows: [
+        { label: "Lot #", value: formData.lotNo },
+        { label: "Street", value: formData.street },
+        { label: "Barangay", value: formData.barangay },
+        { label: "City", value: formData.city },
+        { label: "Province", value: formData.province },
+        { label: "District", value: formData.district },
+        { label: "Zip Code", value: formData.zipCode },
+      ],
+    },
+    {
+      icon: FaRegUser,
+      title: "Contact Details",
+      rows: [
+        { label: "Email", value: formData.email },
+        { label: "Mobile No.", value: formData.mobileNo },
+      ],
+    },
+  ];
+
   return (
     <Container>
       <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 0 }}>
@@ -212,6 +252,14 @@ const DetailsPayMyPlan = () => {
           Review the details of your plan and proceed to payment. Please ensure
           that all information is correct before proceeding.
         </Body>
+        <Button
+          mt={3}
+          variant="outline"
+          size="sm"
+          onClick={() => setDrawerOpen(true)}
+        >
+          View Details
+        </Button>
       </Box>
 
       <Grid
@@ -505,7 +553,9 @@ const DetailsPayMyPlan = () => {
                       <RadioGroup.Item value="activePlan">
                         <RadioGroup.ItemHiddenInput />
                         <RadioGroup.ItemControl />
-                        <RadioGroup.ItemText>For Active Plan</RadioGroup.ItemText>
+                        <RadioGroup.ItemText>
+                          For Active Plan
+                        </RadioGroup.ItemText>
                       </RadioGroup.Item>
                       <RadioGroup.Item value="memorialService">
                         <RadioGroup.ItemHiddenInput />
@@ -579,6 +629,12 @@ const DetailsPayMyPlan = () => {
           </VStack>
         </Box>
       </Grid>
+      <SideDrawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        title="Planholder Details"
+        sections={drawerSections}
+      />
     </Container>
   );
 };
