@@ -82,7 +82,7 @@ const Account = () => {
               personId="1234567890"
               homeAddress="Quezon City, Metro Manila"
               contactNo="0917 123 4567"
-              email=" test@gmail.com"
+              email="joyce.basilio-ramos@example.com"
               isInsured={true}
             />
             <PlanAccountCardCarousel
@@ -99,12 +99,12 @@ const Account = () => {
                 subtitle="Identification and full name"
               >
                 <VStack align="stretch" gap={1}>
-                  <RowItem label="Last Name" value="DELA ROSA" />
+                  <RowItem label="Last Name" value="BASILIO-RAMOS" />
                   <RowItem label="First Name" value="JOYCE" />
-                  <RowItem label="Middle Name" value="SANTOS" />
-                  <RowItem label="Date of Birth" value="November 2, 1990" />
+                  {/* <RowItem label="Middle Name" value="SANTOS" /> */}
+                  <RowItem label="Date of Birth" value="August 2, 1990" />
                   <RowItem label="Gender" value="Female" />
-                  <RowItem label="Civil Status" value="Single" />
+                  <RowItem label="Civil Status" value="Married" />
                   <RowItem label="Nationality" value="Filipino" />
                 </VStack>
               </InfoCardAccordion>
@@ -116,7 +116,10 @@ const Account = () => {
               >
                 <VStack align="stretch" gap={1}>
                   <RowItem label="Mobile Number" value="0917 123 4567" />
-                  <RowItem label="Email" value="joyce.delarosa@example.com" />
+                  <RowItem
+                    label="Email"
+                    value="joyce.basilio-ramos@example.com"
+                  />
                   <RowItem label="Landline" value="(082) 123-4567" />
                 </VStack>
               </InfoCardAccordion>
