@@ -33,6 +33,8 @@ export type SideDrawerSection = {
   title: string;
   subtitle?: string;
   rows: SideDrawerRow[];
+  /** Which tab this section belongs to. If omitted, shows on all tabs. */
+  tab?: string;
 };
 
 export type SideDrawerTab = {
@@ -51,17 +53,16 @@ export type SideDrawerProps = {
   /** Small uppercase label above the title */
   eyebrow?: string;
   title: string;
-  /** Subtitle shown below the title */
-  status?: SideDrawerBadge[];
   badges?: SideDrawerBadge[];
-  /** Button or icon rendered in the top-right of the header (alongside close) */
+  /** Icon/button rendered next to the close button (top-right) */
   headerAction?: React.ReactNode;
-  /** Slot below the badges — accepts any component (buttons, alerts, etc.) */
+  /**
+   * Slot rendered below the badges — use for action buttons.
+   * Accepts any React node.
+   */
   headerChildren?: React.ReactNode;
-  /** If provided, a tab bar is rendered at the bottom of the header */
+  /** When provided, a tab bar is rendered at the top of the scrollable body */
   tabs?: SideDrawerTab[];
-  /** Optional custom height for the header area */
-  headerHeight?: string | number;
   activeTab?: string;
   onTabChange?: (value: string) => void;
   sections: SideDrawerSection[];
@@ -151,9 +152,7 @@ const SideDrawer = ({
     controlledActiveTab !== undefined ? controlledActiveTab : internalTab;
 
   const handleTabChange = (value: string) => {
-    if (controlledActiveTab === undefined) {
-      setInternalTab(value);
-    }
+    if (controlledActiveTab === undefined) setInternalTab(value);
     onTabChange?.(value);
   };
 
@@ -176,55 +175,59 @@ const SideDrawer = ({
             borderLeftRadius={{ base: 0, md: STANDARD_RADIUS.xl }}
             boxShadow={STANDARD_SHADOWS.level4}
           >
-            {/* ── HEADER ─────────────────────────────────────────── */}
+            {/* ── HEADER ──────────────────────────────────────────────────
+                Vertical stack (column):
+                  1. [eyebrow + title]          [headerAction] [×]  (top row)
+                  2. [badges]
+                  3. [headerChildren / buttons]
+            ─────────────────────────────────────────────────────────── */}
             <Drawer.Header
-              px={STANDARD_SPACING.sm}
-              pt={STANDARD_SPACING.md}
-              pb={STANDARD_SPACING.sm}
+              p={0}
               bg={BRAND_COLORS.white}
               borderBottomWidth="1px"
               borderColor={BRAND_COLORS.neutralBorder}
-              position="relative"
             >
-              <Drawer.CloseTrigger asChild>
-                <CloseButton
-                  size="sm"
-                  borderRadius={STANDARD_RADIUS.full}
-                  color={BRAND_COLORS.neutralText}
-                  _hover={{ bg: BRAND_COLORS.mutedBg }}
-                  position="absolute"
-                  top={STANDARD_SPACING.sm}
-                  right={STANDARD_SPACING.sm}
-                />
-              </Drawer.CloseTrigger>
-
-              <Flex align="flex-start" direction="column" gap={2} pr={10}>
-                <Box minW={0} w="full">
-                  {eyebrow ? (
-                    <Text
-                      color={BRAND_COLORS.grey}
-                      fontSize="11px"
-                      fontWeight="700"
-                      letterSpacing="0.08em"
-                      textTransform="uppercase"
-                      mb="4px"
+              <Box px={STANDARD_SPACING.sm} pt={STANDARD_SPACING.sm} pb={STANDARD_SPACING.sm}>
+                {/* Row 1: eyebrow + title on left, actions on right */}
+                <Flex align="flex-start" justify="space-between" gap={2}>
+                  <VStack align="start" gap="3px" flex={1} minW={0}>
+                    {eyebrow ? (
+                      <Text
+                        color={BRAND_COLORS.grey}
+                        fontSize="11px"
+                        fontWeight="700"
+                        letterSpacing="0.08em"
+                        textTransform="uppercase"
+                      >
+                        {eyebrow}
+                      </Text>
+                    ) : null}
+                    <Drawer.Title
+                      color={BRAND_COLORS.neutralText}
+                      fontSize="22px"
+                      fontWeight="800"
+                      lineHeight="1.15"
                     >
-                      {eyebrow}
-                    </Text>
-                  ) : null}
-                  <Drawer.Title
-                    color={BRAND_COLORS.black}
-                    fontSize="22px"
-                    fontWeight="700"
-                    lineHeight="1.15"
-                  >
-                    {title}
-                  </Drawer.Title>
-                  {/* description removed - badges used for status */}
-                </Box>
+                      {title}
+                    </Drawer.Title>
+                  </VStack>
 
+                  <HStack gap="4px" flexShrink={0} mt="2px">
+                    {headerAction}
+                    <Drawer.CloseTrigger asChild>
+                      <CloseButton
+                        size="sm"
+                        borderRadius={STANDARD_RADIUS.full}
+                        color={BRAND_COLORS.neutralText}
+                        _hover={{ bg: BRAND_COLORS.mutedBg }}
+                      />
+                    </Drawer.CloseTrigger>
+                  </HStack>
+                </Flex>
+
+                {/* Row 2: badges */}
                 {badges && badges.length > 0 ? (
-                  <HStack flexWrap="wrap" gap="8px" pt="2px">
+                  <HStack gap="6px" flexWrap="wrap" mt={STANDARD_SPACING.xs}>
                     {badges.map((badge, i) => {
                       const colors = getBadgeColors(badge.tone);
                       return (
@@ -243,86 +246,90 @@ const SideDrawer = ({
                           alignItems="center"
                           gap="5px"
                         >
-                          {/* <Box
-                            w="10px"
-                            h="10px"
-                            borderWidth="2px"
-                            borderRadius="full"
-                            borderColor="currentColor"
-                            flexShrink={0}
-                          /> */}
                           {badge.label}
                         </Badge>
                       );
                     })}
                   </HStack>
                 ) : null}
-              </Flex>
 
-              {headerAction ? (
-                <Box mt={STANDARD_SPACING.sm}>{headerAction}</Box>
-              ) : null}
+                {/* Row 3: headerChildren (action buttons) */}
+                {headerChildren ? (
+                  <Box mt={STANDARD_SPACING.xs} w="full">
+                    {headerChildren}
+                  </Box>
+                ) : null}
+              </Box>
+            </Drawer.Header>
 
-              {/* Row 3: headerChildren slot */}
-              {headerChildren ? <Box>{headerChildren}</Box> : null}
-
-              {/* Row 4: tab bar */}
+            {/* ── BODY ────────────────────────────────────────────────────
+                Tab bar (if provided) sits flush at the top, then sections.
+            ─────────────────────────────────────────────────────────── */}
+            <Drawer.Body
+              p={0}
+              overflowY="auto"
+            >
+              {/* Tab bar — full-width, white, sticky feel */}
               {hasTabs ? (
-                <HStack
-                  gap={0}
-                  mt={STANDARD_SPACING.sm}
-                  borderBottomWidth="0px"
+                <Box
+                  bg={BRAND_COLORS.white}
+                  borderBottomWidth="1px"
+                  borderColor={BRAND_COLORS.neutralBorder}
+                  px={STANDARD_SPACING.sm}
                   overflowX="auto"
                   css={{
                     "&::-webkit-scrollbar": { display: "none" },
                     scrollbarWidth: "none",
                   }}
                 >
-                  {tabs.map((tab) => {
-                    const isActive = activeTab === tab.value;
-                    return (
-                      <Button
-                        key={tab.value}
-                        variant="plain"
-                        px={STANDARD_SPACING.sm}
-                        pb="10px"
-                        pt="6px"
-                        h="auto"
-                        minW="auto"
-                        borderBottomWidth="3px"
-                        borderBottomColor={
-                          isActive ? BRAND_COLORS.primaryGreen : "transparent"
-                        }
-                        borderRadius="0"
-                        color={
-                          isActive
-                            ? BRAND_COLORS.primaryGreen
-                            : BRAND_COLORS.grey
-                        }
-                        fontWeight="700"
-                        fontSize="14px"
-                        onClick={() => handleTabChange(tab.value)}
-                        flexShrink={0}
-                      >
-                        {tab.label}
-                      </Button>
-                    );
-                  })}
-                </HStack>
-              ) : (
-                <Box pb={STANDARD_SPACING.sm} />
-              )}
-            </Drawer.Header>
+                  <HStack gap={0}>
+                    {tabs.map((tab) => {
+                      const isActive = activeTab === tab.value;
+                      return (
+                        <Button
+                          key={tab.value}
+                          variant="plain"
+                          px={STANDARD_SPACING.sm}
+                          py="10px"
+                          h="auto"
+                          minW="auto"
+                          borderBottomWidth="3px"
+                          borderBottomColor={
+                            isActive ? BRAND_COLORS.primaryGreen : "transparent"
+                          }
+                          borderRadius="0"
+                          color={
+                            isActive
+                              ? BRAND_COLORS.primaryGreen
+                              : BRAND_COLORS.grey
+                          }
+                          fontWeight="700"
+                          fontSize="14px"
+                          onClick={() => handleTabChange(tab.value)}
+                          flexShrink={0}
+                        >
+                          {tab.label}
+                        </Button>
+                      );
+                    })}
+                  </HStack>
+                </Box>
+              ) : null}
 
-            {/* ── BODY ───────────────────────────────────────────── */}
-            <Drawer.Body
-              px={STANDARD_SPACING.sm}
-              py={STANDARD_SPACING.sm}
-              pb={`calc(${STANDARD_SPACING.sm} + env(safe-area-inset-bottom))`}
-              overflowY="auto"
-            >
-              <VStack align="stretch" gap={3}>
-                {sections.map((section) => (
+              {/* Section cards — filtered by active tab when tabs are present */}
+              <VStack
+                align="stretch"
+                gap={3}
+                px={STANDARD_SPACING.sm}
+                pt={STANDARD_SPACING.sm}
+                pb={`calc(${STANDARD_SPACING.sm} + env(safe-area-inset-bottom))`}
+              >
+                {(hasTabs
+                  ? sections.filter(
+                      (s) => !s.tab || s.tab === activeTab,
+                    )
+                  : sections
+                ).map((section) => (
                   <SectionCard key={section.title} section={section} />
                 ))}
               </VStack>

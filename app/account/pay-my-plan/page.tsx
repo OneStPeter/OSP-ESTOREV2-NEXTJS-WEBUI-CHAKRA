@@ -1048,6 +1048,14 @@ const PayMyPlan = () => {
                 title={
                   sideDrawerPlan ? `${sideDrawerPlan.plan}` : "Plan Details"
                 }
+                tabs={
+                  sideDrawerPlan
+                    ? [
+                        { label: "Information", value: "info" },
+                        { label: "Documents", value: "documents" },
+                      ]
+                    : []
+                }
                 badges={
                   sideDrawerPlan ? [{ label: "Due", tone: "error" }] : undefined
                 }
