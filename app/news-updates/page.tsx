@@ -23,7 +23,7 @@ const NewsUpdates = () => {
 
   // Featured story — highlights the new online store experience
   const featuredNews = {
-    image: "/images/news-featured.jpg",
+    image: "/images/memorial-park/memorial-park-1.jpg",
     title:
       "St. Peter Life Plan Launches Online Store: Compare and Buy Plans in Minutes",
     excerpt:
@@ -37,7 +37,7 @@ const NewsUpdates = () => {
   const newsItems = [
     {
       id: "1",
-      image: "/images/news-1.jpg",
+      image: "/images/plan-benefits/cash.jpg",
       title: "How a Life Plan Shields Your Family from Rising Funeral Costs",
       excerpt:
         "Funeral expenses keep climbing year after year. Locking in today's price with a life plan protects your loved ones from shouldering the burden later.",
@@ -48,7 +48,7 @@ const NewsUpdates = () => {
     },
     {
       id: "2",
-      image: "/images/news-2.jpg",
+      image: "/images/plan-images/ST. BERNADETTE.jpg",
       title: "New: Compare Traditional and Cremation Plans Side by Side",
       excerpt:
         "Our updated comparison tool lets you line up casket options, coverage, and payment terms across plans so you can decide with confidence.",
@@ -59,7 +59,7 @@ const NewsUpdates = () => {
     },
     {
       id: "3",
-      image: "/images/news-3.jpg",
+      image: "/images/plan-images/ST. CLAIRE.jpg",
       title: "Traditional vs. Cremation: Choosing the Right Plan for You",
       excerpt:
         "Both honor your loved ones with dignity. We break down the differences in service, cost, and customs to help your family choose what fits best.",
@@ -70,7 +70,7 @@ const NewsUpdates = () => {
     },
     {
       id: "4",
-      image: "/images/news-4.jpg",
+      image: "/images/chapels/Guiguinto.jpg",
       title: "St. Peter Opens New Memorial Chapels in Luzon and Visayas",
       excerpt:
         "Expanding our nationwide network, the newest St. Peter chapels bring compassionate, professional memorial care closer to more families.",
@@ -81,7 +81,7 @@ const NewsUpdates = () => {
     },
     {
       id: "5",
-      image: "/images/news-5.jpg",
+      image: "/images/services/claim-benefits.jpg",
       title: "Flexible Monthly Payment Terms Now Available at Checkout",
       excerpt:
         "Choose the payment schedule that fits your budget — monthly, quarterly, or spot cash — and manage everything from your account dashboard.",
@@ -92,7 +92,7 @@ const NewsUpdates = () => {
     },
     {
       id: "6",
-      image: "/images/news-6.jpg",
+      image: "/images/memorial-park/memorial-park-2.jpg",
       title: "Pre-Planning with Peace of Mind: A Family's Step-by-Step Guide",
       excerpt:
         "Pre-planning spares your family difficult decisions during grief. Here is how to start the conversation and put a plan in place today.",
@@ -128,7 +128,13 @@ const NewsUpdates = () => {
   return (
     <Box bg="white" minH="100vh">
       {/* ===== Header (responsive across all breakpoints) ===== */}
-      <Box bg="green.600" py={{ base: "8", md: "10", lg: "12" }} color="white">
+      {/* lg gets extra top padding to clear the fixed floating navbar pill. */}
+      <Box
+        bg="green.600"
+        pt={{ base: "8", md: "10", lg: "140px" }}
+        pb={{ base: "8", md: "10", lg: "12" }}
+        color="white"
+      >
         <Container maxW="container.xl">
           <VStack align="start" gap={{ base: "2", md: "3" }}>
             <Text
