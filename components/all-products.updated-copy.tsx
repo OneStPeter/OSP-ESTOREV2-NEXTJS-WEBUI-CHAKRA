@@ -272,7 +272,7 @@ const AllProductsCopy = ({
           isInCompare ? BRAND_COLORS.primaryGreen : BRAND_COLORS.neutralBorder
         }
         borderRadius={{ base: 0, md: STANDARD_RADIUS.xl }}
-        minH={{ base: "auto", md: "640px" }}
+        minH={{ base: "480px", md: "576px" }}
         minW={0}
         display="flex"
         flexDirection="column"
@@ -646,8 +646,19 @@ const AllProductsCopy = ({
       description="Secure your family's future with peace of mind"
     >
       {/* Right-side header tools: category filter pills */}
-      <Page.ToolContent>
-        <Flex gap="8px" justify={{ base: "flex-end", lg: "flex-end" }}>
+      <Page.ToolContent w={{ base: "100%", lg: "auto" }}>
+        <Flex
+          gap="8px"
+          justify={{ base: "flex-end", lg: "flex-end" }}
+          w={{ base: "100%", lg: "auto" }}
+          borderWidth="1px"
+          borderColor={BRAND_COLORS.neutralBorder}
+          bg={BRAND_COLORS.white}
+          px="12px"
+          py="6px"
+          borderRadius={STANDARD_RADIUS.full}
+          // w="lg"
+        >
           {categoryTabs.map((tab) => {
             const isActive = activeTab === tab.value;
 
@@ -656,11 +667,12 @@ const AllProductsCopy = ({
                 key={tab.value}
                 onClick={() => setActiveTab(tab.value)}
                 h="28px"
+                flex={{ base: 1, lg: "initial" }}
                 minW="88px"
                 px="14px"
                 borderRadius={STANDARD_RADIUS.full}
                 borderWidth="1px"
-                borderColor={isActive ? "#173E33" : "#D1CCC0"}
+                borderColor={isActive ? "#173E33" : ""}
                 bg={isActive ? "#177D54" : BRAND_COLORS.white}
                 color={isActive ? BRAND_COLORS.white : "#5D5D58"}
                 fontSize="12px"
