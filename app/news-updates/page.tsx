@@ -5,217 +5,338 @@ import {
   Button,
   Container,
   Grid,
+  GridItem,
   HStack,
   Text,
   VStack,
-  Tabs,
 } from "@chakra-ui/react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FeaturedNews } from "@/components/featured-news";
 import { NewsCard } from "@/components/news-card";
-import { PrimaryMdButton, PrimaryMdFlexButton } from "st-peter-ui";
+import { PrimaryMdButton } from "st-peter-ui";
+import { BookOpen, MapPin, ArrowRight } from "lucide-react";
 
 const NewsUpdates = () => {
-  // Sample featured news data
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState("news");
+
+  // Featured story — highlights the new online store experience
   const featuredNews = {
     image: "/images/news-featured.jpg",
     title:
-      "Cake meme reflects coronavirus absurdity in a world where death toll is surging",
+      "St. Peter Life Plan Launches Online Store: Compare and Buy Plans in Minutes",
     excerpt:
-      "The post is a viral ribbon reporting hope-monitor cakes as symbolism with the surging coronavirus numbers. As people see deaths surging, they seek meaningful cultural symbols to manage the disruption happening to normal day-to-day life.",
-    date: "3 months ago",
-    readingTime: "5 min read",
-    category: "Trending",
+      "Securing your family's future is now easier than ever. Browse traditional and cremation life plans, compare terms side by side, and complete your application entirely online — no branch visit required.",
+    date: "June 2026",
+    readingTime: "4 min read",
+    category: "Announcement",
   };
 
-  // Sample news items
+  // App-relevant news, guides, and product updates
   const newsItems = [
     {
       id: "1",
       image: "/images/news-1.jpg",
-      title:
-        "John Lewis to lead final journey across Edmund Pettus Bridge in procession",
+      title: "How a Life Plan Shields Your Family from Rising Funeral Costs",
       excerpt:
-        "More on final journey across the famous bridge in Selma, Alabama. In 1965, John Lewis and others marched across this bridge in support of voting rights.",
-      date: "3 weeks ago",
+        "Funeral expenses keep climbing year after year. Locking in today's price with a life plan protects your loved ones from shouldering the burden later.",
+      date: "1 week ago",
       readingTime: "4 min read",
-      author: "By Staff",
+      author: "By St. Peter Team",
+      category: "Guide",
     },
     {
       id: "2",
       image: "/images/news-2.jpg",
-      title:
-        "John Lewis, civil rights giant, crosses final bridge with one final march",
+      title: "New: Compare Traditional and Cremation Plans Side by Side",
       excerpt:
-        "Trends at the top of US news today by column and column in the year of 2020 that continues to define American culture and politics.",
-      date: "3 weeks ago",
-      readingTime: "5 min read",
-      author: "By Staff",
+        "Our updated comparison tool lets you line up casket options, coverage, and payment terms across plans so you can decide with confidence.",
+      date: "2 weeks ago",
+      readingTime: "3 min read",
+      author: "By St. Peter Team",
+      category: "Product Update",
     },
     {
       id: "3",
       image: "/images/news-3.jpg",
-      title:
-        "Tornado and rain marriages declared as formal disaster Houston looms Texas",
+      title: "Traditional vs. Cremation: Choosing the Right Plan for You",
       excerpt:
-        "The death toll of the disaster rises and looms still remains to be seen. Just outside of Houston looms a new challenge as farmers reassess.",
-      date: "4 weeks ago",
+        "Both honor your loved ones with dignity. We break down the differences in service, cost, and customs to help your family choose what fits best.",
+      date: "3 weeks ago",
       readingTime: "6 min read",
-      author: "By Staff",
+      author: "By St. Peter Team",
+      category: "Guide",
     },
     {
       id: "4",
       image: "/images/news-4.jpg",
-      title:
-        "20 Years Age, Storm Kills Hundred in the Oldest Computer from Hurricane",
+      title: "St. Peter Opens New Memorial Chapels in Luzon and Visayas",
       excerpt:
-        "This year's updates of the 20th anniversary of the storm sequence of 2000 remains the oldest computer from Hurricane records on file.",
-      date: "2 months ago",
-      readingTime: "7 min read",
-      author: "By Staff",
+        "Expanding our nationwide network, the newest St. Peter chapels bring compassionate, professional memorial care closer to more families.",
+      date: "1 month ago",
+      readingTime: "3 min read",
+      author: "By St. Peter Team",
+      category: "Company News",
     },
     {
       id: "5",
       image: "/images/news-5.jpg",
-      title: "Healthcare Initiative in Action",
+      title: "Flexible Monthly Payment Terms Now Available at Checkout",
       excerpt:
-        "A comprehensive look at the latest healthcare initiatives and how they are helping communities across the region.",
-      date: "2 weeks ago",
-      readingTime: "5 min read",
-      author: "By Staff",
+        "Choose the payment schedule that fits your budget — monthly, quarterly, or spot cash — and manage everything from your account dashboard.",
+      date: "1 month ago",
+      readingTime: "2 min read",
+      author: "By St. Peter Team",
+      category: "Product Update",
     },
     {
       id: "6",
       image: "/images/news-6.jpg",
-      title: "Community Development Projects Underway",
+      title: "Pre-Planning with Peace of Mind: A Family's Step-by-Step Guide",
       excerpt:
-        "Several community development projects are now underway aimed at improving neighborhoods and creating more opportunities.",
-      date: "1 week ago",
-      readingTime: "4 min read",
-      author: "By Staff",
+        "Pre-planning spares your family difficult decisions during grief. Here is how to start the conversation and put a plan in place today.",
+      date: "2 months ago",
+      readingTime: "5 min read",
+      author: "By St. Peter Team",
+      category: "Family Support",
     },
   ];
 
-  const locationNews = [
-    { id: "1", title: "Local Leadership News", location: "Downtown District" },
-    { id: "2", title: "Community Events Update", location: "City Center" },
-    { id: "3", title: "Regional Health Initiative", location: "East Region" },
+  // Sidebar: popular plan guides (desktop)
+  const planGuides = [
+    "Choosing between traditional and cremation",
+    "What's covered in a St. Peter life plan",
+    "Understanding payment terms and modes",
+    "How to transfer or upgrade your plan",
+  ];
+
+  // Sidebar: find a chapel (desktop)
+  const chapels = [
+    { id: "1", name: "St. Peter Chapels — Quezon City", area: "Metro Manila" },
+    { id: "2", name: "St. Peter Chapels — Cebu", area: "Visayas" },
+    { id: "3", name: "St. Peter Chapels — Davao", area: "Mindanao" },
   ];
 
   const tabs = [
-    { id: "latest", label: "News" },
-    { id: "trends", label: "Blogs" },
-    { id: "health", label: "Events" },
-    { id: "health", label: "Announcements" },
+    { id: "news", label: "News" },
+    { id: "guides", label: "Plan Guides" },
+    { id: "events", label: "Events" },
+    { id: "announcements", label: "Announcements" },
   ];
 
   return (
     <Box bg="white" minH="100vh">
-      {/* Header Section */}
-      <Box bg="green.600" py={{ base: "8", md: "12" }} color="white">
+      {/* ===== Header (responsive across all breakpoints) ===== */}
+      <Box bg="green.600" py={{ base: "8", md: "10", lg: "12" }} color="white">
         <Container maxW="container.xl">
-          <VStack align="start" gap="2">
+          <VStack align="start" gap={{ base: "2", md: "3" }}>
             <Text
               fontSize={{ base: "sm", md: "md" }}
               fontWeight="600"
-              colorPalette="green"
+              letterSpacing="0.5px"
+              textTransform="uppercase"
+              opacity="0.9"
             >
-              News & Updates
+              News &amp; Updates
             </Text>
             <Text
-              fontSize={{ base: "2xl", md: "4xl" }}
+              fontSize={{ base: "2xl", md: "3xl", lg: "4xl" }}
               fontWeight="700"
               lineHeight="1.2"
             >
-              Stay Informed with Latest News
+              Stay Informed on Life Plans &amp; Memorial Care
             </Text>
             <Text
               fontSize={{ base: "md", md: "lg" }}
               opacity="0.95"
-              maxW="600px"
+              maxW={{ base: "100%", md: "640px" }}
             >
-              Get the latest news, updates, and announcements from our community
+              The latest product updates, planning guides, and announcements
+              from St. Peter Life Plan — helping you secure your family&apos;s
+              future with peace of mind.
             </Text>
           </VStack>
         </Container>
       </Box>
 
-      {/* Main Content */}
-      <Container maxW="container.xl" py={{ base: "8", md: "12" }}>
-        {/* Featured News */}
+      {/* ===== Main Content ===== */}
+      <Container maxW="container.xl" py={{ base: "8", md: "10", lg: "12" }}>
+        {/* Featured story */}
         <FeaturedNews {...featuredNews} />
 
-        {/* Tabs Navigation */}
+        {/* Tabs */}
         <Box
-          mb={{ base: "8", md: "10" }}
+          mb={{ base: "6", md: "8", lg: "10" }}
           borderBottom="2px solid"
           borderColor="gray.200"
         >
           <HStack
-            gap={{ base: "4", md: "6" }}
+            gap={{ base: "2", md: "4", lg: "6" }}
             overflowX="auto"
-            _scrollbar={{
-              width: "0",
-            }}
+            css={{ scrollbarWidth: "none", "&::-webkit-scrollbar": { display: "none" } }}
           >
-            {tabs.map((tab) => (
-              <Button
-                key={tab.id}
-                variant="ghost"
-                size="lg"
-                textDecoration={"none"}
-                fontSize={{ base: "md", md: "lg" }}
-                fontWeight="600"
-                color="gray.600"
-                px={{ base: "4", md: "6" }}
-                py="3"
-                borderBottomWidth="3px"
-                borderBottomColor="transparent"
-                borderRadius="0"
-                _hover={{
-                  color: "green.600",
-                  borderBottomColor: "green.200",
-                }}
-                _active={{
-                  color: "green.600",
-                  borderBottomColor: "green.600",
-                }}
-                whiteSpace="nowrap"
-              >
-                {/* <Text>{tab.icon}</Text> */}
-                <Text>{tab.label}</Text>
-              </Button>
-            ))}
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <Button
+                  key={tab.id}
+                  variant="ghost"
+                  size={{ base: "md", md: "lg" }}
+                  onClick={() => setActiveTab(tab.id)}
+                  fontSize={{ base: "sm", md: "md", lg: "lg" }}
+                  fontWeight="600"
+                  color={isActive ? "green.700" : "gray.600"}
+                  px={{ base: "3", md: "5", lg: "6" }}
+                  py="3"
+                  borderBottomWidth="3px"
+                  borderBottomColor={isActive ? "green.600" : "transparent"}
+                  borderRadius="0"
+                  _hover={{ color: "green.600", borderBottomColor: "green.200" }}
+                  whiteSpace="nowrap"
+                >
+                  {tab.label}
+                </Button>
+              );
+            })}
           </HStack>
         </Box>
 
-        {/* News Grid */}
+        {/* Content + sidebar:
+            - mobile (base): single column
+            - tablet (md): single column, 2-col news grid
+            - desktop (lg): main column + 320px sidebar */}
         <Grid
-          templateColumns={{
-            base: "1fr",
-            md: "repeat(2, 1fr)",
-            lg: "repeat(3, 1fr)",
-          }}
-          gap={{ base: "6", md: "8" }}
-          mb={{ base: "8", md: "12" }}
+          templateColumns={{ base: "1fr", lg: "minmax(0, 1fr) 320px" }}
+          gap={{ base: "8", lg: "10" }}
+          alignItems="start"
         >
-          {newsItems.map((item) => (
-            <NewsCard key={item.id} {...item} />
-          ))}
-        </Grid>
+          {/* Main column */}
+          <GridItem minW={0}>
+            <Grid
+              templateColumns={{
+                base: "1fr",
+                md: "repeat(2, 1fr)",
+                lg: "repeat(2, 1fr)",
+                xl: "repeat(3, 1fr)",
+              }}
+              gap={{ base: "6", md: "6", lg: "8" }}
+            >
+              {newsItems.map((item) => (
+                <NewsCard key={item.id} {...item} />
+              ))}
+            </Grid>
 
-        {/* View More Section */}
-        <HStack justify="center" pt={{ base: "6", md: "8" }}>
-          <PrimaryMdButton
-            fontSize={{ base: "md", md: "lg" }}
-            px={{ base: "6", md: "8" }}
-            py={{ base: "2", md: "3" }}
-            _hover={{
-              bg: "green.50",
-            }}
-          >
-            View More News
-          </PrimaryMdButton>
-        </HStack>
+            <HStack justify="center" pt={{ base: "8", md: "10" }}>
+              <PrimaryMdButton
+                fontSize={{ base: "md", md: "lg" }}
+                px={{ base: "6", md: "8" }}
+                py={{ base: "2", md: "3" }}
+                _hover={{ bg: "green.50" }}
+              >
+                View More Updates
+              </PrimaryMdButton>
+            </HStack>
+          </GridItem>
+
+          {/* Sidebar — desktop only */}
+          <GridItem display={{ base: "none", lg: "block" }}>
+            <VStack align="stretch" gap="6" position="sticky" top="24px">
+              {/* Popular guides */}
+              <Box
+                borderWidth="1px"
+                borderColor="gray.200"
+                borderRadius="xl"
+                p="5"
+              >
+                <HStack gap="2" mb="4">
+                  <BookOpen size={18} color="#006838" />
+                  <Text fontSize="md" fontWeight="700" color="gray.900">
+                    Popular Plan Guides
+                  </Text>
+                </HStack>
+                <VStack align="stretch" gap="3">
+                  {planGuides.map((guide) => (
+                    <HStack
+                      key={guide}
+                      as="button"
+                      gap="2"
+                      align="start"
+                      textAlign="left"
+                      color="gray.700"
+                      _hover={{ color: "green.700" }}
+                      onClick={() => router.push("/plans")}
+                    >
+                      <Box color="green.600" pt="1">
+                        <ArrowRight size={14} />
+                      </Box>
+                      <Text fontSize="sm" lineHeight="1.4">
+                        {guide}
+                      </Text>
+                    </HStack>
+                  ))}
+                </VStack>
+              </Box>
+
+              {/* Find a chapel */}
+              <Box
+                borderWidth="1px"
+                borderColor="gray.200"
+                borderRadius="xl"
+                p="5"
+              >
+                <HStack gap="2" mb="4">
+                  <MapPin size={18} color="#006838" />
+                  <Text fontSize="md" fontWeight="700" color="gray.900">
+                    Find a St. Peter Chapel
+                  </Text>
+                </HStack>
+                <VStack align="stretch" gap="3">
+                  {chapels.map((chapel) => (
+                    <Box
+                      key={chapel.id}
+                      borderBottomWidth="1px"
+                      borderColor="gray.100"
+                      pb="3"
+                      _last={{ borderBottomWidth: "0", pb: "0" }}
+                    >
+                      <Text fontSize="sm" fontWeight="600" color="gray.900">
+                        {chapel.name}
+                      </Text>
+                      <Text fontSize="xs" color="gray.500">
+                        {chapel.area}
+                      </Text>
+                    </Box>
+                  ))}
+                </VStack>
+              </Box>
+
+              {/* CTA card */}
+              <Box bg="green.600" borderRadius="xl" p="6" color="white">
+                <Text fontSize="lg" fontWeight="700" lineHeight="1.3" mb="2">
+                  Ready to secure your family&apos;s future?
+                </Text>
+                <Text fontSize="sm" opacity="0.95" mb="4">
+                  Explore traditional and cremation life plans and apply online
+                  in minutes.
+                </Text>
+                <Button
+                  size="md"
+                  bg="white"
+                  color="green.700"
+                  fontWeight="700"
+                  w="full"
+                  gap="2"
+                  _hover={{ bg: "green.50" }}
+                  onClick={() => router.push("/plans")}
+                >
+                  Browse Life Plans
+                  <ArrowRight size={18} />
+                </Button>
+              </Box>
+            </VStack>
+          </GridItem>
+        </Grid>
       </Container>
     </Box>
   );

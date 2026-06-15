@@ -369,7 +369,11 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
   return (
     <Page.Root
       title={plan?.planDesc ?? "Product Details"}
-      subtitle="Life Plans"
+      description={
+        plan?.planDesc
+          ? `Learn more about the ${plan.planDesc} plan and its features.`
+          : ""
+      }
     >
       <Page.MainContent>
         <Page.Row>

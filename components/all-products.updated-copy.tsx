@@ -587,172 +587,346 @@ const AllProductsCopy = ({
     const visibleTags = tags.slice(0, 2);
     const hiddenCount = tags.length - visibleTags.length;
 
+    const priceValue = monthlyTerm?.price ?? group.contractPrice;
+    const compareDisabled = !isInCompare && compareList.length >= 3;
+
+    const featureChips = (chipBg: string, overflowBg: string) =>
+      tags.length > 0 ? (
+        <Flex align="center" gap="6px" wrap="wrap">
+          {visibleTags.map((tag) => (
+            <Box
+              key={tag}
+              px="10px"
+              py="3px"
+              borderRadius={STANDARD_RADIUS.full}
+              bg={chipBg}
+              color={BRAND_COLORS.neutralText}
+              fontSize="11px"
+              fontWeight="600"
+              whiteSpace="nowrap"
+            >
+              {tag}
+            </Box>
+          ))}
+          {hiddenCount > 0 && (
+            <Box
+              px="8px"
+              py="3px"
+              borderRadius={STANDARD_RADIUS.full}
+              bg={overflowBg}
+              color={BRAND_COLORS.grey}
+              fontSize="11px"
+              fontWeight="700"
+            >
+              +{hiddenCount}
+            </Box>
+          )}
+        </Flex>
+      ) : null;
+
     return (
-      <Box
-        key={group.planDesc}
-        role="button"
-        tabIndex={0}
-        onClick={() => openPlan(group.planDesc)}
-        cursor="pointer"
-        position="relative"
-        display="flex"
-        alignItems="center"
-        gap={STANDARD_SPACING.sm}
-        w="full"
-        p="12px"
-        bg={BRAND_COLORS.white}
-        borderWidth={isInCompare ? "2px" : "1px"}
-        borderColor={
-          isInCompare ? BRAND_COLORS.primaryGreen : BRAND_COLORS.neutralBorder
-        }
-        borderRadius={STANDARD_RADIUS.xl}
-        boxShadow={STANDARD_SHADOWS.level1}
-        transition="border-color 0.15s ease, box-shadow 0.15s ease"
-        _hover={{ borderColor: BRAND_COLORS.primaryGreen }}
-      >
-        {/* Thumbnail with compare checkbox */}
-        <Box position="relative" flexShrink={0}>
+      <Box key={group.planDesc} w="full" h="full">
+        {/* ===== Mobile: compact row ===== */}
+        <Box
+          role="button"
+          tabIndex={0}
+          onClick={() => openPlan(group.planDesc)}
+          cursor="pointer"
+          position="relative"
+          display={{ base: "flex", md: "none" }}
+          alignItems="center"
+          gap={STANDARD_SPACING.sm}
+          w="full"
+          p="12px"
+          bg={BRAND_COLORS.white}
+          borderWidth={isInCompare ? "2px" : "1px"}
+          borderColor={
+            isInCompare ? BRAND_COLORS.primaryGreen : BRAND_COLORS.neutralBorder
+          }
+          borderRadius={STANDARD_RADIUS.xl}
+          boxShadow={STANDARD_SHADOWS.level1}
+          transition="border-color 0.15s ease, box-shadow 0.15s ease"
+          _hover={{ borderColor: BRAND_COLORS.primaryGreen }}
+        >
+          <Box position="relative" flexShrink={0}>
+            <Box
+              position="relative"
+              w="64px"
+              h="64px"
+              borderRadius={STANDARD_RADIUS.lg}
+              overflow="hidden"
+              bg={BRAND_COLORS.mutedBg}
+            >
+              <NextImage
+                unoptimized
+                src={group.img}
+                alt={group.planDesc ?? ""}
+                fill
+                sizes="64px"
+                style={{ objectFit: "cover", objectPosition: "center" }}
+                priority={false}
+              />
+            </Box>
+
+            <Button
+              position="absolute"
+              top="5px"
+              left="5px"
+              w="20px"
+              h="20px"
+              minW="20px"
+              p="0"
+              borderRadius="6px"
+              borderWidth="1.5px"
+              borderColor={
+                isInCompare
+                  ? BRAND_COLORS.primaryGreen
+                  : BRAND_COLORS.neutralBorder
+              }
+              bg={
+                isInCompare
+                  ? BRAND_COLORS.primaryGreen
+                  : "rgba(255,255,255,0.9)"
+              }
+              color={BRAND_COLORS.white}
+              aria-label={
+                isInCompare ? "Remove from compare" : "Add to compare"
+              }
+              disabled={compareDisabled}
+              onClick={(event) => {
+                event.stopPropagation();
+                toggleCompare(group.planDesc);
+              }}
+              _hover={{
+                bg: isInCompare ? BRAND_COLORS.darkGreen : BRAND_COLORS.white,
+              }}
+            >
+              {isInCompare && <FaCheck size={10} />}
+            </Button>
+          </Box>
+
+          <Box flex="1" minW={0}>
+            {/* {isFeatured && (
+              <Flex align="center" gap="4px" mb="2px">
+                <Box
+                  as={FaStar}
+                  color={BRAND_COLORS.primaryGreen}
+                  boxSize="11px"
+                />
+                <Text
+                  color={BRAND_COLORS.darkGreen}
+                  fontSize="11px"
+                  fontWeight="800"
+                  lineHeight="1"
+                >
+                  Most popular
+                </Text>
+              </Flex>
+            )} */}
+
+            <Flex align="baseline" justify="space-between" gap="8px">
+              <Text
+                color={BRAND_COLORS.black}
+                fontSize="17px"
+                fontWeight="800"
+                lineHeight="1.15"
+                lineClamp={1}
+              >
+                {group.planDesc}
+              </Text>
+              <Flex align="baseline" gap="2px" flexShrink={0}>
+                <Text
+                  color={BRAND_COLORS.darkGreen}
+                  fontSize="15px"
+                  fontWeight="800"
+                  lineHeight="1.15"
+                >
+                  {priceValue}
+                </Text>
+                <Text color={BRAND_COLORS.darkGreen} fontSize="11px">
+                  /mo
+                </Text>
+              </Flex>
+            </Flex>
+
+            <Text
+              color={BRAND_COLORS.grey}
+              fontSize="12px"
+              lineHeight="1.2"
+              mt="2px"
+            >
+              {firstTerm?.planTerm ?? 0}-year term
+            </Text>
+
+            <Box mt="8px">
+              {featureChips(BRAND_COLORS.mutedBg, BRAND_COLORS.subtleBg)}
+            </Box>
+          </Box>
+
+          <Box
+            as={FiChevronRight}
+            flexShrink={0}
+            color={BRAND_COLORS.grey}
+            boxSize="20px"
+          />
+        </Box>
+
+        {/* ===== Tablet / Desktop: e-commerce card ===== */}
+        <Flex
+          display={{ base: "none", md: "flex" }}
+          direction="column"
+          h="full"
+          w="full"
+          position="relative"
+          overflow="hidden"
+          bg={BRAND_COLORS.white}
+          borderWidth={isInCompare ? "2px" : "1px"}
+          borderColor={
+            isInCompare ? BRAND_COLORS.primaryGreen : BRAND_COLORS.neutralBorder
+          }
+          borderRadius={STANDARD_RADIUS.xl}
+          boxShadow={STANDARD_SHADOWS.level1}
+          transition="border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease"
+          _hover={{
+            borderColor: BRAND_COLORS.primaryGreen,
+            boxShadow: STANDARD_SHADOWS.level2,
+            transform: "translateY(-2px)",
+          }}
+        >
+          {/* Image */}
           <Box
             position="relative"
-            w="64px"
-            h="64px"
-            borderRadius={STANDARD_RADIUS.lg}
-            overflow="hidden"
+            w="full"
+            h={{ md: "180px", lg: "200px" }}
             bg={BRAND_COLORS.mutedBg}
+            cursor="pointer"
+            onClick={() => openPlan(group.planDesc)}
           >
             <NextImage
               unoptimized
               src={group.img}
               alt={group.planDesc ?? ""}
               fill
-              sizes="64px"
+              sizes="(max-width: 1280px) 50vw, 33vw"
               style={{ objectFit: "cover", objectPosition: "center" }}
               priority={false}
             />
+
+            {/* {isFeatured && (
+              <Flex
+                position="absolute"
+                top="10px"
+                left="10px"
+                align="center"
+                gap="4px"
+                px="10px"
+                py="5px"
+                borderRadius={STANDARD_RADIUS.full}
+                bg="rgba(255,255,255,0.92)"
+                backdropFilter="blur(6px)"
+              >
+                <Box
+                  as={FaStar}
+                  color={BRAND_COLORS.primaryGreen}
+                  boxSize="11px"
+                />
+                <Text
+                  color={BRAND_COLORS.darkGreen}
+                  fontSize="11px"
+                  fontWeight="800"
+                  lineHeight="1"
+                >
+                  Most popular
+                </Text>
+              </Flex>
+            )} */}
           </Box>
 
-          <Button
-            position="absolute"
-            top="5px"
-            left="5px"
-            w="20px"
-            h="20px"
-            minW="20px"
-            p="0"
-            borderRadius="6px"
-            borderWidth="1.5px"
-            borderColor={
-              isInCompare
-                ? BRAND_COLORS.primaryGreen
-                : BRAND_COLORS.neutralBorder
-            }
-            bg={isInCompare ? BRAND_COLORS.primaryGreen : "rgba(255,255,255,0.9)"}
-            color={BRAND_COLORS.white}
-            aria-label={isInCompare ? "Remove from compare" : "Add to compare"}
-            disabled={!isInCompare && compareList.length >= 3}
-            onClick={(event) => {
-              event.stopPropagation();
-              toggleCompare(group.planDesc);
-            }}
-            _hover={{
-              bg: isInCompare ? BRAND_COLORS.darkGreen : BRAND_COLORS.white,
-            }}
-          >
-            {isInCompare && <FaCheck size={10} />}
-          </Button>
-        </Box>
+          {/* Body */}
+          <Flex direction="column" flex="1" p={STANDARD_SPACING.md} gap="10px">
+            <Box>
+              <Text
+                color={BRAND_COLORS.grey}
+                fontSize="11px"
+                fontWeight="700"
+                textTransform="uppercase"
+                letterSpacing="0.04em"
+                lineHeight="1"
+                mb="6px"
+              >
+                {getPlanCategory(planType, group.casketDesc)}
+              </Text>
+              <Text
+                color={BRAND_COLORS.black}
+                fontSize="18px"
+                fontWeight="800"
+                lineHeight="1.2"
+                lineClamp={1}
+              >
+                {group.planDesc}
+              </Text>
+              <Text color={BRAND_COLORS.grey} fontSize="12px" mt="2px">
+                {firstTerm?.planTerm ?? 0}-year term
+              </Text>
+            </Box>
 
-        {/* Main info */}
-        <Box flex="1" minW={0}>
-          {isFeatured && (
-            <Flex align="center" gap="4px" mb="2px">
-              <Box as={FaStar} color={BRAND_COLORS.primaryGreen} boxSize="11px" />
+            {featureChips(BRAND_COLORS.subtleBg, BRAND_COLORS.mutedBg)}
+
+            <Flex align="baseline" gap="3px" mt="auto">
               <Text
                 color={BRAND_COLORS.darkGreen}
-                fontSize="11px"
-                fontWeight="800"
+                fontSize="24px"
+                fontWeight="900"
                 lineHeight="1"
               >
-                Most popular
+                {priceValue}
               </Text>
-            </Flex>
-          )}
-
-          <Flex align="baseline" justify="space-between" gap="8px">
-            <Text
-              color={BRAND_COLORS.black}
-              fontSize="17px"
-              fontWeight="800"
-              lineHeight="1.15"
-              lineClamp={1}
-            >
-              {group.planDesc}
-            </Text>
-            <Flex align="baseline" gap="2px" flexShrink={0}>
-              <Text
-                color={BRAND_COLORS.darkGreen}
-                fontSize="15px"
-                fontWeight="800"
-                lineHeight="1.15"
-              >
-                {monthlyTerm?.price ?? group.contractPrice}
-              </Text>
-              <Text color={BRAND_COLORS.darkGreen} fontSize="11px">
+              <Text color={BRAND_COLORS.darkGreen} fontSize="13px">
                 /mo
               </Text>
             </Flex>
+
+            <VStack align="stretch" gap="8px">
+              <PrimaryMdButton
+                h="42px"
+                minW={0}
+                px={STANDARD_SPACING.sm}
+                borderRadius={STANDARD_RADIUS.md}
+                bg={BRAND_COLORS.primaryGreen}
+                color={BRAND_COLORS.white}
+                fontWeight="800"
+                whiteSpace="nowrap"
+                onClick={() => openPlan(group.planDesc)}
+                _hover={{ bg: BRAND_COLORS.darkGreen }}
+              >
+                View Details
+                <FiArrowRight />
+              </PrimaryMdButton>
+              <SecondaryMdButton
+                h="42px"
+                minW={0}
+                px={STANDARD_SPACING.sm}
+                borderRadius={STANDARD_RADIUS.md}
+                borderWidth="1px"
+                borderColor={
+                  isInCompare
+                    ? BRAND_COLORS.primaryGreen
+                    : BRAND_COLORS.neutralBorder
+                }
+                bg={isInCompare ? BRAND_COLORS.successBg : BRAND_COLORS.white}
+                color={BRAND_COLORS.darkGreen}
+                fontWeight="700"
+                whiteSpace="nowrap"
+                disabled={compareDisabled}
+                onClick={() => toggleCompare(group.planDesc)}
+                _hover={{ bg: BRAND_COLORS.successBg }}
+              >
+                {isInCompare ? <FaCheck /> : <IoMdAdd />}
+                {isInCompare ? "Added to Compare" : "Add to Compare"}
+              </SecondaryMdButton>
+            </VStack>
           </Flex>
-
-          <Text
-            color={BRAND_COLORS.grey}
-            fontSize="12px"
-            lineHeight="1.2"
-            mt="2px"
-          >
-            {firstTerm?.planTerm ?? 0}-year term
-          </Text>
-
-          {tags.length > 0 && (
-            <Flex align="center" gap="6px" wrap="wrap" mt="8px">
-              {visibleTags.map((tag) => (
-                <Box
-                  key={tag}
-                  px="10px"
-                  py="3px"
-                  borderRadius={STANDARD_RADIUS.full}
-                  bg={BRAND_COLORS.mutedBg}
-                  color={BRAND_COLORS.neutralText}
-                  fontSize="11px"
-                  fontWeight="600"
-                  whiteSpace="nowrap"
-                >
-                  {tag}
-                </Box>
-              ))}
-              {hiddenCount > 0 && (
-                <Box
-                  px="8px"
-                  py="3px"
-                  borderRadius={STANDARD_RADIUS.full}
-                  bg={BRAND_COLORS.subtleBg}
-                  color={BRAND_COLORS.grey}
-                  fontSize="11px"
-                  fontWeight="700"
-                >
-                  +{hiddenCount}
-                </Box>
-              )}
-            </Flex>
-          )}
-        </Box>
-
-        {/* Chevron */}
-        <Box
-          as={FiChevronRight}
-          flexShrink={0}
-          color={BRAND_COLORS.grey}
-          boxSize="20px"
-        />
+        </Flex>
       </Box>
     );
   };
@@ -765,13 +939,16 @@ const AllProductsCopy = ({
     <Box position="relative" w="full">
       <Grid
         ref={scrollRef}
-        display="flex"
-        flexDirection="column"
+        display="grid"
+        templateColumns={{
+          base: "1fr",
+          md: "repeat(2, minmax(0, 1fr))",
+          xl: "repeat(3, minmax(0, 1fr))",
+        }}
         gap={STANDARD_SPACING.sm}
         alignItems="stretch"
         onScroll={updateScrollButtons}
         w="full"
-        maxW={{ base: "100%", md: "720px" }}
       >
         {groups.map((group, index) => renderPlanCard(group, index, planType))}
       </Grid>

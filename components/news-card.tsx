@@ -19,6 +19,7 @@ interface NewsCardProps {
   date: string;
   readingTime: string;
   author?: string;
+  category?: string;
 }
 
 export const NewsCard = ({
@@ -28,6 +29,7 @@ export const NewsCard = ({
   date,
   readingTime,
   author,
+  category = "Update",
 }: NewsCardProps) => {
   return (
     <Card.Root
@@ -66,7 +68,7 @@ export const NewsCard = ({
             textTransform="uppercase"
             letterSpacing="0.5px"
           >
-            Trending
+            {category}
           </Text>
 
           <Text
@@ -74,7 +76,7 @@ export const NewsCard = ({
             fontWeight="700"
             color="gray.900"
             lineHeight="1.4"
-            // noOfLines={2}
+            lineClamp={2}
           >
             {title}
           </Text>
@@ -83,7 +85,7 @@ export const NewsCard = ({
             fontSize={{ base: "sm", md: "md" }}
             color="gray.600"
             lineHeight="1.5"
-            //noOfLines={2}
+            lineClamp={3}
           >
             {excerpt}
           </Text>

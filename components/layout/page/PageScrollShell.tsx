@@ -29,19 +29,18 @@ const PageScrollShell = ({
     <Box
       maxW="7xl"
       mx="auto"
-      p={{ base: "0px 16px 96px", lg: "36px 44px 56px" }}
+      p={{ base: "0px 24px 96px", lg: "36px 12px 56px" }}
       {...boxProps}
       mt={{ base: 0, md: "40px" }}
       overflowX="hidden"
       bg={"#fff"}
     >
       <Box
+        w={{ base: "100%", lg: "calc(100% + 24px)" }}
         mx={{ base: "-16px", lg: "-44px" }}
-        // px={{ base: "16px", lg: "66px" }}
-        px={{ base: "16px", lg: "0px" }}
-        maxW="7xl"
+        px={{ base: "16px", lg: "66px" }}
         pt={{ base: "20px", lg: "36px" }}
-        mb={hideBackButton ? "" : "8"}
+        mb={hideBackButton ? "" : { base: "6", lg: "8" }}
       >
         <Flex
           direction={{ base: "column", lg: "row" }}
