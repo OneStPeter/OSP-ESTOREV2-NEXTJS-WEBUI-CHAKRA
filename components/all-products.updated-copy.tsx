@@ -27,8 +27,8 @@ import {
 } from "@chakra-ui/react";
 import ComparisonBanner from "@/components/ui/comparison-banner";
 import { useRouter } from "next/navigation";
-import { FaCheck } from "react-icons/fa";
-import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
+import { FaCheck, FaStar } from "react-icons/fa";
+import { FiArrowLeft, FiArrowRight, FiChevronRight } from "react-icons/fi";
 import { IoMdAdd } from "react-icons/io";
 import { BRAND_COLORS } from "@/lib/theme/brand-colors";
 import {
@@ -39,6 +39,7 @@ import {
 import { PrimaryMdButton, SecondaryMdButton } from "st-peter-ui";
 import NextImage from "next/image";
 import Page from "@/components/layout/page/Page";
+import { parseCasketDescription } from "@/lib/utils/plan";
 
 type GroupedPlan = {
   planDesc: string;
@@ -129,6 +130,23 @@ const getPlanCategory = (planType: string, description: string) => {
     : "Metal";
 
   return `${planType} - ${material}`;
+};
+
+/* Build short feature chips (e.g. "Metal casket", "Double top", "Full glass")
+ * from a casket description, in display order. */
+const buildFeatureTags = (casketDesc: string): string[] => {
+  const parsed = parseCasketDescription(casketDesc);
+  const tags: string[] = [];
+
+  if (parsed.material === "Metal") tags.push("Metal casket");
+  else if (parsed.material === "Wood") tags.push("Wood finish");
+
+  if (parsed.topType) tags.push(`${parsed.topType} top`);
+  if (parsed.lidCover) tags.push(`${parsed.lidCover} lid`);
+  if (parsed.glass) tags.push(parsed.glass.replace("Glass", "glass"));
+  if (parsed.urn) tags.push(parsed.urn);
+
+  return tags;
 };
 
 const categoryTabs = [
@@ -246,6 +264,11 @@ const AllProductsCopy = ({
     updateScrollButtons,
   ]);
 
+  /* =============================================================================
+   * OLD renderPlanCard — vertical card layout (preserved for reference).
+   * Replaced by the row/list layout in the new renderPlanCard below.
+   * ========================================================================== */
+  /*
   const renderPlanCard = (
     group: GroupedPlan,
     index: number,
@@ -542,6 +565,197 @@ const AllProductsCopy = ({
       </Box>
     );
   };
+  */
+
+  /* =============================================================================
+   * renderPlanCard — horizontal row / list layout.
+   * Thumbnail (with compare checkbox) + name/price + term + feature chips + chevron.
+   * ========================================================================== */
+  const renderPlanCard = (
+    group: GroupedPlan,
+    index: number,
+    planType: string,
+  ) => {
+    const isInCompare = compareList.includes(group.planDesc);
+    const sortedTerms = sortTerms(group.terms);
+    const firstTerm = sortedTerms[0];
+    const monthlyTerm =
+      sortedTerms.find((term) => term.mode === "M") ?? firstTerm;
+    const isFeatured = index === 0;
+
+    const tags = buildFeatureTags(group.casketDesc);
+    const visibleTags = tags.slice(0, 2);
+    const hiddenCount = tags.length - visibleTags.length;
+
+    return (
+      <Box
+        key={group.planDesc}
+        role="button"
+        tabIndex={0}
+        onClick={() => openPlan(group.planDesc)}
+        cursor="pointer"
+        position="relative"
+        display="flex"
+        alignItems="center"
+        gap={STANDARD_SPACING.sm}
+        w="full"
+        p="12px"
+        bg={BRAND_COLORS.white}
+        borderWidth={isInCompare ? "2px" : "1px"}
+        borderColor={
+          isInCompare ? BRAND_COLORS.primaryGreen : BRAND_COLORS.neutralBorder
+        }
+        borderRadius={STANDARD_RADIUS.xl}
+        boxShadow={STANDARD_SHADOWS.level1}
+        transition="border-color 0.15s ease, box-shadow 0.15s ease"
+        _hover={{ borderColor: BRAND_COLORS.primaryGreen }}
+      >
+        {/* Thumbnail with compare checkbox */}
+        <Box position="relative" flexShrink={0}>
+          <Box
+            position="relative"
+            w="64px"
+            h="64px"
+            borderRadius={STANDARD_RADIUS.lg}
+            overflow="hidden"
+            bg={BRAND_COLORS.mutedBg}
+          >
+            <NextImage
+              unoptimized
+              src={group.img}
+              alt={group.planDesc ?? ""}
+              fill
+              sizes="64px"
+              style={{ objectFit: "cover", objectPosition: "center" }}
+              priority={false}
+            />
+          </Box>
+
+          <Button
+            position="absolute"
+            top="5px"
+            left="5px"
+            w="20px"
+            h="20px"
+            minW="20px"
+            p="0"
+            borderRadius="6px"
+            borderWidth="1.5px"
+            borderColor={
+              isInCompare
+                ? BRAND_COLORS.primaryGreen
+                : BRAND_COLORS.neutralBorder
+            }
+            bg={isInCompare ? BRAND_COLORS.primaryGreen : "rgba(255,255,255,0.9)"}
+            color={BRAND_COLORS.white}
+            aria-label={isInCompare ? "Remove from compare" : "Add to compare"}
+            disabled={!isInCompare && compareList.length >= 3}
+            onClick={(event) => {
+              event.stopPropagation();
+              toggleCompare(group.planDesc);
+            }}
+            _hover={{
+              bg: isInCompare ? BRAND_COLORS.darkGreen : BRAND_COLORS.white,
+            }}
+          >
+            {isInCompare && <FaCheck size={10} />}
+          </Button>
+        </Box>
+
+        {/* Main info */}
+        <Box flex="1" minW={0}>
+          {isFeatured && (
+            <Flex align="center" gap="4px" mb="2px">
+              <Box as={FaStar} color={BRAND_COLORS.primaryGreen} boxSize="11px" />
+              <Text
+                color={BRAND_COLORS.darkGreen}
+                fontSize="11px"
+                fontWeight="800"
+                lineHeight="1"
+              >
+                Most popular
+              </Text>
+            </Flex>
+          )}
+
+          <Flex align="baseline" justify="space-between" gap="8px">
+            <Text
+              color={BRAND_COLORS.black}
+              fontSize="17px"
+              fontWeight="800"
+              lineHeight="1.15"
+              lineClamp={1}
+            >
+              {group.planDesc}
+            </Text>
+            <Flex align="baseline" gap="2px" flexShrink={0}>
+              <Text
+                color={BRAND_COLORS.darkGreen}
+                fontSize="15px"
+                fontWeight="800"
+                lineHeight="1.15"
+              >
+                {monthlyTerm?.price ?? group.contractPrice}
+              </Text>
+              <Text color={BRAND_COLORS.darkGreen} fontSize="11px">
+                /mo
+              </Text>
+            </Flex>
+          </Flex>
+
+          <Text
+            color={BRAND_COLORS.grey}
+            fontSize="12px"
+            lineHeight="1.2"
+            mt="2px"
+          >
+            {firstTerm?.planTerm ?? 0}-year term
+          </Text>
+
+          {tags.length > 0 && (
+            <Flex align="center" gap="6px" wrap="wrap" mt="8px">
+              {visibleTags.map((tag) => (
+                <Box
+                  key={tag}
+                  px="10px"
+                  py="3px"
+                  borderRadius={STANDARD_RADIUS.full}
+                  bg={BRAND_COLORS.mutedBg}
+                  color={BRAND_COLORS.neutralText}
+                  fontSize="11px"
+                  fontWeight="600"
+                  whiteSpace="nowrap"
+                >
+                  {tag}
+                </Box>
+              ))}
+              {hiddenCount > 0 && (
+                <Box
+                  px="8px"
+                  py="3px"
+                  borderRadius={STANDARD_RADIUS.full}
+                  bg={BRAND_COLORS.subtleBg}
+                  color={BRAND_COLORS.grey}
+                  fontSize="11px"
+                  fontWeight="700"
+                >
+                  +{hiddenCount}
+                </Box>
+              )}
+            </Flex>
+          )}
+        </Box>
+
+        {/* Chevron */}
+        <Box
+          as={FiChevronRight}
+          flexShrink={0}
+          color={BRAND_COLORS.grey}
+          boxSize="20px"
+        />
+      </Box>
+    );
+  };
 
   const renderPlanCards = (
     groups: GroupedPlan[],
@@ -551,29 +765,13 @@ const AllProductsCopy = ({
     <Box position="relative" w="full">
       <Grid
         ref={scrollRef}
-        display={{ base: "flex", md: "grid" }}
-        templateColumns={{
-          md: "repeat(2, minmax(0, 1fr))",
-          lg: "repeat(3, minmax(0, 1fr))",
-          xl: "repeat(3, minmax(0, 1fr))",
-        }}
-        gap={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
+        display="flex"
+        flexDirection="column"
+        gap={STANDARD_SPACING.sm}
         alignItems="stretch"
-        overflowX={{ base: "auto", md: "visible" }}
-        overflowY="hidden"
-        scrollBehavior="smooth"
-        scrollSnapType={{ base: "x mandatory", md: "none" }}
-        pb={{ base: STANDARD_SPACING.md, md: "0" }}
-        px={{ base: "2px", md: "0" }}
         onScroll={updateScrollButtons}
         w="full"
-        css={{
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-          "&::-webkit-scrollbar": {
-            display: "none",
-          },
-        }}
+        maxW={{ base: "100%", md: "720px" }}
       >
         {groups.map((group, index) => renderPlanCard(group, index, planType))}
       </Grid>
