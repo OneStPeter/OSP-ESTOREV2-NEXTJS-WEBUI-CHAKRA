@@ -10,7 +10,17 @@ async function getPlans(): Promise<IPlans[]> {
 function groupPlans(plans: IPlans[]): GroupedPlan[] {
   const map = new Map<string, GroupedPlan>();
 
+  // Cards show the MONTHLY installment (mode "M"), not the spot-cash/contract
+  // price. Use only monthly rows for plans that have them; for any plan without
+  // a monthly mode, fall back to all of its rows.
+  const isMonthly = (p: IPlans) => p.mode?.trim().toUpperCase() === "M";
+  const plansWithMonthly = new Set(
+    plans.filter(isMonthly).map((p) => p.planDesc),
+  );
+
   plans.forEach((p) => {
+    if (plansWithMonthly.has(p.planDesc) && !isMonthly(p)) return;
+
     const key = p.planDesc;
 
     if (!map.has(key)) {

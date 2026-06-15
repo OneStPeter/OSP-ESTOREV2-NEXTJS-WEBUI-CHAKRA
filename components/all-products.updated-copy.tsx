@@ -27,8 +27,8 @@ import {
 } from "@chakra-ui/react";
 import ComparisonBanner from "@/components/ui/comparison-banner";
 import { useRouter } from "next/navigation";
-import { FaCheck, FaStar } from "react-icons/fa";
-import { FiArrowLeft, FiArrowRight, FiChevronRight } from "react-icons/fi";
+import { FaCheck } from "react-icons/fa";
+import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
 import { IoMdAdd } from "react-icons/io";
 import { BRAND_COLORS } from "@/lib/theme/brand-colors";
 import {
@@ -105,15 +105,6 @@ const groupPlansByProduct = (
 };
 
 const modeOrder: Record<string, number> = { C: 0, A: 1, S: 2, Q: 3, M: 4 };
-
-const modeLabel = (mode: string) => {
-  if (mode === "M") return "Monthly";
-  if (mode === "C") return "Spot cash";
-  if (mode === "Q") return "Quarterly";
-  if (mode === "S") return "Semi-annual";
-  if (mode === "A") return "Annual";
-  return "Other";
-};
 
 const sortTerms = (terms: GroupedPlan["terms"]) =>
   [...terms].sort((a, b) => {
@@ -581,8 +572,6 @@ const AllProductsCopy = ({
     const firstTerm = sortedTerms[0];
     const monthlyTerm =
       sortedTerms.find((term) => term.mode === "M") ?? firstTerm;
-    const isFeatured = index === 0;
-
     const tags = buildFeatureTags(group.casketDesc);
     const visibleTags = tags.slice(0, 2);
     const hiddenCount = tags.length - visibleTags.length;
@@ -625,8 +614,102 @@ const AllProductsCopy = ({
       ) : null;
 
     return (
-      <Box key={group.planDesc} w="full" h="full">
-        {/* ===== Mobile: compact row ===== */}
+      <Box
+        key={group.planDesc}
+        w={{ base: "min(82vw, 320px)", md: "full" }}
+        h="full"
+        flex={{ base: "0 0 min(82vw, 320px)", md: "initial" }}
+        scrollSnapAlign={{ base: "start", md: "none" }}
+        scrollSnapStop={{ base: "always", md: "normal" }}
+      >
+        {/* ===== Mobile: earlier card view (image + gradient overlay) ===== */}
+        <Box display={{ base: "block", md: "none" }} w="full">
+          <Box
+            position="relative"
+            h={{ base: "500px", sm: "320px" }}
+            w="full"
+            borderRadius="12px"
+            overflow="hidden"
+            bg={BRAND_COLORS.mutedBg}
+            onClick={() => openPlan(group.planDesc)}
+          >
+            <NextImage
+              unoptimized
+              src={group.img}
+              alt={group.planDesc ?? ""}
+              fill
+              sizes="72vw"
+              style={{ objectFit: "cover", objectPosition: "center" }}
+              priority={false}
+            />
+            <Button
+              position="absolute"
+              top="10px"
+              left="50%"
+              transform="translateX(-50%)"
+              h="24px"
+              minW="104px"
+              px="10px"
+              borderRadius={STANDARD_RADIUS.full}
+              bg="rgba(255, 255, 255, 0.72)"
+              color={BRAND_COLORS.black}
+              fontSize="10px"
+              fontWeight="700"
+              backdropFilter="blur(6px)"
+              disabled={compareDisabled}
+              onClick={(event) => {
+                event.stopPropagation();
+                toggleCompare(group.planDesc);
+              }}
+              _hover={{ bg: "rgba(255, 255, 255, 0.86)" }}
+            >
+              {isInCompare ? "Added" : "Add to Compare"}
+            </Button>
+            <Box
+              position="absolute"
+              left="0"
+              right="0"
+              bottom="0"
+              px="8px"
+              py="10px"
+              bg="linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.74) 38%, rgba(0, 0, 0, 0.9) 100%)"
+            >
+              <Text
+                color={BRAND_COLORS.white}
+                fontSize="12px"
+                fontWeight="600"
+                lineHeight="1.15"
+                lineClamp={3}
+              >
+                {group.casketDesc}
+              </Text>
+            </Box>
+          </Box>
+
+          <Box pt="8px">
+            <Text
+              color={BRAND_COLORS.black}
+              fontSize="16px"
+              fontWeight="800"
+              lineHeight="1.1"
+              lineClamp={1}
+            >
+              {group.planDesc}
+            </Text>
+            <Text
+              color={BRAND_COLORS.darkGreen}
+              fontSize="13px"
+              fontWeight="800"
+              lineHeight="1.1"
+              mt="3px"
+              lineClamp={1}
+            >
+              {priceValue}/mo
+            </Text>
+          </Box>
+        </Box>
+
+        {/* ===== Mobile: latest compact row (commented — replaced by the earlier card view above) =====
         <Box
           role="button"
           tabIndex={0}
@@ -706,24 +789,6 @@ const AllProductsCopy = ({
           </Box>
 
           <Box flex="1" minW={0}>
-            {/* {isFeatured && (
-              <Flex align="center" gap="4px" mb="2px">
-                <Box
-                  as={FaStar}
-                  color={BRAND_COLORS.primaryGreen}
-                  boxSize="11px"
-                />
-                <Text
-                  color={BRAND_COLORS.darkGreen}
-                  fontSize="11px"
-                  fontWeight="800"
-                  lineHeight="1"
-                >
-                  Most popular
-                </Text>
-              </Flex>
-            )} */}
-
             <Flex align="baseline" justify="space-between" gap="8px">
               <Text
                 color={BRAND_COLORS.black}
@@ -770,6 +835,7 @@ const AllProductsCopy = ({
             boxSize="20px"
           />
         </Box>
+        ===== end latest compact row ===== */}
 
         {/* ===== Tablet / Desktop: e-commerce card ===== */}
         <Flex
@@ -934,21 +1000,33 @@ const AllProductsCopy = ({
   const renderPlanCards = (
     groups: GroupedPlan[],
     planType: string,
-    scrollRef: React.RefObject<HTMLDivElement | null>,
   ) => (
     <Box position="relative" w="full">
       <Grid
-        ref={scrollRef}
-        display="grid"
+        ref={planType === "Traditional" ? traditionalScrollRef : cremationScrollRef}
+        display={{ base: "flex", md: "grid" }}
         templateColumns={{
-          base: "1fr",
           md: "repeat(2, minmax(0, 1fr))",
           xl: "repeat(3, minmax(0, 1fr))",
         }}
         gap={STANDARD_SPACING.sm}
         alignItems="stretch"
+        overflowX={{ base: "auto", md: "visible" }}
+        overflowY="hidden"
+        scrollBehavior="smooth"
+        scrollSnapType={{ base: "x mandatory", md: "none" }}
+        pb={{ base: STANDARD_SPACING.md, md: "0" }}
+        px={{ base: "2px", md: "0" }}
         onScroll={updateScrollButtons}
         w="full"
+        css={{
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+        }}
       >
         {groups.map((group, index) => renderPlanCard(group, index, planType))}
       </Grid>
@@ -1080,12 +1158,8 @@ const AllProductsCopy = ({
           )}
 
           {activeTab === "traditional"
-            ? renderPlanCards(
-                traditionalGroups,
-                "Traditional",
-                traditionalScrollRef,
-              )
-            : renderPlanCards(cremationGroups, "Cremation", cremationScrollRef)}
+            ? renderPlanCards(traditionalGroups, "Traditional")
+            : renderPlanCards(cremationGroups, "Cremation")}
         </Page.Row>
 
         <ComparisonBanner
