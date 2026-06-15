@@ -1017,7 +1017,7 @@ const AllProductsCopy = ({
 
   return (
     <Page.Root
-      title="Our life plans"
+      title="Our Life Plans"
       description="Secure your family's future with peace of mind"
     >
       {/* Right-side header tools: category filter pills */}

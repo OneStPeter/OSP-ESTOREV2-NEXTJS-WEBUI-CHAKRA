@@ -45,7 +45,8 @@ const AuthInput = ({
     borderColor={BRAND_COLORS.neutralBorder}
     borderRadius={STANDARD_RADIUS.sm}
     color={BRAND_COLORS.neutralText}
-    fontSize="14px"
+    // 16px on mobile prevents iOS Safari from auto-zooming on focus.
+    fontSize={{ base: "16px", md: "14px" }}
     _placeholder={{ color: "#4A5568" }}
     _focusVisible={{
       borderColor: BRAND_COLORS.primaryGreen,
@@ -92,7 +93,8 @@ const RequiredInputField = ({
           top="50%"
           transform="translateY(-50%)"
           color="#4A5568"
-          fontSize="14px"
+          // Match the input font-size so the floating label aligns 1:1.
+          fontSize={{ base: "16px", md: "14px" }}
           pointerEvents="none"
         >
           {label}{" "}
