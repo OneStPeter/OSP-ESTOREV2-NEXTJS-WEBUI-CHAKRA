@@ -651,8 +651,8 @@ export default function LandingV2({
               maxW="600px"
               mx="auto"
             >
-              Start your application online, or talk with a caring St. Peter
-              representative who can guide you at your own pace.
+              Start your application online and explore our plans at your own
+              pace.
             </Body>
 
             <Flex
@@ -690,7 +690,7 @@ export default function LandingV2({
               </Button>
 
               {/* Secondary — clear outline, readable on green */}
-              <Button
+              {/* <Button
                 onClick={() => router.push("/contact-us")}
                 w={{ base: "100%", sm: "auto" }}
                 minW={{ sm: "224px" }}
@@ -712,7 +712,7 @@ export default function LandingV2({
               >
                 <Icon as={FiPhone} boxSize="17px" />
                 Talk to a Representative
-              </Button>
+              </Button> */}
             </Flex>
           </Reveal>
         </Box>
