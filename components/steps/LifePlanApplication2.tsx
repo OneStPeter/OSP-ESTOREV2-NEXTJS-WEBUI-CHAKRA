@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import FloatingLabelInput from "../ui/floating-label-input";
 import { useEffect, useState } from "react";
-import { useOcr } from "@/hooks/useOCR";
+// import { useOcr } from "@/hooks/useOCR";
 import { GeoApifyService } from "@/services/API/GeoApifyService";
 import { IAddress } from "@/types/planholder";
 import { BRAND_COLORS } from "@/lib/theme/brand-colors";
@@ -232,7 +232,7 @@ const LifePlanApplication2 = ({
 }: LifePlanApplication2Props) => {
   const OCRValue =
     typeof window === "undefined" ? null : localStorage.getItem("ocrResult");
-  const { runOCR, data } = useOcr();
+  // const { runOCR, data } = useOcr();
   const [lot, setLot] = useState("123");
   const [street, setStreet] = useState("Mabini Street");
   const [city, setCity] = useState("Makati");
@@ -256,16 +256,16 @@ const LifePlanApplication2 = ({
     }
   };
 
-  useEffect(() => {
-    if (OCRValue != null) {
-      const ocrData = JSON.parse(OCRValue);
-      const address = ocrData.addressLine || "";
-      parseAddress(address);
-    } else if (data?.response) {
-      const address = data.response.addressLine || "";
-      parseAddress(address);
-    }
-  }, [OCRValue, data]);
+  // useEffect(() => {
+  //   if (OCRValue != null) {
+  //     const ocrData = JSON.parse(OCRValue);
+  //     const address = ocrData.addressLine || "";
+  //     parseAddress(address);
+  //   } else if (data?.response) {
+  //     const address = data.response.addressLine || "";
+  //     parseAddress(address);
+  //   }
+  // }, [OCRValue, data]);
 
   useEffect(() => {
     onAddressUpdate?.({
@@ -278,9 +278,9 @@ const LifePlanApplication2 = ({
     });
   }, [lot, street, barangay, city, province, district]);
 
-  useEffect(() => {
-    runOCR();
-  }, []);
+  // useEffect(() => {
+  //   runOCR();
+  // }, []);
 
   return (
     <Box

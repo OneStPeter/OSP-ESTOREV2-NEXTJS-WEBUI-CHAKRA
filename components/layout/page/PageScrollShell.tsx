@@ -29,11 +29,12 @@ const PageScrollShell = ({
     <Box
       maxW="7xl"
       mx="auto"
-      p={{ base: "0px 24px 96px", lg: "36px 12px 56px" }}
+      p={{ base: "0px 24px 126px", lg: "36px 12px 56px" }}
       {...boxProps}
       mt={{ base: 0, md: "40px" }}
       overflowX="hidden"
       bg={"#fff"}
+      pb={120}
     >
       <Box
         w={{ base: "100%", lg: "calc(100% + 24px)" }}

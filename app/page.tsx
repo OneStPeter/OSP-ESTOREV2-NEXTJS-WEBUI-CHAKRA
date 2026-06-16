@@ -1,6 +1,6 @@
 import { IPlans } from "@/types/product";
 import { ProductService } from "@/services/API/ProductService";
-import LandingV2, { type GroupedPlan } from "./sections/landing-v2";
+import LandingV2, { type GroupedPlan } from "./(Home)/_sections/landing-v2";
 
 async function getPlans(): Promise<IPlans[]> {
   return ProductService.getPlansCard();

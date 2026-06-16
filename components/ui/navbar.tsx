@@ -44,7 +44,7 @@ import {
   STANDARD_SHADOWS,
   STANDARD_SPACING,
 } from "@/lib/theme/standard-design-tokens";
-import ProfilePage from "@/app/account/profile/page";
+import ProfilePage from "@/app/(WithLogin)/account/profile/page";
 
 const mobileMenuItems: Array<{
   label: string;

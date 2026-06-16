@@ -12,6 +12,7 @@
     "@chakra-ui/react": "^3.28.0",
     "@emotion/react": "^11.14.0",
     "@splpi/dms-estore-upload": "^1.0.3",
+    "@splpi/new-sales-page-component": "^0.1.1",
     "@splpi/plan-management": "^0.1.7",
     "@yhuanshin/shared-components": "^1.0.3",
     "axios": "^1.16.0",

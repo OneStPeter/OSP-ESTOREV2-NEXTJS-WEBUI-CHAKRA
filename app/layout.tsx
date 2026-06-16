@@ -37,10 +37,12 @@ export default function RootLayout({
         <ServiceWorkerRegister />
         <StPeterProvider theme="green" font="Open Sans">
           <DemoAuthProvider>
-            <AppLayoutWrapper>
-              <NotifyInstall>{children}</NotifyInstall>
-              <Footer />
-            </AppLayoutWrapper>
+            <NotifyInstall>
+              <AppLayoutWrapper>
+                {children}
+                <Footer />
+              </AppLayoutWrapper>
+            </NotifyInstall>
           </DemoAuthProvider>
         </StPeterProvider>
       </body>

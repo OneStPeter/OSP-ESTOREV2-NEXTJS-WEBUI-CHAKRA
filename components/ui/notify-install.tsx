@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useNotifyInstall } from "@/hooks/useNotifyInstall";
 import {
   Dialog,
@@ -12,6 +13,7 @@ import {
   Heading,
   Icon,
   Portal,
+  CloseButton,
 } from "@chakra-ui/react";
 import { FiDownload, FiPlusSquare, FiShare } from "react-icons/fi";
 
@@ -26,15 +28,30 @@ const STEPS = [
   },
 ];
 
+const INSTALL_DIALOG_DISMISSED_KEY = "estore-install-dialog-dismissed";
+
 export default function NotifyInstall({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const { isInstalled, isMobile, canInstall, install } = useNotifyInstall();
+  const [isDismissed, setIsDismissed] = useState(false);
+
+  useEffect(() => {
+    const wasDismissed = localStorage.getItem(INSTALL_DIALOG_DISMISSED_KEY);
+    setIsDismissed(wasDismissed === "true");
+  }, []);
+
+  const handleClose = () => {
+    localStorage.setItem(INSTALL_DIALOG_DISMISSED_KEY, "true");
+    setIsDismissed(true);
+  };
+
+  const isOpen = !isInstalled && isMobile && !isDismissed;
 
   // Desktop users bypass it
-  if (!isMobile || isInstalled) {
+  if (!isOpen) {
     return children;
   }
 
@@ -43,7 +60,12 @@ export default function NotifyInstall({
       {children}
 
       <Dialog.Root
-        open={!isInstalled}
+        open={isOpen}
+        onOpenChange={(details) => {
+          if (!details.open) {
+            handleClose();
+          }
+        }}
         placement="center"
         motionPreset="slide-in-bottom"
       >
@@ -55,7 +77,7 @@ export default function NotifyInstall({
             alignItems={{ base: "flex-end", sm: "center" }}
           >
             <Dialog.Content
-              w="full"
+              w="xl"
               maxW={{ base: "full", sm: "sm" }}
               borderRadius={{ base: "2xl 2xl 0 0", sm: "2xl" }}
               overflow="hidden"
@@ -145,6 +167,9 @@ export default function NotifyInstall({
                   )}
                 </VStack>
               </Dialog.Body>
+              <Dialog.CloseTrigger asChild>
+                <CloseButton size="sm" onClick={handleClose} />
+              </Dialog.CloseTrigger>
             </Dialog.Content>
           </Dialog.Positioner>
         </Portal>
