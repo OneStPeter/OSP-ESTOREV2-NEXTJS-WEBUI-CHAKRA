@@ -1,6 +1,7 @@
 import { Box, Text } from "@chakra-ui/react";
-import { TrackMyRequest } from "osp.cis.nextjs.components";
+//import { TrackMyRequest } from "osp.cis.nextjs.components";
 import React from "react";
+import TrackMyRequest from "../_components/TrackMyRequest";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -10,7 +11,7 @@ const page = async ({ params }: PageProps) => {
   const resolvedParams = await params;
   console.log("Transaction ID:", resolvedParams.id);
   return (
-    <Box mt="24" p="8" w="full" maxW="7xl" mx="auto">
+    <Box p="8" w="full" maxW="7xl" mx="auto">
       <TrackMyRequest requestId={resolvedParams.id} />
       {/* <Text>{resolvedParams.id} </Text> */}
     </Box>

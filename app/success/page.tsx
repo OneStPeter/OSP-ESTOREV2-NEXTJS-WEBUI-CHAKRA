@@ -13,17 +13,19 @@ const page = ({ id }: SuccessProps) => {
   return (
     <Box mt={8} mb={10}>
       <SuccessPage
-        variant="payment"
-        title="Payment Success"
+        variant="application"
+        title="Transaction Success"
         description=" A confirmation email has also been sent, and you can view or track this anytime in your account."
-        transactionId={id}
+        //transactionId={id}
+        transactionId={`RR-1232`}
         totalAmount="₱3,000.00"
         dateTime="Nov 25, 2025, 2:30 PM"
         onClickHome={() => {
           router.push("/");
         }}
         onClickProceed={() => {
-          router.push(`/transaction/${id}`);
+          //router.push(`/transaction/${id}`);
+          router.push(`/transaction/RR-1232`);
         }}
       ></SuccessPage>
     </Box>

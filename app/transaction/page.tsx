@@ -1,10 +1,11 @@
 import { Box } from "@chakra-ui/react";
-import { TrackMyRequest } from "osp.cis.nextjs.components";
+// import { TrackMyRequest } from "osp.cis.nextjs.components";
 import React from "react";
+import TrackMyRequest from "./_components/TrackMyRequest";
 
 const page = () => {
   return (
-    <Box mt="24" p="8" w="full" maxW="7xl" mx="auto">
+    <Box>
       <TrackMyRequest />
     </Box>
   );

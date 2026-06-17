@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import ReviewSubmitStep from "./ReviewSubmitStep";
 
@@ -20,7 +20,11 @@ interface BookingFormProps {
 }
 
 const BookingForm: React.FC<BookingFormProps> = ({ successLink }) => {
-  const requestId = "RR-123456";
+  //const requestId = "RR-123456";
+
+  useEffect(() => {
+    setCurrentStep(0);
+  }, []);
 
   // --- STATE ---
   const [step, setStep] = useState(0);
@@ -35,6 +39,15 @@ const BookingForm: React.FC<BookingFormProps> = ({ successLink }) => {
     "St. Peter Corporate Center, 999, EDSA, Veterans Village, Project 7, 1st District, Quezon City, Eastern Manila District, Metro Manila, 1105, Philippines",
   );
 
+  const formTopRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToTop = () => {
+    formTopRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   // --- STEPS DATA ---
   const stepsData = [
     {
@@ -42,7 +55,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ successLink }) => {
       icon: FaMapMarkerAlt,
       content: (
         <BookingLocation
-          onSelectChapel={setSelectedChapel}
+          onSelectChapel={(chapel) => {
+            setSelectedChapel(chapel);
+            setTimeout(scrollToTop, 0);
+            setCurrentStep(1);
+          }}
           onLocationChange={setRetrievalLocation}
         />
       ),
@@ -70,15 +87,16 @@ const BookingForm: React.FC<BookingFormProps> = ({ successLink }) => {
           retrievalLocation={retrievalLocation}
           formData={{
             deceasedFirstName: "Juan",
-            deceasedMiddleName: "Ocampo",
+            deceasedMiddleName: "O.",
             deceasedLastName: "Dela Cruz",
-            deceasedSuffix: "Jr",
-            contactFirstName: "Restituto",
-            contactMiddleName: "Ocampo",
+            deceasedSuffix: "",
+            contactFirstName: "Juanito",
+            contactMiddleName: "O.",
             contactLastName: "Dela Cruz",
+            contactSuffix: "Sr.",
             relationship: "Father",
             email: "restituto@gmail.com",
-            mobile: "09123456789",
+            mobile: "+639123456789",
           }}
         />
       ),
@@ -86,15 +104,19 @@ const BookingForm: React.FC<BookingFormProps> = ({ successLink }) => {
     {
       title: "OTP",
       icon: FaLock,
-      content: <OTPVerification successLink={successLink + requestId} />,
+      content: <OTPVerification successLink={successLink} />,
     },
   ];
+
+  const [currentStep, setCurrentStep] = useState(0);
 
   return (
     <FormSteps
       title="Memorial Service Booking"
       description="A guided journey to book a memorial service with care and clarity."
       stepsData={stepsData}
+      currentStep={currentStep}
+      setCurrentStep={setCurrentStep}
     />
   );
 };

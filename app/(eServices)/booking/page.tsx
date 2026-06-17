@@ -9,7 +9,7 @@ const Booking = () => {
     <Container
     //
     >
-      <BookingForm successLink="/success/RR-123456" />
+      <BookingForm successLink="/success" />
     </Container>
   );
 };

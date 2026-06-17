@@ -1,19 +1,11 @@
 "use client";
 
-import {
-  Box,
-  Grid,
-  Text,
-  Separator,
-  Card,
-  VStack,
-  Span,
-  Flex,
-  Icon,
-} from "@chakra-ui/react";
-import { Map, PinIcon } from "lucide-react";
-import { FaRegAddressCard } from "react-icons/fa";
-import { Body, H4, Small } from "st-peter-ui";
+import React, { useEffect, useRef, useState } from "react";
+import { Box, Flex, Text, VStack, useClipboard } from "@chakra-ui/react";
+import { Collapsible } from "@chakra-ui/react";
+
+import { Map, User } from "lucide-react";
+import { MdExpandMore } from "react-icons/md";
 
 interface ReviewSubmitStepProps {
   selectedChapel: string;
@@ -28,6 +20,7 @@ interface ReviewSubmitStepProps {
     contactFirstName: string;
     contactMiddleName: string;
     contactLastName: string;
+    contactSuffix: string;
     relationship: string;
     email: string;
     mobile: string;
@@ -41,154 +34,264 @@ export default function ReviewSubmitStep({
   retrievalLocation,
   formData,
 }: ReviewSubmitStepProps) {
-  const renderRow = (label: string, value: string) => (
-    <Grid templateColumns="1fr 2fr" py={1} borderBottom="1px solid #E2E8F0">
-      <Text fontWeight="medium" color="gray.600">
-        {label}
-      </Text>
-      <Text textAlign="right" color="gray.800">
-        {value}
-      </Text>
-    </Grid>
-  );
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0, behavior: "auto" });
+  }, []);
+
+  const [openMap, setOpenMap] = useState({
+    location: true,
+    personal: true,
+  });
+
+  const toggle = (key: keyof typeof openMap) => {
+    setOpenMap((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
+  const fullName = [
+    formData.deceasedLastName,
+    formData.deceasedFirstName
+      ? `${formData.deceasedFirstName}${
+          formData.deceasedSuffix && formData.deceasedSuffix !== "None"
+            ? ` ${formData.deceasedSuffix}`
+            : ""
+        }`
+      : "",
+    formData.deceasedMiddleName,
+  ]
+    .filter(Boolean)
+    .join(", ")
+    .replace(/,([^,]*)$/, " $1");
+
+  const contactpersonName = [
+    formData.contactLastName,
+    formData.contactFirstName
+      ? `${formData.contactFirstName}${
+          formData.contactSuffix && formData.contactSuffix !== "None"
+            ? ` ${formData.contactSuffix}`
+            : ""
+        }`
+      : "",
+    formData.contactMiddleName,
+  ]
+    .filter(Boolean)
+    .join(", ")
+    .replace(/,([^,]*)$/, " $1");
 
   return (
-    <Card.Root
-      mb={8}
-      bg="white"
-      shadow="sm"
-      borderWidth="1px"
-      rounded="lg"
-      overflow="hidden">
-      <Card.Header py={4} px={6} borderBottomWidth="1px">
-        <SectionCardHeader
-          icon={<FaRegAddressCard />}
-          title="Booking Summary"
-        />
-      </Card.Header>
-
-      <Card.Body px={6} py={5}>
-        <Box mb={1} mt={1}>
-          <Text fontWeight="semibold" color="green">
-            Location Details
-          </Text>
-        </Box>
-        <Separator mb={3} />
-        <Grid templateColumns={{ base: "1fr", md: "repeat(1 ,1fr)" }} gap={6}>
-          <InfoItem label="Retrieval Address" value={retrievalLocation} />
-        </Grid>
-
-        <Box mb={1} mt={1}></Box>
-        <Grid templateColumns={{ base: "1fr", md: "repeat(3,1fr)" }} gap={6}>
-          <InfoItem label="Chapel" value={selectedChapel} />
-          <InfoItem label="Chapel Address" value={chapelAddress} />
-          <InfoItem
+    <Box ref={scrollRef}>
+      <VStack gap={3} align="stretch">
+        <SectionCard
+          title="Location Details"
+          hint="Retrieval and chapel information"
+          icon={<Map size={18} />}
+          isOpen={openMap.location}
+          onToggle={() => toggle("location")}>
+          <SmartRow
+            label="Retrieval Address"
+            value={retrievalLocation}
+            type="address"
+          />
+          <SmartRow label="Chapel" value={selectedChapel} />
+          <SmartRow
+            label="Chapel Address"
+            value={chapelAddress}
+            type="address"
+          />
+          <SmartRow
             label="Chapel Contacts"
             value={chapelContacts.join(" | ")}
           />
-        </Grid>
+        </SectionCard>
 
-        <Box mb={1} mt={4}>
-          <Text fontWeight="semibold" color="green">
-            Deceased Details
-          </Text>
-        </Box>
-        <Separator mb={3} />
-        <Grid templateColumns={{ base: "1fr", md: "repeat(4 ,1fr)" }} gap={6}>
-          <InfoItem label="First Name" value={formData.deceasedFirstName} />
-          <InfoItem label="Middle Name" value={formData.deceasedMiddleName} />
-          <InfoItem label="Last Name" value={formData.deceasedLastName} />
-          {formData.deceasedSuffix && formData.deceasedSuffix !== "None" && (
-            <InfoItem label="Suffix" value={formData.deceasedSuffix} />
-          )}
-        </Grid>
-
-        <Box mb={1} mt={4}>
-          <Text fontWeight="semibold" color="green">
-            Contact Person
-          </Text>
-        </Box>
-        <Separator mb={3} />
-        <Grid templateColumns={{ base: "1fr", md: "repeat(4 ,1fr)" }} gap={6}>
-          <InfoItem label="First Name" value={formData.deceasedFirstName} />
-          <InfoItem label="Middle Name" value={formData.deceasedMiddleName} />
-          <InfoItem label="Last Name" value={formData.deceasedLastName} />
-          {formData.deceasedSuffix && formData.deceasedSuffix !== "None" && (
-            <InfoItem label="Suffix" value={formData.deceasedSuffix} />
-          )}
-          <InfoItem label="Relationship" value={formData.relationship} />
-          <InfoItem label="Email" value={formData.email} />
-          <InfoItem label="Mobile" value={formData.mobile} />
-        </Grid>
-      </Card.Body>
-    </Card.Root>
-    // <Box
-    //   bg="white"
-    //   borderWidth="1px"
-    //   borderRadius="lg"
-    //   p={4}
-    //   shadow="sm"
-    //   maxW="md"
-    //   mx="auto"
-    //   fontFamily="monospace">
-    //   <Text fontWeight="bold" fontSize="lg" mb={2} color="#109448">
-    //     Review Summary
-    //   </Text>
-
-    //   {/* Selected Chapel */}
-    //   {renderRow("Chapel", selectedChapel)}
-    //   {renderRow("Address", chapelAddress)}
-    //   {renderRow("Contacts", chapelContacts.join(" | "))}
-    //   <Separator my={2} />
-
-    //   {/* Retrieval Location */}
-    //   {renderRow("Retrieval Location", retrievalLocation)}
-    //   <Separator my={2} />
-
-    //   {/* Deceased Details */}
-    //   {renderRow("Deceased First Name", formData.deceasedFirstName)}
-    //   {renderRow("Deceased Middle Name", formData.deceasedMiddleName)}
-    //   {renderRow("Deceased Last Name", formData.deceasedLastName)}
-    //   {formData.deceasedSuffix && formData.deceasedSuffix !== "None"
-    //     ? renderRow("Deceased Suffix", formData.deceasedSuffix)
-    //     : null}
-    //   <Separator my={2} />
-
-    //   {/* Contact Person */}
-    //   {renderRow("Contact First Name", formData.contactFirstName)}
-    //   {renderRow("Contact Middle Name", formData.contactMiddleName)}
-    //   {renderRow("Contact Last Name", formData.contactLastName)}
-    //   {renderRow("Relationship", formData.relationship)}
-    //   {renderRow("Email", formData.email)}
-    //   {renderRow("Mobile", formData.mobile)}
-    // </Box>
+        <SectionCard
+          title="Personal Details"
+          hint="Deceased and contact information"
+          icon={<User size={18} />}
+          isOpen={openMap.personal}
+          onToggle={() => toggle("personal")}>
+          <Row label="Deceased" value={fullName} />
+          <Row label="Contact Person" value={contactpersonName} />
+          <Row label="Relationship" value={formData.relationship} />
+          <Row label="Email" value={formData.email} />
+          <Row label="Mobile" value={formData.mobile} />
+        </SectionCard>
+      </VStack>
+    </Box>
   );
 }
 
-const InfoItem = ({
-  label,
-  value,
-}: {
-  label: string;
-  value: React.ReactNode;
-}) => (
-  <VStack gap={1} align="start" minW={0}>
-    <Small color="gray.500">{label}</Small>
-    <Body>
-      <Span fontWeight="semibold">{value}</Span>
-    </Body>
-  </VStack>
-);
-
-const SectionCardHeader = ({
-  icon,
+/* =========================
+   SECTION CARD
+========================= */
+const SectionCard = ({
   title,
+  icon,
+  hint,
+  isOpen,
+  onToggle,
+  children,
 }: {
-  icon: React.ReactNode;
   title: string;
-}) => (
-  <Flex align="center" gap={2}>
-    <Icon boxSize={5}>{icon}</Icon>
-    <H4>{title}</H4>
+  icon: React.ReactNode;
+  hint?: string;
+  isOpen: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+}) => {
+  return (
+    <Box
+      w="100%"
+      borderRadius="2xl"
+      bg="white"
+      shadow="sm"
+      border="1px solid"
+      borderColor="gray.100"
+      overflow="hidden"
+      transition="all 0.2s ease"
+      _hover={{ transform: "translateY(-2px)", shadow: "md" }}>
+      <Collapsible.Root open={isOpen}>
+        <Collapsible.Trigger asChild>
+          <Flex
+            px={4}
+            py={3}
+            justify="space-between"
+            align="center"
+            cursor="pointer"
+            onClick={onToggle}>
+            <Flex align="center" gap={3}>
+              <Box p={2} borderRadius="full" bg="gray.100" color="gray.700">
+                {icon}
+              </Box>
+
+              <Box>
+                <Text fontWeight="bold" fontSize="sm">
+                  {title}
+                </Text>
+                {hint && (
+                  <Text fontSize="xs" color="gray.500">
+                    {hint}
+                  </Text>
+                )}
+              </Box>
+            </Flex>
+
+            <Box
+              transform={isOpen ? "rotate(180deg)" : "rotate(0deg)"}
+              transition="0.2s"
+              color={isOpen ? "green.500" : "gray.400"}>
+              <MdExpandMore size={22} />
+            </Box>
+          </Flex>
+        </Collapsible.Trigger>
+
+        <Collapsible.Content>
+          <Box px={4} pb={4}>
+            {children}
+          </Box>
+        </Collapsible.Content>
+      </Collapsible.Root>
+    </Box>
+  );
+};
+
+const Row = ({ label, value }: { label: string; value?: any }) => (
+  <Flex align="center" py={1.5} fontSize="sm">
+    {/* LABEL */}
+    <Text color="gray.500" whiteSpace="nowrap">
+      {label}
+    </Text>
+
+    {/* LINE */}
+    <Box
+      flex="1"
+      mx={3}
+      borderBottom="1px dashed"
+      borderColor="gray.300"
+      transform="translateY(2px)"
+    />
+
+    {/* VALUE */}
+    <Text fontWeight="medium" textAlign="right" whiteSpace="nowrap">
+      {value ?? "-"}
+    </Text>
   </Flex>
 );
+
+/* =========================
+   SMART ROW (FIXED FINAL)
+========================= */
+const SmartRow = ({
+  label,
+  value,
+  type,
+}: {
+  label: string;
+  value?: string;
+  type?: "text" | "address" | "email" | "phone";
+}) => {
+  const isEmail = type === "email";
+
+  // ✅ RULE-BASED LAYOUT DECISION (NO LENGTH CHECKS)
+  const isLeaderRow = type === "text";
+
+  // -------------------------
+  // STACKED (ADDRESS / EMAIL / LONG FORM)
+  // -------------------------
+  if (!isLeaderRow) {
+    return (
+      <Box py={2}>
+        <Text fontSize="sm" color="gray.500">
+          {label}
+        </Text>
+
+        <Box my={1.5} borderBottom="1px dashed" borderColor="gray.200" />
+
+        <Text
+          fontSize="sm"
+          fontWeight="medium"
+          color={isEmail ? "blue.600" : "gray.800"}
+          whiteSpace="pre-wrap"
+          wordBreak="break-word"
+          lineHeight="1.5">
+          {value || "-"}
+        </Text>
+      </Box>
+    );
+  }
+
+  // -------------------------
+  // DOT LEADER (ATOMIC FIELDS ONLY)
+  // -------------------------
+  return (
+    <Box py={2}>
+      <Box
+        display="grid"
+        gridTemplateColumns="auto 1fr auto"
+        alignItems="center"
+        gap={3}>
+        {/* LABEL */}
+        <Text fontSize="sm" color="gray.500" whiteSpace="nowrap">
+          {label}
+        </Text>
+
+        {/* DOTS */}
+        <Box borderBottom="1px dashed" borderColor="gray.300" />
+
+        {/* VALUE */}
+        <Text
+          fontSize="sm"
+          fontWeight="medium"
+          textAlign="right"
+          color={isEmail ? "blue.600" : "gray.800"}
+          whiteSpace="nowrap">
+          {value || "-"}
+        </Text>
+      </Box>
+    </Box>
+  );
+};

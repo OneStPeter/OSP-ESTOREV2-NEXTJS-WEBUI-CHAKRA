@@ -15,6 +15,8 @@ import { FloatingLabelInput } from "./FloatingLabelInput";
 
 import { HiUpload } from "react-icons/hi";
 import { toaster } from "@/components/ui/toaster";
+import InfoCard from "@/components/ui/info-card";
+// import { InfoCard } from "@/components/info-card/info-card";
 
 export default function DeceasedContactFormStep() {
   const [formData, setFormData] = useState({
@@ -100,12 +102,10 @@ export default function DeceasedContactFormStep() {
   return (
     <Box display="flex" flexDirection="column" gap="4">
       {/* Top Instruction Block */}
-      <Box p="4" borderWidth="1px" borderRadius="lg" bg="green.50">
-        <Text fontSize="sm" color="green.700" fontWeight="medium">
-          You may upload an ID. The system can automatically extract and
-          populate the details if provided.
-        </Text>
-      </Box>
+      <InfoCard>
+        You may upload an ID. The system can automatically extract and populate
+        the details if provided.
+      </InfoCard>
 
       {/* Deceased Details */}
       <Box mb="4">
@@ -117,7 +117,8 @@ export default function DeceasedContactFormStep() {
           fontWeight="semibold"
           borderBottomWidth="1px"
           color="#525453"
-          textAlign="left">
+          textAlign="left"
+        >
           Deceased Details
         </Heading>
 
@@ -184,7 +185,8 @@ export default function DeceasedContactFormStep() {
           fontWeight="semibold"
           borderBottomWidth="1px"
           color="#525453"
-          textAlign="left">
+          textAlign="left"
+        >
           Contact Person
         </Heading>
 

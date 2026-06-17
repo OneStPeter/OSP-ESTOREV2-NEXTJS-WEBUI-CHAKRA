@@ -9,7 +9,7 @@ import {
   Portal,
   Field,
 } from "@chakra-ui/react";
-import FloatingLabelInput from "../ui/floating-label-input";
+//import FloatingLabelInput from "../ui/floating-label-input";
 import { useEffect, useState } from "react";
 // import { useOcr } from "@/hooks/useOCR";
 import { GeoApifyService } from "@/services/API/GeoApifyService";
@@ -20,6 +20,7 @@ import {
   STANDARD_SHADOWS,
   STANDARD_SPACING,
 } from "@/lib/theme/standard-design-tokens";
+import FloatingLabelInput from "../ui/floating-label-input";
 
 const provinceOptions = [
   "Abra",

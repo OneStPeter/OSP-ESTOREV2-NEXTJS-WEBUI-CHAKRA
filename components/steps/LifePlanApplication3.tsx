@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Field, SimpleGrid, Text, VStack } from "@chakra-ui/react";
-import FloatingLabelInput from "../ui/floating-label-input";
+//import FloatingLabelInput from "../ui/floating-label-input";
 import { BRAND_COLORS } from "@/lib/theme/brand-colors";
 import {
   STANDARD_RADIUS,
@@ -10,6 +10,7 @@ import {
 } from "@/lib/theme/standard-design-tokens";
 import { IEmployment } from "@/types/planholder";
 import React from "react";
+import { FloatingLabelInput } from "../FloatingLabelInput";
 
 interface LifePlanApplication3Props {
   initialData?: IEmployment;
@@ -25,8 +26,7 @@ const LifePlanApplication3 = ({
     employerName: initialData?.employerName ?? "ABC Technologies Inc.",
     employmentStatus: initialData?.employmentStatus ?? "Regular",
     officeAddress:
-      initialData?.officeAddress ??
-      "456 Ayala Avenue, Bel-Air, Makati City",
+      initialData?.officeAddress ?? "456 Ayala Avenue, Bel-Air, Makati City",
     TIN: initialData?.TIN ?? "123-456-789-000",
     SSS: initialData?.SSS ?? "34-1234567-8",
     sourceOfIncome: initialData?.sourceOfIncome ?? "Salary",

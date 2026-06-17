@@ -34,7 +34,7 @@ const chapelList = [
     id: 1,
     name: "QUEZON AVE",
     address: "296 QUEZON AVENUE, QUEZON CITY",
-    contacts: ["(632) 8371-7762", "(0917) 887-3737", "(0999) 228-1375"],
+    contacts: ["+63283717762", "+639178873737", "+639992281375"],
     distance: "5.41 km",
     distanceValue: 5.41,
   },
@@ -42,7 +42,7 @@ const chapelList = [
     id: 2,
     name: "COMMONWEALTH",
     address: "COMMONWEALTH AVE. MATANDANG BALARA, QUEZON CITY",
-    contacts: ["(632) 8952-0857", "(632) 8932-5341", "(0999) 228-1451"],
+    contacts: ["+63289520857", "+63289325341", "+639992281451"],
     distance: "5.56 km",
     distanceValue: 5.56,
   },
@@ -50,7 +50,7 @@ const chapelList = [
     id: 3,
     name: "LA LOMA",
     address: "C3 ROAD BRGY. 123 CALOOCAN CITY",
-    contacts: ["(632) 8714-1130", "(0917) 472-8826", "(0908) 632-6371"],
+    contacts: ["+63287141130", "+639174728826", "+639086326371"],
     distance: "6.5 km",
     distanceValue: 6.5,
   },
@@ -59,10 +59,10 @@ const chapelList = [
     name: "CUBAO",
     address: "135 20TH AVENUE, SAN ROQUE, QUEZON CITY",
     contacts: [
-      "(632) 8361-1023",
-      "(632) 8364-8716",
-      "(0927) 411-6147",
-      "(0928) 695-3834",
+      "+63283611023",
+      "+63283648716",
+      "+639274116147",
+      "+639286953834",
     ],
     distance: "7.81 km",
     distanceValue: 7.81,
@@ -71,7 +71,7 @@ const chapelList = [
     id: 5,
     name: "MAYON",
     address: "BRB BLDG. 230 A. BONIFACIO COR. MAYON ST., QUEZON CITY",
-    contacts: ["(632) 8741-7013", "(0999) 666-0401"],
+    contacts: ["+63287417013", "+639996660401"],
     distance: "9.8 km",
     distanceValue: 9.8,
   },
@@ -131,21 +131,27 @@ const BookingLocation = ({
   };
 
   const filteredChapels = useMemo(() => {
-    let list = chapelList;
+    let list = [...chapelList];
 
+    // 1. Sort by distance if nearest mode
     if (chapelFilter === "nearest") {
-      list = [...list]
-        .sort((a, b) => a.distanceValue - b.distanceValue)
-        .slice(0, Math.max(3, Math.min(chapelList.length, 5)));
+      list.sort((a, b) => a.distanceValue - b.distanceValue);
     }
 
+    // 2. Apply search filter
     if (searchChapel.trim()) {
       const q = searchChapel.toLowerCase();
+
       list = list.filter(
         (c) =>
           c.name.toLowerCase().includes(q) ||
           c.address.toLowerCase().includes(q),
       );
+    }
+
+    // 3. Apply nearest limit ONLY when no search is active
+    if (chapelFilter === "nearest" && !searchChapel.trim()) {
+      list = list.slice(0, 3);
     }
 
     return list;
@@ -304,6 +310,46 @@ const BookingLocation = ({
           </HStack>
         </RadioGroup.Root>
         {/* Chapel Search */}
+
+        {/* List */}
+
+        <Flex
+          justify="space-between"
+          align="center"
+          mb={3}
+          px={3}
+          py={2}
+          borderRadius="md"
+          bg="gray.50"
+          _dark={{ bg: "gray.800" }}
+          border="1px solid"
+          borderColor="gray.200"
+        >
+          <Text fontWeight="semibold" fontSize="sm">
+            Available Chapels
+          </Text>
+
+          <Box
+            px={2}
+            py={0.5}
+            borderRadius="full"
+            bg="blue.50"
+            _dark={{ bg: "blue.900" }}
+            border="1px solid"
+            borderColor="blue.200"
+          >
+            <Text
+              fontSize="xs"
+              fontWeight="bold"
+              color="blue.600"
+              _dark={{ color: "blue.200" }}
+            >
+              {filteredChapels.length}{" "}
+              {filteredChapels.length === 1 ? "chapel" : "chapels"}
+            </Text>
+          </Box>
+        </Flex>
+
         <Input
           size="sm"
           placeholder="Search chapel name or address..."
@@ -312,20 +358,41 @@ const BookingLocation = ({
           mb={2}
         />
 
-        {/* List */}
-        <Box overflow="auto" pr={1} minH={0}>
+        <Box
+          overflowY="auto"
+          pr={1}
+          minH={0}
+          maxH={{ base: "450px", md: "none" }}
+          css={{
+            scrollbarWidth: "thin",
+          }}
+        >
           <Stack gap={2}>
-            {filteredChapels.map((chapel) => (
-              <ChapelCard
-                key={chapel.id}
-                name={chapel.name}
-                address={chapel.address}
-                contacts={chapel.contacts}
-                distance={chapel.distance}
-                selected={selectedChapel === chapel.id}
-                onSelect={() => handleSelectChapel(chapel)}
-              />
-            ))}
+            {filteredChapels.length === 0 ? (
+              <Box
+                textAlign="center"
+                py={10}
+                borderRadius="md"
+                bg="gray.50"
+                _dark={{ bg: "gray.800" }}
+              >
+                <Text fontSize="sm" color="gray.500">
+                  No chapels found
+                </Text>
+              </Box>
+            ) : (
+              filteredChapels.map((chapel) => (
+                <ChapelCard
+                  key={chapel.id}
+                  name={chapel.name}
+                  address={chapel.address}
+                  contacts={chapel.contacts}
+                  distance={chapel.distance}
+                  selected={selectedChapel === chapel.id}
+                  onSelect={() => handleSelectChapel(chapel)}
+                />
+              ))
+            )}
           </Stack>
         </Box>
       </Flex>

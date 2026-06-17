@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Flex,
   Button,
@@ -30,6 +30,24 @@ export default function OTPVerification({
   const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  const sendSuccessNotification = () => {
+    if (!("Notification" in window)) return;
+    if (Notification.permission !== "granted") return;
+
+    new Notification("Request Submitted", {
+      body: "Your booking request has been successfully verified and submitted. We'll be in touch shortly.",
+      icon: "/icons/icon-192.png",
+      badge: "/icons/icon-192.png",
+      tag: "otp-success",
+    });
+  };
+
   const handleVerify = () => {
     setIsLoading(true);
 
@@ -39,6 +57,7 @@ export default function OTPVerification({
       if (otpValue === "123456") {
         setIsSuccess(true);
         setDialogOpen(true);
+        sendSuccessNotification();
       } else {
         setIsSuccess(false);
         setDialogOpen(true);
@@ -54,7 +73,7 @@ export default function OTPVerification({
 
     if (!details.open && isSuccess) {
       setIsLoading(true);
-      router.push("/success");
+      router.push(successLink);
     }
   };
 

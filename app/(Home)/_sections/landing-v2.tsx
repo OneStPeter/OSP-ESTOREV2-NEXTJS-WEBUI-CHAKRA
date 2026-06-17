@@ -48,6 +48,11 @@ import {
   FiMapPin,
   FiClock,
   FiPhone,
+  FiCalendar,
+  FiFileText,
+  FiRepeat,
+  FiRefreshCw,
+  FiDollarSign,
 } from "react-icons/fi";
 import { useInView } from "react-intersection-observer";
 import CountUp from "react-countup";
@@ -148,6 +153,46 @@ const companyStats = [
   { icon: FiUsers, value: 1, suffix: "M+", label: "Filipino planholders" },
   { icon: FiMapPin, value: 200, suffix: "+", label: "Branches nationwide" },
   { icon: FiHeart, value: 280, suffix: "+", label: "Chapels" },
+];
+
+/* Online self-service shortcuts — each routes to its own eServices page. */
+const eServices = [
+  {
+    icon: FiCreditCard,
+    title: "Pay My Plan",
+    description: "Settle your monthly premiums online, anytime.",
+    href: "/pay-my-plan",
+  },
+  {
+    icon: FiCalendar,
+    title: "Book a Service",
+    description: "Arrange a memorial service for a loved one.",
+    href: "/booking",
+  },
+  {
+    icon: FiFileText,
+    title: "File a Claim",
+    description: "Submit and track a plan benefit claim.",
+    href: "/claims",
+  },
+  {
+    icon: FiRepeat,
+    title: "Change Mode",
+    description: "Update your payment mode or schedule.",
+    href: "/change-mode",
+  },
+  {
+    icon: FiRefreshCw,
+    title: "Reinstatement",
+    description: "Reactivate a lapsed plan and stay covered.",
+    href: "/reinstatement",
+  },
+  {
+    icon: FiDollarSign,
+    title: "Return of Premium",
+    description: "Request the return of your paid premiums.",
+    href: "/rop",
+  },
 ];
 
 // TODO: swap for real, consented testimonials (or pull from a CMS/API).
@@ -260,8 +305,8 @@ export default function LandingV2({
           maxW="7xl"
           mx="auto"
           px={sectionPx}
-          pt={{ base: "32px", md: "48px", lg: "150px" }}
-          pb={{ base: "32px", md: "48px", lg: "80px" }}
+          pt={{ base: "32px", md: "48px", lg: "112px" }}
+          pb={{ base: "40px", md: "56px", lg: "64px" }}
         >
           <Grid
             templateColumns={{ base: "1fr", lg: "1.05fr 0.95fr" }}
@@ -419,67 +464,7 @@ export default function LandingV2({
       </Box>
 
       {/* ===================================================================
-       * 2 · COMPANY BACKGROUND
-       * ================================================================ */}
-      <Box as="section" aria-label="About St. Peter" bg={BRAND_COLORS.white}>
-        <Box
-          maxW="7xl"
-          mx="auto"
-          px={sectionPx}
-          py={{ base: "48px", md: "80px" }}
-        >
-          <Reveal>
-            <Flex
-              direction="column"
-              align="center"
-              textAlign="center"
-              gap="12px"
-            >
-              <Small
-                fontWeight="800"
-                letterSpacing="0.08em"
-                textTransform="uppercase"
-                color={BRAND_COLORS.darkGreen}
-              >
-                Who We Are
-              </Small>
-              <H2
-                fontSize={{ base: "3xl", md: "4xl" }}
-                fontWeight="800"
-                lineHeight="1.15"
-                color={BRAND_COLORS.neutralText}
-                maxW="720px"
-              >
-                A trusted name in compassionate memorial care
-              </H2>
-              <GoldDivider mx="auto" />
-              <Body color={BRAND_COLORS.grey} maxW="680px">
-                For decades, St. Peter Life Plan has walked alongside Filipino
-                families providing dignified memorial services and affordable,
-                insurance-backed plans. Our promise is simple: to make planning
-                ahead a gentle, reassuring step you take out of love.
-                {/* TODO: replace with finalized company copy. */}
-              </Body>
-            </Flex>
-          </Reveal>
-
-          {/* Proof points */}
-          <Reveal delay={120}>
-            <SimpleGrid
-              columns={{ base: 2, md: 4 }}
-              gap={{ base: 4, md: 6 }}
-              mt={{ base: "32px", md: "48px" }}
-            >
-              {companyStats.map((stat) => (
-                <StatCard key={stat.label} {...stat} />
-              ))}
-            </SimpleGrid>
-          </Reveal>
-        </Box>
-      </Box>
-
-      {/* ===================================================================
-       * 3 · PLANS SHOWCASE
+       * 2 · PLANS SHOWCASE
        * ================================================================ */}
       <Box
         as="section"
@@ -562,7 +547,126 @@ export default function LandingV2({
       </Box>
 
       {/* ===================================================================
-       * 4 · TESTIMONIALS
+       * 3 · eSERVICES
+       * ================================================================ */}
+      <Box as="section" aria-label="Online services" bg={BRAND_COLORS.white}>
+        <Box
+          maxW="7xl"
+          mx="auto"
+          px={sectionPx}
+          py={{ base: "48px", md: "80px" }}
+        >
+          <Reveal>
+            <Flex
+              direction="column"
+              align="center"
+              textAlign="center"
+              gap="12px"
+            >
+              <Small
+                fontWeight="800"
+                letterSpacing="0.08em"
+                textTransform="uppercase"
+                color={BRAND_COLORS.darkGreen}
+              >
+                eServices
+              </Small>
+              <H2
+                fontSize={{ base: "3xl", md: "4xl" }}
+                fontWeight="800"
+                lineHeight="1.15"
+                color={BRAND_COLORS.neutralText}
+                maxW="720px"
+              >
+                Manage your plan online, anytime
+              </H2>
+              <GoldDivider mx="auto" />
+              <Body color={BRAND_COLORS.grey} maxW="640px">
+                Handle payments, bookings, claims, and more — quick, secure
+                self-service whenever you need it.
+              </Body>
+            </Flex>
+          </Reveal>
+
+          <SimpleGrid
+            columns={{ base: 1, sm: 2, lg: 3 }}
+            gap={{ base: 4, md: 6 }}
+            mt={{ base: "32px", md: "48px" }}
+          >
+            {eServices.map((service, index) => (
+              <Reveal key={service.href} delay={index * 70}>
+                <ServiceCard
+                  {...service}
+                  onSelect={() => router.push(service.href)}
+                />
+              </Reveal>
+            ))}
+          </SimpleGrid>
+        </Box>
+      </Box>
+
+      {/* ===================================================================
+       * 4 · COMPANY BACKGROUND
+       * ================================================================ */}
+      <Box as="section" aria-label="About St. Peter" bg={BRAND_COLORS.white}>
+        <Box
+          maxW="7xl"
+          mx="auto"
+          px={sectionPx}
+          py={{ base: "48px", md: "80px" }}
+        >
+          <Reveal>
+            <Flex
+              direction="column"
+              align="center"
+              textAlign="center"
+              gap="12px"
+            >
+              <Small
+                fontWeight="800"
+                letterSpacing="0.08em"
+                textTransform="uppercase"
+                color={BRAND_COLORS.darkGreen}
+              >
+                Who We Are
+              </Small>
+              <H2
+                fontSize={{ base: "3xl", md: "4xl" }}
+                fontWeight="800"
+                lineHeight="1.15"
+                color={BRAND_COLORS.neutralText}
+                maxW="720px"
+              >
+                A trusted name in compassionate memorial care
+              </H2>
+              <GoldDivider mx="auto" />
+              <Body color={BRAND_COLORS.grey} maxW="680px">
+                For decades, St. Peter Life Plan has walked alongside Filipino
+                families providing dignified memorial services and affordable,
+                insurance-backed plans. Our promise is simple: to make planning
+                ahead a gentle, reassuring step you take out of love.
+                {/* TODO: replace with finalized company copy. */}
+              </Body>
+            </Flex>
+          </Reveal>
+
+          {/* Proof points */}
+          <Reveal delay={120}>
+            <SimpleGrid
+              columns={{ base: 2, md: 4 }}
+              gap={{ base: 4, md: 6 }}
+              mt={{ base: "32px", md: "48px" }}
+            >
+              {companyStats.map((stat) => (
+                <StatCard key={stat.label} {...stat} />
+              ))}
+            </SimpleGrid>
+          </Reveal>
+        </Box>
+      </Box>
+
+      {/* ===================================================================
+       * 5 · TESTIMONIALS
        * ================================================================ */}
       <Box as="section" aria-label="Planholder stories" bg={BRAND_COLORS.white}>
         <Box
@@ -608,7 +712,7 @@ export default function LandingV2({
       </Box>
 
       {/* ===================================================================
-       * 5 · CLOSING CTA BAND (arched top — signature shape)
+       * 6 · CLOSING CTA BAND (arched top — signature shape)
        * ================================================================ */}
       <Box
         as="section"
@@ -725,6 +829,82 @@ export default function LandingV2({
         setShowAlert={setShowAlert}
       />
     </Box>
+  );
+}
+
+/* -----------------------------------------------------------------------------
+ * ServiceCard — clickable eServices shortcut that routes to its own page.
+ * Rendered as a button for full keyboard/screen-reader accessibility.
+ * -------------------------------------------------------------------------- */
+function ServiceCard({
+  icon,
+  title,
+  description,
+  onSelect,
+}: {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  href: string;
+  onSelect: () => void;
+}) {
+  return (
+    <Flex
+      as="button"
+      onClick={onSelect}
+      direction="column"
+      textAlign="left"
+      h="full"
+      w="full"
+      p={{ base: 5, md: 6 }}
+      bg={BRAND_COLORS.white}
+      borderRadius={STANDARD_RADIUS.xl}
+      borderWidth="1px"
+      borderColor={BRAND_COLORS.neutralBorder}
+      boxShadow={STANDARD_SHADOWS.level1}
+      transition="transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease"
+      _hover={{
+        transform: "translateY(-4px)",
+        boxShadow: STANDARD_SHADOWS.level3,
+        borderColor: BRAND_COLORS.softGreen,
+      }}
+      _focusVisible={{
+        outline: "none",
+        boxShadow: `0 0 0 3px ${BRAND_COLORS.softGreen}`,
+        borderColor: BRAND_COLORS.primaryGreen,
+      }}
+    >
+      <Flex
+        boxSize="48px"
+        mb="16px"
+        borderRadius={STANDARD_RADIUS.md}
+        bg={BRAND_COLORS.successBg}
+        color={BRAND_COLORS.darkGreen}
+        align="center"
+        justify="center"
+        flexShrink={0}
+      >
+        <Icon as={icon} boxSize="24px" />
+      </Flex>
+
+      <Text
+        fontSize={{ base: "lg", md: "xl" }}
+        fontWeight="800"
+        color={BRAND_COLORS.neutralText}
+      >
+        {title}
+      </Text>
+      <Small color={BRAND_COLORS.grey} mt="4px">
+        {description}
+      </Small>
+
+      <Flex align="center" gap="6px" mt="auto" pt="16px">
+        <Small fontWeight="700" color={BRAND_COLORS.primaryGreen}>
+          Proceed
+        </Small>
+        <Icon as={FiArrowRight} color={BRAND_COLORS.primaryGreen} boxSize="15px" />
+      </Flex>
+    </Flex>
   );
 }
 

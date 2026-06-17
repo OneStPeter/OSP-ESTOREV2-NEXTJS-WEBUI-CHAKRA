@@ -390,6 +390,9 @@ import {
   Link,
   IconButton,
   InputGroup,
+  Dialog,
+  Portal,
+  CloseButton,
 } from "@chakra-ui/react";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
 import logoIcon from "@/public/login-logo.png";
@@ -409,12 +412,20 @@ interface LoginPageProps {
 }
 
 export function LoginPage({ onLogin }: LoginPageProps) {
+  const router = useRouter();
+  const [open, setOpen] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [loading, setLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
+
+  // Closing the full-screen login dialog returns the user where they came from.
+  const handleClose = () => {
+    setOpen(false);
+    router.back();
+  };
 
   const handleSocialLogin = async (provider: string) => {
     setSocialLoading(provider);
@@ -435,13 +446,49 @@ export function LoginPage({ onLogin }: LoginPageProps) {
     const email = form.get("emailInput");
     const password = form.get("passwordInput");
     if (typeof email === "string" && typeof password === "string")
-      onLogin(email, password);
+      //onLogin(email, password);
+      router.replace("/account");
   };
 
   return (
-    <Flex minH="100vh" bg="white" overflow="hidden">
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-      {/* ── Left brand panel (desktop only) ── */}
+    <Dialog.Root
+      open={open}
+      onOpenChange={(e) => {
+        if (!e.open) handleClose();
+      }}
+      size="full"
+      motionPreset="slide-in-bottom"
+    >
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content
+            w="100vw"
+            h="100dvh"
+            maxW="100vw"
+            m={0}
+            rounded={0}
+            overflow="auto"
+            bg="white"
+          >
+            <Dialog.CloseTrigger asChild>
+              <CloseButton
+                position="absolute"
+                top={4}
+                right={4}
+                zIndex={30}
+                size="md"
+                rounded="full"
+                bg="whiteAlpha.800"
+                _hover={{ bg: "white" }}
+                onClick={handleClose}
+                aria-label="Close login"
+              />
+            </Dialog.CloseTrigger>
+
+            <Flex minH="100%" bg="white" overflow="hidden">
+              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+              {/* ── Left brand panel (desktop only) ── */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -1013,7 +1060,11 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           </motion.div>
         </motion.div>
       </Flex>
-    </Flex>
+            </Flex>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
   );
 }
 
