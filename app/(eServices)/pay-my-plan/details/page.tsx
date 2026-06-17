@@ -10,7 +10,7 @@ import {
   RadioGroup,
   Button,
 } from "@chakra-ui/react";
-import FloatingLabelInput from "@/components/ui/floating-label-input";
+//import FloatingLabelInput from "@/components/ui/floating-label-input";
 import { ISearchedPlanholder } from "@/types/planholder";
 import { PayMongoService } from "@/services/API/PayMongoService";
 import { useRouter } from "next/navigation";
@@ -26,6 +26,7 @@ import {
   STANDARD_SPACING,
 } from "@/lib/theme/standard-design-tokens";
 import SideDrawer from "@/components/ui/side-drawer";
+import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 
 const DetailsPayMyPlan = () => {
   const breadcrumbItems = [

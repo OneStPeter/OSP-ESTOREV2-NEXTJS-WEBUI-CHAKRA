@@ -11,7 +11,7 @@ import {
   Input,
   Field,
 } from "@chakra-ui/react";
-import FloatingLabelInput from "@/components/ui/floating-label-input";
+//import FloatingLabelInput from "@/components/ui/floating-label-input";
 import { useSearchPlanholder } from "@/hooks/planholder/useSearchPlanholder";
 
 import { useRouter } from "next/navigation";
@@ -22,6 +22,7 @@ import {
   STANDARD_SHADOWS,
   STANDARD_SPACING,
 } from "@/lib/theme/standard-design-tokens";
+import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 
 const PayMyPlan = () => {
   const router = useRouter();
