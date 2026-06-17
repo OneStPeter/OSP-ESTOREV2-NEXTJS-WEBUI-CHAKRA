@@ -10,7 +10,8 @@ import {
 } from "@/lib/theme/standard-design-tokens";
 import { IEmployment } from "@/types/planholder";
 import React from "react";
-import { FloatingLabelInput } from "../FloatingLabelInput";
+import { FloatingLabelInput } from "../ui/floating-label-input";
+//import { FloatingLabelInput } from "../FloatingLabelInput";
 
 interface LifePlanApplication3Props {
   initialData?: IEmployment;

@@ -12,7 +12,8 @@ import { STANDARD_SPACING } from "@/lib/theme/standard-design-tokens";
 import { useOcr } from "@/hooks/useOCR";
 import { useEffect, useState } from "react";
 import { IPersonalInfo } from "@/types/planholder";
-import { FloatingLabelInput } from "../FloatingLabelInput";
+import FloatingLabelInput from "../ui/floating-label-input";
+// import { FloatingLabelInput } from "../FloatingLabelInput";
 
 interface LifePlanApplication1Props {
   initialData?: IPersonalInfo;
