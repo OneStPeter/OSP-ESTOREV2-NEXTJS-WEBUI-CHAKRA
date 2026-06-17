@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Field, SimpleGrid, Text, VStack } from "@chakra-ui/react";
-//import FloatingLabelInput from "../ui/floating-label-input";
+
 import { BRAND_COLORS } from "@/lib/theme/brand-colors";
 import {
   STANDARD_RADIUS,
@@ -10,8 +10,7 @@ import {
 } from "@/lib/theme/standard-design-tokens";
 import { IEmployment } from "@/types/planholder";
 import React from "react";
-import { FloatingLabelInput } from "../ui/floating-label-input";
-//import { FloatingLabelInput } from "../FloatingLabelInput";
+import { FloatingLabelInput } from "../ui/FloatingLabelInput";
 
 interface LifePlanApplication3Props {
   initialData?: IEmployment;

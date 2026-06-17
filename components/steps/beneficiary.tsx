@@ -26,7 +26,7 @@ import {
   SecondaryMdButton,
   PrimaryMdButton,
 } from "st-peter-ui";
-import { FloatingLabelInput } from "../ui/floating-label-input";
+
 import { RowItem } from "../ui/row-item";
 import { IBeneficiary } from "@/types/planholder";
 import {
@@ -34,6 +34,7 @@ import {
   loadApplicationDataFromLocalStorage,
   saveApplicationDataToLocalStorage,
 } from "@/lib/utils/applicationDataFactory";
+import { FloatingLabelInput } from "../ui/FloatingLabelInput";
 
 const beneficiaryTypes = createListCollection({
   items: [

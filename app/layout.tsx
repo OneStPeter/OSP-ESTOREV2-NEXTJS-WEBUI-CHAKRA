@@ -33,15 +33,19 @@ export default function RootLayout({
         />
         <meta name="apple-mobile-web-app-title" content="eStore" />
       </head>
-      <body style={{ overflowX: "hidden" }}>
+      <body>
         <ServiceWorkerRegister />
         <StPeterProvider theme="green" font="Open Sans">
           <DemoAuthProvider>
             <NotifyInstall>
-              <AppLayoutWrapper>
-                {children}
-                <Footer />
-              </AppLayoutWrapper>
+              {/* overflowX on an inner div so Portal-rendered fixed elements
+                  (Dialog backdrop/positioner) are not trapped inside it */}
+              <div style={{ overflowX: "hidden" }}>
+                <AppLayoutWrapper>
+                  {children}
+                  <Footer />
+                </AppLayoutWrapper>
+              </div>
             </NotifyInstall>
           </DemoAuthProvider>
         </StPeterProvider>
