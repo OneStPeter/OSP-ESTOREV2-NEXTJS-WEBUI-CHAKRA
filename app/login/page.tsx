@@ -392,7 +392,7 @@ import {
   InputGroup,
 } from "@chakra-ui/react";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
-import logoIcon from "@/public/logo.png";
+import logoIcon from "@/public/login-logo.png";
 
 const ease = [0.25, 0.1, 0.25, 1] as const;
 
@@ -583,7 +583,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                   letterSpacing="tight"
                   lineHeight="tight"
                 >
-                  One St. Peter
+                  St. Peter
                 </Heading>
                 <Text
                   fontSize="sm"
@@ -592,7 +592,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                   letterSpacing="0.2em"
                   textTransform="uppercase"
                 >
-                  Life Plan Operations
+                  Online Store
                 </Text>
                 <Box h="1px" w="4rem" bg="rgba(16,185,129,0.6)" my={1} />
                 <Text
@@ -673,7 +673,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               />
             </Flex>
             <Heading as="h1" fontSize="2xl" fontWeight="bold" color="white">
-              One St. Peter
+              St. Peter
             </Heading>
             <Text
               fontSize="xs"
@@ -681,7 +681,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               letterSpacing="0.18em"
               textTransform="uppercase"
             >
-              Life Plan Operations
+              Online Store
             </Text>
           </VStack>
         </motion.div>

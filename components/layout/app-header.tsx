@@ -43,7 +43,7 @@ import { useCartCount } from "@/hooks/useCartCount";
 import { useDemoAuth } from "@/components/ui/demo-auth";
 import { useRouter } from "next/navigation";
 
-import logoIcon from "@/public/icons/icon-stpeter.png";
+import logoIcon from "@/public/login-logo.png";
 
 const DEFAULT_NOTIF_ICON = {
   Icon: LuBell as React.ElementType,

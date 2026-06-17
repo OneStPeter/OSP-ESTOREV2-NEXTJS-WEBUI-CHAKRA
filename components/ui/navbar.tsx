@@ -125,7 +125,7 @@ const Navbar = () => {
             minW={0}
           >
             <Image
-              src="/icons/icon-stpeter.png"
+              src="/stpeter-logo.png"
               alt="E-Store Logo"
               w={{ base: "25px", sm: "30px" }}
               h="auto"
@@ -300,7 +300,7 @@ const Navbar = () => {
           borderColor={BRAND_COLORS.neutralBorder}
         >
           <Image
-            src="https://www.stpeter.com.ph/images/logo2gold.png"
+            src="/stpeter-logo.png"
             alt="E-Store Logo"
             cursor="pointer"
             onClick={() => {
@@ -405,7 +405,7 @@ const Navbar = () => {
           justifyContent="space-between"
         >
           <Image
-            src="https://www.stpeter.com.ph/images/logo2gold.png"
+            src="/stpeter-logo.png"
             alt="E-Store Logo"
             cursor="pointer"
             onClick={() => router.push("/")}
