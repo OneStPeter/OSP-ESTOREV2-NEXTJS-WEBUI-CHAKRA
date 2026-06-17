@@ -22,7 +22,7 @@ import { usePathname } from "next/navigation";
 import { RiCloseLine } from "react-icons/ri";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { NavItem, SidebarProps } from "./app-layout.type";
-import logoIcon from "@/public/icons/icon-stpeter.png";
+import logoIcon from "@/public/login-logo.png";
 import { Body, Small } from "st-peter-ui";
 
 interface NavItemRowProps {
@@ -396,14 +396,14 @@ export default function Sidebar({
                 {appName}
               </Body>
               {appSubtitle && (
-                <Small
-                  opacity={isSidebarOpen ? 1 : 0}
-                  mt={"-5px"}
-                  color={"primary"}
-                  fontStyle={"italic"}
+                <Text
+                  color="black"
+                  fontSize="sm"
+                  lineHeight="1.1"
+                  textWrap="nowrap"
                 >
                   {appSubtitle}
-                </Small>
+                </Text>
               )}
             </Box>
             {/* </Show> */}
