@@ -108,7 +108,7 @@ const ALL_NAV_OPTIONS: NavOptionDef[] = [
   },
   {
     key: "/plans",
-    title: "Products",
+    title: "Plans",
     href: "/plans",
     Icon: IoLeafOutline,
     activeIcon: IoLeaf,

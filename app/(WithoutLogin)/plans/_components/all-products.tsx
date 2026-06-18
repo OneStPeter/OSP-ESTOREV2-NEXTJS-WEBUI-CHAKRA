@@ -18,7 +18,7 @@ import { Body, H3 } from "st-peter-ui";
 import { useRouter } from "next/navigation";
 import { Breadcrumb } from "st-peter-ui";
 import { FaArrowLeft } from "react-icons/fa";
-import Container from "./ui/container";
+import Container from "../../../../components/ui/container";
 
 type GroupedPlan = {
   planDesc: string;

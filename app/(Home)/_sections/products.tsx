@@ -1,4 +1,4 @@
-import ProductLandingPage from "@/components/products-landing-page";
+import ProductLandingPage from "@/app/(Home)/_components/products-landing-page";
 import { IPlans } from "@/types/product";
 import { ProductService } from "@/services/API/ProductService";
 

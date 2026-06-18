@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import OrderSummary from "@/components/order-summary";
+import OrderSummary from "@/app/(WithLogin)/order-summary/_components/order-summary";
 import { Box, Flex, Spinner, Button } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { CartItem } from "@/types/cartItem";

@@ -24,7 +24,7 @@ type BottomNavItem = {
 const guestBottomNavItems: BottomNavItem[] = [
   { label: "Home", href: "/", icon: RiHome4Line, activeIcon: RiHome4Fill },
   {
-    label: "Products",
+    label: "Plans",
     href: "/plans",
     icon: IoLeafOutline,
     activeIcon: IoLeaf,
@@ -47,7 +47,7 @@ const guestBottomNavItems: BottomNavItem[] = [
 const authedBottomNavItems: BottomNavItem[] = [
   { label: "Home", href: "/", icon: RiHome4Line, activeIcon: RiHome4Fill },
   {
-    label: "Products",
+    label: "Plans",
     href: "/plans",
     icon: IoLeafOutline,
     activeIcon: IoLeaf,

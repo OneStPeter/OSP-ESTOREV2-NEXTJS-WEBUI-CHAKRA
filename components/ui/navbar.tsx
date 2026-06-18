@@ -51,7 +51,7 @@ const mobileMenuItems: Array<{
   href: string;
   icon: IconType;
 }> = [
-  { label: "Products", href: "/plans", icon: IoLeafOutline },
+  { label: "Plans", href: "/plans", icon: IoLeafOutline },
   { label: "Pay My Plan", href: "/pay-my-plan", icon: FiCreditCard },
   { label: "Claim", href: "/claims", icon: FiFileText },
   { label: "News & Blog", href: "/news-updates", icon: IoNewspaperOutline },
@@ -433,7 +433,7 @@ const Navbar = () => {
                   _active={{ bg: "transparent" }}
                   _focusVisible={{ boxShadow: "none", bg: "transparent" }}
                 >
-                  Products <MdArrowDropDown />
+                  Plans <MdArrowDropDown />
                 </BaseButton>
               </Menu.Trigger>
               <Portal>

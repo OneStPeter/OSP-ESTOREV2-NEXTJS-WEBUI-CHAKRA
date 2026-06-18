@@ -105,7 +105,7 @@ const ALL_NAV_OPTIONS: NavOptionDef[] = [
   },
   {
     key: "/plans",
-    title: "Products",
+    title: "Plans",
     href: "/plans",
     Icon: IoLeafOutline,
     activeIcon: IoLeaf,
@@ -682,7 +682,10 @@ const Profile = ({ onClose }: { onClose?: () => void } = {}) => {
               textAlign="left"
               _hover={{ opacity: 0.7 }}
               transition="opacity 0.15s"
-              onClick={() => { onClose?.(); router.push("/account"); }}
+              onClick={() => {
+                onClose?.();
+                router.push("/account");
+              }}
             >
               <Flex
                 justify="space-between"
