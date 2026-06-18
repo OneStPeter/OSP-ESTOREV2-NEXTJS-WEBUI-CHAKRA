@@ -282,14 +282,11 @@ export default function LandingV2({
         as="section"
         aria-label="Welcome"
         position="relative"
-        // Fill the visible viewport so the hero is the only section on load.
-        // base/md: minus the 65px in-flow AppHeader. lg: full height (the
-        // navbar floats over the top, so content is padded/centered to clear it).
         minH={{ base: "calc(100dvh - 65px)", lg: "100dvh" }}
         display="flex"
         flexDirection="column"
-        justifyContent="center"
-        bg={`linear-gradient(135deg, ${BRAND_COLORS.white} 0%, ${BRAND_COLORS.lightCyan}55 50%, ${BRAND_COLORS.successBg} 100%)`}
+        justifyContent={{ base: "flex-start", lg: "center" }}
+        bg={`linear-gradient(160deg, ${BRAND_COLORS.successBg}CC 0%, ${BRAND_COLORS.white} 42%, ${BRAND_COLORS.lightCyan}44 100%)`}
       >
         {/* Soft layered glow — the calm background treatment. */}
         <Box
@@ -305,8 +302,8 @@ export default function LandingV2({
           maxW="7xl"
           mx="auto"
           px={sectionPx}
-          pt={{ base: "32px", md: "48px", lg: "112px" }}
-          pb={{ base: "40px", md: "56px", lg: "64px" }}
+          pt={{ base: "50px", md: "48px", lg: "112px" }}
+          pb={{ base: "96px", md: "56px", lg: "64px" }}
         >
           <Grid
             templateColumns={{ base: "1fr", lg: "1.05fr 0.95fr" }}
@@ -315,6 +312,24 @@ export default function LandingV2({
           >
             {/* Copy */}
             <Box minW={0}>
+              {/* Mobile hero image — sits above the headline on small screens */}
+              {/* <Reveal>
+                <Box
+                  display={{ base: "block", lg: "none" }}
+                  mb={STANDARD_SPACING.md}
+                  borderRadius="20px"
+                  overflow="hidden"
+                  h="160px"
+                  bg={BRAND_COLORS.mutedBg}
+                  backgroundImage="url('/images/hero-bg.jpg')"
+                  backgroundSize="cover"
+                  backgroundPosition="center"
+                  boxShadow={STANDARD_SHADOWS.level3}
+                  role="img"
+                  aria-label="A peaceful memorial garden"
+                />
+              </Reveal> */}
+
               <Reveal>
                 <Flex
                   display="inline-flex"
@@ -902,7 +917,11 @@ function ServiceCard({
         <Small fontWeight="700" color={BRAND_COLORS.primaryGreen}>
           Proceed
         </Small>
-        <Icon as={FiArrowRight} color={BRAND_COLORS.primaryGreen} boxSize="15px" />
+        <Icon
+          as={FiArrowRight}
+          color={BRAND_COLORS.primaryGreen}
+          boxSize="15px"
+        />
       </Flex>
     </Flex>
   );
