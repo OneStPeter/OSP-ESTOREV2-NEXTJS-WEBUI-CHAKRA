@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import {
   Flex,
   IconButton,
@@ -33,7 +33,9 @@ import {
   LuTriangleAlert,
   LuCircleHelp,
   LuBotMessageSquare,
+  LuSend,
 } from "react-icons/lu";
+import { motion } from "motion/react";
 import { NotificationDataProps } from "./app-layout.type";
 import { Body, Small } from "st-peter-ui";
 import { MdOutlineShoppingCart } from "react-icons/md";
@@ -62,6 +64,66 @@ const NOTIF_ICON_MAP: Record<
   document: { Icon: LuFileText, bg: "#D3EDEE", color: "#026BA9" },
   alert: { Icon: LuTriangleAlert, bg: "#FFCEE9", color: "#BF1F2F" },
 };
+
+type ChatMessage = {
+  id: number;
+  role: "user" | "bot";
+  text: string;
+};
+
+const initialChatMessages: ChatMessage[] = [
+  {
+    id: 1,
+    role: "bot",
+    text: "Hi! I can help with demo questions about plans, payments, claims, cart, and account access.",
+  },
+];
+
+function getDemoBotReply(question: string): string {
+  const normalized = question.toLowerCase();
+
+  if (normalized.includes("plan") || normalized.includes("product")) {
+    return "You can browse available St. Peter life plans from the Plans page. Pick a plan to view details, benefits, and payment options.";
+  }
+
+  if (
+    normalized.includes("pay") ||
+    normalized.includes("payment") ||
+    normalized.includes("installment")
+  ) {
+    return "For demo payments, go to Pay My Plan, enter your plan details, then choose your preferred payment method.";
+  }
+
+  if (normalized.includes("cart") || normalized.includes("checkout")) {
+    return "Your selected plans appear in the cart. Open the cart icon to review items before checkout.";
+  }
+
+  if (normalized.includes("claim") || normalized.includes("benefit")) {
+    return "For claims, open the Claims page and prepare the planholder information and required supporting documents.";
+  }
+
+  if (
+    normalized.includes("login") ||
+    normalized.includes("account") ||
+    normalized.includes("profile")
+  ) {
+    return "Use the account area to view profile details, plan records, and account settings after logging in.";
+  }
+
+  if (
+    normalized.includes("contact") ||
+    normalized.includes("support") ||
+    normalized.includes("help")
+  ) {
+    return "For demo support, you can ask about plans, payment, claims, cart, or account access.";
+  }
+
+  if (normalized.includes("hello") || normalized.includes("hi")) {
+    return "Hello! What would you like to know about the eStore demo?";
+  }
+
+  return "This demo bot has preset answers only. Try asking about plans, payment, claims, cart, or your account.";
+}
 
 function readCookie(name: string): string | null {
   if (typeof document === "undefined") return null;
@@ -122,6 +184,10 @@ export default function AppHeader({
   const { isLoggedIn } = useDemoAuth();
   const router = useRouter();
   const [notifOpen, setNotifOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatInput, setChatInput] = useState("");
+  const [chatMessages, setChatMessages] =
+    useState<ChatMessage[]>(initialChatMessages);
   const [readIds, setReadIds] = useState<Set<number>>(
     () => new Set(notifications.filter((n) => n.read).map((n) => n.id)),
   );
@@ -140,6 +206,21 @@ export default function AppHeader({
   const pickPalette = (name: string) => {
     const index = name.charCodeAt(0) % colorPalette.length;
     return colorPalette[index];
+  };
+
+  const handleChatSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const question = chatInput.trim();
+    if (!question) return;
+
+    const now = Date.now();
+    setChatMessages((messages) => [
+      ...messages,
+      { id: now, role: "user", text: question },
+      { id: now + 1, role: "bot", text: getDemoBotReply(question) },
+    ]);
+    setChatInput("");
   };
 
   return (
@@ -291,14 +372,138 @@ export default function AppHeader({
           </Dialog.Root>
 
           {/* Chatbot */}
-          <IconButton
-            aria-label="Chatbot"
-            size="xl"
-            variant="ghost"
-            _hover={{ bg: "green.50" }}
+          <Dialog.Root
+            size="full"
+            motionPreset="slide-in-bottom"
+            open={chatOpen}
+            onOpenChange={(e) => setChatOpen(e.open)}
           >
-            <LuBotMessageSquare />
-          </IconButton>
+            <Dialog.Trigger asChild>
+              <IconButton
+                aria-label="Chatbot"
+                size="xl"
+                variant="ghost"
+                _hover={{ bg: "green.50" }}
+              >
+                <LuBotMessageSquare />
+              </IconButton>
+            </Dialog.Trigger>
+            <Portal>
+              <Dialog.Backdrop />
+              <Dialog.Positioner>
+                <Dialog.Content h="100dvh" display="flex" flexDirection="column">
+                  <Dialog.Header
+                    px={4}
+                    py={3}
+                    borderBottomWidth="1px"
+                    borderColor="gray.200"
+                  >
+                    <Flex align="center" justify="space-between" w="full">
+                      <Flex align="center" gap={3}>
+                        <Box
+                          w="40px"
+                          h="40px"
+                          borderRadius="full"
+                          bg="green.50"
+                          color="var(--chakra-colors-primary)"
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                          flexShrink={0}
+                        >
+                          <LuBotMessageSquare size={20} />
+                        </Box>
+                        <Box>
+                          <Dialog.Title fontSize="md" fontWeight="bold">
+                            eStore Assistant
+                          </Dialog.Title>
+                          <Text fontSize="xs" color="gray.500">
+                            Demo chatbot
+                          </Text>
+                        </Box>
+                      </Flex>
+                      <Dialog.CloseTrigger asChild>
+                        <IconButton
+                          aria-label="Close chatbot"
+                          size="sm"
+                          variant="ghost"
+                          position="static"
+                        >
+                          <LuX />
+                        </IconButton>
+                      </Dialog.CloseTrigger>
+                    </Flex>
+                  </Dialog.Header>
+                  <Dialog.Body
+                    flex="1"
+                    overflowY="auto"
+                    px={4}
+                    py={4}
+                    bg="gray.50"
+                  >
+                    <VStack align="stretch" gap={3}>
+                      {chatMessages.map((message) => {
+                        const isUser = message.role === "user";
+
+                        return (
+                          <Flex
+                            key={message.id}
+                            justify={isUser ? "flex-end" : "flex-start"}
+                          >
+                            <Box
+                              maxW="82%"
+                              px={3}
+                              py={2}
+                              borderRadius="lg"
+                              bg={
+                                isUser
+                                  ? "var(--chakra-colors-primary)"
+                                  : "white"
+                              }
+                              color={isUser ? "white" : "gray.800"}
+                              boxShadow="sm"
+                              borderWidth={isUser ? "0" : "1px"}
+                              borderColor="gray.200"
+                            >
+                              <Text fontSize="sm" lineHeight="1.5">
+                                {message.text}
+                              </Text>
+                            </Box>
+                          </Flex>
+                        );
+                      })}
+                    </VStack>
+                  </Dialog.Body>
+                  <Dialog.Footer
+                    as="form"
+                    onSubmit={handleChatSubmit}
+                    p={3}
+                    borderTopWidth="1px"
+                    borderColor="gray.200"
+                    bg="white"
+                    gap={2}
+                  >
+                    <Input
+                      value={chatInput}
+                      onChange={(event) => setChatInput(event.target.value)}
+                      placeholder="Ask about plans, payment, claims..."
+                      bg="white"
+                    />
+                    <IconButton
+                      aria-label="Send message"
+                      type="submit"
+                      variant="solid"
+                      bg="var(--chakra-colors-primary)"
+                      color="white"
+                      _hover={{ bg: "green.700" }}
+                    >
+                      <LuSend />
+                    </IconButton>
+                  </Dialog.Footer>
+                </Dialog.Content>
+              </Dialog.Positioner>
+            </Portal>
+          </Dialog.Root>
           <Box position="relative">
             <IconButton
               aria-label="Shopping Cart"
