@@ -43,9 +43,6 @@ import logoIcon from "@/public/login-logo.png";
 type PageMeta = {
   title: string;
   subtitle?: string;
-  // Back button config: omit/false = hidden, true = router.back(),
-  // a string = navigate to that href.
-  back?: boolean | string;
 };
 
 // Route → header title/subtitle. Checked top-to-bottom; first prefix match wins,
@@ -54,23 +51,23 @@ type PageMeta = {
 const PAGE_META: { prefix: string; meta: PageMeta }[] = [
   {
     prefix: "/account/pay-my-plan",
-    meta: { title: "Pay My Plan", subtitle: "Payments", back: true },
+    meta: { title: "Pay My Plan", subtitle: "Payments" },
   },
   {
     prefix: "/pay-my-plan",
-    meta: { title: "Pay My Plan", subtitle: "Payments", back: true },
+    meta: { title: "Pay My Plan", subtitle: "Payments" },
   },
   {
     prefix: "/account/return-of-premium",
-    meta: { title: "Return of Premium", subtitle: "eServices", back: true },
+    meta: { title: "Return of Premium", subtitle: "eServices" },
   },
   {
     prefix: "/account/reinstatement",
-    meta: { title: "Reinstatement", subtitle: "eServices", back: true },
+    meta: { title: "Reinstatement", subtitle: "eServices" },
   },
   {
     prefix: "/account/profile",
-    meta: { title: "My Profile", subtitle: "Account", back: true },
+    meta: { title: "My Profile", subtitle: "Account" },
   },
   {
     prefix: "/account",
@@ -78,28 +75,28 @@ const PAGE_META: { prefix: string; meta: PageMeta }[] = [
   },
   {
     prefix: "/plan-comparison",
-    meta: { title: "Compare Plans", subtitle: "Life Plans", back: true },
+    meta: { title: "Compare Plans", subtitle: "Life Plans" },
   },
   {
     prefix: "/plan-details",
-    meta: { title: "Plan Details", subtitle: "Life Plans", back: true },
+    meta: { title: "Plan Details", subtitle: "Life Plans" },
   },
   { prefix: "/plans", meta: { title: "Life Plans", subtitle: "Browse Plans" } },
   {
     prefix: "/lifeplan-application",
-    meta: { title: "Application", subtitle: "Life Plans", back: true },
+    meta: { title: "Application", subtitle: "Life Plans" },
   },
   {
     prefix: "/order-summary",
-    meta: { title: "Order Summary", subtitle: "Checkout", back: true },
+    meta: { title: "Order Summary", subtitle: "Checkout" },
   },
   {
     prefix: "/booking",
-    meta: { title: "Book a Visit", subtitle: "Booking", back: true },
+    meta: { title: "Book a Visit", subtitle: "Booking" },
   },
   {
     prefix: "/claims",
-    meta: { title: "File a Claim", subtitle: "Claims", back: true },
+    meta: { title: "File a Claim", subtitle: "Claims" },
   },
   {
     prefix: "/news-updates",
@@ -118,6 +115,71 @@ function getPageMeta(pathname: string | null, fallback: PageMeta): PageMeta {
     PAGE_META.find(({ prefix }) => pathname.startsWith(prefix))?.meta ??
     fallback
   );
+}
+
+const ROOT_ROUTES = ["/", "/plans", "/pay-my-plan", "/account"];
+const ROOT_ROUTE_ALIASES = ["/account/pay-my-plan"];
+const APP_HISTORY_KEY = "osp-app-route-history";
+
+function normalizePath(pathname: string | null): string {
+  if (!pathname) return "/";
+
+  return pathname.length > 1 && pathname.endsWith("/")
+    ? pathname.slice(0, -1)
+    : pathname;
+}
+
+function isRootRoute(pathname: string | null): boolean {
+  const path = normalizePath(pathname);
+  return ROOT_ROUTES.includes(path) || ROOT_ROUTE_ALIASES.includes(path);
+}
+
+function getFallbackRoute(pathname: string | null): string {
+  const path = normalizePath(pathname);
+
+  if (
+    path.startsWith("/plan-details") ||
+    path.startsWith("/plan-comparison") ||
+    path.startsWith("/lifeplan-application") ||
+    path.startsWith("/order-summary")
+  ) {
+    return "/plans";
+  }
+
+  if (
+    path.startsWith("/pay-my-plan") ||
+    path.startsWith("/account/pay-my-plan")
+  ) {
+    return "/pay-my-plan";
+  }
+
+  if (path.startsWith("/account")) {
+    return "/account";
+  }
+
+  return "/";
+}
+
+function readAppHistory(): string[] {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const parsed = JSON.parse(
+      window.sessionStorage.getItem(APP_HISTORY_KEY) ?? "[]",
+    );
+
+    return Array.isArray(parsed)
+      ? parsed.filter((item): item is string => typeof item === "string")
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeAppHistory(history: string[]) {
+  if (typeof window === "undefined") return;
+
+  window.sessionStorage.setItem(APP_HISTORY_KEY, JSON.stringify(history));
 }
 
 const DEFAULT_NOTIF_ICON = {
@@ -196,12 +258,13 @@ export default function AppHeader({
   const { isLoggedIn } = useDemoAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const currentPath = normalizePath(pathname);
   const pageMeta = getPageMeta(pathname, {
     title: appName,
     subtitle: appSubtitle,
   });
-  const isHome = pathname === "/";
-  const showBack = Boolean(pageMeta.back);
+  const isHome = currentPath === "/";
+  const showBack = !isRootRoute(currentPath);
   const [cartOpen, setCartOpen] = useState(false);
   const [cartPosition, setCartPosition] = useState<{
     x: number;
@@ -219,11 +282,23 @@ export default function AppHeader({
   const suppressCartClickRef = useRef(false);
 
   const handleBack = () => {
-    if (typeof pageMeta.back === "string") {
-      router.push(pageMeta.back);
-    } else {
-      router.back();
+    const history = readAppHistory();
+    const currentIndex = history.lastIndexOf(currentPath);
+    const previousHistory =
+      currentIndex >= 0 ? history.slice(0, currentIndex) : history;
+    const previousRoute = [...previousHistory]
+      .reverse()
+      .find((route) => route !== currentPath);
+
+    if (previousRoute) {
+      writeAppHistory(previousHistory);
+      router.push(previousRoute);
+      return;
     }
+
+    const fallbackRoute = getFallbackRoute(currentPath);
+    writeAppHistory([fallbackRoute]);
+    router.replace(fallbackRoute);
   };
 
   const handleCartPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -305,6 +380,15 @@ export default function AppHeader({
     setAvatarName(parseAvatarName(readCookie("osp_session")));
   }, []);
 
+  useEffect(() => {
+    const history = readAppHistory();
+    const lastRoute = history[history.length - 1];
+
+    if (lastRoute === currentPath) return;
+
+    writeAppHistory([...history, currentPath].slice(-20));
+  }, [currentPath]);
+
   const colorPalette = ["red", "blue", "green", "yellow", "purple", "orange"];
 
   const pickPalette = (name: string) => {
@@ -337,43 +421,31 @@ export default function AppHeader({
         {/* Left side — menu + brand logo + title */}
         <Flex align="center" gap={3} flex="1" minW={0}>
           {/* Menu toggle */}
-          <IconButton
-            color="gray.fg"
-            aria-label="Open menu"
-            size="sm"
-            variant="ghost"
-            onClick={onToggleSidebar}
-            flexShrink={0}
-          >
-            <LuMenu />
-          </IconButton>
-          <Box
-            overflow="hidden"
-            flexShrink={0}
-            w={showBack ? "32px" : "0px"}
-            opacity={showBack ? 1 : 0}
-            mr={showBack ? 0 : "-3"}
-            transform={
-              showBack
-                ? "translateX(0) scale(1)"
-                : "translateX(-8px) scale(0.92)"
-            }
-            transition="width 220ms ease, opacity 180ms ease, transform 220ms ease, margin 220ms ease"
-            pointerEvents={showBack ? "auto" : "none"}
-            aria-hidden={!showBack}
-          >
+          {showBack ? (
+            <Box overflow="hidden" flexShrink={0} w="32px">
+              <IconButton
+                color="gray.fg"
+                aria-label="Go back"
+                size="sm"
+                variant="ghost"
+                flexShrink={0}
+                onClick={handleBack}
+              >
+                <LuChevronLeft size="5px" />
+              </IconButton>
+            </Box>
+          ) : (
             <IconButton
               color="gray.fg"
-              aria-label="Go back"
+              aria-label="Open menu"
               size="sm"
               variant="ghost"
+              onClick={onToggleSidebar}
               flexShrink={0}
-              onClick={handleBack}
-              tabIndex={showBack ? 0 : -1}
             >
-              <LuChevronLeft />
+              <LuMenu size="5px" />
             </IconButton>
-          </Box>
+          )}
           {isHome && (
             <Box
               w="50px"
@@ -455,7 +527,7 @@ export default function AppHeader({
                 size="sm"
                 variant="ghost"
               >
-                <LuSearch />
+                <LuSearch size="5px" />
               </IconButton>
             </Dialog.Trigger>
             <Portal>
@@ -465,7 +537,7 @@ export default function AppHeader({
                   <Dialog.Header>
                     <InputGroup
                       flex="1"
-                      startElement={<LuSearch />}
+                      startElement={<LuSearch size="5px" />}
                       endElement={
                         <Dialog.CloseTrigger>
                           <Box
@@ -529,7 +601,7 @@ export default function AppHeader({
               _hover={{ bg: "gray.50" }}
               _active={{ bg: "gray.100" }}
             >
-              <MdOutlineShoppingCart size="24" />
+              <MdOutlineShoppingCart size="5px" />
             </IconButton>
             {cartCount > 0 && (
               <Badge
@@ -564,7 +636,7 @@ export default function AppHeader({
                       size="xl"
                       variant="ghost"
                     >
-                      <LuBell />
+                      <LuBell size="5px" />
                     </IconButton>
                     {unreadCount > 0 && (
                       <Badge
@@ -642,7 +714,7 @@ export default function AppHeader({
                                 aria-label="Close"
                                 position="static"
                               >
-                                <LuX />
+                                <LuX size="5px" />
                               </IconButton>
                             </Dialog.CloseTrigger>
                           </Flex>
@@ -698,7 +770,7 @@ export default function AppHeader({
                                         justifyContent="center"
                                       >
                                         <NotifIcon
-                                          size={18}
+                                          size="5px"
                                           color={cfg.color}
                                         />
                                       </Box>
@@ -759,7 +831,7 @@ export default function AppHeader({
                               mx="auto"
                               mb={3}
                             >
-                              <LuBell size={24} color="#9CA3AF" />
+                              <LuBell size="5px" color="#9CA3AF" />
                             </Box>
                             <Text
                               fontSize="sm"
@@ -794,7 +866,7 @@ export default function AppHeader({
                       variant="ghost"
                       onClick={() => setNotifOpen(!notifOpen)}
                     >
-                      <LuBell />
+                      <LuBell size="5px" />
                     </IconButton>
                     {unreadCount > 0 && (
                       <Badge
@@ -921,7 +993,7 @@ export default function AppHeader({
                                         justifyContent="center"
                                       >
                                         <NotifIcon
-                                          size={16}
+                                          size="5px"
                                           color={cfg.color}
                                         />
                                       </Box>
@@ -982,7 +1054,7 @@ export default function AppHeader({
                               mx="auto"
                               mb={3}
                             >
-                              <LuBell size={20} color="#9CA3AF" />
+                              <LuBell size="5px" color="#9CA3AF" />
                             </Box>
                             <Text
                               fontSize="sm"
