@@ -262,7 +262,11 @@ export default function AppHeader({
             flexShrink={0}
             w={showBack ? "32px" : "0px"}
             opacity={showBack ? 1 : 0}
-            transform={showBack ? "translateX(0) scale(1)" : "translateX(-8px) scale(0.92)"}
+            transform={
+              showBack
+                ? "translateX(0) scale(1)"
+                : "translateX(-8px) scale(0.92)"
+            }
             transition="width 220ms ease, opacity 180ms ease, transform 220ms ease"
             pointerEvents={showBack ? "auto" : "none"}
             aria-hidden={!showBack}
