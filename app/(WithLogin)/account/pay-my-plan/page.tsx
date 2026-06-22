@@ -323,7 +323,7 @@ const PayMyPlan = () => {
   return (
     <>
       <Page.Root title="" description="" hideBackButton={true}>
-        <Page.MainContent mb={{ base: 60, md: 0 }}>
+        <Page.MainContent mb={{ base: "auto", md: 0 }}>
           {/* ── INFO CARD ──────────────────────────────────────────────────── */}
           <Page.Row>
             <VStack
