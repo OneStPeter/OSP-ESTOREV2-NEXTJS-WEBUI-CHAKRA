@@ -2,21 +2,22 @@
 
 import {
   Box,
-  CloseButton,
-  Drawer,
   Flex,
   Icon,
-  Portal,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useState, type ComponentType } from "react";
+import { useState } from "react";
+import type { IconType } from "react-icons";
 import { BRAND_COLORS } from "@/lib/theme/brand-colors";
 import {
   STANDARD_RADIUS,
   STANDARD_SHADOWS,
   STANDARD_SPACING,
 } from "@/lib/theme/standard-design-tokens";
+import BottomQuickActions, {
+  type QuickAction as BottomQuickAction,
+} from "@/components/ui/bottom-quick-actions";
 import {
   LuChevronRight,
   LuUserPen,
@@ -32,7 +33,8 @@ import {
 export type AccountService = {
   key: string;
   label: string;
-  icon: ComponentType;
+  icon: IconType;
+  description?: string;
   onClick?: () => void;
 };
 
@@ -122,52 +124,60 @@ const AccountServicesList = ({
   const [open, setOpen] = useState(false);
 
   const resolvedServices: AccountService[] = services ?? [
-    // {
-    //   key: "update-info",
-    //   label: "Update My Information",
-    //   icon: LuUserPen,
-    //   onClick: onUpdateInfo,
-    // },
+    {
+      key: "update-info",
+      label: "Update My Information",
+      icon: LuUserPen,
+      description: "Review and update planholder details",
+      onClick: onUpdateInfo,
+    },
     {
       key: "reinstate",
       label: "Reinstate My Plan",
       icon: LuRotateCw,
+      description: "Restore coverage for a lapsed plan",
       onClick: onReinstate,
     },
     {
       key: "termination-value",
       label: "Plan Termination Value",
       icon: LuCalculator,
+      description: "Check the estimated plan value",
       onClick: onTerminationValue,
     },
     {
       key: "assign",
       label: "Assign My Plan",
       icon: LuUserCheck,
+      description: "Transfer plan rights to another person",
       onClick: onAssign,
     },
     {
       key: "cancel",
       label: "Cancel My Plan",
       icon: LuCircleX,
+      description: "Request plan cancellation assistance",
       onClick: onCancel,
     },
     {
       key: "change-mode",
       label: "Change of Mode",
       icon: LuArrowLeftRight,
+      description: "Change how your plan is paid",
       onClick: onChangeMode,
     },
     {
       key: "transfer",
       label: "Transfer My Plan",
       icon: LuSend,
+      description: "Start a plan transfer request",
       onClick: onTransfer,
     },
     {
       key: "update-beneficiaries",
       label: "Update My Beneficiaries",
       icon: LuUsers,
+      description: "Manage listed beneficiaries",
       onClick: onUpdateBeneficiaries,
     },
   ];
@@ -179,10 +189,17 @@ const AccountServicesList = ({
     service.onClick?.();
   };
 
-  const handleSelectFromDrawer = (service: AccountService) => {
-    setOpen(false);
-    service.onClick?.();
-  };
+  const bottomActions: BottomQuickAction[] = resolvedServices.map((service) => ({
+    label: service.label,
+    description: service.description,
+    icon: service.icon,
+    iconBg: BRAND_COLORS.successBg,
+    iconColor: BRAND_COLORS.primaryGreen,
+    onClick: () => {
+      setOpen(false);
+      service.onClick?.();
+    },
+  }));
 
   return (
     <Box w="full">
@@ -227,76 +244,13 @@ const AccountServicesList = ({
         ))}
       </VStack>
 
-      <Drawer.Root
+      <BottomQuickActions
         open={open}
-        onOpenChange={(details) => setOpen(details.open)}
-        placement="end"
-        lazyMount
-        unmountOnExit
-      >
-        <Portal>
-          <Drawer.Backdrop bg="blackAlpha.500" />
-          <Drawer.Positioner>
-            <Drawer.Content
-              w={{ base: "100vw", md: "420px" }}
-              maxW={{ base: "100vw", md: "420px" }}
-              h="100dvh"
-              bg={BRAND_COLORS.subtleBg}
-              borderLeftRadius={{ base: 0, md: STANDARD_RADIUS.xl }}
-              boxShadow={STANDARD_SHADOWS.level4}
-            >
-              <Drawer.Header
-                bg={BRAND_COLORS.white}
-                borderBottomWidth="1px"
-                borderColor={BRAND_COLORS.neutralBorder}
-                px={STANDARD_SPACING.sm}
-                py={STANDARD_SPACING.sm}
-              >
-                <Flex align="center" justify="space-between" gap={2}>
-                  <Drawer.Title
-                    color={BRAND_COLORS.neutralText}
-                    fontSize="20px"
-                    fontWeight="800"
-                    lineHeight="1.15"
-                  >
-                    {title}
-                  </Drawer.Title>
-                  <Drawer.CloseTrigger asChild>
-                    <CloseButton
-                      size="sm"
-                      borderRadius={STANDARD_RADIUS.full}
-                      color={BRAND_COLORS.neutralText}
-                      _hover={{ bg: BRAND_COLORS.mutedBg }}
-                    />
-                  </Drawer.CloseTrigger>
-                </Flex>
-              </Drawer.Header>
-
-              <Drawer.Body p={STANDARD_SPACING.sm} overflowY="auto">
-                <VStack
-                  align="stretch"
-                  gap={0}
-                  bg={BRAND_COLORS.white}
-                  borderWidth="1px"
-                  borderColor={BRAND_COLORS.neutralBorder}
-                  borderRadius={STANDARD_RADIUS.lg}
-                  boxShadow={STANDARD_SHADOWS.level1}
-                  overflow="hidden"
-                >
-                  {resolvedServices.map((service, index) => (
-                    <ServiceRow
-                      key={service.key}
-                      service={service}
-                      isFirst={index === 0}
-                      onSelect={handleSelectFromDrawer}
-                    />
-                  ))}
-                </VStack>
-              </Drawer.Body>
-            </Drawer.Content>
-          </Drawer.Positioner>
-        </Portal>
-      </Drawer.Root>
+        onOpenChange={setOpen}
+        title={title}
+        subtitle="Choose the account service you want to manage."
+        actions={bottomActions}
+      />
     </Box>
   );
 };

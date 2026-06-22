@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  type PointerEvent,
-  useCallback,
-  useRef,
-  useState,
-} from "react";
+import { type PointerEvent, useCallback, useRef, useState } from "react";
 import { ChatbotMessenger } from "./chatbot-messenger";
 
 const FAB_SIZE = 64;

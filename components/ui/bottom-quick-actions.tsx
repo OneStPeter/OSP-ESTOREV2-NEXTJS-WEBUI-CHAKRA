@@ -163,6 +163,7 @@ export const QuickActionsHeaderCard = React.memo(({
     {trailing}
   </HStack>
 ));
+QuickActionsHeaderCard.displayName = "QuickActionsHeaderCard";
 
 // ─── Action item ──────────────────────────────────────────────────────────────
 
@@ -251,6 +252,7 @@ const ActionItem = React.memo(({ action }: { action: QuickAction }) => {
   }
   return inner;
 });
+ActionItem.displayName = "ActionItem";
 
 // ─── BottomQuickActions ───────────────────────────────────────────────────────
 

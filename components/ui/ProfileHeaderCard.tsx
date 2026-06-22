@@ -194,6 +194,7 @@ const ProfileHeaderCard = ({
             </Box>
           </Link>
         )}
+        {actions && <Box mt={3}>{actions}</Box>}
       </Box>
     </Box>
   );

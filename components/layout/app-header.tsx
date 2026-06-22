@@ -51,61 +51,71 @@ type PageMeta = {
 const PAGE_META: { prefix: string; meta: PageMeta }[] = [
   {
     prefix: "/account/pay-my-plan",
-    meta: { title: "Pay My Plan", subtitle: "Payments" },
+    meta: { title: "Pay My Plan", subtitle: "Review and settle dues" },
   },
   {
     prefix: "/pay-my-plan",
-    meta: { title: "Pay My Plan", subtitle: "Payments" },
+    meta: { title: "Pay My Plan", subtitle: "Review and settle dues" },
   },
   {
     prefix: "/account/return-of-premium",
-    meta: { title: "Return of Premium", subtitle: "eServices" },
+    meta: { title: "Return of Premium", subtitle: "Check payout eligibility" },
   },
   {
     prefix: "/account/reinstatement",
-    meta: { title: "Reinstatement", subtitle: "eServices" },
+    meta: { title: "Reinstatement", subtitle: "Restore a lapsed plan" },
   },
   {
     prefix: "/account/profile",
-    meta: { title: "My Profile", subtitle: "Account" },
+    meta: { title: "My Profile", subtitle: "Manage sign-in details" },
+  },
+  {
+    prefix: "/account/summary",
+    meta: { title: "Account Summary", subtitle: "View planholder details" },
   },
   {
     prefix: "/account",
-    meta: { title: "My Account", subtitle: "Account Management" },
+    meta: { title: "My Account", subtitle: "Plans and services" },
   },
   {
     prefix: "/plan-comparison",
-    meta: { title: "Compare Plans", subtitle: "Life Plans" },
+    meta: { title: "Compare Plans", subtitle: "Find the best fit" },
   },
   {
     prefix: "/plan-details",
-    meta: { title: "Plan Details", subtitle: "Life Plans" },
+    meta: { title: "Plan Details", subtitle: "Review plan benefits" },
   },
-  { prefix: "/plans", meta: { title: "Life Plans", subtitle: "Browse Plans" } },
+  {
+    prefix: "/plans",
+    meta: { title: "Life Plans", subtitle: "Browse available plans" },
+  },
   {
     prefix: "/lifeplan-application",
-    meta: { title: "Application", subtitle: "Life Plans" },
+    meta: { title: "Application", subtitle: "Complete your plan form" },
   },
   {
     prefix: "/order-summary",
-    meta: { title: "Order Summary", subtitle: "Checkout" },
+    meta: { title: "Order Summary", subtitle: "Review before payment" },
   },
   {
     prefix: "/booking",
-    meta: { title: "Book a Visit", subtitle: "Booking" },
+    meta: { title: "Book a Visit", subtitle: "Schedule branch assistance" },
   },
   {
     prefix: "/claims",
-    meta: { title: "File a Claim", subtitle: "Claims" },
+    meta: { title: "File a Claim", subtitle: "Start a claim request" },
   },
   {
     prefix: "/news-updates",
-    meta: { title: "News & Blog", subtitle: "Updates" },
+    meta: { title: "News & Blog", subtitle: "Latest stories and updates" },
   },
-  { prefix: "/about-us", meta: { title: "About Us", subtitle: "St. Peter" } },
+  {
+    prefix: "/about-us",
+    meta: { title: "About Us", subtitle: "Learn about St. Peter" },
+  },
   {
     prefix: "/contact-us",
-    meta: { title: "Contact Us", subtitle: "Get in Touch" },
+    meta: { title: "Contact Us", subtitle: "Reach our support team" },
   },
 ];
 
@@ -346,8 +356,26 @@ export default function AppHeader({
         {/* Left side — menu + brand logo + title */}
         <Flex align="center" gap={3} flex="1" minW={0}>
           {/* Menu toggle */}
-          {showBack ? (
-            <Box overflow="hidden" flexShrink={0} w="32px">
+          <Box
+            position="relative"
+            overflow="hidden"
+            flexShrink={0}
+            w="32px"
+            h="32px"
+          >
+            <Box
+              position="absolute"
+              inset={0}
+              opacity={showBack ? 1 : 0}
+              transform={
+                showBack
+                  ? "translateX(0) scale(1)"
+                  : "translateX(-8px) scale(0.92)"
+              }
+              transition="opacity 180ms ease, transform 220ms ease"
+              pointerEvents={showBack ? "auto" : "none"}
+              aria-hidden={!showBack}
+            >
               <IconButton
                 color="gray.fg"
                 aria-label="Go back"
@@ -359,18 +387,31 @@ export default function AppHeader({
                 <LuChevronLeft size="5px" />
               </IconButton>
             </Box>
-          ) : (
-            <IconButton
-              color="gray.fg"
-              aria-label="Open menu"
-              size="sm"
-              variant="ghost"
-              onClick={onToggleSidebar}
-              flexShrink={0}
+            <Box
+              position="absolute"
+              inset={0}
+              opacity={showBack ? 0 : 1}
+              transform={
+                showBack
+                  ? "translateX(8px) scale(0.92)"
+                  : "translateX(0) scale(1)"
+              }
+              transition="opacity 180ms ease, transform 220ms ease"
+              pointerEvents={showBack ? "none" : "auto"}
+              aria-hidden={showBack}
             >
-              <LuMenu size="5px" />
-            </IconButton>
-          )}
+              <IconButton
+                color="gray.fg"
+                aria-label="Open menu"
+                size="sm"
+                variant="ghost"
+                onClick={onToggleSidebar}
+                flexShrink={0}
+              >
+                <LuMenu size="5px" />
+              </IconButton>
+            </Box>
+          </Box>
           {isHome && (
             <Box
               w="50px"
