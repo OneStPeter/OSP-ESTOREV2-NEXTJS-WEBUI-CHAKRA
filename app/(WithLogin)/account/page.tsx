@@ -1,9 +1,10 @@
 "use client";
 
-import { Button, VStack } from "@chakra-ui/react";
+import { Box, Button, Text, VStack } from "@chakra-ui/react";
 import { useEffect } from "react";
 import Page from "@/components/layout/page/Page";
 import { useDemoAuth } from "@/components/ui/demo-auth";
+import AdBannerCarousel from "@/components/ui/ad-banner-carousel";
 import AccountQuickActions from "@/components/ui/account-quick-actions";
 import AccountServicesList from "@/components/ui/account-services-list";
 import { STANDARD_SPACING } from "@/lib/theme/standard-design-tokens";
@@ -53,6 +54,7 @@ const Account = () => {
                 <Button
                   size="sm"
                   w="full"
+                  variant="outline"
                   colorPalette="green"
                   onClick={goToAccountSummary}
                 >
@@ -61,14 +63,24 @@ const Account = () => {
               }
             />
 
-            <AccountQuickActions
-              onPayPlan={goToPayMyPlan}
-              onFileClaim={goToFileClaim}
-              onRop={goToRop}
-              onBookVisit={goToBookVisit}
-            />
+            <Box>
+              <Text fontSize="14px" fontWeight="700" color="gray.900" mb={2}>
+                Common actions
+              </Text>
+              <AccountQuickActions
+                onPayPlan={goToPayMyPlan}
+                onFileClaim={goToFileClaim}
+                onRop={goToRop}
+                onBookVisit={goToBookVisit}
+              />
+            </Box>
 
-            <AccountServicesList onUpdateInfo={goToAccountSummary} />
+            <AdBannerCarousel />
+
+            <AccountServicesList
+              title="Manage your plan"
+              onUpdateInfo={goToAccountSummary}
+            />
           </VStack>
         </Page.Row>
       </Page.MainContent>

@@ -490,7 +490,7 @@ export default function AppHeader({
                 color={"gray.fg"}
                 display={{ base: "flex" }}
                 aria-label="Search"
-                size="sm"
+                size="md"
                 variant="ghost"
               >
                 <LuSearch size="5px" />
@@ -536,7 +536,7 @@ export default function AppHeader({
           <Box position="relative" display="inline-flex">
             <IconButton
               aria-label="Shopping Cart"
-              size="sm"
+              size="md"
               variant="ghost"
               color="gray.fg"
               aria-expanded={cartOpen}
@@ -574,7 +574,7 @@ export default function AppHeader({
                     <IconButton
                       color="gray.fg"
                       aria-label="Notifications"
-                      size="xl"
+                      size="md"
                       variant="ghost"
                     >
                       <LuBell size="5px" />

@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Box,
-  Flex,
-  Icon,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Flex, Icon, Text, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import type { IconType } from "react-icons";
 import { BRAND_COLORS } from "@/lib/theme/brand-colors";
@@ -109,7 +103,7 @@ const ServiceRow = ({
 );
 
 const AccountServicesList = ({
-  title = "Managing the account",
+  title = "Quick Actions",
   previewCount = 4,
   services,
   onUpdateInfo,
@@ -189,17 +183,19 @@ const AccountServicesList = ({
     service.onClick?.();
   };
 
-  const bottomActions: BottomQuickAction[] = resolvedServices.map((service) => ({
-    label: service.label,
-    description: service.description,
-    icon: service.icon,
-    iconBg: BRAND_COLORS.successBg,
-    iconColor: BRAND_COLORS.primaryGreen,
-    onClick: () => {
-      setOpen(false);
-      service.onClick?.();
-    },
-  }));
+  const bottomActions: BottomQuickAction[] = resolvedServices.map(
+    (service) => ({
+      label: service.label,
+      description: service.description,
+      icon: service.icon,
+      iconBg: BRAND_COLORS.successBg,
+      iconColor: BRAND_COLORS.primaryGreen,
+      onClick: () => {
+        setOpen(false);
+        service.onClick?.();
+      },
+    }),
+  );
 
   return (
     <Box w="full">
@@ -248,7 +244,7 @@ const AccountServicesList = ({
         open={open}
         onOpenChange={setOpen}
         title={title}
-        subtitle="Choose the account service you want to manage."
+        //subtitle="Choose the account service you want to manage."
         actions={bottomActions}
       />
     </Box>

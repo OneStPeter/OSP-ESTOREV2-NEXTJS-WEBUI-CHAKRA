@@ -98,76 +98,80 @@ const CHEVRON_COLOR = BRAND_COLORS.ashWhite;
  * Convenience header card for showing which record the actions apply to.
  * Pass this to `BottomQuickActions` via the `headerSlot` prop.
  */
-export const QuickActionsHeaderCard = React.memo(({
-  initials,
-  avatarBg = AVATAR_DEFAULT_BG,
-  label,
-  meta,
-  trailing,
-}: QuickActionsHeaderCardProps) => (
-  <HStack
-    gap={STANDARD_SPACING.sm}
-    px={STANDARD_SPACING.sm}
-    py="13px"
-    bg={HEADER_CARD_BG}
-    borderRadius={STANDARD_RADIUS.lg}
-    borderWidth="1px"
-    borderColor={HEADER_CARD_BORDER}
-  >
-    {initials && (
-      <Flex
-        w="40px"
-        h="40px"
-        borderRadius={STANDARD_RADIUS.full}
-        bg={avatarBg}
-        align="center"
-        justify="center"
-        flexShrink={0}
-      >
-        <Text
-          fontSize="14px"
-          fontWeight="700"
-          color={BRAND_COLORS.white}
-          lineHeight="1"
+export const QuickActionsHeaderCard = React.memo(
+  ({
+    initials,
+    avatarBg = AVATAR_DEFAULT_BG,
+    label,
+    meta,
+    trailing,
+  }: QuickActionsHeaderCardProps) => (
+    <HStack
+      gap={STANDARD_SPACING.sm}
+      px={STANDARD_SPACING.sm}
+      py="13px"
+      bg={HEADER_CARD_BG}
+      borderRadius={STANDARD_RADIUS.lg}
+      borderWidth="1px"
+      borderColor={HEADER_CARD_BORDER}
+    >
+      {initials && (
+        <Flex
+          w="40px"
+          h="40px"
+          borderRadius={STANDARD_RADIUS.full}
+          bg={avatarBg}
+          align="center"
+          justify="center"
+          flexShrink={0}
         >
-          {initials}
-        </Text>
-      </Flex>
-    )}
-    <Box flex="1" minW={0}>
-      <Text
-        fontSize="15px"
-        fontWeight="700"
-        color={TITLE_COLOR}
-        lineHeight="1.25"
-        overflow="hidden"
-        whiteSpace="nowrap"
-        textOverflow="ellipsis"
-      >
-        {label}
-      </Text>
-      {meta && (
+          <Text
+            fontSize="14px"
+            fontWeight="700"
+            color={BRAND_COLORS.white}
+            lineHeight="1"
+          >
+            {initials}
+          </Text>
+        </Flex>
+      )}
+      <Box flex="1" minW={0}>
         <Text
-          fontSize="12px"
-          color={SUBTITLE_COLOR}
-          mt="2px"
-          lineHeight="1.4"
+          fontSize="15px"
+          fontWeight="700"
+          color={TITLE_COLOR}
+          lineHeight="1.25"
           overflow="hidden"
           whiteSpace="nowrap"
           textOverflow="ellipsis"
         >
-          {meta}
+          {label}
         </Text>
-      )}
-    </Box>
-    {trailing}
-  </HStack>
-));
+        {meta && (
+          <Text
+            fontSize="12px"
+            color={SUBTITLE_COLOR}
+            mt="2px"
+            lineHeight="1.4"
+            overflow="hidden"
+            whiteSpace="nowrap"
+            textOverflow="ellipsis"
+          >
+            {meta}
+          </Text>
+        )}
+      </Box>
+      {trailing}
+    </HStack>
+  ),
+);
 QuickActionsHeaderCard.displayName = "QuickActionsHeaderCard";
 
 // ─── Action item ──────────────────────────────────────────────────────────────
 
-const ITEM_TRANSITION = { transition: "background 0.15s ease, transform 0.1s ease" };
+const ITEM_TRANSITION = {
+  transition: "background 0.15s ease, transform 0.1s ease",
+};
 
 const ActionItem = React.memo(({ action }: { action: QuickAction }) => {
   const iconBg = action.iconBg ?? DEFAULT_ICON_BG;
@@ -264,6 +268,47 @@ export const BottomQuickActions = ({
   headerSlot,
   actions,
 }: BottomQuickActionsProps) => {
+  const [dragOffset, setDragOffset] = React.useState(0);
+  const [isDragging, setIsDragging] = React.useState(false);
+  const dragStartYRef = React.useRef<number | null>(null);
+
+  React.useEffect(() => {
+    if (!open) {
+      setDragOffset(0);
+      setIsDragging(false);
+      dragStartYRef.current = null;
+    }
+  }, [open]);
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    dragStartYRef.current = event.clientY;
+    setIsDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (dragStartYRef.current === null) return;
+
+    const nextOffset = Math.max(0, event.clientY - dragStartYRef.current);
+    setDragOffset(nextOffset);
+  };
+
+  const handlePointerEnd = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (dragStartYRef.current === null) return;
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    if (dragOffset > 90) {
+      onOpenChange(false);
+    }
+
+    setDragOffset(0);
+    setIsDragging(false);
+    dragStartYRef.current = null;
+  };
+
   return (
     <Drawer.Root
       open={open}
@@ -274,16 +319,30 @@ export const BottomQuickActions = ({
         <Drawer.Backdrop />
         <Drawer.Positioner>
           <Drawer.Content
-            borderTopRadius="l3"
+            borderTopRadius="24px"
             borderBottomRadius="0"
             bg={SHEET_BG}
             maxW="480px"
             mx="auto"
             pb={`calc(${STANDARD_SPACING.sm} + env(safe-area-inset-bottom))`}
             boxShadow={STANDARD_SHADOWS.level4}
+            style={{
+              translate: `0 ${dragOffset}px`,
+              transition: isDragging ? "none" : "translate 180ms ease-out",
+            }}
           >
             {/* Drag handle */}
-            <Flex justify="center" pt="10px" pb="4px">
+            <Flex
+              justify="center"
+              pt="10px"
+              pb="4px"
+              cursor="grab"
+              touchAction="none"
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerEnd}
+              onPointerCancel={handlePointerEnd}
+            >
               <Box
                 w="36px"
                 h="4px"
@@ -297,15 +356,17 @@ export const BottomQuickActions = ({
               px={STANDARD_SPACING.sm}
               pt="12px"
               pb="0"
-              borderBottomWidth="0"
+              borderBottomWidth="1px"
+              borderColor={HEADER_CARD_BORDER}
             >
               <Flex align="flex-start" justify="space-between" gap="12px">
-                <Box flex="1" minW={0}>
+                <Box flex="1" minW={0} pb={2}>
                   <Drawer.Title
-                    fontSize="18px"
+                    fontSize="16px"
                     fontWeight="700"
-                    color={TITLE_COLOR}
+                    color={"gray.400"}
                     lineHeight="1.25"
+                    text-transform="uppercase"
                     letterSpacing="-0.02em"
                   >
                     {title}
@@ -334,7 +395,11 @@ export const BottomQuickActions = ({
             </Drawer.Header>
 
             {/* Body: optional header card + action list */}
-            <Drawer.Body px={STANDARD_SPACING.sm} pt={STANDARD_SPACING.sm} pb="4px">
+            <Drawer.Body
+              px={STANDARD_SPACING.sm}
+              pt={STANDARD_SPACING.sm}
+              pb="4px"
+            >
               {headerSlot && <Box mb={STANDARD_SPACING.xs}>{headerSlot}</Box>}
 
               <VStack gap={STANDARD_SPACING.xs} align="stretch">
@@ -342,6 +407,14 @@ export const BottomQuickActions = ({
                   <ActionItem key={i} action={action} />
                 ))}
               </VStack>
+              <Text
+                fontSize="12px"
+                color="gray.400"
+                textAlign="center"
+                mt={STANDARD_SPACING.sm}
+              >
+                Swipe down to dismiss
+              </Text>
             </Drawer.Body>
           </Drawer.Content>
         </Drawer.Positioner>

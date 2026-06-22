@@ -3,9 +3,9 @@
 import { type PointerEvent, useCallback, useRef, useState } from "react";
 import { ChatbotMessenger } from "./chatbot-messenger";
 
-const FAB_SIZE = 64;
+const FAB_SIZE = 56;
 const EDGE_GAP = 16;
-const BOTTOM_NAV_OFFSET = 72;
+const BOTTOM_NAV_OFFSET = 132;
 
 function getSnappedPos(x: number, y: number) {
   const width = window.innerWidth;
@@ -21,7 +21,10 @@ function getSnappedPos(x: number, y: number) {
     bottomDistance,
   );
   const clampY = (value: number) =>
-    Math.max(EDGE_GAP, Math.min(value, height - FAB_SIZE - EDGE_GAP));
+    Math.max(
+      EDGE_GAP,
+      Math.min(value, height - FAB_SIZE - EDGE_GAP - BOTTOM_NAV_OFFSET),
+    );
   const clampX = (value: number) =>
     Math.max(EDGE_GAP, Math.min(value, width - FAB_SIZE - EDGE_GAP));
 
@@ -31,7 +34,7 @@ function getSnappedPos(x: number, y: number) {
   }
   if (nearestEdge === topDistance) return { x: clampX(x), y: EDGE_GAP };
 
-  return { x: clampX(x), y: height - FAB_SIZE - EDGE_GAP };
+  return { x: clampX(x), y: height - FAB_SIZE - EDGE_GAP - BOTTOM_NAV_OFFSET };
 }
 
 function RobotIcon() {
