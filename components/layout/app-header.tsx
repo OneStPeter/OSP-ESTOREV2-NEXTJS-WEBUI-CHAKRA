@@ -1,12 +1,11 @@
 "use client";
 
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Flex,
   IconButton,
   Input,
   Box,
-  Avatar,
   Dialog,
   Text,
   VStack,
@@ -16,7 +15,6 @@ import {
   InputGroup,
   Separator,
   useBreakpointValue,
-  Show,
   Image,
   Button,
 } from "@chakra-ui/react";
@@ -31,21 +29,96 @@ import {
   LuCreditCard,
   LuFileText,
   LuTriangleAlert,
-  LuCircleHelp,
-  LuBotMessageSquare,
-  LuSend,
+  LuChevronLeft,
 } from "react-icons/lu";
-import { motion } from "motion/react";
 import { NotificationDataProps } from "./app-layout.type";
-import { Body, Small } from "st-peter-ui";
 import { MdOutlineShoppingCart } from "react-icons/md";
-import { LuUser } from "react-icons/lu";
 import ShoppingCart from "@/components/ui/shopping-cart";
 import { useCartCount } from "@/hooks/useCartCount";
 import { useDemoAuth } from "@/components/ui/demo-auth";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import logoIcon from "@/public/login-logo.png";
+
+type PageMeta = {
+  title: string;
+  subtitle?: string;
+  // Back button config: omit/false = hidden, true = router.back(),
+  // a string = navigate to that href.
+  back?: boolean | string;
+};
+
+// Route → header title/subtitle. Checked top-to-bottom; first prefix match wins,
+// so list more specific paths before their parents. Falls back to the brand
+// (appName/appSubtitle props) when nothing matches (e.g. the home page).
+const PAGE_META: { prefix: string; meta: PageMeta }[] = [
+  {
+    prefix: "/account/pay-my-plan",
+    meta: { title: "Pay My Plan", subtitle: "Payments", back: true },
+  },
+  {
+    prefix: "/pay-my-plan",
+    meta: { title: "Pay My Plan", subtitle: "Payments", back: true },
+  },
+  {
+    prefix: "/account/return-of-premium",
+    meta: { title: "Return of Premium", subtitle: "eServices", back: true },
+  },
+  {
+    prefix: "/account/reinstatement",
+    meta: { title: "Reinstatement", subtitle: "eServices", back: true },
+  },
+  {
+    prefix: "/account/profile",
+    meta: { title: "My Profile", subtitle: "Account", back: true },
+  },
+  {
+    prefix: "/account",
+    meta: { title: "My Account", subtitle: "Account Management" },
+  },
+  {
+    prefix: "/plan-comparison",
+    meta: { title: "Compare Plans", subtitle: "Life Plans", back: true },
+  },
+  {
+    prefix: "/plan-details",
+    meta: { title: "Plan Details", subtitle: "Life Plans", back: true },
+  },
+  { prefix: "/plans", meta: { title: "Life Plans", subtitle: "Browse Plans" } },
+  {
+    prefix: "/lifeplan-application",
+    meta: { title: "Application", subtitle: "Life Plans", back: true },
+  },
+  {
+    prefix: "/order-summary",
+    meta: { title: "Order Summary", subtitle: "Checkout", back: true },
+  },
+  {
+    prefix: "/booking",
+    meta: { title: "Book a Visit", subtitle: "Booking", back: true },
+  },
+  {
+    prefix: "/claims",
+    meta: { title: "File a Claim", subtitle: "Claims", back: true },
+  },
+  {
+    prefix: "/news-updates",
+    meta: { title: "News & Blog", subtitle: "Updates" },
+  },
+  { prefix: "/about-us", meta: { title: "About Us", subtitle: "St. Peter" } },
+  {
+    prefix: "/contact-us",
+    meta: { title: "Contact Us", subtitle: "Get in Touch" },
+  },
+];
+
+function getPageMeta(pathname: string | null, fallback: PageMeta): PageMeta {
+  if (!pathname) return fallback;
+  return (
+    PAGE_META.find(({ prefix }) => pathname.startsWith(prefix))?.meta ??
+    fallback
+  );
+}
 
 const DEFAULT_NOTIF_ICON = {
   Icon: LuBell as React.ElementType,
@@ -64,66 +137,6 @@ const NOTIF_ICON_MAP: Record<
   document: { Icon: LuFileText, bg: "#D3EDEE", color: "#026BA9" },
   alert: { Icon: LuTriangleAlert, bg: "#FFCEE9", color: "#BF1F2F" },
 };
-
-type ChatMessage = {
-  id: number;
-  role: "user" | "bot";
-  text: string;
-};
-
-const initialChatMessages: ChatMessage[] = [
-  {
-    id: 1,
-    role: "bot",
-    text: "Hi! I can help with demo questions about plans, payments, claims, cart, and account access.",
-  },
-];
-
-function getDemoBotReply(question: string): string {
-  const normalized = question.toLowerCase();
-
-  if (normalized.includes("plan") || normalized.includes("product")) {
-    return "You can browse available St. Peter life plans from the Plans page. Pick a plan to view details, benefits, and payment options.";
-  }
-
-  if (
-    normalized.includes("pay") ||
-    normalized.includes("payment") ||
-    normalized.includes("installment")
-  ) {
-    return "For demo payments, go to Pay My Plan, enter your plan details, then choose your preferred payment method.";
-  }
-
-  if (normalized.includes("cart") || normalized.includes("checkout")) {
-    return "Your selected plans appear in the cart. Open the cart icon to review items before checkout.";
-  }
-
-  if (normalized.includes("claim") || normalized.includes("benefit")) {
-    return "For claims, open the Claims page and prepare the planholder information and required supporting documents.";
-  }
-
-  if (
-    normalized.includes("login") ||
-    normalized.includes("account") ||
-    normalized.includes("profile")
-  ) {
-    return "Use the account area to view profile details, plan records, and account settings after logging in.";
-  }
-
-  if (
-    normalized.includes("contact") ||
-    normalized.includes("support") ||
-    normalized.includes("help")
-  ) {
-    return "For demo support, you can ask about plans, payment, claims, cart, or account access.";
-  }
-
-  if (normalized.includes("hello") || normalized.includes("hi")) {
-    return "Hello! What would you like to know about the eStore demo?";
-  }
-
-  return "This demo bot has preset answers only. Try asking about plans, payment, claims, cart, or your account.";
-}
 
 function readCookie(name: string): string | null {
   if (typeof document === "undefined") return null;
@@ -183,11 +196,23 @@ export default function AppHeader({
   const cartCount = useCartCount();
   const { isLoggedIn } = useDemoAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const pageMeta = getPageMeta(pathname, {
+    title: appName,
+    subtitle: appSubtitle,
+  });
+  const isHome = pathname === "/";
+  const showBack = Boolean(pageMeta.back);
+
+  const handleBack = () => {
+    if (typeof pageMeta.back === "string") {
+      router.push(pageMeta.back);
+    } else {
+      router.back();
+    }
+  };
   const [notifOpen, setNotifOpen] = useState(false);
-  const [chatOpen, setChatOpen] = useState(false);
-  const [chatInput, setChatInput] = useState("");
-  const [chatMessages, setChatMessages] =
-    useState<ChatMessage[]>(initialChatMessages);
+
   const [readIds, setReadIds] = useState<Set<number>>(
     () => new Set(notifications.filter((n) => n.read).map((n) => n.id)),
   );
@@ -208,31 +233,19 @@ export default function AppHeader({
     return colorPalette[index];
   };
 
-  const handleChatSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const question = chatInput.trim();
-    if (!question) return;
-
-    const now = Date.now();
-    setChatMessages((messages) => [
-      ...messages,
-      { id: now, role: "user", text: question },
-      { id: now + 1, role: "bot", text: getDemoBotReply(question) },
-    ]);
-    setChatInput("");
-  };
-
   return (
     <>
       <Flex
         className="no-print"
-        h="65px"
-        pt={4}
-        px={2}
+        h="80px"
+        px={4}
+        py={4}
         align="center"
         justify="space-between"
         bg="bg"
+        gap={3}
+        borderBottomWidth="1px"
+        borderColor="gray.200"
         position="relative"
         zIndex={20}
         // boxShadow={isScrolled ? "0 8px 24px rgba(15, 23, 42, 0.14)" : "none"}
@@ -242,71 +255,87 @@ export default function AppHeader({
         // borderColor="gray.200"
         display={{ base: "flex", lg: "none" }}
       >
-        {/* Left side */}
-        <Flex align="center" gap={2} flex="1" minW={0}>
-          {/* Sidebar toggle */}
-          <Show when={!isMobile}>
+        {/* Left side — brand logo + title */}
+        <Flex align="center" gap={3} flex="1" minW={0}>
+          <Box
+            overflow="hidden"
+            flexShrink={0}
+            w={showBack ? "32px" : "0px"}
+            opacity={showBack ? 1 : 0}
+            transform={showBack ? "translateX(0) scale(1)" : "translateX(-8px) scale(0.92)"}
+            transition="width 220ms ease, opacity 180ms ease, transform 220ms ease"
+            pointerEvents={showBack ? "auto" : "none"}
+            aria-hidden={!showBack}
+          >
             <IconButton
-              color={"gray.fg"}
-              aria-label="Toggle sidebar"
+              color="gray.fg"
+              aria-label="Go back"
               size="sm"
               variant="ghost"
-              onClick={onToggleSidebar}
+              flexShrink={0}
+              onClick={handleBack}
+              tabIndex={showBack ? 0 : -1}
             >
-              <LuMenu />
+              <LuChevronLeft />
             </IconButton>
-            {breadcrumb}
-          </Show>
-          <Show when={isMobile}>
-            <Flex align="center" gap={2} minW={0} flex="1">
-              <IconButton
-                color={"gray.fg"}
-                aria-label="Toggle sidebar"
-                size="sm"
-                variant="ghost"
-                onClick={onToggleSidebar}
-                flexShrink={0}
+          </Box>
+          {isHome && (
+            <Box
+              w="50px"
+              h="50px"
+              flexShrink={0}
+              borderRadius="16px"
+              bg="green.50"
+              borderWidth="1px"
+              borderColor="green.100"
+              display="flex"
+              boxShadow="sm"
+              justifyContent="center"
+              alignItems="center"
+              p={1}
+            >
+              <Image
+                src={logoIcon.src}
+                width={32}
+                height={32}
+                style={{ objectFit: "contain" }}
+              />
+            </Box>
+          )}
+          <Box
+            minW={0}
+            gap={1}
+            display="flex"
+            flexDirection="column"
+            lineHeight="1"
+          >
+            <Text
+              fontWeight="700"
+              whiteSpace="nowrap"
+              overflow="hidden"
+              textOverflow="ellipsis"
+              color="gray.900"
+              fontSize="lg"
+              lineHeight="1.15"
+            >
+              {pageMeta.title}
+            </Text>
+            {pageMeta.subtitle && (
+              <Text
+                color="#085725"
+                fontSize="9px"
+                fontWeight="600"
+                letterSpacing="0.12em"
+                textTransform="uppercase"
+                lineHeight="1.2"
+                whiteSpace="nowrap"
+                overflow="hidden"
+                textOverflow="ellipsis"
               >
-                <LuMenu />
-              </IconButton>
-              <Box
-                w="24px"
-                h="24px"
-                flexShrink={0}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Image
-                  src={logoIcon.src}
-                  width={24}
-                  height={24}
-                  style={{ objectFit: "contain" }}
-                />
-              </Box>
-              <Box minW={0} flex="1" maxW={{ base: "128px", sm: "156px" }}>
-                <Text
-                  fontWeight="bold"
-                  whiteSpace="nowrap"
-                  color="gray.900"
-                  fontSize="md"
-                  lineHeight="1.1"
-                >
-                  {appName}
-                </Text>
-                {appSubtitle && (
-                  <Text
-                    color="black"
-                    fontSize="sm"
-                    lineHeight="1.1"
-                    textWrap="nowrap"
-                  >
-                    {appSubtitle}
-                  </Text>
-                )}
-              </Box>
-            </Flex>
-          </Show>
+                {pageMeta.subtitle}
+              </Text>
+            )}
+          </Box>
         </Flex>
 
         {/* Right side */}
@@ -328,7 +357,7 @@ export default function AppHeader({
                 color={"gray.fg"}
                 display={{ base: "flex" }}
                 aria-label="Search"
-                size="xl"
+                size="sm"
                 variant="ghost"
               >
                 <LuSearch />
@@ -371,143 +400,10 @@ export default function AppHeader({
             </Portal>
           </Dialog.Root>
 
-          {/* Chatbot */}
-          <Dialog.Root
-            size="full"
-            motionPreset="slide-in-bottom"
-            open={chatOpen}
-            onOpenChange={(e) => setChatOpen(e.open)}
-          >
-            <Dialog.Trigger asChild>
-              <IconButton
-                aria-label="Chatbot"
-                size="xl"
-                variant="ghost"
-                _hover={{ bg: "green.50" }}
-              >
-                <LuBotMessageSquare />
-              </IconButton>
-            </Dialog.Trigger>
-            <Portal>
-              <Dialog.Backdrop />
-              <Dialog.Positioner>
-                <Dialog.Content h="100dvh" display="flex" flexDirection="column">
-                  <Dialog.Header
-                    px={4}
-                    py={3}
-                    borderBottomWidth="1px"
-                    borderColor="gray.200"
-                  >
-                    <Flex align="center" justify="space-between" w="full">
-                      <Flex align="center" gap={3}>
-                        <Box
-                          w="40px"
-                          h="40px"
-                          borderRadius="full"
-                          bg="green.50"
-                          color="var(--chakra-colors-primary)"
-                          display="flex"
-                          alignItems="center"
-                          justifyContent="center"
-                          flexShrink={0}
-                        >
-                          <LuBotMessageSquare size={20} />
-                        </Box>
-                        <Box>
-                          <Dialog.Title fontSize="md" fontWeight="bold">
-                            eStore Assistant
-                          </Dialog.Title>
-                          <Text fontSize="xs" color="gray.500">
-                            Demo chatbot
-                          </Text>
-                        </Box>
-                      </Flex>
-                      <Dialog.CloseTrigger asChild>
-                        <IconButton
-                          aria-label="Close chatbot"
-                          size="sm"
-                          variant="ghost"
-                          position="static"
-                        >
-                          <LuX />
-                        </IconButton>
-                      </Dialog.CloseTrigger>
-                    </Flex>
-                  </Dialog.Header>
-                  <Dialog.Body
-                    flex="1"
-                    overflowY="auto"
-                    px={4}
-                    py={4}
-                    bg="gray.50"
-                  >
-                    <VStack align="stretch" gap={3}>
-                      {chatMessages.map((message) => {
-                        const isUser = message.role === "user";
-
-                        return (
-                          <Flex
-                            key={message.id}
-                            justify={isUser ? "flex-end" : "flex-start"}
-                          >
-                            <Box
-                              maxW="82%"
-                              px={3}
-                              py={2}
-                              borderRadius="lg"
-                              bg={
-                                isUser
-                                  ? "var(--chakra-colors-primary)"
-                                  : "white"
-                              }
-                              color={isUser ? "white" : "gray.800"}
-                              boxShadow="sm"
-                              borderWidth={isUser ? "0" : "1px"}
-                              borderColor="gray.200"
-                            >
-                              <Text fontSize="sm" lineHeight="1.5">
-                                {message.text}
-                              </Text>
-                            </Box>
-                          </Flex>
-                        );
-                      })}
-                    </VStack>
-                  </Dialog.Body>
-                  <Dialog.Footer
-                    as="form"
-                    onSubmit={handleChatSubmit}
-                    p={3}
-                    borderTopWidth="1px"
-                    borderColor="gray.200"
-                    bg="white"
-                    gap={2}
-                  >
-                    <Input
-                      value={chatInput}
-                      onChange={(event) => setChatInput(event.target.value)}
-                      placeholder="Ask about plans, payment, claims..."
-                      bg="white"
-                    />
-                    <IconButton
-                      aria-label="Send message"
-                      type="submit"
-                      variant="solid"
-                      bg="var(--chakra-colors-primary)"
-                      color="white"
-                      _hover={{ bg: "green.700" }}
-                    >
-                      <LuSend />
-                    </IconButton>
-                  </Dialog.Footer>
-                </Dialog.Content>
-              </Dialog.Positioner>
-            </Portal>
-          </Dialog.Root>
           <Box position="relative">
             <IconButton
               aria-label="Shopping Cart"
-              size="xl"
+              size="sm"
               variant="ghost"
               color="gray.fg"
               aria-expanded={cartOpen}
@@ -1018,6 +914,17 @@ export default function AppHeader({
               <LuUser />
             </IconButton>
           )} */}
+
+          {/* Menu toggle */}
+          <IconButton
+            color="gray.fg"
+            aria-label="Open menu"
+            size="sm"
+            variant="ghost"
+            onClick={onToggleSidebar}
+          >
+            <LuMenu />
+          </IconButton>
         </Flex>
       </Flex>
 

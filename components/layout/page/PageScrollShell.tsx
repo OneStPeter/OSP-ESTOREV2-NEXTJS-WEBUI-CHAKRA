@@ -43,7 +43,7 @@ const PageScrollShell = ({
         pt={{ base: "20px", lg: "36px" }}
         mb={hideBackButton ? "" : { base: "6", lg: "8" }}
       >
-        <Flex
+        {/* <Flex
           direction={{ base: "column", lg: "row" }}
           align={{ base: "flex-start", lg: "center" }}
           justify="space-between"
@@ -51,7 +51,7 @@ const PageScrollShell = ({
           pb={!hideBackButton ? "0" : ""}
         >
           <Box minW={0} flex="1">
-            <BackButton enabled={!hideBackButton} />
+             <BackButton enabled={!hideBackButton} /> 
             {subtitle && (
               <Box
                 fontFamily="var(--font-dm-sans), system-ui, sans-serif"
@@ -91,7 +91,7 @@ const PageScrollShell = ({
             )}
           </Box>
           {toolContent}
-        </Flex>
+        </Flex> */}
       </Box>
       {mainContent}
     </Box>
