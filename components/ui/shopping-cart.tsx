@@ -30,9 +30,9 @@ import {
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaCircleMinus, FaTrash } from "react-icons/fa6";
-import { FiCheckCircle, FiShoppingCart } from "react-icons/fi";
+import { FiCheckCircle } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
-import { MdOutlineAddCircle } from "react-icons/md";
+import { MdOutlineAddCircle, MdOutlineShoppingCart } from "react-icons/md";
 import { PrimaryMdButton } from "st-peter-ui";
 
 interface ShoppingCartProps {
@@ -206,7 +206,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
               justifyContent="center"
               flexShrink={0}
             >
-              <Icon as={FiShoppingCart} boxSize="22px" />
+              <Icon as={MdOutlineShoppingCart} boxSize="22px" />
             </Box>
             <Box minW={0}>
               <Heading

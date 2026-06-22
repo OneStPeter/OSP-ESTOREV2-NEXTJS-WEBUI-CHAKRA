@@ -22,7 +22,8 @@ import { usePathname } from "next/navigation";
 import { RiCloseLine } from "react-icons/ri";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { NavItem, SidebarProps } from "./app-layout.type";
-import logoIcon from "@/public/login-logo.png";
+import logoIcon from "@/public/images/profile.jpg";
+
 import { Body, Small } from "st-peter-ui";
 
 interface NavItemRowProps {
@@ -340,7 +341,7 @@ export default function Sidebar({
         transition="width 0.2s, left 0.3s"
         onMouseEnter={() => !isMobile && setIsExpanded(true)}
         onMouseLeave={() => !isMobile && setIsExpanded(false)}
-        gap={4}
+        gap={2}
         p={2}
         borderRight="1px solid"
         borderColor="gray.200"
@@ -365,20 +366,41 @@ export default function Sidebar({
           borderBottom="1px solid"
           borderColor="gray.200"
         >
-          <Flex align="center" gap={2}>
-            <Box
-              w="24px"
-              h="24px"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Image
-                src={logoIcon.src}
-                width={24}
-                height={24}
-                style={{ objectFit: "contain" }}
-              />
+          <Flex align="center" gap={3}>
+            {/* Avatar with border and status */}
+            <Box position="relative">
+              <Box
+                w="40px"
+                h="40px"
+                borderRadius="full"
+                overflow="hidden"
+                border="2px solid"
+                borderColor="green.300"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                backgroundColor="white"
+              >
+                <Image
+                  src={logoIcon.src}
+                  // width={40}
+                  // height={40}
+                  // style={{ objectFit: "cover" }}
+                  alt="avatar"
+                />
+              </Box>
+              {/* status dot */}
+              {/* <Box
+                position="absolute"
+                bottom={0}
+                right={-1}
+                w="10px"
+                h="10px"
+                borderRadius="full"
+                backgroundColor="green.400"
+                border="2px solid"
+                borderColor="white"
+              /> */}
             </Box>
             {/* <Show when={!isMobile}> */}
             <Box
@@ -387,43 +409,54 @@ export default function Sidebar({
               // width={isSidebarOpen ? "80px" : "0px"}
             >
               <Body
-                fontWeight="bold"
+                fontWeight="semibold"
                 whiteSpace="nowrap"
                 opacity={isSidebarOpen ? 1 : 0}
                 transition="opacity 0.2s"
                 color="gray.800"
               >
-                {appName}
+                {/* {appName} */}
+                Joyce Basillio-Ramos
               </Body>
               {appSubtitle && (
+                // <Small
+                //   opacity={isSidebarOpen ? 1 : 0}
+                //   mt={"-5px"}
+                //   color={"primary"}
+                //   fontStyle={"italic"}
+                // >
+                //   {appSubtitle}
+                // </Small>
+
                 <Text
-                  color="black"
-                  fontSize="sm"
-                  lineHeight="1.1"
-                  textWrap="nowrap"
+                  opacity={isSidebarOpen ? 1 : 0}
+                  mt={"2px"}
+                  color="green"
+                  fontStyle={"normal"}
+                  fontSize="small"
                 >
-                  {appSubtitle}
+                  SPLPI-26-000001
                 </Text>
               )}
             </Box>
             {/* </Show> */}
           </Flex>
 
-          {isMobile && isOpen && (
-            <IconButton
-              aria-label="Close sidebar"
-              size="sm"
-              variant="ghost"
-              color={"gray.fg"}
-              onClick={onClose}
-            >
-              <RiCloseLine />
-            </IconButton>
-          )}
+          {/* Close icon on right */}
+          <IconButton
+            aria-label="Close sidebar"
+            size="sm"
+            variant="ghost"
+            color={"gray.fg"}
+            onClick={onClose}
+            display={isMobile && !isOpen ? "none" : "flex"}
+          >
+            <RiCloseLine />
+          </IconButton>
         </Flex>
 
         {/* Menu Label */}
-        <Body
+        {/* <Body
           color="gray.500"
           px={2}
           pt={2}
@@ -431,7 +464,7 @@ export default function Sidebar({
           textAlign={isSidebarOpen ? "left" : "center"}
         >
           {isSidebarOpen ? "Menu" : "…"}
-        </Body>
+        </Body> */}
 
         {/* Navigation */}
         <ScrollArea.Root maxW="lg" size={"xs"}>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Flex,
   IconButton,
@@ -192,7 +192,6 @@ export default function AppHeader({
   const isMobileBreak = useBreakpointValue({ base: true, lg: false });
   const [isMounted, setIsMounted] = useState(false);
   const [avatarName, setAvatarName] = useState("");
-  const [cartOpen, setCartOpen] = useState(false);
   const cartCount = useCartCount();
   const { isLoggedIn } = useDemoAuth();
   const router = useRouter();
@@ -203,6 +202,21 @@ export default function AppHeader({
   });
   const isHome = pathname === "/";
   const showBack = Boolean(pageMeta.back);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cartPosition, setCartPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
+  const [isDraggingCart, setIsDraggingCart] = useState(false);
+  const cartDragRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    originX: number;
+    originY: number;
+    moved: boolean;
+  } | null>(null);
+  const suppressCartClickRef = useRef(false);
 
   const handleBack = () => {
     if (typeof pageMeta.back === "string") {
@@ -210,6 +224,71 @@ export default function AppHeader({
     } else {
       router.back();
     }
+  };
+
+  const handleCartPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return;
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    cartDragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: rect.left,
+      originY: rect.top,
+      moved: false,
+    };
+    setIsDraggingCart(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handleCartPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const drag = cartDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+
+    const dx = event.clientX - drag.startX;
+    const dy = event.clientY - drag.startY;
+    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+      drag.moved = true;
+    }
+
+    const maxX = Math.max(
+      0,
+      window.innerWidth - event.currentTarget.offsetWidth,
+    );
+    const maxY = Math.max(
+      0,
+      window.innerHeight - event.currentTarget.offsetHeight,
+    );
+
+    setCartPosition({
+      x: Math.max(0, Math.min(drag.originX + dx, maxX)),
+      y: Math.max(0, Math.min(drag.originY + dy, maxY)),
+    });
+  };
+
+  const finishCartDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    const drag = cartDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+
+    if (drag.moved) {
+      suppressCartClickRef.current = true;
+      window.setTimeout(() => {
+        suppressCartClickRef.current = false;
+      }, 0);
+    }
+
+    setIsDraggingCart(false);
+    cartDragRef.current = null;
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  const handleCartClick = () => {
+    if (suppressCartClickRef.current) return;
+    setCartOpen((open) => !open);
   };
   const [notifOpen, setNotifOpen] = useState(false);
 
@@ -255,19 +334,31 @@ export default function AppHeader({
         // borderColor="gray.200"
         display={{ base: "flex", lg: "none" }}
       >
-        {/* Left side — brand logo + title */}
+        {/* Left side — menu + brand logo + title */}
         <Flex align="center" gap={3} flex="1" minW={0}>
+          {/* Menu toggle */}
+          <IconButton
+            color="gray.fg"
+            aria-label="Open menu"
+            size="sm"
+            variant="ghost"
+            onClick={onToggleSidebar}
+            flexShrink={0}
+          >
+            <LuMenu />
+          </IconButton>
           <Box
             overflow="hidden"
             flexShrink={0}
             w={showBack ? "32px" : "0px"}
             opacity={showBack ? 1 : 0}
+            mr={showBack ? 0 : "-3"}
             transform={
               showBack
                 ? "translateX(0) scale(1)"
                 : "translateX(-8px) scale(0.92)"
             }
-            transition="width 220ms ease, opacity 180ms ease, transform 220ms ease"
+            transition="width 220ms ease, opacity 180ms ease, transform 220ms ease, margin 220ms ease"
             pointerEvents={showBack ? "auto" : "none"}
             aria-hidden={!showBack}
           >
@@ -404,17 +495,41 @@ export default function AppHeader({
             </Portal>
           </Dialog.Root>
 
-          <Box position="relative">
+          <Box
+            position="fixed"
+            left={cartPosition ? `${cartPosition.x}px` : undefined}
+            top={cartPosition ? `${cartPosition.y}px` : undefined}
+            right={cartPosition ? undefined : "20px"}
+            bottom={cartPosition ? undefined : "92px"}
+            zIndex={30}
+            display="inline-flex"
+            cursor={isDraggingCart ? "grabbing" : "grab"}
+            touchAction="none"
+            userSelect="none"
+            onPointerDown={handleCartPointerDown}
+            onPointerMove={handleCartPointerMove}
+            onPointerUp={finishCartDrag}
+            onPointerCancel={finishCartDrag}
+          >
             <IconButton
               aria-label="Shopping Cart"
-              size="sm"
+              size="lg"
               variant="ghost"
-              color="gray.fg"
+              color="white"
+              minW="64px"
+              h="64px"
+              borderRadius="full"
+              bg="green"
+              boxShadow="0 5px 10px rgba(15, 23, 42, 0.18)"
+              borderWidth="1px"
+              borderColor="#177D54"
               aria-expanded={cartOpen}
               aria-haspopup="dialog"
-              onClick={() => setCartOpen((o) => !o)}
+              onClick={handleCartClick}
+              _hover={{ bg: "gray.50" }}
+              _active={{ bg: "gray.100" }}
             >
-              <MdOutlineShoppingCart />
+              <MdOutlineShoppingCart size="24" />
             </IconButton>
             {cartCount > 0 && (
               <Badge
@@ -423,13 +538,15 @@ export default function AppHeader({
                 borderRadius="full"
                 fontSize="xs"
                 position="absolute"
-                top="6px"
-                right="6px"
-                minW="4"
-                h="4"
+                top="-4px"
+                right="-4px"
+                zIndex={61}
+                minW="5"
+                h="5"
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
+                pointerEvents="none"
               >
                 {cartCount}
               </Badge>
@@ -918,20 +1035,8 @@ export default function AppHeader({
               <LuUser />
             </IconButton>
           )} */}
-
-          {/* Menu toggle */}
-          <IconButton
-            color="gray.fg"
-            aria-label="Open menu"
-            size="sm"
-            variant="ghost"
-            onClick={onToggleSidebar}
-          >
-            <LuMenu />
-          </IconButton>
         </Flex>
       </Flex>
-
       <ShoppingCart open={cartOpen} onClose={() => setCartOpen(false)} />
     </>
   );

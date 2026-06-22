@@ -571,9 +571,6 @@ export function AppBottomNavBar({
               </Dialog.CloseTrigger>
 
               <Dialog.Body p={0} overflowY="auto" flex="1">
-                {/* ══════════════════════════════════════════
-                    MAIN VIEW
-                ══════════════════════════════════════════ */}
                 {profileView === "main" && (
                   <>
                     {/* Profile header */}

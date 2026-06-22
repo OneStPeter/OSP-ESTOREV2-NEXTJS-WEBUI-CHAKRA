@@ -3,6 +3,8 @@ import { Box, Flex } from "@chakra-ui/react";
 import Sidebar from "./app-sidebar";
 import Navbar from "@/components/ui/navbar";
 import AppHeader from "./app-header";
+import FloatingCart from "@/components/ui/floating-cart";
+import ShoppingCart from "@/components/ui/shopping-cart";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { NavItem, NotificationDataProps } from "./app-layout.type";
 import { StickyNavbarContext } from "./app-navbar/sticky-navbar-context";
@@ -30,6 +32,7 @@ export function AppLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [isContentScrolled, setIsContentScrolled] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
 
   const toggleSidebar = () => setIsSidebarOpen((v) => !v);
   const closeSidebar = () => setIsSidebarOpen(false);
