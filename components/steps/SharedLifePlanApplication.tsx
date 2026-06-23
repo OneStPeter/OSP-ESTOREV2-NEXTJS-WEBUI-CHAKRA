@@ -106,7 +106,7 @@ const SharedLifePlanApplication = ({
   };
 
   return (
-    <Page.Root title={title} description={description}>
+    <Page.Root title="" description="" hideBackButton={true}>
       <Page.MainContent>
         <Page.Row>
           <Box w="full" overflowX="hidden">
