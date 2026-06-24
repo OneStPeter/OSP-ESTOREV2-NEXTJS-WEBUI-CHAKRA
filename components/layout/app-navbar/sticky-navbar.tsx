@@ -8,7 +8,6 @@ const EASE_OUT = "0.26s cubic-bezier(0.4, 0, 0.2, 1)";
 
 export const StickyNavbar = ({ children }: { children: ReactNode }) => {
   const [minimized, setMinimized] = useState(false);
-  // Track scroll position per element so delta is always relative to that element.
   const scrollMap = useRef(new Map<EventTarget, number>());
 
   useEffect(() => {
@@ -26,7 +25,6 @@ export const StickyNavbar = ({ children }: { children: ReactNode }) => {
       else if (delta < -4) setMinimized(false);
     };
 
-    // capture: true intercepts scroll from any nested scrollable element
     document.addEventListener("scroll", handler, {
       capture: true,
       passive: true,
@@ -38,39 +36,26 @@ export const StickyNavbar = ({ children }: { children: ReactNode }) => {
   return (
     <Box
       position="fixed"
+      bottom={"0"}
+      pt={"5px"}
       left={0}
       right={0}
-      bottom={0}
-      display="flex"
-      justifyContent="center"
       zIndex={100}
-      pointerEvents="none"
+      bg="white"
+      borderTop="1px solid"
+      borderColor="gray.200"
+      _dark={{ bg: "gray.900", borderColor: "gray.700" }}
+      style={{
+        paddingBottom: "env(safe-area-inset-bottom)",
+        paddingLeft: "env(safe-area-inset-left)",
+        paddingRight: "env(safe-area-inset-right)",
+        transform: minimized ? "translateY(100%)" : "translateY(0)",
+        transition: `transform ${minimized ? EASE_OUT : SPRING}`,
+      }}
     >
-      <Box position="relative" display="flex" justifyContent="center" w="100%">
-        <Box
-          w="100%"
-          pointerEvents={minimized ? "none" : "auto"}
-          style={{
-            opacity: minimized ? 0 : 1,
-            transform: minimized
-              ? "translateY(28px) scale(0.98)"
-              : "translateY(0) scale(1)",
-            transition: `opacity ${EASE_OUT}, transform ${SPRING}`,
-          }}
-        >
-          <Flex
-            bg="white"
-            borderTop="1px solid"
-            borderColor="gray.200"
-            px={2}
-            py={2}
-            justify="space-evenly "
-            align="center"
-          >
-            {children}
-          </Flex>
-        </Box>
-      </Box>
+      <Flex h="56px" px={2} gap={1} align="center" justify="center">
+        {children}
+      </Flex>
     </Box>
   );
 };
