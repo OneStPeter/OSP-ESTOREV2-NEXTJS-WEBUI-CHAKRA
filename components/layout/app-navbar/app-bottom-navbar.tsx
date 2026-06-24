@@ -7,14 +7,14 @@ import { useBreakpointValue } from "@chakra-ui/react";
 import {
   RiDashboardLine,
   RiDashboardFill,
+  RiCheckboxCircleLine,
+  RiCheckboxCircleFill,
   RiBookShelfLine,
   RiBookShelfFill,
+  RiMoneyDollarCircleLine,
+  RiMoneyDollarCircleFill,
   RiUser2Line,
   RiUser2Fill,
-  RiBankCardLine,
-  RiBankCardFill,
-  RiFileTextLine,
-  RiFileTextFill,
 } from "react-icons/ri";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -40,6 +40,8 @@ import {
   LuSun,
   LuMoon,
   LuHouse,
+  LuCreditCard,
+  LuFileText,
   LuChevronRight,
   LuChevronLeft,
   LuChevronUp,
@@ -108,7 +110,7 @@ const ALL_NAV_OPTIONS: NavOptionDef[] = [
   },
   {
     key: "/plans",
-    title: "Plans",
+    title: "Products",
     href: "/plans",
     Icon: IoLeafOutline,
     activeIcon: IoLeaf,
@@ -122,8 +124,8 @@ const ALL_NAV_OPTIONS: NavOptionDef[] = [
     key: "/pay-my-plan",
     title: "Pay",
     href: "/pay-my-plan",
-    Icon: RiBankCardLine,
-    activeIcon: RiBankCardFill,
+    Icon: LuCreditCard,
+    activeIcon: LuCreditCard,
     match: (p) =>
       p.startsWith("/pay-my-plan") ||
       p.startsWith("/account/pay-my-plan") ||
@@ -134,8 +136,8 @@ const ALL_NAV_OPTIONS: NavOptionDef[] = [
     key: "/claims",
     title: "Claim",
     href: "/claims",
-    Icon: RiFileTextLine,
-    activeIcon: RiFileTextFill,
+    Icon: LuFileText,
+    activeIcon: LuFileText,
     match: (p) => p.startsWith("/claims"),
     roles: ["branch", "bmstl", "sales-agent"],
   },
@@ -497,7 +499,7 @@ export function AppBottomNavBar({
                   flexShrink={0}
                 >
                   <img
-                    src="/images/profile.jpg"
+                    src="https://lh3.googleusercontent.com/a-/ALV-UjVMJSHCRae9AI71omM-12-JXe6RRORMkcfShnPQRn5izScdfxo=s240-p-k-rw-no"
                     alt="Profile"
                     style={{
                       width: "100%",
@@ -508,7 +510,7 @@ export function AppBottomNavBar({
                 </Box>
                 <Box
                   mt={1}
-                  fontSize="xs"
+                  fontSize="2xs"
                   fontWeight="500"
                   letterSpacing="0.06em"
                   lineHeight="1"
@@ -588,7 +590,7 @@ export function AppBottomNavBar({
                         colorPalette={pickPalette(displayName || "U")}
                       >
                         <Avatar.Image
-                          src="/images/profile.jpg"
+                          src="https://lh3.googleusercontent.com/a-/ALV-UjVMJSHCRae9AI71omM-12-JXe6RRORMkcfShnPQRn5izScdfxo=s240-p-k-rw-no"
                           alt={displayName}
                         />
                         <Avatar.Fallback name={displayName} />
@@ -995,7 +997,7 @@ export function AppBottomNavBar({
                     <Box textAlign="center" pt={2} pb={4}>
                       <Avatar.Root size="xl" mx="auto" mb={1}>
                         <Avatar.Image
-                          src="/images/profile.jpg"
+                          src="https://lh3.googleusercontent.com/a-/ALV-UjVMJSHCRae9AI71omM-12-JXe6RRORMkcfShnPQRn5izScdfxo=s240-p-k-rw-no"
                           alt={editName}
                         />
                         <Avatar.Fallback name={editName} />

@@ -29,9 +29,9 @@ export const StickyNavbarBtn = (params: {
     <Box
       as="button"
       onClick={onClickEvent}
-      px="14px"
-      py="10px"
-      borderRadius="2xl"
+      px="10px"
+      py="6px"
+      borderRadius="xl"
       position="relative"
       border={isActive ? "1px solid" : "1px solid transparent"}
       borderColor={isActive ? ACTIVE_BORDER : "transparent"}
@@ -57,7 +57,7 @@ export const StickyNavbarBtn = (params: {
         borderColor: isActive ? "rgba(255,255,255,0.14)" : "transparent",
       }}
     >
-      <Flex direction="column" align="center" gap="4px">
+      <Flex direction="column" align="center" gap="3px">
         <Icon
           as={DisplayIcon}
           style={{
@@ -67,16 +67,18 @@ export const StickyNavbarBtn = (params: {
           }}
         />
         <Box
-          fontSize="xs"
+          fontSize="2xs"
           fontWeight={isActive ? "700" : "500"}
           letterSpacing="0.06em"
-          lineHeight="1"
-          maxW="52px"
+          // lineHeight="1"
+          mb={"-5px"}
+          maxW="60px"
+          minW={"50px"}
           overflow="hidden"
           whiteSpace="nowrap"
           textOverflow="ellipsis"
           style={{
-            opacity: isActive ? 1 : 0.45,
+            // opacity: isActive ? 1 : 0.75,
             transform: isActive ? "translateY(0)" : "translateY(2px)",
             transition: `opacity 0.2s ease, transform ${LABEL_SPRING}`,
           }}
