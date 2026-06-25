@@ -222,7 +222,6 @@ const HorizontalStepper = ({
               <Box
                 h="full"
                 bg={PRIMARY}
-                borderRadius="full"
                 transition="width 0.4s ease"
                 w={`${((activeStep + 1) / steps.length) * 100}%`}
               />
