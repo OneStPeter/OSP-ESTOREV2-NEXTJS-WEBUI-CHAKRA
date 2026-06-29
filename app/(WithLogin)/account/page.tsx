@@ -44,8 +44,8 @@ const Account = () => {
             gap={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
           >
             <ProfileHeaderCard
-              name="Joyce Basilio-Ramos"
-              personId="1234567890"
+              name="Michelle De Dosa"
+              personId="P10529"
               // homeAddress="Quezon City, Metro Manila"
               // contactNo="0917 123 4567"
               // email="joyce.basilio-ramos@example.com"

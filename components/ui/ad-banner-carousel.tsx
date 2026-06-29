@@ -4,11 +4,7 @@ import { Box, Button, Flex, Icon, Text, VStack } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { IconType } from "react-icons";
-import {
-  LuCalendarDays,
-  LuCreditCard,
-  LuHeartHandshake,
-} from "react-icons/lu";
+import { LuCalendarDays, LuCreditCard, LuHeartHandshake } from "react-icons/lu";
 import { BRAND_COLORS } from "@/lib/theme/brand-colors";
 import {
   STANDARD_RADIUS,
@@ -55,7 +51,7 @@ const sampleBanners: AdBanner[] = [
     title: "Need help with your plan?",
     description:
       "Schedule a visit and get guided support from a St. Peter representative.",
-    actionLabel: "Book a visit",
+    actionLabel: "Memorial Service Booking",
     href: "/booking",
     icon: LuCalendarDays,
     bg: "#EEF6FF",
@@ -66,7 +62,8 @@ const sampleBanners: AdBanner[] = [
     id: "claims",
     eyebrow: "Claims support",
     title: "Start a claim request",
-    description: "Prepare the needed details and submit your claim request in one place.",
+    description:
+      "Prepare the needed details and submit your claim request in one place.",
     actionLabel: "File a claim",
     href: "/claims",
     icon: LuHeartHandshake,
@@ -219,7 +216,12 @@ export default function AdBannerCarousel() {
       </ProductCarousel>
 
       {scrollSnaps.length > 1 ? (
-        <Flex justify="center" align="center" gap="8px" mt={STANDARD_SPACING.xs}>
+        <Flex
+          justify="center"
+          align="center"
+          gap="8px"
+          mt={STANDARD_SPACING.xs}
+        >
           {scrollSnaps.map((_, index) => {
             const isSelected = selectedIndex === index;
 
@@ -233,11 +235,7 @@ export default function AdBannerCarousel() {
                 h="8px"
                 p={0}
                 borderRadius={STANDARD_RADIUS.full}
-                bg={
-                  isSelected
-                    ? BRAND_COLORS.primaryGreen
-                    : "#C9D1CC"
-                }
+                bg={isSelected ? BRAND_COLORS.primaryGreen : "#C9D1CC"}
                 transition="width 180ms ease-out, background 180ms ease-out"
                 onClick={() => api?.scrollTo(index)}
               />

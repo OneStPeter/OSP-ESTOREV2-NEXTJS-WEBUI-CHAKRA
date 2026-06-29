@@ -99,7 +99,10 @@ const PAGE_META: { prefix: string; meta: PageMeta }[] = [
   },
   {
     prefix: "/booking",
-    meta: { title: "Book a Visit", subtitle: "Schedule branch assistance" },
+    meta: {
+      title: "Memorial Service Booking",
+      subtitle: "Book with Care and Clarity",
+    },
   },
   {
     prefix: "/claims",
@@ -336,8 +339,8 @@ export default function AppHeader({
       <Flex
         className="no-print"
         h="80px"
-        px={4}
-        py={4}
+        // px={4}
+        // py={4}
         align="center"
         justify="space-between"
         bg="bg"
@@ -377,7 +380,7 @@ export default function AppHeader({
               aria-hidden={!showBack}
             >
               <IconButton
-                color="gray.fg"
+                color="green"
                 aria-label="Go back"
                 size="sm"
                 variant="ghost"

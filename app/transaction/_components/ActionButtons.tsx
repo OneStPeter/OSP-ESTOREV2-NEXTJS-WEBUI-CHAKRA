@@ -1,17 +1,12 @@
 "use client";
 
-import {
-  Button,
-  Flex,
-  Menu,
-  Portal,
-  HStack,
-  Text,
-  Box,
-} from "@chakra-ui/react";
+import BottomQuickActions, {
+  QuickAction,
+} from "@/components/ui/bottom-quick-actions";
+import { Button, Flex, IconButton, Text, Box } from "@chakra-ui/react";
 import Link from "next/link";
-import { BiCaretDown } from "react-icons/bi";
-import React from "react";
+import React, { useState } from "react";
+import { BsFillGrid3X2GapFill } from "react-icons/bs";
 
 export type ActionButtonItem =
   | {
@@ -20,6 +15,9 @@ export type ActionButtonItem =
       href?: string;
       onClick?: () => void;
       icon: React.ElementType;
+      description?: string;
+      iconBg?: string;
+      iconColor?: string;
       colorScheme?: string;
       variant?: "outline" | "solid" | "ghost";
     }
@@ -30,16 +28,39 @@ export type ActionButtonItem =
 type ActionButtonsProps = {
   buttons: ActionButtonItem[];
   iconBoxSize?: number;
+  /** Sheet heading — defaults to "Quick actions" */
+  title?: string;
+  /** Muted subtext below the sheet title */
+  subtitle?: string;
 };
 
 export default function ActionButtons({
   buttons,
   iconBoxSize = 16,
+  title = "Quick actions",
+  subtitle,
 }: ActionButtonsProps) {
+  const [open, setOpen] = useState(false);
+
+  const actions: QuickAction[] = buttons
+    .filter(
+      (btn): btn is Extract<ActionButtonItem, { type?: "action" }> =>
+        btn.type !== "separator",
+    )
+    .map((btn) => ({
+      icon: btn.icon as QuickAction["icon"],
+      label: btn.label,
+      description: btn.description,
+      href: btn.href,
+      onClick: btn.onClick,
+      iconBg: btn.iconBg,
+      iconColor: btn.iconColor,
+    }));
+
   return (
     <Flex gap={2} wrap="wrap">
       {/* ================= DESKTOP BUTTONS ================= */}
-      <Flex gap={2} wrap="wrap" display={{ base: "none", md: "flex" }}>
+      <Flex gap={2} wrap="wrap" display={{ base: "none", lg: "flex" }}>
         {buttons.map((btn, index) => {
           if (btn.type === "separator") {
             return (
@@ -66,7 +87,8 @@ export default function ActionButtons({
               _hover={{
                 transform: "translateY(-1px)",
                 shadow: "sm",
-              }}>
+              }}
+            >
               <btn.icon size={iconBoxSize} />
               <Text fontSize="sm">{btn.label}</Text>
             </Button>
@@ -82,53 +104,27 @@ export default function ActionButtons({
         })}
       </Flex>
 
-      {/* ================= MOBILE DROPDOWN ================= */}
-      <Flex display={{ base: "flex", md: "none" }}>
-        <Menu.Root>
-          <Menu.Trigger asChild>
-            <Button size="sm" variant="solid" borderRadius={"15px"} px={"15px"}>
-              Actions <BiCaretDown />
-            </Button>
-          </Menu.Trigger>
+      {/* ================= MOBILE DRAWER ================= */}
+      <Flex display={{ base: "flex", lg: "none" }}>
+        <IconButton
+          onClick={() => setOpen(true)}
+          borderRadius="10px"
+          boxShadow="sm"
+          bg="white"
+          borderWidth="1px"
+          borderColor="gray.200"
+          color="gray.600"
+        >
+          <BsFillGrid3X2GapFill />
+        </IconButton>
 
-          <Portal>
-            <Menu.Positioner>
-              <Menu.Content borderRadius="md" shadow="lg" p={1}>
-                {buttons.map((btn, index) => {
-                  if (btn.type === "separator") {
-                    return <Menu.Separator key={`sep-${index}`} />;
-                  }
-
-                  const itemContent = (
-                    <HStack
-                      gap={2}
-                      px={3}
-                      py={2}
-                      borderRadius="md"
-                      _hover={{ bg: "gray.100" }}
-                      cursor="pointer">
-                      <btn.icon size={16} />
-                      <Text fontSize="sm">{btn.label}</Text>
-                    </HStack>
-                  );
-
-                  return btn.href && !btn.onClick ? (
-                    <Menu.Item key={btn.label} value={btn.label} asChild>
-                      <Link href={btn.href}>{itemContent}</Link>
-                    </Menu.Item>
-                  ) : (
-                    <Menu.Item
-                      key={btn.label}
-                      value={btn.label}
-                      onClick={btn.onClick}>
-                      {itemContent}
-                    </Menu.Item>
-                  );
-                })}
-              </Menu.Content>
-            </Menu.Positioner>
-          </Portal>
-        </Menu.Root>
+        <BottomQuickActions
+          open={open}
+          onOpenChange={setOpen}
+          title={title}
+          subtitle={subtitle}
+          actions={actions}
+        />
       </Flex>
     </Flex>
   );

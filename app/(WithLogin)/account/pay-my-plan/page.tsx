@@ -43,38 +43,9 @@ import {
   LuUser,
 } from "react-icons/lu";
 import Page from "@/components/layout/page/Page";
+import { ActivePlan, activePlans } from "@/types/activeplan";
 
 const PAY_MY_PLAN_STORAGE_KEY = "payMyPlanSelectedItems";
-
-const activePlans = [
-  {
-    contractNo: "LOS001111C",
-    plan: "ST. ANNE",
-    mode: "Monthly",
-    amountDue: "3,000.00",
-    effectiveDate: "02/09/2026",
-    dueDate: "04/09/2026",
-    balance: "174,000.00",
-  },
-  {
-    contractNo: "LOS001112C",
-    plan: "ST. GREGORY",
-    mode: "Annual",
-    amountDue: "11,400.00",
-    effectiveDate: "02/20/2026",
-    dueDate: "02/20/2027",
-    balance: "45,600.00",
-  },
-  {
-    contractNo: "LOS001113C",
-    plan: "ST. CLAIRE",
-    mode: "Annual",
-    amountDue: "19,700.00",
-    effectiveDate: "03/09/2026",
-    dueDate: "03/09/2027",
-    balance: "78,800.00",
-  },
-];
 
 const desktopTableHeaders = [
   { label: "CONTRACT NO.", minW: "130px" },
@@ -88,8 +59,6 @@ const desktopTableHeaders = [
   { label: "STATUS", minW: "86px" },
   { label: "ACTIONS", minW: "100px", textAlign: "right" },
 ];
-
-type ActivePlan = (typeof activePlans)[number];
 
 type SelectedPlan = ActivePlan & {
   installmentNumber: number;

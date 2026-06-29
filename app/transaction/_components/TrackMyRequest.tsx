@@ -9,7 +9,12 @@ import {
   MdEditCalendar,
   MdRefresh,
 } from "react-icons/md";
-import { fallbackJourney, journeys } from "./journeys";
+import {
+  fallbackJourney,
+  journeys,
+  journeyMeta,
+  type JourneyMeta,
+} from "./journeys";
 import JourneyTimeline, { JourneyStep } from "./JourneyTimeline";
 import { PrimarySmButton, SecondarySmButton } from "st-peter-ui";
 import { useEffect, useState } from "react";
@@ -17,7 +22,7 @@ import Link from "next/link";
 import ActionButtons, { ActionButtonItem } from "./ActionButtons";
 import PageHeader from "./PageHeader";
 import { useColorModeValue } from "@/components/ui/color-mode";
-// import { Card } from "@/components/card-accordion/card";
+//import { Card } from "@/components/card-accordion/card";
 import {
   FileText,
   Calendar,
@@ -30,7 +35,9 @@ import {
   FileCheck,
   Check,
   Route,
+  Search,
 } from "lucide-react";
+import Page from "@/components/layout/page/Page";
 import { Card } from "./card-accordion/card";
 
 interface TrackRequestPageProps {
@@ -43,29 +50,32 @@ const SUMMARY_PHASES = [
   { label: "Received", Icon: ClipboardCheck },
   { label: "Processing", Icon: Settings },
   { label: "Finalizing", Icon: FileCheck },
-  { label: "Completed", Icon: CheckCircle2 },
+  // { label: "Completed", Icon: CheckCircle2 },
 ];
 
 export default function TrackRequestPage({
   requestId,
   actionButtons,
 }: TrackRequestPageProps) {
-  const [journey, setJourney] = useState<JourneyStep[]>(
-    requestId ? [] : fallbackJourney,
-  );
+  const [journey, setJourney] = useState<JourneyStep[]>([]);
   const [searched, setSearched] = useState(!!requestId);
   const [currentRef, setCurrentRef] = useState(requestId ?? "");
+  const [meta, setMeta] = useState<JourneyMeta | null>(null);
 
   const handleSearch = (referenceNo: string) => {
+    const upper = referenceNo.toUpperCase();
     const prefix = referenceNo.split("-")[0].toUpperCase();
-    const foundJourney = journeys[prefix] || fallbackJourney;
+    const foundJourney = journeys[upper] || journeys[prefix] || fallbackJourney;
+    const foundMeta = journeyMeta[upper] || journeyMeta[prefix] || null;
     setJourney(foundJourney);
+    setMeta(foundMeta);
     setSearched(true);
     setCurrentRef(referenceNo);
   };
 
   const handleReset = () => {
-    setJourney(requestId ? [] : fallbackJourney);
+    setJourney([]);
+    setMeta(null);
     setSearched(false);
     setCurrentRef("");
   };
@@ -280,103 +290,132 @@ export default function TrackRequestPage({
   );
 
   return (
-    <Box minH="100vh">
-      {/* PAGE HEADER + ACTIONS */}
-      <Flex justify="space-between" align="flex-start" flexWrap="wrap" gap={2}>
-        <Box flex="1" minW="200px">
-          <PageHeader
-            title="Track Request"
-            description="Monitor your request journey"
-          />
-        </Box>
+    <Page.Root
+      title="Transaction Tracker"
+      description="Monitor and follow up on your service requests"
+    >
+      <Page.ToolContent>
         <ActionButtons buttons={actionButtonsDef} />
-      </Flex>
+      </Page.ToolContent>
 
-      {/* SEARCH / REFERENCE CARD */}
-      <RequestCard
-        description="Request details"
-        dateTime="2025-03-31 09:00 AM"
-        onSearch={handleSearch}
-        onReset={handleReset}
-        searched={searched}
-        initialReferenceNo={requestId}
-        cardBg={cardBg}
-        journey={journey}
-        progressPercent={clampedProgress}
-        completedCount={completedCount}
-        isComplete={isComplete}
-      />
+      <Page.MainContent>
+        <Page.Row>
+          <Box minH="100vh">
+            {/* SEARCH / REFERENCE CARD */}
+            <RequestCard
+              description="Request details"
+              dateTime="2025-03-31 09:00 AM"
+              onSearch={handleSearch}
+              onReset={handleReset}
+              searched={searched}
+              initialReferenceNo={requestId}
+              cardBg={cardBg}
+              journey={journey}
+              progressPercent={clampedProgress}
+              completedCount={completedCount}
+              isComplete={isComplete}
+              meta={meta}
+            />
 
-      {/* MOBILE: CURRENT STATUS (shown right after RequestCard on mobile) */}
-      {journey.length > 0 && (
-        <Box display={{ base: "block", lg: "none" }} mb={3}>
-          {currentStatusCard}
-        </Box>
-      )}
-
-      {/* JOURNEY CONTENT */}
-      {journey.length > 0 && (
-        <Flex
-          mt={3}
-          direction={{ base: "column", lg: "row" }}
-          align={{ lg: "flex-start" }}
-          gap={3}
-        >
-          {/* ===== TIMELINE (mobile: first, desktop: left) ===== */}
-          <Box w={{ base: "100%", lg: "55%" }} order={{ base: 0, lg: 0 }}>
-            <Card
-              activeIcon={<Route size={18} />}
-              title="Request Journey"
-              subtitle={`${completedCount} of ${journey.length} steps completed`}
-            >
-              <JourneyTimeline journey={journey} />
-            </Card>
-          </Box>
-
-          {/* ===== SIDE PANEL (mobile: second, desktop: right) ===== */}
-          <VStack
-            w={{ base: "100%", lg: "45%" }}
-            gap={3}
-            order={{ base: 1, lg: 1 }}
-          >
-            {/* CURRENT STATUS CARD — desktop only (mobile shown above) */}
-            <Box display={{ base: "none", lg: "block" }} w="100%">
-              {currentStatusCard}
-            </Box>
-
-            {/* HELP CARD */}
-            <Box
-              w="100%"
-              p={4}
-              borderRadius="2xl"
-              bg={cardBg}
-              shadow="sm"
-              transition="all 0.25s ease"
-              _hover={{ transform: "translateY(-3px)", shadow: "lg" }}
-            >
-              <Flex align="center" gap={2} mb={2}>
-                <Box p={2} borderRadius="full" bg="gray.100">
-                  <HelpCircle size={18} />
-                </Box>
-                <Text fontWeight="bold" fontSize="md" lineHeight="1.2">
-                  Need Help?
+            {/* EMPTY STATE — shown before any search */}
+            {!searched && (
+              <Box
+                w="100%"
+                py={12}
+                px={6}
+                borderRadius="2xl"
+                bg={cardBg}
+                shadow="sm"
+                textAlign="center"
+              >
+                <Flex justify="center" mb={4}>
+                  <Box p={4} borderRadius="full" bg="gray.100">
+                    <Search size={32} color="#a0aec0" />
+                  </Box>
+                </Flex>
+                <Text fontWeight="bold" fontSize="lg" mb={1}>
+                  No Record Found
                 </Text>
-              </Flex>
+                <Text fontSize="sm" color="gray.500" maxW="sm" mx="auto">
+                  Enter your reference number above to view the current status
+                  and journey of your transaction.
+                </Text>
+              </Box>
+            )}
 
-              <Text fontSize="xs" color="gray.500" pl={10}>
-                For assistance, contact{" "}
-                <Link
-                  href="mailto:support@example.com"
-                  style={{ color: "#2e7d32", fontWeight: 600 }}
+            {/* MOBILE: CURRENT STATUS (shown right after RequestCard on mobile) */}
+            {searched && journey.length > 0 && (
+              <Box display={{ base: "block", lg: "none" }} mb={3}>
+                {currentStatusCard}
+              </Box>
+            )}
+
+            {/* JOURNEY CONTENT */}
+            {searched && journey.length > 0 && (
+              <Flex
+                mt={3}
+                direction={{ base: "column", lg: "row" }}
+                align={{ lg: "flex-start" }}
+                gap={3}
+              >
+                {/* ===== TIMELINE (mobile: first, desktop: left) ===== */}
+                <Box w={{ base: "100%", lg: "55%" }} order={{ base: 0, lg: 0 }}>
+                  <Card
+                    activeIcon={<Route size={18} />}
+                    title="Transaction Journey"
+                    subtitle={`${completedCount} of ${journey.length} steps completed`}
+                  >
+                    <JourneyTimeline journey={journey} />
+                  </Card>
+                </Box>
+
+                {/* ===== SIDE PANEL (mobile: second, desktop: right) ===== */}
+                <VStack
+                  w={{ base: "100%", lg: "45%" }}
+                  gap={3}
+                  order={{ base: 1, lg: 1 }}
                 >
-                  support@example.com
-                </Link>
-              </Text>
-            </Box>
-          </VStack>
-        </Flex>
-      )}
-    </Box>
+                  {/* CURRENT STATUS CARD — desktop only (mobile shown above) */}
+                  <Box display={{ base: "none", lg: "block" }} w="100%">
+                    {currentStatusCard}
+                  </Box>
+
+                  {/* HELP CARD */}
+                  <Box
+                    w="100%"
+                    p={4}
+                    borderRadius="2xl"
+                    bg={cardBg}
+                    shadow="sm"
+                    transition="all 0.25s ease"
+                    _hover={{ transform: "translateY(-3px)", shadow: "lg" }}
+                  >
+                    <Flex align="center" gap={2} mb={2}>
+                      <Box p={2} borderRadius="full" bg="gray.100">
+                        <HelpCircle size={18} />
+                      </Box>
+                      <Text fontWeight="bold" fontSize="md" lineHeight="1.2">
+                        Need Help?
+                      </Text>
+                    </Flex>
+
+                    <Text fontSize="xs" color="gray.500" pl={10}>
+                      For assistance, contact{" "}
+                      <Link
+                        href="mailto:support@example.com"
+                        style={{ color: "#2e7d32", fontWeight: 600 }}
+                      >
+                        support@example.com
+                      </Link>
+                    </Text>
+                  </Box>
+                </VStack>
+              </Flex>
+            )}
+          </Box>
+        </Page.Row>
+      </Page.MainContent>
+    </Page.Root>
   );
 }
 
@@ -396,6 +435,7 @@ interface RequestCardProps {
   progressPercent: number;
   completedCount: number;
   isComplete: boolean;
+  meta: JourneyMeta | null;
 }
 
 const RequestCard = ({
@@ -410,6 +450,7 @@ const RequestCard = ({
   progressPercent,
   completedCount,
   isComplete,
+  meta,
 }: RequestCardProps) => {
   const [referenceNo, setReferenceNo] = useState(initialReferenceNo ?? "");
   const [isLoading, setIsLoading] = useState(false);
@@ -464,7 +505,7 @@ const RequestCard = ({
               fontSize="0.7rem"
               bg={isComplete ? "green.50" : "blue.50"}
               color={isComplete ? "green.700" : "blue.700"}
-              display={{ base: "none", md: "flex" }}
+              display={{ base: "none", sm: "flex" }}
               alignItems="center"
               gap={1}
             >
@@ -488,22 +529,33 @@ const RequestCard = ({
             textOverflow="ellipsis"
             whiteSpace="nowrap"
             maxW="100%"
-            pr={isSearched ? { base: 0, md: "80px" } : 0}
+            pr={isSearched ? { base: 0, sm: "80px" } : 0}
             mb="2px"
           >
-            {isSearched ? referenceNo : "Track Your Request"}
+            {isSearched ? referenceNo : "Track Your Transaction"}
           </Text>
 
           {/* Subtitle */}
           <Text fontSize="xs" color="gray.500" lineHeight="1.3">
-            {isSearched ? description : "Enter your reference number below"}
+            {isSearched ? (
+              meta ? (
+                <Flex as="span" wrap="wrap" gap="1" align="center">
+                  <Box as="span">{meta.name} ·</Box>
+                  <Box as="span">{meta.transactionType}</Box>
+                </Flex>
+              ) : (
+                description
+              )
+            ) : (
+              "Enter your reference number to get started"
+            )}
           </Text>
         </Box>
 
-        {/* Mobile/tablet: badge + refresh icon button — beside the title */}
+        {/* Mobile: badge + refresh icon button — beside the title */}
         {isSearched && (
           <Flex
-            display={{ base: "flex", md: "none" }}
+            display={{ base: "flex", sm: "none" }}
             direction="row"
             align="center"
             gap={2}
@@ -526,10 +578,10 @@ const RequestCard = ({
                 h="1.5"
                 borderRadius="full"
                 bg={isComplete ? "green.400" : "blue.400"}
-                display="inline-block"
               />
               {isComplete ? "Completed" : "In Progress"}
             </Badge>
+
             <Box
               as="button"
               onClick={() => handleSearch()}
@@ -630,7 +682,7 @@ const RequestCard = ({
 
           <Flex gap={2} w={{ base: "full", sm: "auto" }}>
             {initialReferenceNo ? (
-              <Box display={{ base: "none", md: "block" }}>
+              <Box display={{ base: "none", sm: "block" }}>
                 <PrimarySmButton
                   style={{ borderRadius: "15px" }}
                   onClick={() => handleSearch()}
@@ -641,7 +693,7 @@ const RequestCard = ({
               </Box>
             ) : (
               <>
-                <Box display={{ base: "none", md: "block" }}>
+                <Box display={{ base: "none", sm: "block" }}>
                   <PrimarySmButton
                     style={{ borderRadius: "15px" }}
                     onClick={() => handleSearch()}

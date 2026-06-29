@@ -6,11 +6,11 @@ import Container from "@/components/ui/container";
 
 const Booking = () => {
   return (
-    <Container
+    <Box
     //
     >
       <BookingForm successLink="/success" />
-    </Container>
+    </Box>
   );
 };
 

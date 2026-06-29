@@ -14,13 +14,14 @@ import BookingLocation from "./BookingLocation";
 import FormSteps from "./FormSteps";
 import OTPVerification from "./OTPVerification";
 import DeceasedContactFormStep from "./DeceasedContactFormStep";
+import Page from "@/components/layout/page/Page";
 
 interface BookingFormProps {
   successLink?: string;
 }
 
 const BookingForm: React.FC<BookingFormProps> = ({ successLink }) => {
-  //const requestId = "RR-123456";
+  const requestId = "RR-123456";
 
   useEffect(() => {
     setCurrentStep(0);
@@ -58,7 +59,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ successLink }) => {
           onSelectChapel={(chapel) => {
             setSelectedChapel(chapel);
             setTimeout(scrollToTop, 0);
-            setCurrentStep(1);
+            // go to 2nd step (index 1)
+            // setCurrentStep(1);
           }}
           onLocationChange={setRetrievalLocation}
         />
@@ -104,20 +106,28 @@ const BookingForm: React.FC<BookingFormProps> = ({ successLink }) => {
     {
       title: "OTP",
       icon: FaLock,
-      content: <OTPVerification successLink={successLink} />,
+      content: <OTPVerification successLink={successLink + requestId} />,
     },
   ];
 
   const [currentStep, setCurrentStep] = useState(0);
 
   return (
-    <FormSteps
-      title="Memorial Service Booking"
-      description="A guided journey to book a memorial service with care and clarity."
-      stepsData={stepsData}
-      currentStep={currentStep}
-      setCurrentStep={setCurrentStep}
-    />
+    <Page.Root title="" description="" hideBackButton>
+      <Page.MainContent>
+        <Page.Row>
+          <FormSteps
+            stepsData={stepsData}
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+            title="Memorial Service Booking"
+            description="Book with Care and Clarity"
+            submitButtonText="Confirm Booking"
+            onStepsComplete={() => {}}
+          />
+        </Page.Row>
+      </Page.MainContent>
+    </Page.Root>
   );
 };
 

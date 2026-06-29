@@ -16,7 +16,7 @@ import { FloatingLabelInput } from "./FloatingLabelInput";
 import { HiUpload } from "react-icons/hi";
 import { toaster } from "@/components/ui/toaster";
 import InfoCard from "@/components/ui/info-card";
-// import { InfoCard } from "@/components/info-card/info-card";
+//import { InfoCard } from "@/components/info-card/info-card";
 
 export default function DeceasedContactFormStep() {
   const [formData, setFormData] = useState({

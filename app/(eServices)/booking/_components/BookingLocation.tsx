@@ -190,6 +190,7 @@ const BookingLocation = ({
                 <IconButton
                   aria-label="Use default location"
                   size="sm"
+                  borderRadius={5}
                   variant="outline"
                   onClick={handleResetToDefault}
                 >
@@ -199,32 +200,30 @@ const BookingLocation = ({
             )}
 
             {address && (
-              <HStack gap={0}>
-                {/* Confirm */}
+              <Flex gap={0}>
                 <Tooltip content="Use this location" openDelay={300}>
                   <IconButton
                     aria-label="Use this location"
                     size="sm"
                     variant="outline"
                     color="#109448"
+                    borderRadius={5}
                     onClick={handleUpdate}
                   >
                     <MdCheck />
                   </IconButton>
                 </Tooltip>
-                {/* Reset to default */}
                 <Tooltip content="Use default location" openDelay={300}>
                   <IconButton
                     aria-label="Use default location"
                     size="sm"
                     variant="outline"
+                    borderRadius={5}
                     onClick={handleResetToDefault}
                   >
                     <MdMyLocation />
                   </IconButton>
                 </Tooltip>
-
-                {/* Clear */}
                 <Tooltip content="Clear address" openDelay={300}>
                   <IconButton
                     aria-label="Clear address"
@@ -240,7 +239,7 @@ const BookingLocation = ({
                     <LuX />
                   </IconButton>
                 </Tooltip>
-              </HStack>
+              </Flex>
             )}
           </Group>
 

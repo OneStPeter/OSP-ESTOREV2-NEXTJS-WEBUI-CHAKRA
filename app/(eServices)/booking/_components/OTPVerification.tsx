@@ -1,20 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Flex,
   Button,
   Text,
-  Dialog,
-  Portal,
-  Alert,
-  Stack,
   PinInput,
   Group,
   Span,
   Spinner,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import MessageDialog from "@/components/ui/message-box";
+//import MessageDialog from "@/components/message-box/message-box";
 
 interface OTPVerificationProps {
   successLink?: string;
@@ -30,21 +28,18 @@ export default function OTPVerification({
   const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if ("Notification" in window && Notification.permission === "default") {
-      Notification.requestPermission();
-    }
-  }, []);
-
-  const sendSuccessNotification = () => {
+  const sendSuccessNotification = async () => {
     if (!("Notification" in window)) return;
     if (Notification.permission !== "granted") return;
+    if (!("serviceWorker" in navigator)) return;
 
-    new Notification("Request Submitted", {
+    const registration = await navigator.serviceWorker.ready;
+    registration.showNotification("Request Submitted", {
       body: "Your booking request has been successfully verified and submitted. We'll be in touch shortly.",
       icon: "/icons/icon-192.png",
       badge: "/icons/icon-192.png",
       tag: "otp-success",
+      data: { url: successLink },
     });
   };
 
@@ -68,10 +63,8 @@ export default function OTPVerification({
     }, 400);
   };
 
-  const handleDialogChange = (details: { open: boolean }) => {
-    setDialogOpen(details.open);
-
-    if (!details.open && isSuccess) {
+  const handleConfirm = () => {
+    if (isSuccess) {
       setIsLoading(true);
       router.push(successLink);
     }
@@ -79,7 +72,6 @@ export default function OTPVerification({
 
   return (
     <>
-      {/* 🔒 FULL PAGE BLOCKER */}
       {isLoading && (
         <Flex
           position="fixed"
@@ -169,15 +161,6 @@ export default function OTPVerification({
         </Text>
 
         <Flex gap={4}>
-          {/* <Button
-            bg="#109448"
-            color="white"
-            _hover={{ bg: "#0d7a3b" }}
-            onClick={handleVerify}
-            disabled={isLoading}>
-            Verify
-          </Button> */}
-
           <Button
             variant="ghost"
             color="#109448"
@@ -189,50 +172,20 @@ export default function OTPVerification({
         </Flex>
       </Flex>
 
-      {/* Dialog */}
-      <Dialog.Root
+      <MessageDialog
         open={dialogOpen}
-        onOpenChange={handleDialogChange}
-        placement="center"
-        role="alertdialog"
-        size="sm"
-      >
-        <Portal>
-          <Dialog.Backdrop />
-          <Dialog.Positioner>
-            <Dialog.Content borderRadius="lg">
-              <Dialog.Header textAlign="center">
-                <Dialog.Title>
-                  {isSuccess
-                    ? "Verification Successful"
-                    : "Verification Failed"}
-                </Dialog.Title>
-              </Dialog.Header>
-
-              <Dialog.Body>
-                <Stack gap="4">
-                  <Alert.Root status={isSuccess ? "success" : "error"}>
-                    <Alert.Indicator />
-                    <Alert.Title>
-                      {isSuccess
-                        ? "OTP verified successfully. You may now continue."
-                        : "The OTP you entered is incorrect. Please try again."}
-                    </Alert.Title>
-                  </Alert.Root>
-                </Stack>
-              </Dialog.Body>
-
-              <Dialog.Footer>
-                <Dialog.ActionTrigger asChild>
-                  <Button bg="#109448" color="white" _hover={{ bg: "#0d7a3b" }}>
-                    {isSuccess ? "Continue" : "Try Again"}
-                  </Button>
-                </Dialog.ActionTrigger>
-              </Dialog.Footer>
-            </Dialog.Content>
-          </Dialog.Positioner>
-        </Portal>
-      </Dialog.Root>
+        onOpenChange={setDialogOpen}
+        variant={isSuccess ? "success" : "error"}
+        title={isSuccess ? "Verification Successful" : "Verification Failed"}
+        message={
+          isSuccess
+            ? "OTP verified successfully. You may now continue."
+            : "The OTP you entered is incorrect. Please try again."
+        }
+        confirmText={isSuccess ? "Continue" : "Try Again"}
+        showCancel={false}
+        onConfirm={handleConfirm}
+      />
     </>
   );
 }
