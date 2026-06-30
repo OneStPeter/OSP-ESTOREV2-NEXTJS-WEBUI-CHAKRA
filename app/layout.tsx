@@ -5,6 +5,7 @@ import "./globals.css";
 import Footer from "@/components/ui/footer";
 import ServiceWorkerRegister from "@/components/service-worker";
 import { DemoAuthProvider } from "@/components/ui/demo-auth";
+import { MessageDialogProvider } from "@/components/ui/message-box-provider";
 import { AppLayoutWrapper } from "@/components/layout/app-layout-wrapper";
 import NotifyInstall from "@/components/ui/notify-install";
 export const metadata: Metadata = {
@@ -37,16 +38,18 @@ export default function RootLayout({
         <ServiceWorkerRegister />
         <StPeterProvider theme="green" font="Open Sans">
           <DemoAuthProvider>
-            <NotifyInstall>
-              {/* overflowX on an inner div so Portal-rendered fixed elements
-                  (Dialog backdrop/positioner) are not trapped inside it */}
-              <div style={{ overflowX: "hidden" }}>
-                <AppLayoutWrapper>
-                  {children}
-                  <Footer />
-                </AppLayoutWrapper>
-              </div>
-            </NotifyInstall>
+            <MessageDialogProvider>
+              <NotifyInstall>
+                {/* overflowX on an inner div so Portal-rendered fixed elements
+                    (Dialog backdrop/positioner) are not trapped inside it */}
+                <div style={{ overflowX: "hidden" }}>
+                  <AppLayoutWrapper>
+                    {children}
+                    <Footer />
+                  </AppLayoutWrapper>
+                </div>
+              </NotifyInstall>
+            </MessageDialogProvider>
           </DemoAuthProvider>
         </StPeterProvider>
       </body>

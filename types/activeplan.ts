@@ -36,14 +36,14 @@ export const activePlans: ActivePlan[] = [
     dueDate: "02/20/2027",
     balance: "45,600.00",
   },
-  {
-    contractNo: "LOS001113C",
-    plan: "ST. CLAIRE",
-    mode: "Annual",
-    amountDue: "19,700.00",
-    effectiveDate: "03/09/2026",
-    dueDate: "03/09/2027",
-    balance: "78,800.00",
-  },
+  // {
+  //   contractNo: "LOS001113C",
+  //   plan: "ST. CLAIRE",
+  //   mode: "Annual",
+  //   amountDue: "19,700.00",
+  //   effectiveDate: "03/09/2026",
+  //   dueDate: "03/09/2027",
+  //   balance: "78,800.00",
+  // },
 
 ];

@@ -18,11 +18,13 @@ import {
 import { useState, useEffect } from "react";
 import { Tooltip } from "@/components/ui/tooltip";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { RiCloseLine } from "react-icons/ri";
+import { usePathname, useRouter } from "next/navigation";
+import { RiCloseLine, RiLogoutBoxRLine } from "react-icons/ri";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { NavItem, SidebarProps } from "./app-layout.type";
 import logoIcon from "@/public/images/profile.jpg";
+import { useDemoAuth } from "@/components/ui/demo-auth";
+import { useMessageDialog } from "@/components/ui/message-box-provider";
 
 import { Body, Small } from "st-peter-ui";
 
@@ -301,6 +303,28 @@ export default function Sidebar({
   const [isExpanded, setIsExpanded] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [navItemExpanded, setNavItemExpanded] = useState<string>("");
+  const router = useRouter();
+  const { logout } = useDemoAuth();
+  const { messageBox } = useMessageDialog();
+
+  const handleSignOut = async () => {
+    const confirmed = await messageBox({
+      title: "Sign Out",
+      message: "Are you sure you want to sign out?",
+      variant: "warning",
+      confirmText: "Sign Out",
+      cancelText: "Cancel",
+      showCancel: true,
+    });
+    if (!confirmed) return;
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // ignore network errors on demo logout
+    }
+    logout();
+    router.push("/login");
+  };
 
   // Detect mobile safely
   const isMobileRaw = useBreakpointValue({ base: true, lg: false });
@@ -467,7 +491,7 @@ export default function Sidebar({
         </Body> */}
 
         {/* Navigation */}
-        <ScrollArea.Root maxW="lg" size={"xs"}>
+        <ScrollArea.Root maxW="lg" size={"xs"} flex="1">
           <ScrollArea.Viewport
             css={{
               "--scroll-shadow-size": "4rem",
@@ -506,6 +530,49 @@ export default function Sidebar({
           </ScrollArea.Scrollbar>
           <ScrollArea.Corner />
         </ScrollArea.Root>
+
+        {/* Sign Out */}
+        <Box borderTop="1px solid" borderColor="gray.200" pt={2}>
+          <Tooltip
+            content="Sign Out"
+            positioning={{ placement: "right" }}
+            disabled={isSidebarOpen}
+          >
+            <Flex
+              align="center"
+              p={2}
+              py={3}
+              borderRadius="md"
+              gap={isSidebarOpen ? 3 : 0}
+              cursor="pointer"
+              _hover={{ bg: "red.subtle" }}
+              onClick={handleSignOut}
+              transition="background 0.2s"
+            >
+              <Box
+                w="24px"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <RiLogoutBoxRLine
+                  size={20}
+                  color="var(--chakra-colors-red-500)"
+                />
+              </Box>
+              <Box
+                overflow="hidden"
+                transition="max-width 0.2s, opacity 0.2s"
+                maxWidth={isSidebarOpen ? "220px" : "0px"}
+                opacity={isSidebarOpen ? 1 : 0}
+              >
+                <Text color="red.500" whiteSpace="nowrap" fontSize="sm">
+                  Sign Out
+                </Text>
+              </Box>
+            </Flex>
+          </Tooltip>
+        </Box>
       </Flex>
 
       {isMobile && (
