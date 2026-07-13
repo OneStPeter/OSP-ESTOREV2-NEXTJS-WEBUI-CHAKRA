@@ -88,10 +88,16 @@ const LifePlanApplication1 = ({
       try {
         const ocrData = JSON.parse(OCRValue);
 
-        const [month, day, year] = ocrData.birthDate
-          .split("/")
-          .map((part: string) => part.trim());
-        const formattedBirthDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+        let formattedBirthDate = "";
+        if (typeof ocrData?.birthDate === "string") {
+          const [month, day, year] = ocrData.birthDate
+            .split("/")
+            .map((part: string) => part.trim());
+
+          if (month && day && year) {
+            formattedBirthDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+          }
+        }
 
         let mappedIdType = "";
         if (ocrData?.idType) {
