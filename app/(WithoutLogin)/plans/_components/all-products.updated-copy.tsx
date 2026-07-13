@@ -16,42 +16,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IPlans } from "@/types/product";
 import Error from "@/components/ui/error";
-import {
-  Box,
-  Badge,
-  Button,
-  Flex,
-  Grid,
-  IconButton,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Grid, IconButton } from "@chakra-ui/react";
 import ComparisonBanner from "@/components/ui/comparison-banner";
 import { useRouter } from "next/navigation";
-import { FaCheck } from "react-icons/fa";
 import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
-import { IoMdAdd } from "react-icons/io";
 import { BRAND_COLORS } from "@/lib/theme/brand-colors";
 import {
   STANDARD_RADIUS,
-  STANDARD_SHADOWS,
   STANDARD_SPACING,
 } from "@/lib/theme/standard-design-tokens";
-import { PrimaryMdButton, SecondaryMdButton } from "st-peter-ui";
-import NextImage from "next/image";
 import Page from "@/components/layout/page/Page";
-
-type GroupedPlan = {
-  planDesc: string;
-  casketDesc: string;
-  img: string;
-  contractPrice: string;
-  terms: {
-    mode: string;
-    planTerm: number;
-    price: string;
-  }[];
-};
+import PlanCard, { type GroupedPlan } from "./plan-card";
 
 type Props = {
   plans: IPlans[];
@@ -102,34 +77,6 @@ const groupPlansByProduct = (
   });
 
   return Array.from(map.values());
-};
-
-const modeOrder: Record<string, number> = { C: 0, A: 1, S: 2, Q: 3, M: 4 };
-
-const modeLabel = (mode: string) => {
-  if (mode === "M") return "Monthly";
-  if (mode === "C") return "Spot cash";
-  if (mode === "Q") return "Quarterly";
-  if (mode === "S") return "Semi-annual";
-  if (mode === "A") return "Annual";
-  return "Other";
-};
-
-const sortTerms = (terms: GroupedPlan["terms"]) =>
-  [...terms].sort((a, b) => {
-    if (a.planTerm !== b.planTerm) return a.planTerm - b.planTerm;
-    return (
-      (modeOrder[a.mode] ?? Number.POSITIVE_INFINITY) -
-      (modeOrder[b.mode] ?? Number.POSITIVE_INFINITY)
-    );
-  });
-
-const getPlanCategory = (planType: string, description: string) => {
-  const material = description.toLowerCase().includes("wood")
-    ? "Wood"
-    : "Metal";
-
-  return `${planType} - ${material}`;
 };
 
 const categoryTabs = [
@@ -546,474 +493,12 @@ const AllProductsCopy = ({
   };
   */
 
-  /* =============================================================================
-   * renderPlanCard — horizontal row / list layout.
-   * Thumbnail (with compare checkbox) + name/price + term + feature chips + chevron.
-   * ========================================================================== */
-  const renderPlanCard = (
-    group: GroupedPlan,
-    index: number,
-    planType: string,
-  ) => {
-    const isInCompare = compareList.includes(group.planDesc);
-    const sortedTerms = sortTerms(group.terms);
-    const firstTerm = sortedTerms[0];
-    const monthlyTerm =
-      sortedTerms.find((term) => term.mode === "M") ?? firstTerm;
-    const displayedTerms = sortedTerms
-      .filter((term) => term.planTerm === firstTerm?.planTerm)
-      .slice(0, 3);
-
-    const priceValue = monthlyTerm?.price ?? group.contractPrice;
-    const compareDisabled = !isInCompare && compareList.length >= 3;
-
-    return (
-      <Box
-        key={group.planDesc}
-        w={{ base: "min(86vw, 340px)", md: "full" }}
-        h="full"
-        flex={{ base: "0 0 min(86vw, 340px)", md: "initial" }}
-        scrollSnapAlign={{ base: "start", md: "none" }}
-        scrollSnapStop={{ base: "always", md: "normal" }}
-      >
-        <Flex
-          display={{ base: "flex", md: "none" }}
-          direction="column"
-          h="full"
-          w="full"
-          overflow="hidden"
-          bg="white"
-          border="1px solid"
-          borderColor={isInCompare ? "green.600" : "gray.200"}
-          borderRadius="xl"
-          transition="all 0.25s ease"
-        >
-          <Box
-            position="relative"
-            h={{ base: "170px", sm: "190px" }}
-            w="full"
-            overflow="hidden"
-            cursor="pointer"
-            onClick={() => openPlan(group.planDesc)}
-          >
-            <NextImage
-              unoptimized
-              src={group.img}
-              alt={group.planDesc ?? ""}
-              fill
-              sizes="100vw"
-              style={{ objectFit: "cover", objectPosition: "center" }}
-              priority={false}
-            />
-            {isInCompare ? (
-              <Badge
-                position="absolute"
-                top={3}
-                left={3}
-                px={3}
-                py={1}
-                borderRadius="full"
-                bg="green.600"
-                color="white"
-                fontSize="xs"
-                fontWeight="bold"
-                letterSpacing="wide"
-              >
-                SELECTED
-              </Badge>
-            ) : null}
-          </Box>
-
-          <Flex
-            direction="column"
-            align="center"
-            textAlign="center"
-            flex="1"
-            px={4}
-            py={4}
-            minH="360px"
-          >
-            <Text
-              fontSize="xs"
-              fontWeight="800"
-              color="green.800"
-              letterSpacing="wide"
-              textTransform="uppercase"
-              mb={2}
-            >
-              {getPlanCategory(planType, group.casketDesc)}
-            </Text>
-            <Text
-              as="h3"
-              fontSize="md"
-              fontWeight="800"
-              color="gray.900"
-              lineHeight="1.2"
-              lineClamp={2}
-            >
-              {group.planDesc}
-            </Text>
-            <Text
-              mt={1}
-              fontSize="sm"
-              color="gray.600"
-              lineHeight="1.45"
-              lineClamp={4}
-            >
-              {group.casketDesc}
-            </Text>
-            <Text
-              mt={3}
-              fontSize="sm"
-              fontWeight="800"
-              color="gray.900"
-              lineHeight="1.2"
-            >
-              {priceValue} / month
-            </Text>
-            <Text mt={1} fontSize="xs" fontWeight="600" color="gray.500">
-              {firstTerm?.planTerm ?? 0} years
-            </Text>
-            <Text mt={1} fontSize="xs" fontWeight="600" color="gray.500">
-              Plan value {group.contractPrice}
-            </Text>
-            <VStack align="stretch" gap="6px" mt={3} w="full">
-              {displayedTerms.map((term) => (
-                <Flex
-                  key={`${term.planTerm}-${term.mode}`}
-                  align="center"
-                  justify="space-between"
-                  gap="10px"
-                >
-                  <Text color="gray.500" fontSize="xs" fontWeight="600">
-                    {modeLabel(term.mode)}
-                  </Text>
-                  <Text color="gray.900" fontSize="xs" fontWeight="800">
-                    {term.price}
-                  </Text>
-                </Flex>
-              ))}
-            </VStack>
-            <Flex mt="auto" pt={5} w="full" gap={3}>
-              <SecondaryMdButton
-                flex="1"
-                h="42px"
-                borderRadius="full"
-                border="1px solid"
-                borderColor="green.700"
-                bg="white"
-                color="green.800"
-                fontSize="xs"
-                fontWeight="800"
-                letterSpacing="wide"
-                disabled={compareDisabled}
-                onClick={() => toggleCompare(group.planDesc)}
-                _hover={{ bg: "green.50" }}
-              >
-                {isInCompare ? <FaCheck /> : <IoMdAdd />}
-                <span>{isInCompare ? "ADDED" : "COMPARE"}</span>
-              </SecondaryMdButton>
-              <PrimaryMdButton
-                flex="1"
-                h="42px"
-                borderRadius="full"
-                borderWidth="1px"
-                borderColor="green.700"
-                bg="white"
-                color="green.800"
-                fontSize="xs"
-                fontWeight="800"
-                letterSpacing="wide"
-                onClick={() => openPlan(group.planDesc)}
-                _hover={{ bg: "green.700", color: "white" }}
-              >
-                BUY NOW
-              </PrimaryMdButton>
-            </Flex>
-          </Flex>
-        </Flex>
-
-        {/* ===== Mobile: latest compact row (commented — replaced by the earlier card view above) =====
-        <Box
-          role="button"
-          tabIndex={0}
-          onClick={() => openPlan(group.planDesc)}
-          cursor="pointer"
-          position="relative"
-          display={{ base: "flex", md: "none" }}
-          alignItems="center"
-          gap={STANDARD_SPACING.sm}
-          w="full"
-          p="12px"
-          bg={BRAND_COLORS.white}
-          borderWidth={isInCompare ? "2px" : "1px"}
-          borderColor={
-            isInCompare ? BRAND_COLORS.primaryGreen : BRAND_COLORS.neutralBorder
-          }
-          borderRadius={STANDARD_RADIUS.xl}
-          boxShadow={STANDARD_SHADOWS.level1}
-          transition="border-color 0.15s ease, box-shadow 0.15s ease"
-          _hover={{ borderColor: BRAND_COLORS.primaryGreen }}
-        >
-          <Box position="relative" flexShrink={0}>
-            <Box
-              position="relative"
-              w="64px"
-              h="64px"
-              borderRadius={STANDARD_RADIUS.lg}
-              overflow="hidden"
-              bg={BRAND_COLORS.mutedBg}
-            >
-              <NextImage
-                unoptimized
-                src={group.img}
-                alt={group.planDesc ?? ""}
-                fill
-                sizes="64px"
-                style={{ objectFit: "cover", objectPosition: "center" }}
-                priority={false}
-              />
-            </Box>
-
-            <Button
-              position="absolute"
-              top="5px"
-              left="5px"
-              w="20px"
-              h="20px"
-              minW="20px"
-              p="0"
-              borderRadius="6px"
-              borderWidth="1.5px"
-              borderColor={
-                isInCompare
-                  ? BRAND_COLORS.primaryGreen
-                  : BRAND_COLORS.neutralBorder
-              }
-              bg={
-                isInCompare
-                  ? BRAND_COLORS.primaryGreen
-                  : "rgba(255,255,255,0.9)"
-              }
-              color={BRAND_COLORS.white}
-              aria-label={
-                isInCompare ? "Remove from compare" : "Add to compare"
-              }
-              disabled={compareDisabled}
-              onClick={(event) => {
-                event.stopPropagation();
-                toggleCompare(group.planDesc);
-              }}
-              _hover={{
-                bg: isInCompare ? BRAND_COLORS.darkGreen : BRAND_COLORS.white,
-              }}
-            >
-              {isInCompare && <FaCheck size={10} />}
-            </Button>
-          </Box>
-
-          <Box flex="1" minW={0}>
-            <Flex align="baseline" justify="space-between" gap="8px">
-              <Text
-                color={BRAND_COLORS.black}
-                fontSize="17px"
-                fontWeight="800"
-                lineHeight="1.15"
-                lineClamp={1}
-              >
-                {group.planDesc}
-              </Text>
-              <Flex align="baseline" gap="2px" flexShrink={0}>
-                <Text
-                  color={BRAND_COLORS.darkGreen}
-                  fontSize="15px"
-                  fontWeight="800"
-                  lineHeight="1.15"
-                >
-                  {priceValue}
-                </Text>
-                <Text color={BRAND_COLORS.darkGreen} fontSize="11px">
-                  /mo
-                </Text>
-              </Flex>
-            </Flex>
-
-            <Text
-              color={BRAND_COLORS.grey}
-              fontSize="12px"
-              lineHeight="1.2"
-              mt="2px"
-            >
-              {firstTerm?.planTerm ?? 0}-year term
-            </Text>
-
-            <Box mt="8px">
-              {featureChips(BRAND_COLORS.mutedBg, BRAND_COLORS.subtleBg)}
-            </Box>
-          </Box>
-
-          <Box
-            as={FiChevronRight}
-            flexShrink={0}
-            color={BRAND_COLORS.grey}
-            boxSize="20px"
-          />
-        </Box>
-        ===== end latest compact row ===== */}
-
-        {/* ===== Tablet / Desktop: e-commerce card ===== */}
-        <Flex
-          display={{ base: "none", md: "flex" }}
-          direction="column"
-          h="full"
-          w="full"
-          position="relative"
-          overflow="hidden"
-          bg="white"
-          border="1px solid"
-          borderColor={isInCompare ? "green.600" : "gray.200"}
-          borderRadius="xl"
-          transition="all 0.25s ease"
-          _hover={{
-            transform: "translateY(-6px)",
-            boxShadow: "0 10px 20px rgba(15, 23, 42, 0.14)",
-            borderColor: "green.600",
-          }}
-        >
-          {/* Image */}
-          <Box
-            position="relative"
-            w="full"
-            h={{ md: "210px" }}
-            cursor="pointer"
-            overflow="hidden"
-            onClick={() => openPlan(group.planDesc)}
-          >
-            <NextImage
-              unoptimized
-              src={group.img}
-              alt={group.planDesc ?? ""}
-              fill
-              sizes="(max-width: 1280px) 50vw, 33vw"
-              style={{ objectFit: "cover", objectPosition: "center" }}
-              priority={false}
-            />
-
-            {isInCompare ? (
-              <Badge
-                position="absolute"
-                top={3}
-                left={3}
-                px={3}
-                py={1}
-                borderRadius="full"
-                bg="green.600"
-                color="white"
-                fontSize="xs"
-                fontWeight="bold"
-                letterSpacing="wide"
-              >
-                SELECTED
-              </Badge>
-            ) : null}
-          </Box>
-
-          <Flex
-            direction="column"
-            align="center"
-            textAlign="center"
-            flex="1"
-            px={{ md: 5 }}
-            py={{ md: 5 }}
-            minH={{ md: "250px" }}
-          >
-            <Text
-              as="h3"
-              fontSize="lg"
-              fontWeight="800"
-              color="gray.900"
-              lineHeight="1.2"
-              lineClamp={2}
-            >
-              {group.planDesc}
-            </Text>
-            <Text
-              mt={1}
-              fontSize="sm"
-              color="gray.600"
-              lineHeight="1.45"
-              lineClamp={2}
-            >
-              {group.casketDesc}
-            </Text>
-            <Text
-              mt={3}
-              fontSize="sm"
-              fontWeight="800"
-              color="gray.900"
-              lineHeight="1.2"
-            >
-              {priceValue} / month
-            </Text>
-            <Text mt={1} fontSize="xs" fontWeight="600" color="gray.500">
-              {firstTerm?.planTerm ?? 0} years
-            </Text>
-
-            <Flex
-              mt="auto"
-              pt={5}
-              w="full"
-              gap={3}
-              direction={{ md: "column", lg: "row" }}
-            >
-              <SecondaryMdButton
-                flex="1"
-                h="42px"
-                borderRadius="full"
-                border="1px solid"
-                borderColor="green.700"
-                bg="white"
-                color="green.800"
-                fontSize="xs"
-                fontWeight="800"
-                letterSpacing="wide"
-                disabled={compareDisabled}
-                onClick={() => toggleCompare(group.planDesc)}
-                _hover={{ bg: "green.50" }}
-              >
-                {isInCompare ? <FaCheck /> : <IoMdAdd />}
-                <span>{isInCompare ? "ADDED" : "COMPARE"}</span>
-              </SecondaryMdButton>
-              <PrimaryMdButton
-                flex="1"
-                h="42px"
-                borderWidth="1px"
-                borderRadius="full"
-                borderColor="green.700"
-                bg="white"
-                color="green.800"
-                fontSize="xs"
-                fontWeight="800"
-                letterSpacing="wide"
-                onClick={() => openPlan(group.planDesc)}
-                _hover={{ bg: "green.700", color: "white" }}
-              >
-                BUY NOW
-              </PrimaryMdButton>
-            </Flex>
-          </Flex>
-        </Flex>
-      </Box>
-    );
-  };
-
-  const renderPlanCards = (
-    groups: GroupedPlan[],
-    planType: string,
-  ) => (
+  const renderPlanCards = (groups: GroupedPlan[], planType: string) => (
     <Box position="relative" w="full">
       <Grid
-        ref={planType === "Traditional" ? traditionalScrollRef : cremationScrollRef}
+        ref={
+          planType === "Traditional" ? traditionalScrollRef : cremationScrollRef
+        }
         display={{ base: "flex", md: "grid" }}
         templateColumns={{
           md: "repeat(2, minmax(0, 1fr))",
@@ -1038,7 +523,21 @@ const AllProductsCopy = ({
           },
         }}
       >
-        {groups.map((group, index) => renderPlanCard(group, index, planType))}
+        {groups.map((group) => {
+          const isInCompare = compareList.includes(group.planDesc);
+
+          return (
+            <PlanCard
+              key={group.planDesc}
+              group={group}
+              planType={planType}
+              isInCompare={isInCompare}
+              compareDisabled={!isInCompare && compareList.length >= 3}
+              onOpen={openPlan}
+              onToggleCompare={toggleCompare}
+            />
+          );
+        })}
       </Grid>
 
       {showLeftButton && (
@@ -1104,10 +603,7 @@ const AllProductsCopy = ({
   );
 
   return (
-    <Page.Root
-      title="Our Life Plans"
-      description="Secure your family's future with peace of mind"
-    >
+    <Page.Root title="" description="" hideBackButton>
       {/* Right-side header tools: category filter pills */}
       <Page.ToolContent w={{ base: "100%", lg: "auto" }}>
         <Flex
