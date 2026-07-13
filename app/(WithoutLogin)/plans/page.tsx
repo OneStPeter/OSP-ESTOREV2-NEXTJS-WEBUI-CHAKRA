@@ -1,4 +1,3 @@
-import AllProducts from "@/app/(WithoutLogin)/plans/_components/all-products";
 import AllProductsCopy from "@/app/(WithoutLogin)/plans/_components/all-products.updated-copy";
 import { ProductService } from "@/services/API/ProductService";
 import { IPlans } from "@/types/product";
