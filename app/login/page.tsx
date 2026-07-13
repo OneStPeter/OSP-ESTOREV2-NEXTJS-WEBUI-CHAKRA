@@ -1,380 +1,9 @@
-// "use client";
-
-// import {
-//   Box,
-//   Button,
-//   chakra,
-//   Flex,
-//   Grid,
-//   HStack,
-//   Image,
-//   Input,
-//   Link,
-//   Separator,
-//   Text,
-//   VStack,
-//   type InputProps,
-// } from "@chakra-ui/react";
-// import { AnimatePresence, motion } from "motion/react";
-// import { useRouter } from "next/navigation";
-// import React from "react";
-// import { BRAND_COLORS } from "@/lib/theme/brand-colors";
-// import {
-//   STANDARD_BUTTON_STYLES,
-//   STANDARD_RADIUS,
-//   STANDARD_SHADOWS,
-//   STANDARD_SPACING,
-// } from "@/lib/theme/standard-design-tokens";
-
-// type AuthView = "login" | "signup";
-
-// type AuthInputProps = InputProps & {
-//   placeholder: string;
-//   type?: string;
-// };
-
-// const AuthInput = ({
-//   placeholder,
-//   type = "text",
-//   ...props
-// }: AuthInputProps) => (
-//   <Input
-//     type={type}
-//     placeholder={placeholder}
-//     h="40px"
-//     borderColor={BRAND_COLORS.neutralBorder}
-//     borderRadius={STANDARD_RADIUS.sm}
-//     color={BRAND_COLORS.neutralText}
-//     // 16px on mobile prevents iOS Safari from auto-zooming on focus.
-//     fontSize={{ base: "16px", md: "14px" }}
-//     _placeholder={{ color: "#4A5568" }}
-//     _focusVisible={{
-//       borderColor: BRAND_COLORS.primaryGreen,
-//       boxShadow: `0 0 0 1px ${BRAND_COLORS.primaryGreen}`,
-//     }}
-//     {...props}
-//   />
-// );
-
-// const RequiredInput = ({
-//   label,
-//   type = "text",
-// }: {
-//   label: string;
-//   type?: string;
-// }) => <RequiredInputField label={label} type={type} />;
-
-// const RequiredInputField = ({
-//   label,
-//   type,
-// }: {
-//   label: string;
-//   type: string;
-// }) => {
-//   const [value, setValue] = React.useState("");
-//   const [isFocused, setIsFocused] = React.useState(false);
-//   const showLabel = !value && !isFocused;
-
-//   return (
-//     <Box position="relative">
-//       <AuthInput
-//         placeholder=""
-//         type={type}
-//         value={value}
-//         onChange={(event) => setValue(event.target.value)}
-//         onFocus={() => setIsFocused(true)}
-//         onBlur={() => setIsFocused(false)}
-//       />
-//       {showLabel && (
-//         <Text
-//           as="span"
-//           position="absolute"
-//           left="14px"
-//           top="50%"
-//           transform="translateY(-50%)"
-//           color="#4A5568"
-//           // Match the input font-size so the floating label aligns 1:1.
-//           fontSize={{ base: "16px", md: "14px" }}
-//           pointerEvents="none"
-//         >
-//           {label}{" "}
-//           <Text as="span" color={BRAND_COLORS.errorRed}>
-//             *
-//           </Text>
-//         </Text>
-//       )}
-//     </Box>
-//   );
-// };
-
-// const SocialButton = ({ src, alt }: { src: string; alt: string }) => (
-//   <Button
-//     type="button"
-//     variant="outline"
-//     h="38px"
-//     minW="0"
-//     w="100%"
-//     borderColor={BRAND_COLORS.neutralBorder}
-//     borderRadius={STANDARD_RADIUS.sm}
-//     bg={BRAND_COLORS.white}
-//     _hover={{ bg: BRAND_COLORS.subtleBg }}
-//   >
-//     <Image src={src} alt={alt} boxSize="22px" objectFit="contain" />
-//   </Button>
-// );
-
-// const Agreement = ({ children }: { children: React.ReactNode }) => (
-//   <HStack align="center" gap="10px">
-//     <chakra.input
-//       type="checkbox"
-//       w="20px"
-//       h="20px"
-//       border={`1px solid ${BRAND_COLORS.neutralText}`}
-//       borderRadius={STANDARD_RADIUS.sm}
-//       accentColor={BRAND_COLORS.primaryGreen}
-//       flexShrink={0}
-//     />
-//     <Text
-//       color={BRAND_COLORS.neutralText}
-//       fontSize={{ base: "14px", md: "15px" }}
-//     >
-//       {children}
-//     </Text>
-//   </HStack>
-// );
-
-// const Login = () => {
-//   const router = useRouter();
-//   const [view, setView] = React.useState<AuthView>("login");
-
-//   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
-//     event.preventDefault();
-//     router.push("/account");
-//   };
-
-//   const handleSignUp = (event: React.FormEvent<HTMLFormElement>) => {
-//     event.preventDefault();
-//   };
-
-//   return (
-//     <Flex
-//       position="fixed"
-//       inset={0}
-//       zIndex={2000}
-//       minH="100dvh"
-//       overflowY="auto"
-//       align="center"
-//       justify="center"
-//       px={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.lg }}
-//       py={{ base: 0, md: STANDARD_SPACING.lg }}
-//       bg={{
-//         base: BRAND_COLORS.white,
-//         md: `linear-gradient(rgba(0, 0, 0, 0.66), rgba(0, 0, 0, 0.66)), url("/images/chapels/Guiguinto.jpg") center / cover no-repeat`,
-//       }}
-//     >
-//       <Box
-//         w="100%"
-//         maxW={
-//           view === "login"
-//             ? { base: "320px", md: "450px" }
-//             : { base: "100%", md: "650px" }
-//         }
-//         minH={
-//           view === "login"
-//             ? { base: "auto", md: "650px" }
-//             : { base: "100dvh", md: "645px" }
-//         }
-//         bg={BRAND_COLORS.white}
-//         borderRadius={{
-//           base: 0,
-//           md: view === "login" ? STANDARD_RADIUS.md : 0,
-//         }}
-//         boxShadow={{
-//           base: "none",
-//           md: view === "login" ? STANDARD_SHADOWS.level4 : "none",
-//         }}
-//         px={
-//           view === "login" ? { base: 0, md: "96px" } : { base: 0, md: "65px" }
-//         }
-//         py={
-//           view === "login"
-//             ? { base: 0, md: "82px" }
-//             : { base: "56px", md: "84px" }
-//         }
-//         transition="all 180ms ease-out"
-//       >
-//         <AnimatePresence mode="wait" initial={false}>
-//           <motion.div
-//             key={view}
-//             initial={{ opacity: 0, x: 48 }}
-//             animate={{ opacity: 1, x: 0 }}
-//             exit={{ opacity: 0, x: 48 }}
-//             transition={{ duration: 0.28, ease: "easeOut" }}
-//             style={{ width: "100%" }}
-//           >
-//             {view === "login" ? (
-//               <chakra.form onSubmit={handleLogin} w="100%">
-//             <VStack gap="0" align="stretch">
-//               <Image
-//                 src="/images/osp-chakra-reusable-components/stpeter-logo.png"
-//                 alt="St. Peter Life Plan Chapels"
-//                 w={{ base: "238px", md: "260px" }}
-//                 mx="auto"
-//                 mb="18px"
-//               />
-//               <Text
-//                 as="h1"
-//                 color={BRAND_COLORS.neutralText}
-//                 fontSize="22px"
-//                 fontWeight="400"
-//                 lineHeight="1.2"
-//                 textAlign="center"
-//                 mb="18px"
-//               >
-//                 Log In
-//               </Text>
-//               <VStack gap="26px" align="stretch">
-//                 <RequiredInput label="Email" type="email" />
-//                 <RequiredInput label="Password" type="password" />
-//               </VStack>
-//               <Link
-//                 href="#"
-//                 color="#2563FF"
-//                 fontSize="14px"
-//                 mt="28px"
-//                 textDecoration="none"
-//                 _hover={{ textDecoration: "underline" }}
-//               >
-//                 Forgot your password?
-//               </Link>
-//               <Button
-//                 type="submit"
-//                 mt="18px"
-//                 w="100%"
-//                 bg={BRAND_COLORS.primaryGreen}
-//                 color={BRAND_COLORS.white}
-//                 textTransform="uppercase"
-//                 {...STANDARD_BUTTON_STYLES.md}
-//                 _hover={{ bg: BRAND_COLORS.darkGreen }}
-//               >
-//                 Login
-//               </Button>
-//               <HStack gap="10px" my="26px">
-//                 <Separator flex="1" borderColor={BRAND_COLORS.neutralBorder} />
-//                 <Text color={BRAND_COLORS.neutralText} fontSize="15px">
-//                   or
-//                 </Text>
-//                 <Separator flex="1" borderColor={BRAND_COLORS.neutralBorder} />
-//               </HStack>
-//               <Grid templateColumns="repeat(3, 1fr)" gap="6px" mb="18px">
-//                 <SocialButton
-//                   src="/images/osp-chakra-reusable-components/icons8-google-48.png"
-//                   alt="Continue with Google"
-//                 />
-//                 <SocialButton
-//                   src="/images/osp-chakra-reusable-components/icons8-meta-48.png"
-//                   alt="Continue with Facebook"
-//                 />
-//                 <SocialButton
-//                   src="/images/osp-chakra-reusable-components/icons8-x-48.png"
-//                   alt="Continue with X"
-//                 />
-//               </Grid>
-//               <Text color="#4A5568" fontSize="14px" textAlign="center">
-//                 Don&apos;t have an account?{" "}
-//                 <chakra.button
-//                   type="button"
-//                   color={BRAND_COLORS.primaryGreen}
-//                   fontWeight="700"
-//                   onClick={() => setView("signup")}
-//                 >
-//                   Create Account
-//                 </chakra.button>
-//               </Text>
-//             </VStack>
-//           </chakra.form>
-//         ) : (
-//           <chakra.form onSubmit={handleSignUp} w="100%">
-//             <Text
-//               as="h1"
-//               color={BRAND_COLORS.neutralText}
-//               fontSize="24px"
-//               fontWeight="600"
-//               lineHeight="1.2"
-//               mb="10px"
-//             >
-//               Create Account
-//             </Text>
-//             <Text color="#4A5568" fontSize="16px" mb="10px">
-//               Join us and secure your future.
-//             </Text>
-//             <Separator borderColor={BRAND_COLORS.neutralBorder} mb="18px" />
-//             <Grid
-//               templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
-//               gap={{ base: "20px", md: "20px 16px" }}
-//               mb="28px"
-//             >
-//               <RequiredInput label="Last Name" />
-//               <RequiredInput label="First Name" />
-//               <RequiredInput label="Middle Name" />
-//               <RequiredInput label="Email" type="email" />
-//               <RequiredInput label="Contact No." />
-//               <RequiredInput label="Password" type="password" />
-//               <RequiredInput label="Confirm Password" type="password" />
-//             </Grid>
-//             <VStack align="stretch" gap="8px" mb="18px">
-//               <Agreement>
-//                 I agree to the{" "}
-//                 <Link color={BRAND_COLORS.primaryGreen} fontWeight="700">
-//                   Terms and Conditions
-//                 </Link>
-//               </Agreement>
-//               <Agreement>
-//                 I agree to the{" "}
-//                 <Link color={BRAND_COLORS.primaryGreen} fontWeight="700">
-//                   Data Privacy Policy
-//                 </Link>
-//               </Agreement>
-//             </VStack>
-//             <Button
-//               type="submit"
-//               w="100%"
-//               bg={BRAND_COLORS.primaryGreen}
-//               color={BRAND_COLORS.white}
-//               textTransform="uppercase"
-//               {...STANDARD_BUTTON_STYLES.md}
-//               _hover={{ bg: BRAND_COLORS.darkGreen }}
-//             >
-//               Sign Up
-//             </Button>
-//             <Text color="#4A5568" fontSize="15px" textAlign="center" mt="18px">
-//               Already have an account?{" "}
-//               <chakra.button
-//                 type="button"
-//                 color={BRAND_COLORS.primaryGreen}
-//                 fontWeight="700"
-//                 onClick={() => setView("login")}
-//               >
-//                 Log In
-//               </chakra.button>
-//             </Text>
-//           </chakra.form>
-//             )}
-//           </motion.div>
-//         </AnimatePresence>
-//       </Box>
-//     </Flex>
-//   );
-// };
-
-// export default Login;
-
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Box,
   Flex,
@@ -392,10 +21,25 @@ import {
   InputGroup,
   CloseButton,
 } from "@chakra-ui/react";
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  ArrowRight,
+  Loader2,
+  Fingerprint,
+  Check,
+  X,
+  ArrowLeft,
+  Phone,
+  UserCircle,
+  Wallet,
+} from "lucide-react";
 import logoIcon from "@/public/login-logo.png";
 
 const ease = [0.25, 0.1, 0.25, 1] as const;
+const DEFAULT_PASSWORD = "123456";
 
 function fadeUp(delay: number) {
   return {
@@ -405,18 +49,62 @@ function fadeUp(delay: number) {
   };
 }
 
+const FEATURES = [
+  "Life Plans",
+  "Reservations",
+  "Order Tracking",
+  "Secure Checkout",
+  "Account Management",
+];
+
+const EXTERNAL_LINKS = [
+  {
+    id: "contact",
+    label: "Contact Us",
+    url: "https://online.stpeter.com.ph/Home/ContactUs",
+    icon: Phone,
+  },
+  {
+    id: "login",
+    label: "Planholder Portal",
+    url: "https://online.stpeter.com.ph/Login/LogInAccount",
+    icon: UserCircle,
+  },
+  {
+    id: "paybill",
+    label: "Pay My Plan",
+    url: "https://online.stpeter.com.ph/Paybill/Index",
+    icon: Wallet,
+  },
+] as const;
+
 interface LoginPageProps {
-  onLogin: (email: string, password: string) => void;
+  onLogin?: (email: string, password: string) => void;
 }
 
 export function LoginPage({ onLogin }: LoginPageProps) {
   const router = useRouter();
+  const [stage, setStage] = useState<"welcome" | "password" | "signup">(
+    "welcome"
+  );
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("joycemb@stpeter.com.ph");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [signupName, setSignupName] = useState("");
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [signupLoading, setSignupLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
+  const [avatarErrors, setAvatarErrors] = useState<Record<string, boolean>>({});
+  const [bioStep, setBioStep] = useState<"idle" | "scanning" | "success">(
+    "idle"
+  );
+  const [externalLink, setExternalLink] = useState<
+    (typeof EXTERNAL_LINKS)[number] | null
+  >(null);
 
   // Login is a full-screen route (not a modal), so closing just returns the
   // user where they came from.
@@ -424,28 +112,48 @@ export function LoginPage({ onLogin }: LoginPageProps) {
     router.back();
   };
 
+  // Preserve the original functionality: a successful login navigates to the
+  // account page (and notifies any parent via the optional onLogin callback).
+  const completeLogin = (passwordOverride?: string) => {
+    onLogin?.(email, passwordOverride ?? password);
+    router.replace("/account");
+  };
+
   const handleSocialLogin = async (provider: string) => {
     setSocialLoading(provider);
     await new Promise((r) => setTimeout(r, 1200));
+    completeLogin(DEFAULT_PASSWORD);
+  };
+
+  const handleBiometricLogin = async () => {
+    setSocialLoading("biometric");
+    setBioStep("scanning");
+    await new Promise((r) => setTimeout(r, 1800));
+    setBioStep("success");
+    await new Promise((r) => setTimeout(r, 1100));
+    completeLogin(DEFAULT_PASSWORD);
+  };
+
+  const cancelBiometricLogin = () => {
+    setBioStep("idle");
     setSocialLoading(null);
   };
 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   await new Promise((r) => setTimeout(r, 1000));
-  //   router.replace("/");
-  // };
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const email = form.get("emailInput");
-    const password = form.get("passwordInput");
-    if (typeof email === "string" && typeof password === "string") {
-      //onLogin(email, password);
-      router.replace("/account");
-    }
+    setLoading(true);
+    await new Promise((r) => setTimeout(r, 900));
+    completeLogin();
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSignupLoading(true);
+    await new Promise((r) => setTimeout(r, 900));
+    setSignupLoading(false);
+    setEmail(signupEmail);
+    setPassword("");
+    setStage("password");
   };
 
   return (
@@ -472,310 +180,603 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       />
 
       <Flex minH="100%" bg="white" overflow="hidden">
-              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-              {/* ── Left brand panel (desktop only) ── */}
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        {/* ── Left brand panel (desktop only) ── */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, ease }}
+          style={{ display: "none" }}
+          className="lg:flex lg:w-[52%]">
+          <Box
+            display={{ base: "none", lg: "flex" }}
+            w="52%"
+            position="relative"
+            flexDir="column"
+            alignItems="center"
+            justifyContent="center"
+            overflow="hidden"
+            flexShrink={0}
+            style={{
+              background:
+                "linear-gradient(145deg, #022c22 0%, #064e3b 40%, #065f46 70%, #047857 100%)",
+            }}>
+            <Box
+              position="absolute"
+              top="-8rem"
+              left="-8rem"
+              w="28rem"
+              h="28rem"
+              rounded="full"
+              borderWidth="1px"
+              borderColor="rgba(6,95,70,0.3)"
+            />
+            <Box
+              position="absolute"
+              top="-5rem"
+              left="-5rem"
+              w="20rem"
+              h="20rem"
+              rounded="full"
+              borderWidth="1px"
+              borderColor="rgba(16,185,129,0.15)"
+            />
+            <Box
+              position="absolute"
+              bottom="-10rem"
+              right="-10rem"
+              w="36rem"
+              h="36rem"
+              rounded="full"
+              borderWidth="1px"
+              borderColor="rgba(6,95,70,0.2)"
+            />
+            <Box
+              position="absolute"
+              bottom="2.5rem"
+              right="2.5rem"
+              w="18rem"
+              h="18rem"
+              rounded="full"
+              borderWidth="1px"
+              borderColor="rgba(16,185,129,0.12)"
+            />
+
+            <Box
+              position="absolute"
+              inset={0}
+              opacity={0.1}
+              style={{
+                backgroundImage:
+                  "radial-gradient(circle, #6ee7b7 1px, transparent 1px)",
+                backgroundSize: "36px 36px",
+              }}
+            />
+
+            <Box
+              position="absolute"
+              top="25%"
+              left="50%"
+              w="20rem"
+              h="20rem"
+              rounded="full"
+              pointerEvents="none"
+              style={{
+                transform: "translate(-50%, -50%)",
+                background:
+                  "radial-gradient(circle, rgba(16,185,129,0.18) 0%, transparent 70%)",
+              }}
+            />
+
+            <VStack
+              position="relative"
+              zIndex={10}
+              gap={8}
+              textAlign="center"
+              px={16}>
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.7, ease }}
-                style={{ display: "none" }}
-                className="lg:flex lg:w-[52%]"
-              >
-                <Box
-                  display={{ base: "none", lg: "flex" }}
-                  w="52%"
-                  position="relative"
-                  flexDir="column"
+                initial={{ scale: 0.7, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.55, ease: [0.34, 1.56, 0.64, 1] }}>
+                <Flex
+                  w="7rem"
+                  h="7rem"
+                  rounded="3xl"
+                  bg="rgba(255,255,255,0.1)"
+                  backdropFilter="blur(8px)"
+                  borderWidth="1px"
+                  borderColor="rgba(255,255,255,0.2)"
                   alignItems="center"
                   justifyContent="center"
-                  overflow="hidden"
-                  flexShrink={0}
-                  // style={{
-                  //   background:
-                  //     "linear-gradient(145deg, #022c22 0%, #064e3b 40%, #065f46 70%, #047857 100%)",
-                  // }}
-                >
-                  {/* decorative rings */}
-                  <Box
-                    position="absolute"
-                    top="-8rem"
-                    left="-8rem"
-                    w="28rem"
-                    h="28rem"
-                    rounded="full"
-                    borderWidth="1px"
-                    borderColor="rgba(6,95,70,0.3)"
+                  boxShadow="2xl">
+                  <Image
+                    src={logoIcon.src}
+                    alt="St. Peter Logo"
+                    width={84}
+                    height={84}
+                    style={{ objectFit: "contain" }}
+                    priority
                   />
-                  <Box
-                    position="absolute"
-                    top="-5rem"
-                    left="-5rem"
-                    w="20rem"
-                    h="20rem"
-                    rounded="full"
-                    borderWidth="1px"
-                    borderColor="rgba(16,185,129,0.15)"
-                  />
-                  <Box
-                    position="absolute"
-                    bottom="-10rem"
-                    right="-10rem"
-                    w="36rem"
-                    h="36rem"
-                    rounded="full"
-                    borderWidth="1px"
-                    borderColor="rgba(6,95,70,0.2)"
-                  />
-                  <Box
-                    position="absolute"
-                    bottom="2.5rem"
-                    right="2.5rem"
-                    w="18rem"
-                    h="18rem"
-                    rounded="full"
-                    borderWidth="1px"
-                    borderColor="rgba(16,185,129,0.12)"
-                  />
-
-                  {/* dot grid */}
-                  <Box
-                    position="absolute"
-                    inset={0}
-                    opacity={0.1}
-                    style={{
-                      backgroundImage:
-                        "radial-gradient(circle, #6ee7b7 1px, transparent 1px)",
-                      backgroundSize: "36px 36px",
-                    }}
-                  />
-
-                  {/* glow orb */}
-                  <Box
-                    position="absolute"
-                    top="25%"
-                    left="50%"
-                    w="20rem"
-                    h="20rem"
-                    rounded="full"
-                    pointerEvents="none"
-                    style={{
-                      transform: "translate(-50%, -50%)",
-                      background:
-                        "radial-gradient(circle, rgba(16,185,129,0.18) 0%, transparent 70%)",
-                    }}
-                  />
-
-                  {/* brand content */}
-                  <VStack
-                    position="relative"
-                    zIndex={10}
-                    gap={8}
-                    textAlign="center"
-                    px={16}
-                  >
-                    <motion.div
-                      initial={{ scale: 0.7, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{
-                        duration: 0.55,
-                        ease: [0.34, 1.56, 0.64, 1],
-                      }}
-                    >
-                      <Flex
-                        w="7rem"
-                        h="7rem"
-                        rounded="3xl"
-                        bg="rgba(255,255,255,0.1)"
-                        backdropFilter="blur(8px)"
-                        borderWidth="1px"
-                        borderColor="rgba(255,255,255,0.2)"
-                        alignItems="center"
-                        justifyContent="center"
-                        boxShadow="2xl"
-                      >
-                        <Image
-                          src={logoIcon.src}
-                          alt="St. Peter Logo"
-                          width={84}
-                          height={84}
-                          style={{ objectFit: "contain" }}
-                          priority
-                        />
-                      </Flex>
-                    </motion.div>
-
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2, duration: 0.5, ease }}
-                    >
-                      <VStack gap={3}>
-                        <Heading
-                          as="h1"
-                          fontSize="4xl"
-                          fontWeight="bold"
-                          color="white"
-                          letterSpacing="tight"
-                          lineHeight="tight"
-                        >
-                          St. Peter
-                        </Heading>
-                        <Text
-                          fontSize="sm"
-                          fontWeight="semibold"
-                          color="#6ee7b7"
-                          letterSpacing="0.2em"
-                          textTransform="uppercase"
-                        >
-                          Online Store
-                        </Text>
-                        <Box
-                          h="1px"
-                          w="4rem"
-                          bg="rgba(16,185,129,0.6)"
-                          my={1}
-                        />
-                        <Text
-                          fontSize="sm"
-                          color="rgba(236,253,245,0.7)"
-                          lineHeight="tall"
-                          maxW="xs"
-                        >
-                          Manage life plan operations, reservations, fleet
-                          dispatch, and service records — all in one place.
-                        </Text>
-                      </VStack>
-                    </motion.div>
-                  </VStack>
-
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.65, duration: 0.4 }}
-                    style={{ position: "absolute", bottom: "2rem" }}
-                  >
-                    <Text fontSize="xs" color="rgba(6,95,70,0.8)">
-                      © 2026 St. Peter Memorial Chapels. All rights reserved.
-                    </Text>
-                  </motion.div>
-                </Box>
+                </Flex>
               </motion.div>
 
-              {/* ── Right form panel ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.5, ease }}>
+                <VStack gap={3}>
+                  <Heading
+                    as="h1"
+                    fontSize="4xl"
+                    fontWeight="bold"
+                    color="white"
+                    letterSpacing="tight"
+                    lineHeight="tight">
+                    St. Peter
+                  </Heading>
+                  <Text
+                    fontSize="sm"
+                    fontWeight="semibold"
+                    color="#6ee7b7"
+                    letterSpacing="0.2em"
+                    textTransform="uppercase">
+                    Online Store
+                  </Text>
+                  <Box h="1px" w="4rem" bg="rgba(16,185,129,0.6)" my={1} />
+                  <Text
+                    fontSize="sm"
+                    color="rgba(236,253,245,0.7)"
+                    lineHeight="tall"
+                    maxW="xs">
+                    Browse life plans, manage reservations, and complete your
+                    orders — all in one place.
+                  </Text>
+                </VStack>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.5, ease }}>
+                <Flex flexWrap="wrap" justifyContent="center" gap={2}>
+                  {FEATURES.map((f) => (
+                    <Box
+                      key={f}
+                      px={3}
+                      py={1}
+                      rounded="full"
+                      fontSize="xs"
+                      fontWeight="medium"
+                      color="#a7f3d0"
+                      bg="rgba(6,78,59,0.5)"
+                      borderWidth="1px"
+                      borderColor="rgba(6,95,70,0.4)"
+                      backdropFilter="blur(4px)">
+                      {f}
+                    </Box>
+                  ))}
+                </Flex>
+              </motion.div>
+            </VStack>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.65, duration: 0.4 }}
+              style={{ position: "absolute", bottom: "2rem" }}>
+              <Text fontSize="xs" color="rgba(6,95,70,0.8)">
+                © 2026 St. Peter Life Plan Chapels. All rights reserved.
+              </Text>
+            </motion.div>
+          </Box>
+        </motion.div>
+
+        {/* ── Right form panel ── */}
+        <Flex
+          flex={1}
+          flexDir="column"
+          alignItems="center"
+          justifyContent={{ base: "flex-start", lg: "center" }}
+          pt={{ base: 10, lg: 0 }}
+          px={{ base: 4, sm: 12, lg: 16 }}
+          position="relative">
+          <Box
+            display={{ base: "block", lg: "none" }}
+            position="absolute"
+            inset={0}
+            style={{
+              background:
+                "linear-gradient(170deg, #022c22 0%, #064e3b 35%, #f0fdf4 60%, #ffffff 100%)",
+            }}
+          />
+
+          <motion.div {...fadeUp(0)}>
+            <VStack
+              display={{ base: "flex", lg: "none" }}
+              position="relative"
+              zIndex={10}
+              mt={0}
+              mb={5}
+              gap={1}>
               <Flex
-                flex={1}
-                flexDir="column"
+                w="6rem"
+                h="6rem"
+                rounded="2xl"
+                bg="rgba(255,255,255,0.15)"
+                backdropFilter="blur(8px)"
+                borderWidth="1px"
+                borderColor="rgba(255,255,255,0.25)"
                 alignItems="center"
                 justifyContent="center"
-                px={{ base: 6, sm: 12, lg: 16 }}
-                position="relative"
-              >
-                {/* mobile gradient */}
-                <Box
-                  display={{ base: "block", lg: "none" }}
-                  position="absolute"
-                  inset={0}
-                  style={{
-                    background:
-                      "linear-gradient(170deg, #022c22 0%, #064e3b 35%, #f0fdf4 60%, #ffffff 100%)",
-                  }}
+                boxShadow="xl"
+                mb={3}>
+                <Image
+                  src={logoIcon.src}
+                  alt="St. Peter Logo"
+                  width={68}
+                  height={68}
+                  style={{ objectFit: "contain" }}
+                  priority
                 />
+              </Flex>
+              <Heading as="h1" fontSize="2xl" fontWeight="bold" color="white">
+                St. Peter
+              </Heading>
+              <Text
+                fontSize="xs"
+                color="#6ee7b7"
+                letterSpacing="0.18em"
+                textTransform="uppercase">
+                Online Store
+              </Text>
+            </VStack>
+          </motion.div>
 
-                {/* mobile logo */}
-                <motion.div {...fadeUp(0)}>
-                  <VStack
-                    display={{ base: "flex", lg: "none" }}
-                    position="relative"
-                    zIndex={10}
-                    mb={8}
-                    gap={1}
-                  >
-                    <Flex
-                      w="5rem"
-                      h="5rem"
-                      rounded="2xl"
-                      bg="rgba(255,255,255,0.15)"
-                      backdropFilter="blur(8px)"
-                      borderWidth="1px"
-                      borderColor="rgba(255,255,255,0.25)"
-                      alignItems="center"
-                      justifyContent="center"
-                      boxShadow="xl"
-                      mb={3}
-                    >
-                      <Image
-                        src={logoIcon.src}
-                        alt="St. Peter Logo"
-                        width={56}
-                        height={56}
-                        style={{ objectFit: "contain" }}
-                        priority
-                      />
-                    </Flex>
-                    <Heading
-                      as="h1"
-                      fontSize="2xl"
-                      fontWeight="bold"
-                      color="white"
-                    >
-                      St. Peter
-                    </Heading>
-                    <Text
-                      fontSize="xs"
-                      color="#6ee7b7"
-                      letterSpacing="0.18em"
-                      textTransform="uppercase"
-                    >
-                      Online Store
-                    </Text>
-                  </VStack>
-                </motion.div>
-
-                {/* form card */}
-                <motion.div
-                  {...fadeUp(0.1)}
-                  style={{
-                    position: "relative",
-                    zIndex: 10,
-                    width: "100%",
-                    maxWidth: "28rem",
-                  }}
-                >
-                  <Box
-                    bg="white"
-                    rounded="3xl"
-                    boxShadow="2xl"
-                    p={{ base: 8, sm: 10 }}
-                    borderWidth="1px"
-                    borderColor="rgba(243,244,246,0.8)"
-                  >
-                    {/* card header */}
-                    <motion.div {...fadeUp(0.18)}>
-                      <Box mb={8}>
+          <motion.div
+            {...fadeUp(0.1)}
+            style={{
+              position: "relative",
+              zIndex: 10,
+              width: "100%",
+              maxWidth: "28rem",
+            }}>
+            <Box
+              bg="white"
+              rounded="3xl"
+              boxShadow="2xl"
+              p={{ base: 6, sm: 10 }}
+              borderWidth="1px"
+              borderColor="rgba(243,244,246,0.8)">
+              <AnimatePresence mode="wait">
+                {stage === "welcome" ? (
+                  <motion.div
+                    key="welcome"
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -16 }}
+                    transition={{ duration: 0.25, ease }}>
+                    <VStack gap={6} textAlign="center">
+                      <Box>
                         <Heading
                           as="h2"
                           fontSize="2xl"
                           fontWeight="bold"
-                          color="gray.900"
-                        >
-                          Welcome back
+                          color="gray.900">
+                          Quick Sign In
                         </Heading>
                         <Text fontSize="sm" color="gray.500" mt={1}>
-                          Sign in to your account to continue
+                          Choose how you&apos;d like to continue
                         </Text>
                       </Box>
-                    </motion.div>
 
-                    <form onSubmit={handleSubmit}>
+                      <VStack gap={3}>
+                        <motion.button
+                          type="button"
+                          onClick={handleBiometricLogin}
+                          disabled={!!socialLoading}
+                          whileHover={socialLoading ? {} : { scale: 1.04 }}
+                          whileTap={socialLoading ? {} : { scale: 0.94 }}
+                          aria-label="Log in with biometrics"
+                          style={{
+                            width: "128px",
+                            height: "128px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: "9999px",
+                            border: "none",
+                            outline: "none",
+                            background:
+                              "radial-gradient(circle, rgba(5,150,105,0.1) 0%, rgba(5,150,105,0.03) 70%, transparent 100%)",
+                            cursor: socialLoading ? "not-allowed" : "pointer",
+                            opacity:
+                              socialLoading && socialLoading !== "biometric"
+                                ? 0.45
+                                : 1,
+                            transition: "transform 0.15s",
+                          }}>
+                          {socialLoading === "biometric" ? (
+                            <Loader2
+                              size={52}
+                              style={{
+                                animation: "spin 1s linear infinite",
+                                color: "#059669",
+                              }}
+                            />
+                          ) : (
+                            <Fingerprint size={60} color="#059669" />
+                          )}
+                        </motion.button>
+
+                        <Text
+                          onClick={() => setStage("password")}
+                          fontSize="sm"
+                          fontWeight="semibold"
+                          color="gray.500"
+                          cursor="pointer"
+                          _hover={{ color: "green.700" }}>
+                          {socialLoading === "biometric"
+                            ? "Verifying biometrics…"
+                            : "Use password instead"}
+                        </Text>
+                      </VStack>
+
+                      <HStack w="full">
+                        <Separator flex="1" borderColor="gray.100" />
+                        <Text
+                          fontSize="10px"
+                          letterSpacing="widest"
+                          color="gray.400"
+                          fontWeight="semibold"
+                          textTransform="uppercase">
+                          Continue with
+                        </Text>
+                        <Separator flex="1" borderColor="gray.100" />
+                      </HStack>
+
+                      <VStack gap={2} w="full">
+                        {[
+                          {
+                            id: "google",
+                            providerLabel: "Google",
+                            providerLogo:
+                              "/images/osp-chakra-reusable-components/icons8-google-48.png",
+                            greeting: "Sign in as Joyce Basilio-Ramos",
+                            email: "joycemb@stpeter.com.ph",
+                            avatar:
+                              "https://lh3.googleusercontent.com/a-/ALV-UjVMJSHCRae9AI71omM-12-JXe6RRORMkcfShnPQRn5izScdfxo=s240-p-k-rw-no",
+                          },
+                          {
+                            id: "facebook",
+                            providerLabel: "Facebook",
+                            providerLogo:
+                              "/images/osp-chakra-reusable-components/icons8-meta-48.png",
+                            greeting: "Continue as Joyce Basilio-Ramos",
+                            email: "joycemb@stpeter.com.ph",
+                            avatar:
+                              "https://scontent-lga3-1.xx.fbcdn.net/v/t39.30808-1/240453222_10158707145232013_2332180473992613988_n.jpg?stp=cp0_dst-jpg_tt6&cstp=mx2048x2047&ctp=s40x40&_nc_cat=103&ccb=1-7&_nc_sid=e99d92&_nc_eui2=AeHbsC6uUB2zqxwO0D3gQGDTwCRz7JlBua_AJHPsmUG5r8neQQIF246QJK5Y88UgZClRdJbSkwKr4xLuOivENtGy&_nc_ohc=OBD3e6D1LTIQ7kNvwErQCkB&_nc_oc=Adryocwxy5KqGIreaqIXnyBmCQPhyCDdUv_cLHdwMMe0W8vgi8X0ikg57mfW83MkGMc&_nc_zt=24&_nc_ht=scontent-lga3-1.xx&_nc_gid=lDlUlZl5nGVF4-xhbFFGVg&_nc_ss=792a8&oh=00_AQCT8rtpTEpNDV7OXduiD439xzln6JDxPldLiEt1z83CNg&oe=6A529496",
+                          },
+                        ].map((p) => (
+                          <motion.button
+                            key={p.id}
+                            type="button"
+                            onClick={() => handleSocialLogin(p.id)}
+                            disabled={!!socialLoading}
+                            whileHover={socialLoading ? {} : { y: -1 }}
+                            whileTap={socialLoading ? {} : { scale: 0.985 }}
+                            style={{
+                              width: "100%",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "10px",
+                              padding: "8px 12px",
+                              borderRadius: "12px",
+                              border: "1.5px solid #e5e7eb",
+                              background: "white",
+                              cursor: socialLoading ? "not-allowed" : "pointer",
+                              opacity:
+                                socialLoading && socialLoading !== p.id
+                                  ? 0.45
+                                  : 1,
+                              transition:
+                                "border-color 0.15s, background 0.15s, box-shadow 0.15s",
+                              boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                            }}
+                            onMouseEnter={(e) => {
+                              if (socialLoading) return;
+                              const el = e.currentTarget as HTMLButtonElement;
+                              el.style.background = "#f8fafc";
+                              el.style.borderColor = "#cbd5e1";
+                              el.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
+                            }}
+                            onMouseLeave={(e) => {
+                              const el = e.currentTarget as HTMLButtonElement;
+                              el.style.background = "white";
+                              el.style.borderColor = "#e5e7eb";
+                              el.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)";
+                            }}>
+                            <Flex
+                              position="relative"
+                              w="30px"
+                              h="30px"
+                              flexShrink={0}
+                              rounded="full"
+                              overflow="hidden"
+                              bg="linear-gradient(135deg, #059669 0%, #065f46 100%)"
+                              color="white"
+                              alignItems="center"
+                              justifyContent="center"
+                              fontSize="xs"
+                              fontWeight="semibold">
+                              {avatarErrors[p.id] ? (
+                                "JB"
+                              ) : (
+                                // Plain <img> (not next/image): these are
+                                // arbitrary/expiring social-CDN URLs, so we skip
+                                // remote-host config and fall back to initials
+                                // via onError.
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={p.avatar}
+                                  alt="Joyce Basilio-Ramos"
+                                  width={30}
+                                  height={30}
+                                  style={{
+                                    width: "30px",
+                                    height: "30px",
+                                    objectFit: "cover",
+                                  }}
+                                  onError={() =>
+                                    setAvatarErrors((prev) => ({
+                                      ...prev,
+                                      [p.id]: true,
+                                    }))
+                                  }
+                                />
+                              )}
+                            </Flex>
+
+                            <VStack
+                              flex={1}
+                              gap={0}
+                              alignItems="flex-start"
+                              minW={0}
+                              w="full">
+                              <Text
+                                fontSize="sm"
+                                fontWeight="semibold"
+                                color="gray.800"
+                                w="full"
+                                overflow="hidden"
+                                textOverflow="ellipsis"
+                                whiteSpace="nowrap">
+                                {p.greeting}
+                              </Text>
+                              <Text
+                                fontSize="xs"
+                                color="gray.500"
+                                w="full"
+                                overflow="hidden"
+                                textOverflow="ellipsis"
+                                whiteSpace="nowrap">
+                                {p.email}
+                              </Text>
+                            </VStack>
+
+                            <Image
+                              src={p.providerLogo}
+                              alt={p.providerLabel}
+                              width={18}
+                              height={18}
+                              style={{ objectFit: "contain", flexShrink: 0 }}
+                            />
+
+                            {socialLoading === p.id ? (
+                              <Loader2
+                                size={18}
+                                style={{
+                                  animation: "spin 1s linear infinite",
+                                  color: "#6b7280",
+                                  flexShrink: 0,
+                                }}
+                              />
+                            ) : (
+                              <ArrowRight
+                                size={16}
+                                color="#9ca3af"
+                                style={{ flexShrink: 0 }}
+                              />
+                            )}
+                          </motion.button>
+                        ))}
+                      </VStack>
+
+                      <Link
+                        onClick={() => setStage("signup")}
+                        fontSize="xs"
+                        fontWeight="medium"
+                        color="gray.500"
+                        cursor="pointer"
+                        _hover={{ color: "green.700" }}>
+                        No Account? Sign up.
+                      </Link>
+                    </VStack>
+                  </motion.div>
+                ) : stage === "signup" ? (
+                  <motion.div
+                    key="signup"
+                    initial={{ opacity: 0, x: 16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 16 }}
+                    transition={{ duration: 0.25, ease }}>
+                    <motion.button
+                      type="button"
+                      onClick={() => setStage("welcome")}
+                      whileHover={{ x: -2 }}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        marginBottom: "16px",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        padding: 0,
+                      }}>
+                      <ArrowLeft size={14} color="#6b7280" />
+                      <Text fontSize="xs" fontWeight="semibold" color="gray.500">
+                        Back
+                      </Text>
+                    </motion.button>
+
+                    <Box mb={8}>
+                      <Heading
+                        as="h2"
+                        fontSize="2xl"
+                        fontWeight="bold"
+                        color="gray.900">
+                        Create your account
+                      </Heading>
+                      <Text fontSize="sm" color="gray.500" mt={1}>
+                        Sign up to get started
+                      </Text>
+                    </Box>
+
+                    <form onSubmit={handleSignup}>
                       <VStack gap={5}>
-                        {/* email */}
-                        <motion.div {...fadeUp(0.24)} style={{ width: "100%" }}>
+                        <Box w="full">
                           <Field.Root>
                             <Field.Label
                               fontSize="sm"
                               fontWeight="medium"
-                              color="gray.700"
-                            >
+                              color="gray.700">
+                              Full name
+                            </Field.Label>
+                            <Input
+                              type="text"
+                              required
+                              value={signupName}
+                              onChange={(e) => setSignupName(e.target.value)}
+                              placeholder="Juan Dela Cruz"
+                              bg="gray.50"
+                              borderColor="gray.200"
+                              rounded="xl"
+                              fontSize="sm"
+                              _focus={{
+                                borderColor: "green.500",
+                                bg: "white",
+                                boxShadow: "0 0 0 4px rgba(16,185,129,0.1)",
+                              }}
+                            />
+                          </Field.Root>
+                        </Box>
+
+                        <Box w="full">
+                          <Field.Root>
+                            <Field.Label
+                              fontSize="sm"
+                              fontWeight="medium"
+                              color="gray.700">
                               Email address
                             </Field.Label>
                             <InputGroup
@@ -784,8 +785,171 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                                 <Box color="gray.400">
                                   <Mail size={16} />
                                 </Box>
+                              }>
+                              <Input
+                                type="email"
+                                required
+                                value={signupEmail}
+                                onChange={(e) => setSignupEmail(e.target.value)}
+                                placeholder="you@stpeter.com.ph"
+                                bg="gray.50"
+                                borderColor="gray.200"
+                                rounded="xl"
+                                fontSize="sm"
+                                _focus={{
+                                  borderColor: "green.500",
+                                  bg: "white",
+                                  boxShadow: "0 0 0 4px rgba(16,185,129,0.1)",
+                                }}
+                              />
+                            </InputGroup>
+                          </Field.Root>
+                        </Box>
+
+                        <Box w="full">
+                          <Field.Root>
+                            <Field.Label
+                              fontSize="sm"
+                              fontWeight="medium"
+                              color="gray.700">
+                              Password
+                            </Field.Label>
+                            <InputGroup
+                              width="full"
+                              startElement={
+                                <Box color="gray.400">
+                                  <Lock size={16} />
+                                </Box>
                               }
-                            >
+                              endElement={
+                                <IconButton
+                                  variant="ghost"
+                                  size="xs"
+                                  onClick={() =>
+                                    setShowSignupPassword((v) => !v)
+                                  }
+                                  aria-label={
+                                    showSignupPassword
+                                      ? "Hide password"
+                                      : "Show password"
+                                  }
+                                  color="gray.400"
+                                  _hover={{ color: "gray.600" }}>
+                                  {showSignupPassword ? (
+                                    <EyeOff size={16} />
+                                  ) : (
+                                    <Eye size={16} />
+                                  )}
+                                </IconButton>
+                              }
+                              endElementProps={{ pointerEvents: "auto" }}>
+                              <Input
+                                type={showSignupPassword ? "text" : "password"}
+                                required
+                                value={signupPassword}
+                                onChange={(e) =>
+                                  setSignupPassword(e.target.value)
+                                }
+                                placeholder="••••••••"
+                                bg="gray.50"
+                                borderColor="gray.200"
+                                rounded="xl"
+                                fontSize="sm"
+                                _focus={{
+                                  borderColor: "green.500",
+                                  bg: "white",
+                                  boxShadow: "0 0 0 4px rgba(16,185,129,0.1)",
+                                }}
+                              />
+                            </InputGroup>
+                          </Field.Root>
+                        </Box>
+
+                        <motion.div
+                          style={{ width: "100%" }}
+                          whileHover={{ scale: signupLoading ? 1 : 1.015 }}
+                          whileTap={{ scale: signupLoading ? 1 : 0.985 }}>
+                          <Button
+                            type="submit"
+                            width="full"
+                            loading={signupLoading}
+                            loadingText="Creating account…"
+                            rounded="xl"
+                            py={6}
+                            fontWeight="semibold"
+                            fontSize="sm"
+                            color="white"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #059669 0%, #065f46 100%)",
+                              boxShadow: "0 4px 22px rgba(5,150,105,0.35)",
+                            }}
+                            _hover={{}}
+                            _active={{}}>
+                            Create Account
+                            <ArrowRight size={16} />
+                          </Button>
+                        </motion.div>
+                      </VStack>
+                    </form>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="password"
+                    initial={{ opacity: 0, x: 16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 16 }}
+                    transition={{ duration: 0.25, ease }}>
+                    <motion.button
+                      type="button"
+                      onClick={() => setStage("welcome")}
+                      whileHover={{ x: -2 }}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        marginBottom: "16px",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        padding: 0,
+                      }}>
+                      <ArrowLeft size={14} color="#6b7280" />
+                      <Text fontSize="xs" fontWeight="semibold" color="gray.500">
+                        Back
+                      </Text>
+                    </motion.button>
+
+                    <Box mb={8}>
+                      <Heading
+                        as="h2"
+                        fontSize="2xl"
+                        fontWeight="bold"
+                        color="gray.900">
+                        Welcome back
+                      </Heading>
+                      <Text fontSize="sm" color="gray.500" mt={1}>
+                        Sign in to your account to continue
+                      </Text>
+                    </Box>
+
+                    <form onSubmit={handleSubmit}>
+                      <VStack gap={5}>
+                        <Box w="full">
+                          <Field.Root>
+                            <Field.Label
+                              fontSize="sm"
+                              fontWeight="medium"
+                              color="gray.700">
+                              Email address
+                            </Field.Label>
+                            <InputGroup
+                              width="full"
+                              startElement={
+                                <Box color="gray.400">
+                                  <Mail size={16} />
+                                </Box>
+                              }>
                               <Input
                                 type="email"
                                 required
@@ -805,16 +969,14 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                               />
                             </InputGroup>
                           </Field.Root>
-                        </motion.div>
+                        </Box>
 
-                        {/* password */}
-                        <motion.div {...fadeUp(0.3)} style={{ width: "100%" }}>
+                        <Box w="full">
                           <Field.Root>
                             <Field.Label
                               fontSize="sm"
                               fontWeight="medium"
-                              color="gray.700"
-                            >
+                              color="gray.700">
                               Password
                             </Field.Label>
                             <InputGroup
@@ -835,8 +997,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                                       : "Show password"
                                   }
                                   color="gray.400"
-                                  _hover={{ color: "gray.600" }}
-                                >
+                                  _hover={{ color: "gray.600" }}>
                                   {showPassword ? (
                                     <EyeOff size={16} />
                                   ) : (
@@ -844,13 +1005,12 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                                   )}
                                 </IconButton>
                               }
-                              endElementProps={{ pointerEvents: "auto" }}
-                            >
+                              endElementProps={{ pointerEvents: "auto" }}>
                               <Input
                                 type={showPassword ? "text" : "password"}
                                 required
-                                value={password}
                                 name="passwordInput"
+                                value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="••••••••"
                                 bg="gray.50"
@@ -865,17 +1025,17 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                               />
                             </InputGroup>
                           </Field.Root>
-                        </motion.div>
+                        </Box>
 
-                        {/* remember me + forgot password */}
-                        <motion.div {...fadeUp(0.36)} style={{ width: "100%" }}>
+                        <Box w="full">
                           <HStack justifyContent="space-between">
                             <Checkbox.Root
                               colorPalette="green"
                               checked={remember}
-                              onCheckedChange={(e) => setRemember(!!e.checked)}
-                              cursor="pointer"
-                            >
+                              onCheckedChange={(e) =>
+                                setRemember(!!e.checked)
+                              }
+                              cursor="pointer">
                               <Checkbox.HiddenInput />
                               <Checkbox.Control rounded="sm" />
                               <Checkbox.Label fontSize="sm" color="gray.600">
@@ -887,20 +1047,16 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                               fontSize="sm"
                               fontWeight="medium"
                               color="green.700"
-                              _hover={{ color: "green.600" }}
-                            >
+                              _hover={{ color: "green.600" }}>
                               Forgot password?
                             </Link>
                           </HStack>
-                        </motion.div>
+                        </Box>
 
-                        {/* submit */}
                         <motion.div
-                          {...fadeUp(0.42)}
                           style={{ width: "100%" }}
                           whileHover={{ scale: loading ? 1 : 1.015 }}
-                          whileTap={{ scale: loading ? 1 : 0.985 }}
-                        >
+                          whileTap={{ scale: loading ? 1 : 0.985 }}>
                           <Button
                             type="submit"
                             width="full"
@@ -917,157 +1073,271 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                               boxShadow: "0 4px 22px rgba(5,150,105,0.35)",
                             }}
                             _hover={{}}
-                            _active={{}}
-                          >
+                            _active={{}}>
                             Sign in
                             <ArrowRight size={16} />
                           </Button>
                         </motion.div>
                       </VStack>
                     </form>
-
-                    {/* divider */}
-                    <motion.div {...fadeUp(0.48)}>
-                      <HStack my={6}>
-                        <Separator flex="1" borderColor="gray.100" />
-                        <Text
-                          fontSize="10px"
-                          letterSpacing="widest"
-                          color="gray.400"
-                          fontWeight="semibold"
-                          textTransform="uppercase"
-                        >
-                          Or continue with
-                        </Text>
-                        <Separator flex="1" borderColor="gray.100" />
-                      </HStack>
-                    </motion.div>
-
-                    {/* social login buttons */}
-                    <motion.div {...fadeUp(0.52)}>
-                      <HStack gap={3}>
-                        {[
-                          {
-                            id: "google",
-                            label: "Google",
-                            src: "/images/osp-chakra-reusable-components/icons8-google-48.png",
-                            hoverBg: "#fff8f8",
-                            hoverBorder: "#fca5a5",
-                          },
-                          {
-                            id: "facebook",
-                            label: "Facebook",
-                            src: "/images/osp-chakra-reusable-components/icons8-meta-48.png",
-                            hoverBg: "#f0f4ff",
-                            hoverBorder: "#93c5fd",
-                          },
-                          {
-                            id: "twitter",
-                            label: "X",
-                            src: "/images/osp-chakra-reusable-components/icons8-x-48.png",
-                            hoverBg: "#f5f5f5",
-                            hoverBorder: "#d1d5db",
-                          },
-                        ].map((p) => (
-                          <motion.button
-                            key={p.id}
-                            type="button"
-                            onClick={() => handleSocialLogin(p.id)}
-                            disabled={!!socialLoading}
-                            whileHover={socialLoading ? {} : { y: -2 }}
-                            whileTap={socialLoading ? {} : { scale: 0.96 }}
-                            style={{
-                              flex: 1,
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              gap: "6px",
-                              padding: "12px 8px",
-                              borderRadius: "14px",
-                              border: "1.5px solid #f0f0f0",
-                              background: "white",
-                              cursor: socialLoading ? "not-allowed" : "pointer",
-                              opacity:
-                                socialLoading && socialLoading !== p.id
-                                  ? 0.45
-                                  : 1,
-                              transition:
-                                "border-color 0.15s, background 0.15s, box-shadow 0.15s",
-                              boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-                            }}
-                            onMouseEnter={(e) => {
-                              if (socialLoading) return;
-                              const el = e.currentTarget as HTMLButtonElement;
-                              el.style.background = p.hoverBg;
-                              el.style.borderColor = p.hoverBorder;
-                              el.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
-                            }}
-                            onMouseLeave={(e) => {
-                              const el = e.currentTarget as HTMLButtonElement;
-                              el.style.background = "white";
-                              el.style.borderColor = "#f0f0f0";
-                              el.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)";
-                            }}
-                          >
-                            {socialLoading === p.id ? (
-                              <Loader2
-                                size={20}
-                                style={{
-                                  animation: "spin 1s linear infinite",
-                                  color: "#6b7280",
-                                }}
-                              />
-                            ) : (
-                              <Image
-                                src={p.src}
-                                alt={p.label}
-                                width={22}
-                                height={22}
-                                style={{ objectFit: "contain" }}
-                              />
-                            )}
-                            <Text
-                              fontSize="11px"
-                              fontWeight="semibold"
-                              color="gray.500"
-                            >
-                              {p.label}
-                            </Text>
-                          </motion.button>
-                        ))}
-                      </HStack>
-                    </motion.div>
-
-                    {/* footer note */}
-                    {/* <motion.div {...fadeUp(0.58)}>
-              <Text
-                textAlign="center"
-                fontSize="xs"
-                color="gray.400"
-                lineHeight="tall"
-                mt={5}
-              >
-                This system is for authorized St. Peter personnel only.
-                <br />
-                Unauthorized access is prohibited.
-              </Text>
-            </motion.div> */}
-                  </Box>
-
-                  <motion.div {...fadeUp(0.56)}>
-                    <Text
-                      textAlign="center"
-                      fontSize="xs"
-                      color="gray.400"
-                      mt={5}
-                    >
-                      © 2026 St. Peter Life Plans
-                    </Text>
                   </motion.div>
-                </motion.div>
+                )}
+              </AnimatePresence>
+            </Box>
+          </motion.div>
+
+          <motion.div
+            {...fadeUp(0.25)}
+            style={{
+              position: "relative",
+              zIndex: 10,
+              width: "100%",
+              maxWidth: "28rem",
+              marginTop: "24px",
+              marginBottom: "16px",
+            }}>
+            <HStack justifyContent="center" gap={{ base: 7, sm: 10 }}>
+              {EXTERNAL_LINKS.map((link) => (
+                <motion.button
+                  key={link.id}
+                  type="button"
+                  onClick={() => setExternalLink(link)}
+                  whileHover={{ scale: 1.06 }}
+                  whileTap={{ scale: 0.94 }}
+                  aria-label={link.label}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: "6px",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: 0,
+                  }}>
+                  <Flex
+                    w="48px"
+                    h="48px"
+                    rounded="full"
+                    alignItems="center"
+                    justifyContent="center"
+                    bg="white"
+                    borderWidth="1px"
+                    borderColor="gray.200"
+                    boxShadow="0 2px 8px rgba(0,0,0,0.08)"
+                    color="green.700">
+                    <link.icon size={20} />
+                  </Flex>
+                  <Text fontSize="xs" fontWeight="medium" color="gray.600">
+                    {link.label}
+                  </Text>
+                </motion.button>
+              ))}
+            </HStack>
+          </motion.div>
+        </Flex>
+      </Flex>
+
+      <AnimatePresence>
+        {externalLink && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 100,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "rgba(2,44,34,0.55)",
+              backdropFilter: "blur(4px)",
+              padding: "16px",
+            }}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.97 }}
+              transition={{ duration: 0.22, ease }}
+              style={{
+                width: "100%",
+                maxWidth: "480px",
+                height: "min(85vh, 720px)",
+                background: "white",
+                borderRadius: "20px",
+                boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
+                overflow: "hidden",
+                display: "flex",
+                flexDirection: "column",
+              }}>
+              <Flex
+                alignItems="center"
+                justifyContent="space-between"
+                px={5}
+                py={4}
+                borderBottomWidth="1px"
+                borderColor="gray.100"
+                flexShrink={0}>
+                <Text fontSize="sm" fontWeight="semibold" color="gray.900">
+                  {externalLink.label}
+                </Text>
+                <IconButton
+                  variant="ghost"
+                  size="xs"
+                  onClick={() => setExternalLink(null)}
+                  aria-label="Close"
+                  color="gray.400"
+                  _hover={{ color: "gray.600" }}>
+                  <X size={16} />
+                </IconButton>
               </Flex>
-            </Flex>
+              <Box flex={1} minH={0}>
+                <iframe
+                  src={externalLink.url}
+                  title={externalLink.label}
+                  style={{ width: "100%", height: "100%", border: "none" }}
+                />
+              </Box>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {bioStep !== "idle" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 100,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "rgba(2,44,34,0.55)",
+              backdropFilter: "blur(4px)",
+              padding: "24px",
+            }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.25, ease }}
+              style={{
+                width: "100%",
+                maxWidth: "22rem",
+                background: "white",
+                borderRadius: "24px",
+                padding: "32px 28px",
+                boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
+                textAlign: "center",
+              }}
+            >
+              <Flex
+                position="relative"
+                w="88px"
+                h="88px"
+                mx="auto"
+                mb={5}
+                alignItems="center"
+                justifyContent="center"
+              >
+                {bioStep === "scanning" && (
+                  <motion.div
+                    animate={{ scale: [1, 1.25, 1], opacity: [0.5, 0, 0.5] }}
+                    transition={{
+                      duration: 1.6,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      borderRadius: "9999px",
+                      border: "2px solid #059669",
+                    }}
+                  />
+                )}
+                <Flex
+                  w="72px"
+                  h="72px"
+                  rounded="full"
+                  alignItems="center"
+                  justifyContent="center"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #059669 0%, #065f46 100%)",
+                    boxShadow: "0 8px 24px rgba(5,150,105,0.35)",
+                  }}
+                >
+                  <AnimatePresence mode="wait">
+                    {bioStep === "success" ? (
+                      <motion.div
+                        key="check"
+                        initial={{ scale: 0, rotate: -45 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 18,
+                        }}
+                      >
+                        <Check size={32} color="white" strokeWidth={3} />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="scan"
+                        animate={{ opacity: [1, 0.5, 1] }}
+                        transition={{ duration: 1.4, repeat: Infinity }}
+                      >
+                        <Fingerprint size={32} color="white" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </Flex>
+              </Flex>
+
+              <Heading as="h3" fontSize="lg" fontWeight="bold" color="gray.900" mb={1}>
+                {bioStep === "success" ? "Verified" : "Scanning biometrics…"}
+              </Heading>
+              <Text fontSize="sm" color="gray.500" mb={bioStep === "success" ? 0 : 5}>
+                {bioStep === "success"
+                  ? "Welcome back, Joyce Basilio-Ramos"
+                  : "Hold still while we confirm it's you"}
+              </Text>
+
+              {bioStep === "scanning" && (
+                <motion.button
+                  type="button"
+                  onClick={cancelBiometricLogin}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    margin: "0 auto",
+                    padding: "8px 16px",
+                    borderRadius: "9999px",
+                    border: "1px solid #e5e7eb",
+                    background: "white",
+                    cursor: "pointer",
+                  }}
+                >
+                  <X size={14} color="#6b7280" />
+                  <Text fontSize="xs" fontWeight="semibold" color="gray.600">
+                    Cancel
+                  </Text>
+                </motion.button>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Box>
   );
 }
