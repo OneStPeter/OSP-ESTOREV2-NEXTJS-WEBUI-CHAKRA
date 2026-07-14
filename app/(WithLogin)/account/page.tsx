@@ -8,16 +8,26 @@ import AdBannerCarousel from "@/components/ui/ad-banner-carousel";
 import AccountQuickActions from "@/components/ui/account-quick-actions";
 import AccountServicesList from "@/components/ui/account-services-list";
 import { STANDARD_SPACING } from "@/lib/theme/standard-design-tokens";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import ProfileHeaderCard from "@/components/ui/ProfileHeaderCard";
 
 const Account = () => {
-  const { login } = useDemoAuth();
+  const { login, isLoggedIn } = useDemoAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     login();
   }, [login]);
+
+  // When logged in the account dashboard lives at the index route ("/"). If the
+  // user lands on the standalone /account URL, redirect to the canonical index
+  // so the two are effectively the same route.
+  useEffect(() => {
+    if (isLoggedIn && pathname === "/account") {
+      router.replace("/");
+    }
+  }, [isLoggedIn, pathname, router]);
 
   const goToPayMyPlan = () => {
     router.push("/account/pay-my-plan");

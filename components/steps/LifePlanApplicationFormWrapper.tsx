@@ -193,7 +193,7 @@ const LifePlanApplicationFormWrapper = ({
         gap={STANDARD_SPACING.sm}
         mb={STANDARD_SPACING.sm}
       >
-        <Flex direction="column" gap={STANDARD_SPACING.xs}>
+        <Flex direction="column" gap={STANDARD_SPACING.xs} w="full">
           <InfoCard>
             Sections below are expandable and collapsible. Use them to focus
             only on relevant details.

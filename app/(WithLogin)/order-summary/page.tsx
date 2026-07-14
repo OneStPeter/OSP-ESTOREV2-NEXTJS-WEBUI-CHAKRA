@@ -8,6 +8,7 @@ import { CartItem } from "@/types/cartItem";
 import Container from "@/components/ui/container";
 import { Breadcrumb } from "st-peter-ui";
 import Page from "@/components/layout/page/Page";
+import { FiShoppingBag } from "react-icons/fi";
 
 const OrderSummaryPage = () => {
   const router = useRouter();
@@ -67,38 +68,77 @@ const OrderSummaryPage = () => {
     <Page.Root title="Order Summary">
       <Page.MainContent>
         <Page.Row>
-          <Box
-            // p={{ base: 0, md: 8 }}
-            // borderRadius="lg"
-            // shadow={{ base: "none", md: "md" }}
-            // bg="white"
-            // maxW={{ base: "full", md: "4xl" }}
-            // mx="auto"
-            w={{ base: "full", md: "full" }}
-          >
+          <Box w={{ base: "full", md: "full" }}>
             {cartItems && cartItems.length > 0 ? (
-              <OrderSummary cartItems={cartItems} />
+              <OrderSummary
+                cartItems={cartItems}
+                action={
+                  <Button
+                    w="full"
+                    h="52px"
+                    fontSize="md"
+                    fontWeight="bold"
+                    borderRadius="lg"
+                    bg="#177D54"
+                    color="white"
+                    _hover={{ bg: "#136344" }}
+                    _active={{ bg: "#0f4f36" }}
+                    _focusVisible={{
+                      outline: "2px solid",
+                      outlineColor: "#177D54",
+                      outlineOffset: "2px",
+                    }}
+                    onClick={() => {
+                      router.push("/get-started");
+                    }}
+                    disabled={!cartItems || cartItems.length === 0}
+                  >
+                    Continue
+                  </Button>
+                }
+              />
             ) : (
-              <Box textAlign="center" py={12}>
-                <Box mb={4}>Your cart is empty</Box>
-                <Button onClick={() => router.push("/plans")}>
+              <Box
+                textAlign="center"
+                maxW="md"
+                mx="auto"
+                py={{ base: 12, md: 16 }}
+                px={6}
+              >
+                <Flex
+                  w="64px"
+                  h="64px"
+                  mx="auto"
+                  mb={4}
+                  borderRadius="full"
+                  bg="green.50"
+                  color="#177D54"
+                  align="center"
+                  justify="center"
+                >
+                  <FiShoppingBag size={28} />
+                </Flex>
+                <Box fontSize="lg" fontWeight="bold" color="gray.900" mb={1}>
+                  Your cart is empty
+                </Box>
+                <Box color="gray.600" mb={6}>
+                  Browse our plans to get started with your order.
+                </Box>
+                <Button
+                  bg="#177D54"
+                  color="white"
+                  _hover={{ bg: "#136344" }}
+                  _focusVisible={{
+                    outline: "2px solid",
+                    outlineColor: "#177D54",
+                    outlineOffset: "2px",
+                  }}
+                  onClick={() => router.push("/plans")}
+                >
                   Browse Plans
                 </Button>
               </Box>
             )}
-
-            <Box textAlign="end" w="full" mt={8}>
-              <Button
-                mt={8}
-                w="full"
-                onClick={() => {
-                  router.push("/get-started");
-                }}
-                disabled={!cartItems || cartItems.length === 0}
-              >
-                Continue
-              </Button>
-            </Box>
           </Box>
         </Page.Row>
       </Page.MainContent>

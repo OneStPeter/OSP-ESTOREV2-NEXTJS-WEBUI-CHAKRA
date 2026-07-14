@@ -103,7 +103,11 @@ const BottomNav = () => {
     : guestBottomNavItems;
 
   const isActive = (href: string) => {
-    if (href === "/") return pathname === href;
+    if (href === "/") {
+      // When logged in the account dashboard is the index route, so /account
+      // and / are the same destination — keep Home highlighted for both.
+      return pathname === "/" || (isLoggedIn && pathname === "/account");
+    }
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 

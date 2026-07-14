@@ -16,7 +16,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IPlans } from "@/types/product";
 import Error from "@/components/ui/error";
-import { Box, Button, Flex, Grid, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  IconButton,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import ComparisonBanner from "@/components/ui/comparison-banner";
 import { useRouter } from "next/navigation";
 import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
@@ -602,53 +610,104 @@ const AllProductsCopy = ({
     </Box>
   );
 
+  const activeCount =
+    activeTab === "traditional"
+      ? traditionalGroups.length
+      : cremationGroups.length;
+
   return (
     <Page.Root title="" description="" hideBackButton>
-      {/* Right-side header tools: category filter pills */}
-      <Page.ToolContent w={{ base: "100%", lg: "auto" }}>
-        <Flex
-          gap="8px"
-          justify={{ base: "flex-end", lg: "flex-end" }}
-          w={{ base: "100%", lg: "auto" }}
-          borderWidth="1px"
-          borderColor={BRAND_COLORS.neutralBorder}
-          bg={BRAND_COLORS.white}
-          px="12px"
-          py="6px"
-          borderRadius={STANDARD_RADIUS.full}
-          // w="lg"
-        >
-          {categoryTabs.map((tab) => {
-            const isActive = activeTab === tab.value;
-
-            return (
-              <Button
-                key={tab.value}
-                onClick={() => setActiveTab(tab.value)}
-                h="28px"
-                flex={{ base: 1, lg: "initial" }}
-                minW="88px"
-                px="14px"
-                borderRadius={STANDARD_RADIUS.full}
-                borderWidth="1px"
-                borderColor={isActive ? "#173E33" : ""}
-                bg={isActive ? "#177D54" : BRAND_COLORS.white}
-                color={isActive ? BRAND_COLORS.white : "#5D5D58"}
-                fontSize="12px"
-                fontWeight="700"
-                _hover={{
-                  bg: isActive ? "#177D54" : BRAND_COLORS.subtleBg,
-                }}
-              >
-                {tab.label}
-              </Button>
-            );
-          })}
-        </Flex>
-      </Page.ToolContent>
-
       <Page.MainContent>
+        {/* Section header + category switcher (traditional / cremation).
+            Rendered inline (not via the Page header slot) so it is always
+            visible and accessible on mobile, tablet, and desktop. */}
         <Page.Row>
+          <Flex
+            direction={{ base: "column", md: "row" }}
+            align={{ base: "stretch", md: "flex-end" }}
+            justify="space-between"
+            gap={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
+          >
+            <Box>
+              <Text
+                fontSize={{ base: "11px", md: "12px" }}
+                fontWeight="800"
+                letterSpacing="0.08em"
+                textTransform="uppercase"
+                color={BRAND_COLORS.darkGreen}
+              >
+                Traditional &amp; Cremation Plans
+              </Text>
+              <Text
+                fontSize={{ base: "20px", md: "26px" }}
+                fontWeight="800"
+                lineHeight="1.2"
+                color={BRAND_COLORS.neutralText}
+                mt="2px"
+              >
+                Find the plan that fits your family
+              </Text>
+            </Box>
+
+            <VStack align={{ base: "stretch", md: "flex-end" }} gap="8px">
+              <Flex
+                role="tablist"
+                aria-label="Plan category"
+                w={{ base: "full", md: "auto" }}
+                bg={BRAND_COLORS.subtleBg}
+                borderWidth="1px"
+                borderColor={BRAND_COLORS.neutralBorder}
+                borderRadius={STANDARD_RADIUS.full}
+                p="8px"
+                gap="4px"
+              >
+                {categoryTabs.map((tab) => {
+                  const isActive = activeTab === tab.value;
+
+                  return (
+                    <Button
+                      key={tab.value}
+                      role="tab"
+                      aria-selected={isActive}
+                      aria-controls="plans-tabpanel"
+                      onClick={() => setActiveTab(tab.value)}
+                      flex={{ base: 1, md: "initial" }}
+                      h={{ base: "44px", md: "40px" }}
+                      minW={{ md: "132px" }}
+                      px="20px"
+                      borderRadius={STANDARD_RADIUS.full}
+                      bg={isActive ? "#177D54" : "transparent"}
+                      color={isActive ? BRAND_COLORS.white : "#5D5D58"}
+                      fontSize={{ base: "13px", md: "14px" }}
+                      fontWeight="700"
+                      boxShadow={
+                        isActive ? "0 1px 3px rgba(0,0,0,0.14)" : "none"
+                      }
+                      transition="background 0.15s ease, color 0.15s ease"
+                      _hover={{
+                        bg: isActive ? "#177D54" : BRAND_COLORS.white,
+                      }}
+                    >
+                      {tab.label}
+                    </Button>
+                  );
+                })}
+              </Flex>
+
+              {/* <Text
+                fontSize="12px"
+                fontWeight="600"
+                color={BRAND_COLORS.grey}
+                textAlign={{ base: "left", md: "right" }}
+                aria-live="polite"
+              >
+                {activeCount} {activeCount === 1 ? "plan" : "plans"} available
+              </Text> */}
+            </VStack>
+          </Flex>
+        </Page.Row>
+
+        <Page.Row id="plans-tabpanel" role="tabpanel">
           {showAlert && (
             <Box
               ref={alertRef}

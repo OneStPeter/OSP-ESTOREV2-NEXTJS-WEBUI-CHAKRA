@@ -12,6 +12,8 @@ const Footer = () => {
       color="white"
       py={8}
       textAlign="center"
+      // Desktop only — hidden on mobile and tablet (below the `lg` breakpoint,
+      // which is the app's desktop cutoff: navbar shows / sidebar hides at lg).
       display={{ base: "none", lg: "flex" }}
       justifyContent="center"
     >

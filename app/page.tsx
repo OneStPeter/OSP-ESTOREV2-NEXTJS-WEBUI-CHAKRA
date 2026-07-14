@@ -1,6 +1,7 @@
 import { IPlans } from "@/types/product";
 import { ProductService } from "@/services/API/ProductService";
-import LandingV2, { type GroupedPlan } from "./(Home)/_sections/landing-v2";
+import { type GroupedPlan } from "./(Home)/_sections/landing-v2";
+import HomeRoute from "./(Home)/_sections/home-route";
 
 async function getPlans(): Promise<IPlans[]> {
   return ProductService.getPlansCard();
@@ -49,5 +50,5 @@ export default async function Home() {
   const plans = await getPlans();
   const groupedPlans = groupPlans(plans);
 
-  return <LandingV2 groupedPlans={groupedPlans} />;
+  return <HomeRoute groupedPlans={groupedPlans} />;
 }

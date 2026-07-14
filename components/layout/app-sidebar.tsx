@@ -19,7 +19,11 @@ import { useState, useEffect } from "react";
 import { Tooltip } from "@/components/ui/tooltip";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { RiCloseLine, RiLogoutBoxRLine } from "react-icons/ri";
+import {
+  RiCloseLine,
+  RiLogoutBoxRLine,
+  RiLoginBoxLine,
+} from "react-icons/ri";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { NavItem, SidebarProps } from "./app-layout.type";
 import logoIcon from "@/public/images/profile.jpg";
@@ -304,8 +308,13 @@ export default function Sidebar({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [navItemExpanded, setNavItemExpanded] = useState<string>("");
   const router = useRouter();
-  const { logout } = useDemoAuth();
+  const { isLoggedIn, logout } = useDemoAuth();
   const { messageBox } = useMessageDialog();
+
+  const handleSignIn = () => {
+    if (isMobile) onClose?.();
+    router.push("/login");
+  };
 
   const handleSignOut = async () => {
     const confirmed = await messageBox({
@@ -531,10 +540,10 @@ export default function Sidebar({
           <ScrollArea.Corner />
         </ScrollArea.Root>
 
-        {/* Sign Out */}
+        {/* Auth action — Sign Out when logged in, Sign In otherwise */}
         <Box borderTop="1px solid" borderColor="gray.200" pt={2}>
           <Tooltip
-            content="Sign Out"
+            content={isLoggedIn ? "Sign Out" : "Sign In"}
             positioning={{ placement: "right" }}
             disabled={isSidebarOpen}
           >
@@ -545,8 +554,8 @@ export default function Sidebar({
               borderRadius="md"
               gap={isSidebarOpen ? 3 : 0}
               cursor="pointer"
-              _hover={{ bg: "red.subtle" }}
-              onClick={handleSignOut}
+              _hover={{ bg: isLoggedIn ? "red.subtle" : "green.subtle" }}
+              onClick={isLoggedIn ? handleSignOut : handleSignIn}
               transition="background 0.2s"
             >
               <Box
@@ -555,10 +564,17 @@ export default function Sidebar({
                 justifyContent="center"
                 alignItems="center"
               >
-                <RiLogoutBoxRLine
-                  size={20}
-                  color="var(--chakra-colors-red-500)"
-                />
+                {isLoggedIn ? (
+                  <RiLogoutBoxRLine
+                    size={20}
+                    color="var(--chakra-colors-red-500)"
+                  />
+                ) : (
+                  <RiLoginBoxLine
+                    size={20}
+                    color="var(--chakra-colors-primary)"
+                  />
+                )}
               </Box>
               <Box
                 overflow="hidden"
@@ -566,8 +582,12 @@ export default function Sidebar({
                 maxWidth={isSidebarOpen ? "220px" : "0px"}
                 opacity={isSidebarOpen ? 1 : 0}
               >
-                <Text color="red.500" whiteSpace="nowrap" fontSize="sm">
-                  Sign Out
+                <Text
+                  color={isLoggedIn ? "red.500" : "primary"}
+                  whiteSpace="nowrap"
+                  fontSize="sm"
+                >
+                  {isLoggedIn ? "Sign Out" : "Sign In"}
                 </Text>
               </Box>
             </Flex>

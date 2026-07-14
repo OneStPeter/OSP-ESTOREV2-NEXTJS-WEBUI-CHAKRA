@@ -2,16 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { IPlans } from "@/types/product";
-import {
-  AddToCartButton,
-  BaseText,
-  Breadcrumb,
-  BuyNowButton,
-} from "st-peter-ui";
+import { AddToCartButton, BaseText, BuyNowButton } from "st-peter-ui";
 import {
   Badge,
   Box,
-  Button,
   Flex,
   Grid,
   GridItem,
@@ -37,13 +31,12 @@ import {
   ProductCarousel,
 } from "./ui/product-carousel";
 import { Body, H3, H4, Small } from "st-peter-ui";
-import { FaArrowLeft } from "react-icons/fa6";
-import { FiCalendar, FiRepeat } from "react-icons/fi";
+import { FiCalendar, FiRepeat, FiUsers, FiClock } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { addToCart } from "@/lib/utils/cart";
-import Container from "./ui/container";
 import { DetailAccordion } from "./ui/accordion";
 import Page from "@/components/layout/page/Page";
+import { FaCircleCheck } from "react-icons/fa6";
 
 type PaymentOption = {
   mode?: string;
@@ -135,6 +128,13 @@ const planFeatureCards: DetailCard[] = [
     icon: "/images/plan-features/free-look.jpg",
   },
 ];
+
+// Compact icons for the image-free desktop "Plan Features" list.
+const featureIcons = {
+  Transferability: FiRepeat,
+  Assignability: FiUsers,
+  "Free Look Period": FiClock,
+} as const;
 
 const ProductView = ({ plans }: { plans: IPlans[] }) => {
   const router = useRouter();
@@ -352,19 +352,12 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
       setIsBuyingNow(false);
     }
   }, [selectedPayment, plan, quantity, selectedPlan, contractPrice, router]);
+
   const breadcrumbItems = [
     { label: "Home", href: "/" },
     { label: "Life Plans", href: "/plans" },
     { label: plan?.planDesc ?? "Product Details", href: "#" },
   ];
-  // ===== ORIGINAL SHELL (replaced by the Page component below) =====
-  // return (
-  //   <Box bgGradient="linear(to-b, #f7faf8 0%, white 24%)" minH="100vh">
-  //     <Container>
-  //       ...page body...
-  //     </Container>
-  //   </Box>
-  // );
 
   return (
     <Page.Root
@@ -395,19 +388,6 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
             </VStack>
           ) : (
             <>
-              {/* Original mobile Back button + desktop Breadcrumb — the Page
-                component now provides its own BackButton and title header.
-            <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 0 }}>
-              <Button variant="ghost" size="md" onClick={() => router.back()} px={0}>
-                <FaArrowLeft color="#177D54" />
-                Back
-              </Button>
-            </Box>
-            <Box display={{ base: "none", md: "block" }} mb={{ base: 0, md: 4 }}>
-              <Breadcrumb items={breadcrumbItems} />
-            </Box>
-            */}
-
               <Grid
                 templateColumns={{ base: "1fr", lg: "1.45fr 1fr" }}
                 gap={{ base: 6, lg: 10 }}
@@ -503,51 +483,76 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                     </HStack>
                   </Box>
 
-                  {/* Desktop: show Plan Features under the product images */}
+                  {/* Desktop: compact, image-free "Plan Features" list under the
+                      product images — tighter e-commerce style. */}
                   <Box display={{ base: "none", lg: "block" }} mt={8}>
-                    <VStack align="start" gap={4} mb={8}>
+                    {/* <VStack align="start" gap={1} mb={4}>
                       <H3>Plan Features</H3>
                       <Body color="gray.600">
                         The following features are available for this plan:
                       </Body>
-                    </VStack>
+                    </VStack> */}
 
-                    <Grid
-                      templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }}
-                      gap={6}
+                    <Box
+                      bg="white"
+                      borderRadius="2xl"
+                      borderWidth="1px"
+                      borderColor="gray.200"
+                      boxShadow="sm"
+                      overflow="hidden"
                     >
-                      {planFeatureCards.map((card) => (
-                        <Box
-                          key={card.title}
-                          bg="white"
-                          borderRadius="2xl"
-                          borderWidth="1px"
-                          borderColor="gray.200"
-                          boxShadow="sm"
-                          p={{ base: 4, md: 5 }}
-                          transition="all 0.2s ease"
-                          _hover={{
-                            shadow: "md",
-                            transform: "translateY(-2px)",
-                          }}
-                          h="100%"
-                        >
-                          <VStack align="stretch" gap={4} h="100%">
-                            <Image
-                              src={card.icon}
-                              alt={`${card.title} image`}
-                              w="100%"
-                              h="180px"
-                              objectFit="cover"
-                              rounded="xl"
-                            />
-                            <Separator />
-                            <H4>{card.title}</H4>
-                            <Body color="gray.700">{card.desc}</Body>
-                          </VStack>
-                        </Box>
-                      ))}
-                    </Grid>
+                      {planFeatureCards.map((card, index) => {
+                        const Icon =
+                          featureIcons[
+                            card.title as keyof typeof featureIcons
+                          ] ?? FiRepeat;
+
+                        return (
+                          <Box key={card.title}>
+                            {index > 0 ? (
+                              <Separator borderColor="gray.100" />
+                            ) : null}
+                            <HStack
+                              align="start"
+                              gap={4}
+                              p={4}
+                              transition="background 0.2s ease"
+                              _hover={{ bg: "gray.50" }}
+                            >
+                              <Flex
+                                flexShrink={0}
+                                w="40px"
+                                h="40px"
+                                rounded="xl"
+                                // /bg="green.50"
+                                color="black"
+                                align="center"
+                                justify="center"
+                              >
+                                <Icon size={20} />
+                              </Flex>
+                              <VStack align="start" gap={1}>
+                                <Text
+                                  fontWeight="600"
+                                  fontSize="md"
+                                  color="gray.900"
+                                  lineHeight="1.3"
+                                >
+                                  {card.title}
+                                </Text>
+                                <Text
+                                  fontSize="sm"
+                                  color="gray.600"
+                                  lineHeight="1.5"
+                                >
+                                  {card.desc}
+                                </Text>
+                              </VStack>
+                            </HStack>
+                          </Box>
+                        );
+                      })}
+                    </Box>
                   </Box>
                 </GridItem>
 
@@ -556,7 +561,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                     align="stretch"
                     gap={{ base: 3, md: 5 }}
                     position={{ base: "static", lg: "sticky" }}
-                    top={{ lg: "110px" }}
+                    //top={{ lg: "110px" }}
                   >
                     <Box
                       order={{ base: 1, md: 1 }}
@@ -599,7 +604,8 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                             <Text
                               fontSize={{ base: "2xl", md: "3xl" }}
                               fontWeight="700"
-                              color="green.700"
+                              //color="green.700"
+                              color="black"
                             >
                               ₱{contractPrice.toLocaleString("en-PH")}
                             </Text>
@@ -613,7 +619,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                             </Text>
                           ) : null} */}
                           </VStack>
-                          {/* 
+                          {/*
                         {discountValue > 0 ? (
                           <Badge
                             colorPalette="green"
@@ -826,43 +832,45 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                                       align="center"
                                     >
                                       <Text
-                                        fontWeight="semibold"
-                                        fontSize={{ base: "12px", md: "md" }}
+                                        //fontWeight="semibold"
+                                        color="gray.500"
+                                        fontSize={{ base: "12px", md: "sm" }}
                                         lineHeight="1.2"
                                       >
                                         {opt.label}
                                       </Text>
                                       {isSelected ? (
-                                        <Badge
-                                          colorPalette="green"
-                                          variant="solid"
-                                          rounded="full"
-                                          px={{ base: 1.5, md: 2 }}
-                                          py={{ base: 0.5, md: 2 }}
-                                          color="white"
-                                          fontSize={{ base: "10px", md: "xs" }}
-                                          fontWeight={"semibold"}
-                                        >
-                                          Selected
-                                        </Badge>
+                                        // <Badge
+                                        //   colorPalette="green"
+                                        //   variant="solid"
+                                        //   rounded="10px"
+                                        //   px={{ base: 1.5, md: 2 }}
+                                        //   py={{ base: 0.5, md: 2 }}
+                                        //   color="white"
+                                        //   fontSize={{ base: "10px", md: "xs" }}
+                                        //   fontWeight={"semibold"}
+                                        // >
+                                        //   Selected
+                                        // </Badge>
+                                        <FaCircleCheck color="green" />
                                       ) : null}
                                     </HStack>
                                     <Text
                                       fontSize={{ base: "16px", md: "2xl" }}
-                                      fontWeight="bold"
-                                      color="green.700"
+                                      fontWeight="semibold"
+                                      color="black"
                                       lineHeight="1.2"
                                     >
                                       {opt.amount}
                                     </Text>
-                                    <Text
+                                    {/* <Text
                                       fontSize={{ base: "11px", md: "sm" }}
-                                      color="gray.600"
+                                      color="gray.500"
                                       lineHeight="1.25"
                                     >
                                       Term: {opt.term}{" "}
                                       {opt.term === 1 ? "year" : "years"}
-                                    </Text>
+                                    </Text> */}
                                     {/* <Text
                                     fontSize={{ base: "11px", md: "sm" }}
                                     color="gray.600"
@@ -878,32 +886,38 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                           })}
                         </Grid>
 
-                        <Box
-                          rounded="xl"
-                          bg="gray.50"
-                          p={4}
-                          display={{ base: "none", md: "block" }}
-                          borderWidth="1px"
-                          borderColor="gray.200"
-                        >
-                          <HStack justify="space-between" align="center">
-                            <Text fontSize="sm" color="gray.600">
-                              Total
-                            </Text>
-                            <Text
-                              fontWeight="bold"
-                              fontSize="xl"
-                              color="green.700"
-                            >
-                              {selectedTotal != null
-                                ? `₱${selectedTotal.toLocaleString("en-PH", {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2,
-                                  })}`
-                                : "-"}
-                            </Text>
-                          </HStack>
-                        </Box>
+                        {/* Total — only shown once a plan term, quantity, and
+                            payment option are all selected. */}
+                        {selectedPlan &&
+                        selectedTerm &&
+                        quantity &&
+                        selectedPayment ? (
+                          <Box
+                            rounded="xl"
+                            bg="gray.50"
+                            p={4}
+                            display={{ base: "none", md: "block" }}
+                            borderWidth="1px"
+                            borderColor="gray.200"
+                          >
+                            <HStack justify="space-between" align="center">
+                              <Text fontSize="sm" color="gray.600">
+                                Total
+                              </Text>
+                              <Text
+                                fontWeight="bold"
+                                fontSize="md"
+                                color="black"
+                              >
+                                ₱
+                                {Number(selectedTotal).toLocaleString("en-PH", {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                })}
+                              </Text>
+                            </HStack>
+                          </Box>
+                        ) : null}
 
                         <Stack
                           direction={{ base: "row" }}

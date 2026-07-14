@@ -4,7 +4,9 @@ import * as React from "react";
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react";
-import { IoChevronBack, IoChevronForward } from "react-icons/io5";
+// Arrow icons no longer used — carousel arrows are commented out.
+// import { IoArrowBack } from "react-icons/io5";
+// import { IoArrowForward } from "react-icons/io5";
 
 import { Box, Flex, Button, IconButton } from "@chakra-ui/react";
 import { cn } from "@/lib/utils/plan";
@@ -56,7 +58,7 @@ function ProductCarousel({
       ...opts,
       axis: orientation === "horizontal" ? "x" : "y",
     },
-    plugins
+    plugins,
   );
   const [canScrollPrev, setCanScrollPrev] = React.useState(false);
   const [canScrollNext, setCanScrollNext] = React.useState(false);
@@ -85,7 +87,7 @@ function ProductCarousel({
         scrollNext();
       }
     },
-    [scrollPrev, scrollNext]
+    [scrollPrev, scrollNext],
   );
 
   React.useEffect(() => {
@@ -173,6 +175,11 @@ function CarouselPrevious({
   size = "sm",
   ...props
 }: React.ComponentProps<typeof Button>) {
+  // Carousel arrows are commented out per request — navigate via swipe,
+  // arrow keys, or the thumbnail strip.
+  return null;
+
+  /*
   const { orientation, scrollPrev, canScrollPrev } = useCarousel();
 
   const commonPos = {
@@ -205,10 +212,11 @@ function CarouselPrevious({
       className={className}
       {...props}
     >
-      <IoChevronBack />
+      <IoArrowBack />
       <span className="sr-only">Previous slide</span>
     </Button>
   );
+  */
 }
 
 function CarouselNext({
@@ -217,6 +225,11 @@ function CarouselNext({
   size = "sm",
   ...props
 }: React.ComponentProps<typeof Button>) {
+  // Carousel arrows are commented out per request — navigate via swipe,
+  // arrow keys, or the thumbnail strip.
+  return null;
+
+  /*
   const { orientation, scrollNext, canScrollNext } = useCarousel();
 
   const commonPos = {
@@ -249,10 +262,11 @@ function CarouselNext({
       className={className}
       {...props}
     >
-      <IoChevronForward />
+      <IoArrowForward />
       <span className="sr-only">Next slide</span>
     </Button>
   );
+  */
 }
 
 export {

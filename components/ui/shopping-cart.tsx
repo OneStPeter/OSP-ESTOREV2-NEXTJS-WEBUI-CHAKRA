@@ -295,20 +295,20 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
                         <Box minW={0}>
                           <Text
                             fontSize={{ base: "16px", md: "18px" }}
-                            fontWeight="800"
+                            fontWeight="600"
                             color={BRAND_COLORS.black}
                             lineHeight="1.25"
                             lineClamp={2}
                           >
                             {item.planDesc}
                           </Text>
-                          <Text
+                          {/* <Text
                             color={BRAND_COLORS.darkGreen}
                             fontSize="13px"
                             fontWeight="600"
                           >
-                            Life Plan
-                          </Text>
+                            {item.planTerm} yrs
+                          </Text> */}
                         </Box>
 
                         <IconButton
@@ -330,7 +330,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
 
                       <HStack gap={STANDARD_SPACING.xs} wrap="wrap">
                         <CartTag>{getModeLabel(item.mode)}</CartTag>
-                        <CartTag>{item.planTerm} yrs</CartTag>
+                        <CartTag>{item.planTerm} years</CartTag>
                       </HStack>
                     </VStack>
                   </Flex>
@@ -459,18 +459,18 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
                       align="center"
                       justify="space-between"
                       gap={STANDARD_SPACING.sm}
-                      bg={BRAND_COLORS.successBg}
+                      bg={BRAND_COLORS.subtleBg}
                       borderRadius={STANDARD_RADIUS.lg}
                       px={STANDARD_SPACING.sm}
                       py={STANDARD_SPACING.sm}
                     >
-                      <Text color={BRAND_COLORS.darkGreen} fontSize="14px">
+                      <Text color={BRAND_COLORS.darkGreen} fontSize="12px">
                         Item Subtotal
                       </Text>
                       <Text
                         color={BRAND_COLORS.black}
-                        fontSize={{ base: "18px", md: "20px" }}
-                        fontWeight="900"
+                        fontSize={{ base: "18px", md: "sm" }}
+                        fontWeight="600"
                       >
                         {formatPeso(Number(item.total))}
                       </Text>
@@ -495,11 +495,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
           boxShadow="0px -8px 24px rgba(0,0,0,0.06)"
         >
           <VStack align="stretch" gap={STANDARD_SPACING.sm}>
-            <Flex
-              justify="space-between"
-              align="center"
-              gap={STANDARD_SPACING.sm}
-            >
+            <Flex justify="end  " align="center" gap={STANDARD_SPACING.sm}>
               {/* <Box>
                 <Text fontSize="14px" color={BRAND_COLORS.grey}>
                   Cart Total
@@ -509,9 +505,9 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ open, onClose }) => {
                 </Text>
               </Box> */}
               <Text
-                fontSize={{ base: "24px", md: "28px" }}
-                fontWeight="900"
-                color={BRAND_COLORS.primaryGreen}
+                fontSize={{ base: "24px", md: "24px" }}
+                fontWeight="500"
+                color="black"
               >
                 {formatPeso(grandTotal)}
               </Text>
@@ -546,9 +542,9 @@ function CartTag(props: { children: React.ReactNode }) {
       py="5px"
       borderRadius={STANDARD_RADIUS.full}
       bg={BRAND_COLORS.successBg}
-      color={BRAND_COLORS.darkGreen}
+      color="black"
       fontSize="12px"
-      fontWeight="800"
+      fontWeight="400"
     >
       {props.children}
     </Box>
@@ -567,10 +563,10 @@ function DetailRow(props: { label: string; value: string }) {
       py={STANDARD_SPACING.xs}
       minH="48px"
     >
-      <Text color={BRAND_COLORS.darkGreen} fontSize="13px">
+      <Text color="black" fontSize="12px">
         {props.label}
       </Text>
-      <Text color={BRAND_COLORS.black} fontSize="14px" fontWeight="800">
+      <Text color={BRAND_COLORS.black} fontSize="14px" fontWeight="500">
         {props.value}
       </Text>
     </Flex>
