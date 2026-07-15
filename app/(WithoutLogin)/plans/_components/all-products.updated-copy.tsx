@@ -628,7 +628,7 @@ const AllProductsCopy = ({
             justify="space-between"
             gap={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
           >
-            <Box>
+            <Box display={{ base: "none", md: "block" }}>
               <Text
                 fontSize={{ base: "11px", md: "12px" }}
                 fontWeight="800"

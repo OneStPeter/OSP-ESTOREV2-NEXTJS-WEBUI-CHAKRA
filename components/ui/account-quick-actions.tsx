@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Icon, SimpleGrid, Text, VStack } from "@chakra-ui/react";
+import { Box, Flex, Icon, SimpleGrid, Text } from "@chakra-ui/react";
 import type { ComponentType } from "react";
 import { BRAND_COLORS } from "@/lib/theme/brand-colors";
 import {
@@ -83,8 +83,8 @@ const AccountQuickActions = ({
           boxShadow={STANDARD_SHADOWS.level1}
           cursor={action.onClick ? "pointer" : "default"}
           transition="box-shadow 150ms ease-out, border-color 150ms ease-out, transform 150ms ease-out"
-          py={{ base: "8px", md: "20px" }}
-          px={STANDARD_SPACING.xs}
+          py={{ base: "8px", md: "20px", lg: "18px" }}
+          px={{ base: STANDARD_SPACING.xs, lg: STANDARD_SPACING.sm }}
           _hover={
             action.onClick
               ? {
@@ -95,14 +95,21 @@ const AccountQuickActions = ({
               : undefined
           }
         >
-          <VStack gap={STANDARD_SPACING.xs}>
+          {/* Mobile: stacked icon + label. Desktop: horizontal tile, centered. */}
+          <Flex
+            direction={{ base: "column", lg: "row" }}
+            align="center"
+            justify="center"
+            gap={{ base: STANDARD_SPACING.xs, lg: STANDARD_SPACING.sm }}
+          >
             <Box
               display="flex"
               alignItems="center"
               justifyContent="center"
-              boxSize="40px"
+              flexShrink={0}
+              boxSize={{ base: "40px", lg: "44px" }}
               borderRadius={STANDARD_RADIUS.full}
-              // bg={BRAND_COLORS.successBg}
+              bg={{ base: "transparent", lg: BRAND_COLORS.successBg }}
               color={BRAND_COLORS.primaryGreen}
             >
               <Icon as={action.icon} boxSize="20px" />
@@ -116,7 +123,7 @@ const AccountQuickActions = ({
             >
               {action.label}
             </Text>
-          </VStack>
+          </Flex>
         </Box>
       ))}
     </SimpleGrid>

@@ -56,9 +56,9 @@ const Account = () => {
             <ProfileHeaderCard
               name="Michelle De Dosa"
               personId="P10529"
-              // homeAddress="Quezon City, Metro Manila"
-              // contactNo="0917 123 4567"
-              // email="joyce.basilio-ramos@example.com"
+              homeAddress="Quezon City, Metro Manila"
+              contactNo="0917 123 4567"
+              email="joyce.basilio-ramos@example.com"
               isInsured={true}
               actions={
                 <Button
@@ -68,14 +68,14 @@ const Account = () => {
                   colorPalette="green"
                   onClick={goToAccountSummary}
                 >
-                  View account summary
+                  View Account Summmary
                 </Button>
               }
             />
 
             <Box>
               <Text fontSize="14px" fontWeight="700" color="gray.900" mb={2}>
-                Common actions
+                Quick Actions
               </Text>
               <AccountQuickActions
                 onPayPlan={goToPayMyPlan}

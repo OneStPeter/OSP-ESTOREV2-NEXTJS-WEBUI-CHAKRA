@@ -62,6 +62,8 @@ const OrderSummary: React.FC<{
         borderColor="gray.200"
         borderRadius={{ base: "0", md: "2xl" }}
         boxShadow={{ md: "sm" }}
+        maxW="3xl"
+        mx="auto"
         p={{ base: 0, md: 6 }}
       >
         <Heading as="h2" size="sm" color="gray.800" mb={4}>
@@ -91,88 +93,88 @@ const OrderSummary: React.FC<{
                   boxShadow: { base: "sm", md: "none" },
                 }}
               >
-                  <Image
-                    src={`/images/plan-images/${item.planDesc}.jpg`}
-                    alt={item.planDesc}
-                    borderRadius="lg"
-                    objectFit="cover"
-                    flexShrink={0}
-                    w={{ base: "72px", md: "96px" }}
-                    h={{ base: "72px", md: "96px" }}
-                  />
+                <Image
+                  src={`/images/plan-images/${item.planDesc}.jpg`}
+                  alt={item.planDesc}
+                  borderRadius="lg"
+                  objectFit="cover"
+                  flexShrink={0}
+                  w={{ base: "72px", md: "96px" }}
+                  h={{ base: "72px", md: "96px" }}
+                />
 
-                  {/* Content: name/badges anchored top, price math anchored bottom */}
-                  <Flex
-                    direction="column"
-                    flex="1"
-                    minW={0}
-                    justify="space-between"
-                    gap={3}
-                  >
-                    <Box minW={0}>
-                      <Heading
-                        as="h3"
-                        size="sm"
-                        color="gray.900"
-                        lineHeight="1.25"
-                        lineClamp={2}
-                      >
-                        {item.planDesc}
-                      </Heading>
-                      <HStack gap={2} mt={1.5} wrap="wrap">
-                        <Box
-                          as="span"
-                          display="inline-flex"
-                          alignItems="center"
-                          px={2}
-                          py={0.5}
-                          borderRadius="full"
-                          bg="green.50"
-                          color="green.800"
-                          fontSize="xs"
-                          fontWeight="700"
-                        >
-                          {getModeLabel(item.mode)}
-                        </Box>
-                        {item.planTerm ? (
-                          <Text fontSize="xs" color={muted}>
-                            Term: {item.planTerm}
-                          </Text>
-                        ) : null}
-                      </HStack>
-                    </Box>
-
-                    {/* Price math: unit × qty = line total, aligned end-to-end */}
-                    <Flex
-                      justify="space-between"
-                      align="baseline"
-                      gap={3}
-                      borderTopWidth="1px"
-                      borderColor="gray.100"
-                      pt={2.5}
+                {/* Content: name/badges anchored top, price math anchored bottom */}
+                <Flex
+                  direction="column"
+                  flex="1"
+                  minW={0}
+                  justify="space-between"
+                  gap={3}
+                >
+                  <Box minW={0}>
+                    <Heading
+                      as="h3"
+                      size="sm"
+                      color="gray.900"
+                      lineHeight="1.25"
+                      lineClamp={2}
                     >
-                      <Text fontSize="sm" color={muted} minW={0} lineClamp={1}>
-                        ₱{formatPeso(unitPrice)}
-                        <Box as="span" color="gray.400" px={1}>
-                          ×
-                        </Box>
-                        <Box as="span" fontWeight="600" color="gray.700">
-                          {item.quantity}
-                        </Box>
-                      </Text>
-                      <Text
-                        fontWeight="bold"
-                        color="gray.900"
-                        whiteSpace="nowrap"
-                        flexShrink={0}
+                      {item.planDesc}
+                    </Heading>
+                    <HStack gap={2} mt={1.5} wrap="wrap">
+                      <Box
+                        as="span"
+                        display="inline-flex"
+                        alignItems="center"
+                        px={2}
+                        py={0.5}
+                        borderRadius="full"
+                        bg="green.50"
+                        color="green.800"
+                        fontSize="xs"
+                        fontWeight="700"
                       >
-                        ₱{formatPeso(item.total)}
-                      </Text>
-                    </Flex>
+                        {getModeLabel(item.mode)}
+                      </Box>
+                      {item.planTerm ? (
+                        <Text fontSize="xs" color={muted}>
+                          Term: {item.planTerm}
+                        </Text>
+                      ) : null}
+                    </HStack>
+                  </Box>
+
+                  {/* Price math: unit × qty = line total, aligned end-to-end */}
+                  <Flex
+                    justify="space-between"
+                    align="baseline"
+                    gap={3}
+                    borderTopWidth="1px"
+                    borderColor="gray.100"
+                    pt={2.5}
+                  >
+                    <Text fontSize="sm" color={muted} minW={0} lineClamp={1}>
+                      ₱{formatPeso(unitPrice)}
+                      <Box as="span" color="gray.400" px={1}>
+                        ×
+                      </Box>
+                      <Box as="span" fontWeight="600" color="gray.700">
+                        {item.quantity}
+                      </Box>
+                    </Text>
+                    <Text
+                      fontWeight="bold"
+                      color="gray.900"
+                      whiteSpace="nowrap"
+                      flexShrink={0}
+                    >
+                      ₱{formatPeso(item.total)}
+                    </Text>
                   </Flex>
                 </Flex>
-              );
-            })}
+              </Flex>
+            );
+          })}
         </VStack>
 
         {/* Totals — same unified card, desktop/tablet only */}

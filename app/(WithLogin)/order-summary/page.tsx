@@ -75,9 +75,6 @@ const OrderSummaryPage = () => {
                 action={
                   <Button
                     w="full"
-                    h="52px"
-                    fontSize="md"
-                    fontWeight="bold"
                     color="white"
                     _hover={{ bg: "#136344" }}
                     _active={{ bg: "#0f4f36" }}

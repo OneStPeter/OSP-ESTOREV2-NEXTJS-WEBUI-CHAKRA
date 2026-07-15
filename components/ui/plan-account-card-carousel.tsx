@@ -71,6 +71,12 @@ const PlanAccountCardCarousel = ({
     };
   }, [api, updateScrollSnaps, updateSelectedIndex]);
 
+  // Embla reports a single scroll snap when all cards fit in one view (no
+  // scrolling). In that case — typically desktop with a few cards — center the
+  // track instead of leaving empty space on the right. When it overflows, keep
+  // the normal left-aligned, scrollable layout.
+  const fitsInView = scrollSnaps.length <= 1;
+
   return (
     <Box w="full">
       <ProductCarousel
@@ -82,7 +88,12 @@ const PlanAccountCardCarousel = ({
           loop: false,
         }}
       >
-        <CarouselContent style={{ marginLeft: "-16px" }}>
+        <CarouselContent
+          style={{
+            marginLeft: "-16px",
+            justifyContent: fitsInView ? "space-between" : "flex-start",
+          }}
+        >
           {plans.map((plan) => (
             <CarouselItem
               key={plan.contractNo ?? plan.lpaNumber ?? plan.plan}
@@ -103,7 +114,12 @@ const PlanAccountCardCarousel = ({
       </ProductCarousel>
 
       {scrollSnaps.length > 1 ? (
-        <Flex justify="center" align="center" gap="8px" mt={STANDARD_SPACING.sm}>
+        <Flex
+          justify="center"
+          align="center"
+          gap="8px"
+          mt={STANDARD_SPACING.sm}
+        >
           {scrollSnaps.map((_, index) => {
             const isSelected = selectedIndex === index;
 

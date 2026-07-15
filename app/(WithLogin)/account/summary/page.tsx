@@ -28,11 +28,11 @@ export default function AccountSummaryPage() {
             gap={{ base: STANDARD_SPACING.sm, md: STANDARD_SPACING.md }}
           >
             <ProfileHeaderCard
-              name="Michelle De Sosa"
-              personId="PI10529"
-              homeAddress="LUYAHAN PASONANCA ZAMBOANGA CITY ZAMBOANGA DEL SUR"
-              contactNo="+63 996-936-3882"
-              email=""
+              name="Michelle De Dosa"
+              personId="P10529"
+              homeAddress="Quezon City, Metro Manila"
+              contactNo="0917 123 4567"
+              email="joyce.basilio-ramos@example.com"
               isInsured={true}
             />
             <PlanAccountCardCarousel

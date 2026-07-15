@@ -593,7 +593,7 @@ const ProductView = ({ plans }: { plans: IPlans[] }) => {
                           wrap="wrap"
                           gap={3}
                         >
-                          <VStack align="start" gap={0}>
+                          <VStack align="start" w="full" gap={0}>
                             <Text
                               fontSize="xs"
                               color="gray.500"
