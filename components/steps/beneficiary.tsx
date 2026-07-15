@@ -324,7 +324,7 @@ const Beneficiary = ({ onUpdate }: BeneficiaryProps) => {
         <Dialog.Root
           placement="center"
           motionPreset="slide-in-bottom"
-          size={{ mdDown: "full", md: "full" }}
+          size={{ mdDown: "full", md: "xl" }}
           open={addDialogOpen}
           onOpenChange={(details) => setAddDialogOpen(details.open)}
         >
@@ -334,7 +334,7 @@ const Beneficiary = ({ onUpdate }: BeneficiaryProps) => {
           <Portal>
             <Dialog.Backdrop />
             <Dialog.Positioner>
-              <Dialog.Content w="100%" maxW="100%" mx={0}>
+              <Dialog.Content>
                 <Dialog.Header>
                   <Dialog.Title>Add Beneficiary</Dialog.Title>
                 </Dialog.Header>
