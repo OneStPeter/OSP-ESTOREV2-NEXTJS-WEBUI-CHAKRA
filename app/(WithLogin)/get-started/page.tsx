@@ -244,8 +244,8 @@ const GetStarted = () => {
           >
             <Dialog.Trigger asChild>
               <Button
-                w={{ base: "sm", md: "xl" }}
-                mt={{ base: 4, md: 0 }}
+                w={{ base: "sm", md: "2xl" }}
+                mt={{ base: 4, md: 8 }}
                 onClick={() => setUploadDialogOpen(true)}
               >
                 CONTINUE

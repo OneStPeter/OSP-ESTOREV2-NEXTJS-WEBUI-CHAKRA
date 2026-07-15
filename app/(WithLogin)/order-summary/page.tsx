@@ -78,8 +78,6 @@ const OrderSummaryPage = () => {
                     h="52px"
                     fontSize="md"
                     fontWeight="bold"
-                    borderRadius="lg"
-                    bg="#177D54"
                     color="white"
                     _hover={{ bg: "#136344" }}
                     _active={{ bg: "#0f4f36" }}

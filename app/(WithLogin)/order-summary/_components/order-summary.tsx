@@ -1,23 +1,16 @@
 // OrderSummary component - updated to handle single or multiple items
 "use client";
 import React from "react";
-import { IPlans } from "@/types/product";
 import {
   Text,
-  Grid,
-  GridItem,
   Image,
   Flex,
   Box,
   Heading,
   HStack,
   VStack,
-  Button,
 } from "@chakra-ui/react";
-import { Body, Breadcrumb, H3, H4 } from "st-peter-ui";
 import { CartItem } from "@/types/cartItem";
-import { useRouter } from "next/navigation";
-import { FaArrowLeft } from "react-icons/fa";
 
 const getModeLabel = (mode: string) => {
   const modeMap: Record<string, string> = {
@@ -40,12 +33,6 @@ const OrderSummary: React.FC<{
   cartItems?: CartItem[];
   action?: React.ReactNode;
 }> = ({ cartItems, action }) => {
-  const router = useRouter();
-  const breadcrumbItems = [
-    { label: "Home", href: "/" },
-    { label: "Order Summary", href: "#" },
-  ];
-
   if (!cartItems || cartItems.length === 0) return null;
 
   const bg = "white";
@@ -59,38 +46,51 @@ const OrderSummary: React.FC<{
   const itemCount = cartItems.length;
 
   return (
-    <Box pb={{ base: "6rem", md: 0 }}>
-      <Grid
-        templateColumns={{
-          base: "1fr",
-          lg: "minmax(0, 1fr) minmax(320px, 360px)",
-        }}
-        gap={{ base: 6, lg: 8 }}
-        alignItems="start"
+    <Box
+      pb={{ base: "6rem", md: 0 }}
+      // Fill the viewport on desktop so a short order (few items) still pushes
+      // the desktop-only footer to the bottom instead of leaving a white gap.
+      // Offset = top chrome (~144px) + page shell bottom padding (120px) +
+      // footer (~390px); it's constant per viewport, so vh scales correctly.
+      minH={{ base: "auto", lg: "calc(100vh - 640px)" }}
+    >
+      {/* One unified card on desktop/tablet. On mobile the items render as
+          separate cards and the totals live in the fixed bottom bar below. */}
+      <Box
+        bg={{ base: "transparent", md: bg }}
+        borderWidth={{ base: "0", md: "1px" }}
+        borderColor="gray.200"
+        borderRadius={{ base: "0", md: "2xl" }}
+        boxShadow={{ md: "sm" }}
+        p={{ base: 0, md: 6 }}
       >
-        {/* ── Left column: order items ─────────────────────────────── */}
-        <GridItem minW={0}>
-          <Heading as="h2" size="sm" color="gray.800" mb={4}>
-            Order items ({itemCount})
-          </Heading>
+        <Heading as="h2" size="sm" color="gray.800" mb={4}>
+          Order items ({itemCount})
+        </Heading>
 
-          <VStack gap={4} align="stretch">
-            {cartItems.map((item, idx) => {
-              const unitPrice = Number(item.price ?? item.ipInstAmt ?? 0);
+        <VStack gap={{ base: 4, md: 0 }} align="stretch">
+          {cartItems.map((item, idx) => {
+            const unitPrice = Number(item.price ?? item.ipInstAmt ?? 0);
+            const isLast = idx === cartItems.length - 1;
 
-              return (
-                <Flex
-                  key={idx}
-                  gap={{ base: 3, md: 4 }}
-                  p={{ base: 3, md: 4 }}
-                  bg={bg}
-                  borderWidth="1px"
-                  borderColor="gray.200"
-                  borderRadius="xl"
-                  align="stretch"
-                  transition="box-shadow 0.2s ease, border-color 0.2s ease"
-                  _hover={{ borderColor: "green.200", shadow: "sm" }}
-                >
+            return (
+              <Flex
+                key={idx}
+                gap={{ base: 3, md: 4 }}
+                px={{ base: 3, md: 0 }}
+                py={{ base: 3, md: 5 }}
+                bg={{ base: bg, md: "transparent" }}
+                borderColor={{ base: "gray.200", md: "gray.100" }}
+                borderWidth={{ base: "1px", md: "0" }}
+                borderBottomWidth={{ base: "1px", md: isLast ? "0" : "1px" }}
+                borderRadius={{ base: "xl", md: "0" }}
+                align="stretch"
+                transition="box-shadow 0.2s ease, border-color 0.2s ease"
+                _hover={{
+                  borderColor: { base: "green.200", md: "gray.100" },
+                  boxShadow: { base: "sm", md: "none" },
+                }}
+              >
                   <Image
                     src={`/images/plan-images/${item.planDesc}.jpg`}
                     alt={item.planDesc}
@@ -101,60 +101,57 @@ const OrderSummary: React.FC<{
                     h={{ base: "72px", md: "96px" }}
                   />
 
-                  <Flex direction="column" flex="1" minW={0} gap={2}>
-                    {/* Name + subtotal */}
-                    <Flex justify="space-between" align="start" gap={3}>
-                      <Box minW={0}>
-                        <Heading
-                          as="h3"
-                          size="sm"
-                          color="gray.900"
-                          lineHeight="1.25"
-                          lineClamp={2}
-                        >
-                          {item.planDesc}
-                        </Heading>
-                        <HStack gap={2} mt={1} wrap="wrap">
-                          <Box
-                            as="span"
-                            display="inline-flex"
-                            alignItems="center"
-                            px={2}
-                            py={0.5}
-                            borderRadius="full"
-                            bg="green.50"
-                            color="green.800"
-                            fontSize="xs"
-                            fontWeight="700"
-                          >
-                            {getModeLabel(item.mode)}
-                          </Box>
-                          {item.planTerm ? (
-                            <Text fontSize="xs" color={muted}>
-                              Term: {item.planTerm}
-                            </Text>
-                          ) : null}
-                        </HStack>
-                      </Box>
-
-                      <Text
-                        fontWeight="bold"
+                  {/* Content: name/badges anchored top, price math anchored bottom */}
+                  <Flex
+                    direction="column"
+                    flex="1"
+                    minW={0}
+                    justify="space-between"
+                    gap={3}
+                  >
+                    <Box minW={0}>
+                      <Heading
+                        as="h3"
+                        size="sm"
                         color="gray.900"
-                        whiteSpace="nowrap"
-                        flexShrink={0}
+                        lineHeight="1.25"
+                        lineClamp={2}
                       >
-                        ₱{formatPeso(item.total)}
-                      </Text>
-                    </Flex>
+                        {item.planDesc}
+                      </Heading>
+                      <HStack gap={2} mt={1.5} wrap="wrap">
+                        <Box
+                          as="span"
+                          display="inline-flex"
+                          alignItems="center"
+                          px={2}
+                          py={0.5}
+                          borderRadius="full"
+                          bg="green.50"
+                          color="green.800"
+                          fontSize="xs"
+                          fontWeight="700"
+                        >
+                          {getModeLabel(item.mode)}
+                        </Box>
+                        {item.planTerm ? (
+                          <Text fontSize="xs" color={muted}>
+                            Term: {item.planTerm}
+                          </Text>
+                        ) : null}
+                      </HStack>
+                    </Box>
 
-                    {/* Unit price × quantity */}
+                    {/* Price math: unit × qty = line total, aligned end-to-end */}
                     <Flex
                       justify="space-between"
-                      align="center"
+                      align="baseline"
                       gap={3}
-                      mt="auto"
+                      borderTopWidth="1px"
+                      borderColor="gray.100"
+                      pt={2.5}
                     >
-                      <Text fontSize="sm" color={muted}>
+                      <Text fontSize="sm" color={muted} minW={0} lineClamp={1}>
                         ₱{formatPeso(unitPrice)}
                         <Box as="span" color="gray.400" px={1}>
                           ×
@@ -164,72 +161,66 @@ const OrderSummary: React.FC<{
                         </Box>
                       </Text>
                       <Text
-                        fontSize="sm"
-                        color={muted}
+                        fontWeight="bold"
+                        color="gray.900"
                         whiteSpace="nowrap"
-                        aria-label={`Quantity ${item.quantity}`}
+                        flexShrink={0}
                       >
-                        Qty: {item.quantity}
+                        ₱{formatPeso(item.total)}
                       </Text>
                     </Flex>
                   </Flex>
                 </Flex>
               );
             })}
-          </VStack>
-        </GridItem>
+        </VStack>
 
-        {/* ── Right column: Order Summary card (tablet + desktop) ──── */}
-        <GridItem display={{ base: "none", md: "block" }}>
-          <Box
-            as="section"
-            aria-label="Order summary"
-            position={{ base: "static", lg: "sticky" }}
-            top={{ lg: "90px" }}
-            bg={bg}
-            borderWidth="1px"
-            borderColor="gray.200"
-            borderRadius="2xl"
-            shadow="sm"
-            p={{ base: 5, md: 6 }}
-          >
-            <Heading as="h2" size="md" color="gray.900" mb={5}>
-              Order Summary
-            </Heading>
+        {/* Totals — same unified card, desktop/tablet only */}
+        <Box
+          as="section"
+          aria-label="Order summary"
+          display={{ base: "none", md: "block" }}
+          borderTopWidth="1px"
+          borderColor="gray.200"
+          mt={2}
+          pt={6}
+        >
+          <Heading as="h2" size="md" color="gray.900" mb={5}>
+            Order Summary
+          </Heading>
 
-            <VStack gap={3} align="stretch">
-              <HStack justify="space-between" align="baseline">
-                <Text color={muted}>
-                  Subtotal ({itemCount} {itemCount === 1 ? "item" : "items"})
-                </Text>
-                <Text fontWeight="medium" color="gray.500" whiteSpace="nowrap">
-                  ₱{formatPeso(grandTotal)}
-                </Text>
-              </HStack>
-              {/* Fees / discounts render here when the model provides them. */}
-            </VStack>
-
-            <Box h="1px" bg="gray.200" my={5} />
-
+          <VStack gap={3} align="stretch">
             <HStack justify="space-between" align="baseline">
-              <Text fontSize="lg" fontWeight="bold" color="gray.800">
-                Grand Total
+              <Text color={muted}>
+                Subtotal ({itemCount} {itemCount === 1 ? "item" : "items"})
               </Text>
-              <Text
-                fontSize="md"
-                fontWeight="extrabold"
-                color="black"
-                whiteSpace="nowrap"
-                lineHeight="1.1"
-              >
+              <Text fontWeight="medium" color="gray.500" whiteSpace="nowrap">
                 ₱{formatPeso(grandTotal)}
               </Text>
             </HStack>
+            {/* Fees / discounts render here when the model provides them. */}
+          </VStack>
 
-            {action ? <Box mt={6}>{action}</Box> : null}
-          </Box>
-        </GridItem>
-      </Grid>
+          <Box h="1px" bg="gray.200" my={5} />
+
+          <HStack justify="space-between" align="baseline">
+            <Text fontSize="lg" fontWeight="bold" color="gray.800">
+              Grand Total
+            </Text>
+            <Text
+              fontSize="md"
+              fontWeight="extrabold"
+              color="black"
+              whiteSpace="nowrap"
+              lineHeight="1.1"
+            >
+              ₱{formatPeso(grandTotal)}
+            </Text>
+          </HStack>
+
+          {action ? <Box mt={6}>{action}</Box> : null}
+        </Box>
+      </Box>
 
       {/* ── Mobile: fixed bottom checkout bar (Grand Total + action) ── */}
       <Flex
