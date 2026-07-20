@@ -300,6 +300,8 @@ const ProfileHeaderCard = ({
             </Box>
           </Link>
         )}
+
+        {actions && <Box mt={4}>{actions}</Box>}
       </Box>
 
       {/* ============================= DESKTOP ============================= */}

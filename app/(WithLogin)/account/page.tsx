@@ -68,7 +68,7 @@ const Account = () => {
                   colorPalette="green"
                   onClick={goToAccountSummary}
                 >
-                  View Account Summmary
+                  View Account Summary
                 </Button>
               }
             />
