@@ -10,9 +10,6 @@ import {
 import {
   Box,
   VStack,
-  FileUpload,
-  Icon,
-  useFileUploadContext,
   Dialog,
   Button,
   Portal,
@@ -21,71 +18,54 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { LuUpload } from "react-icons/lu";
+import { LuIdCard, LuSignature } from "react-icons/lu";
 import Container from "@/components/ui/container";
-import { FaArrowLeft } from "react-icons/fa";
 import InfoCard from "@/components/ui/info-card";
-const MAX_FILES = 3;
+import {
+  DocumentUploadCard,
+  type DocumentTypeConfig,
+} from "@/components/ui/DocumentUploadCard";
 
-const ConditionalDropzone = () => {
-  const fileUpload = useFileUploadContext();
-  const acceptedFiles = fileUpload.acceptedFiles;
+const GOVERNMENT_ID_CONFIG: DocumentTypeConfig = {
+  id: "government-id",
+  label: "Government-issued ID",
+  description: "Current and valid ID",
+  accept: "image/png,image/jpeg,application/pdf",
+  maxSizeMB: 5,
+  required: true,
+  hint: "JPG, PNG or PDF · up to 5MB",
+  processor: "extraction",
+  icon: LuIdCard,
+};
 
-  if (acceptedFiles.length >= MAX_FILES) {
-    return null;
-  }
-
-  return (
-    <FileUpload.Dropzone>
-      <Icon size="md" color="fg.muted">
-        <LuUpload />
-      </Icon>
-      <FileUpload.DropzoneContent>
-        <Box>Drag and drop files here</Box>
-        <Box color="fg.muted">
-          {MAX_FILES - acceptedFiles.length} more file
-          {MAX_FILES - acceptedFiles.length !== 1 ? "s" : ""} allowed
-        </Box>
-      </FileUpload.DropzoneContent>
-    </FileUpload.Dropzone>
-  );
+const SIGNATURE_CONFIG: DocumentTypeConfig = {
+  id: "specimen-signature",
+  label: "Specimen Signature",
+  description: "Signature on plain white paper",
+  accept: "image/png,image/jpeg,application/pdf",
+  maxSizeMB: 5,
+  required: true,
+  hint: "JPG, PNG or PDF · up to 5MB",
+  processor: "signature",
+  icon: LuSignature,
 };
 
 const GetStarted = () => {
   const router = useRouter();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [referralDialogOpen, setReferralDialogOpen] = useState(false);
-  const [idFiles, setIdFiles] = useState<File[]>([]);
-  const [signatureFiles, setSignatureFiles] = useState<File[]>([]);
 
-  const handleFile = async (file: File) => {
-    if (!file) return;
-
-    try {
-      // const formData = new FormData();
-      // formData.append("ImgFile", file);
-
-      // const response = await fetch(
-      //   "http://192.168.2.10:8010/api/EstoreV2/PostOCRUpload",
-      //   {
-      //     method: "POST",
-      //     body: formData,
-      //   },
-      // );
-
-      // if (!response.ok) {
-      //   throw new Error("Upload failed");
-      // }
-
-      // const result = await response.json();
-      const result = {
+  const handleDummyRequirementsUpload = async () => {
+    localStorage.setItem(
+      "ocrResult",
+      JSON.stringify({
         success: true,
         source: "dummy",
         uploadedAt: new Date().toISOString(),
         file: {
-          name: file.name,
-          size: file.size,
-          type: file.type || "application/octet-stream",
+          name: "sample-government-id.jpg",
+          size: 245760,
+          type: "image/jpeg",
         },
         extractedData: {
           firstName: "Juan",
@@ -96,65 +76,6 @@ const GetStarted = () => {
           mobileNumber: "09171234567",
           emailAddress: "juan.delacruz@example.com",
           completeAddress: "123 Sample Street, Quezon City",
-        },
-      };
-
-      console.log("Dummy upload response:", result);
-      localStorage.setItem("ocrResult", JSON.stringify(result));
-    } catch (error) {
-      console.error("Upload error:", error);
-    }
-  };
-
-  const handleDummyRequirementsUpload = async () => {
-    const selectedIdFile = idFiles[0];
-
-    if (selectedIdFile) {
-      await handleFile(selectedIdFile);
-    } else {
-      localStorage.setItem(
-        "ocrResult",
-        JSON.stringify({
-          success: true,
-          source: "dummy",
-          uploadedAt: new Date().toISOString(),
-          file: {
-            name: "sample-government-id.jpg",
-            size: 245760,
-            type: "image/jpeg",
-          },
-          extractedData: {
-            firstName: "Juan",
-            middleName: "Santos",
-            lastName: "Dela Cruz",
-            birthDate: "1990-01-01",
-            nationality: "Filipino",
-            mobileNumber: "09171234567",
-            emailAddress: "juan.delacruz@example.com",
-            completeAddress: "123 Sample Street, Quezon City",
-          },
-        }),
-      );
-    }
-
-    localStorage.setItem(
-      "uploadRequirements",
-      JSON.stringify({
-        success: true,
-        source: "dummy",
-        uploadedBy: "testuser",
-        uploadedAt: new Date().toISOString(),
-        documents: {
-          governmentId: idFiles.map((file) => ({
-            name: file.name,
-            size: file.size,
-            type: file.type || "application/octet-stream",
-          })),
-          specimenSignature: signatureFiles.map((file) => ({
-            name: file.name,
-            size: file.size,
-            type: file.type || "application/octet-stream",
-          })),
         },
       }),
     );
@@ -184,10 +105,10 @@ const GetStarted = () => {
       >
         <VStack gap={4} align="stretch">
           <Box textAlign="center">
-            <H3>Let's Get Started</H3>
+            <H3>Let&apos;s Get Started</H3>
           </Box>
           <BaseText textAlign={{ base: "center", md: "start" }}>
-            We'll be needing some documents and information to proceed with the
+            We&apos;ll be needing some documents and information to proceed with the
             purchase, please prepare the following in advance to smooth out the
             next steps
           </BaseText>
@@ -265,49 +186,9 @@ const GetStarted = () => {
                         To continue, please upload a valid ID. The system will
                         use it to populate your information automatically.
                       </InfoCard>
-                      <Box>
-                        <Body fontWeight="bold">
-                          Upload Government-issued ID
-                        </Body>
-                        <FileUpload.Root
-                          maxW="full"
-                          alignItems="stretch"
-                          maxFiles={MAX_FILES}
-                          accept={[
-                            "image/png",
-                            "image/jpeg",
-                            "application/pdf",
-                          ]}
-                          onFileChange={(details) =>
-                            setIdFiles(details.acceptedFiles)
-                          }
-                        >
-                          <FileUpload.HiddenInput />
-                          <ConditionalDropzone />
-                          <FileUpload.List clearable />
-                        </FileUpload.Root>
-                      </Box>
+                      <DocumentUploadCard config={GOVERNMENT_ID_CONFIG} />
 
-                      <Box>
-                        <Body fontWeight="bold">Upload Specimen Signature</Body>
-                        <FileUpload.Root
-                          maxW="full"
-                          alignItems="stretch"
-                          maxFiles={MAX_FILES}
-                          accept={[
-                            "image/png",
-                            "image/jpeg",
-                            "application/pdf",
-                          ]}
-                          onFileChange={(details) =>
-                            setSignatureFiles(details.acceptedFiles)
-                          }
-                        >
-                          <FileUpload.HiddenInput />
-                          <ConditionalDropzone />
-                          <FileUpload.List clearable />
-                        </FileUpload.Root>
-                      </Box>
+                      <DocumentUploadCard config={SIGNATURE_CONFIG} />
                     </VStack>
                   </Dialog.Body>
 

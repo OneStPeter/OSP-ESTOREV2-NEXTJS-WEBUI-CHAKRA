@@ -2,7 +2,8 @@
 
 import { useDemoAuth } from "@/components/ui/demo-auth";
 import Account from "@/app/(WithLogin)/account/page";
-import LandingV2, { type GroupedPlan } from "./landing-v2";
+// import LandingV2 from "./landing-v2"; // superseded by the redesigned LandingV3
+import LandingV3, { type GroupedPlan } from "./landing-v3";
 
 /* -----------------------------------------------------------------------------
  * HomeRoute — decides what the index route ("/") renders based on demo auth.
@@ -24,5 +25,6 @@ export default function HomeRoute({
     return <Account />;
   }
 
-  return <LandingV2 groupedPlans={groupedPlans} />;
+  // return <LandingV2 groupedPlans={groupedPlans} />; // superseded by LandingV3
+  return <LandingV3 groupedPlans={groupedPlans} />;
 }
