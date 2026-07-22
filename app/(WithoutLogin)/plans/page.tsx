@@ -30,7 +30,8 @@ function groupPlansByProduct(plans: IPlans[], productCode: string) {
     const entry = map.get(key);
 
     const exists = entry.terms.some(
-      (t: any) => t.planTerm === p.planTerm && t.mode === p.mode,
+      (t: { planTerm: number; mode: string }) =>
+        t.planTerm === p.planTerm && t.mode === p.mode,
     );
 
     if (!exists) {
@@ -58,7 +59,6 @@ export default async function Products() {
     //   cremationGroups={cremationGroups}
     // />
     <AllProductsCopy
-      plans={plans}
       traditionalGroups={traditionalGroups}
       cremationGroups={cremationGroups}
     />

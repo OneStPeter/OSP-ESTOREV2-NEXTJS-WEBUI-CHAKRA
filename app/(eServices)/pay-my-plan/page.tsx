@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Body, PrimaryMdFlexButton } from "st-peter-ui";
+import { PrimaryMdFlexButton } from "st-peter-ui";
 import {
   Box,
   VStack,
@@ -23,6 +23,7 @@ import {
   STANDARD_SPACING,
 } from "@/lib/theme/standard-design-tokens";
 import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
+import ValidationMessage from "@/components/ui/validation-message";
 
 const PayMyPlan = () => {
   const router = useRouter();
@@ -193,9 +194,7 @@ const PayMyPlan = () => {
 
               <Separator />
 
-              {(validationError || error) && (
-                <Body color="red.500">{validationError ?? error}</Body>
-              )}
+              <ValidationMessage messages={[validationError, error]} />
 
               <PrimaryMdFlexButton onClick={handleSearch} disabled={loading}>
                 SEARCH
@@ -212,107 +211,6 @@ const PayMyPlan = () => {
       </Page.MainContent>
     </Page.Root>
   );
-
-  // return (
-  //   <Container>
-  //     <Box display={{ base: "block", md: "none" }} mb={{ base: 4, md: 4 }}>
-  //       <Button variant="ghost" size="md" onClick={() => router.back()} px={0}>
-  //         <FaArrowLeft color="#177D54" />
-  //         Back
-  //       </Button>
-  //     </Box>
-  //     <Box display={{ base: "none", md: "block" }}>
-  //       <Breadcrumb items={breadcrumbItems} />
-  //     </Box>
-  //     <Box>
-  //       <H3 display={{ base: "none", md: "block" }}>Pay My Plan</H3>
-  //       <H4>
-  //         Search for your St. Peter Life Plan account to view details and manage
-  //         your plan.
-  //       </H4>
-  //     </Box>
-  //
-  //     <VStack gap={6} mt={8} align="stretch" w="full">
-  //       <Grid templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }} gap={8}>
-  //         <Field.Root>
-  //           <FloatingLabelInput
-  //             id="lpaNumber"
-  //             name="lpaNumber"
-  //             type="text"
-  //             label="LPA Number"
-  //             value={formData.lpaNumber}
-  //             onChange={handleChange}
-  //           />
-  //         </Field.Root>
-  //       </Grid>
-  //
-  //       <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
-  //         <Field.Root>
-  //           <FloatingLabelInput
-  //             id="firstName"
-  //             name="firstName"
-  //             type="text"
-  //             label="First Name"
-  //             value={formData.firstName}
-  //             onChange={handleChange}
-  //           />
-  //         </Field.Root>
-  //         <Field.Root>
-  //           <FloatingLabelInput
-  //             id="middleName"
-  //             name="middleName"
-  //             type="text"
-  //             label="Middle Name"
-  //             value={formData.middleName}
-  //             onChange={handleChange}
-  //           />
-  //         </Field.Root>
-  //       </Grid>
-  //
-  //       <Grid templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }} gap={8}>
-  //         <Field.Root>
-  //           <FloatingLabelInput
-  //             id="lastName"
-  //             name="lastName"
-  //             type="text"
-  //             label="Last Name"
-  //             value={formData.lastName}
-  //             onChange={handleChange}
-  //           />
-  //         </Field.Root>
-  //       </Grid>
-  //
-  //       <Grid templateColumns={{ base: "1fr", md: "repeat(1, 1fr)" }} gap={8}>
-  //         <Field.Root>
-  //           <Field.Label>Date of Birth</Field.Label>
-  //           <Input
-  //             id="dateOfBirth"
-  //             name="dateOfBirth"
-  //             type="date"
-  //             value={formData.dateOfBirth}
-  //             onChange={handleChange}
-  //           />
-  //         </Field.Root>
-  //       </Grid>
-  //
-  //       <Separator />
-  //
-  //       {(validationError || error) && (
-  //         <Body color="red.500">{validationError ?? error}</Body>
-  //       )}
-  //
-  //       <PrimaryMdFlexButton onClick={handleSearch} disabled={loading}>
-  //         SEARCH
-  //       </PrimaryMdFlexButton>
-  //
-  //       <Box textAlign="center">
-  //         <Button w="full" variant="outline">
-  //           Use My Saved Templates
-  //         </Button>
-  //       </Box>
-  //     </VStack>
-  //   </Container>
-  // );
 };
 
 export default PayMyPlan;

@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { Badge, Box, Flex, Text, VStack } from "@chakra-ui/react";
 import NextImage from "next/image";
 import { FaCheck } from "react-icons/fa";
@@ -389,4 +390,7 @@ const PlanCard = ({
   );
 };
 
-export default PlanCard;
+/* Memoized: props are referentially stable (grouped plans come from a useMemo,
+ * callbacks from useCallback), so scroll-driven parent re-renders no longer
+ * re-render every card. */
+export default memo(PlanCard);
