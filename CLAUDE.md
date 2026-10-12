@@ -38,7 +38,7 @@ Do not add new top-level `sessionStorage` keys without documenting them here. Si
 
 ### Steps Wizard
 
-The life plan application wizard is driven by `data/lifePlanSteps.tsx`. To add a step: create a component in `components/steps/`, then add an entry `{ id, header, title, description, component }` to the `steps` array in that file.
+The life plan application wizard is driven by `data/lifePlanSteps.tsx`. To add a step: create a component in `app/(WithLogin)/lifeplan-application/_components/`, then add an entry `{ id, header, title, description, component }` to the `steps` array in that file.
 
 ### Data Fetching
 

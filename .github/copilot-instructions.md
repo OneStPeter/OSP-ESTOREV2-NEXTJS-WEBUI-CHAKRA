@@ -30,7 +30,7 @@ Authoritative guidance for AI coding agents working in this Next.js + Chakra UI 
 ## 5. State & Persistence
 
 - Session Storage: Cart (`"Cart"`) and selected plan persisted via `sessionStorage`. Utilities must guard against missing keys (see `addToCart` uniqueness by `planDesc`). Reuse the same key names; do not invent new top‑level keys without documenting here.
-- Steps Wizard: Configuration lives in `data/lifePlanSteps.tsx` mapping IDs → React elements. To add a step: create component in `components/steps/`, add an ordered object to `steps` array with `id`, `header`, `title`, `description`, `component`.
+- Steps Wizard: Configuration lives in `data/lifePlanSteps.tsx` mapping IDs → React elements. To add a step: create component in `app/(WithLogin)/lifeplan-application/_components/`, add an ordered object to `steps` array with `id`, `header`, `title`, `description`, `component`.
 
 ## 6. Conventions
 

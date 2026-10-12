@@ -19,7 +19,7 @@ import {
   STANDARD_SHADOWS,
   STANDARD_SPACING,
 } from "@/lib/theme/standard-design-tokens";
-import { FloatingLabelInput } from "../ui/FloatingLabelInput";
+import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 
 const provinceOptions = [
   "Abra",

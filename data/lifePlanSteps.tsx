@@ -1,9 +1,9 @@
-import Beneficiary from "@/components/steps/beneficiary";
+import Beneficiary from "@/app/(WithLogin)/lifeplan-application/_components/beneficiary";
 import Confirmation, {
   type ConfirmationProps,
-} from "@/components/steps/confirmation";
-import HealthDeclaration from "@/components/steps/HealthDeclaration";
-import LifePlanApplicationWrapper from "@/components/steps/LifePlanApplicationFormWrapper";
+} from "@/app/(WithLogin)/lifeplan-application/_components/confirmation";
+import HealthDeclaration from "@/app/(WithLogin)/lifeplan-application/_components/HealthDeclaration";
+import LifePlanApplicationWrapper from "@/app/(WithLogin)/lifeplan-application/_components/LifePlanApplicationFormWrapper";
 import { FaClipboardCheck, FaFileSignature, FaRegUser } from "react-icons/fa";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 

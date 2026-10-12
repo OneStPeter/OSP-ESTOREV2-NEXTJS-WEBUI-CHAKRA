@@ -1,4 +1,4 @@
-import LifePlanApplicationStepWrapper from "@/components/steps/LifePlanApplicationStepWrapper";
+import LifePlanApplicationStepWrapper from "./_components/LifePlanApplicationStepWrapper";
 const LifePlanApplicationMain = () => {
   return (
     <div>

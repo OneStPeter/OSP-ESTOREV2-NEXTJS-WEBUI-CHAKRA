@@ -27,14 +27,14 @@ import {
   PrimaryMdButton,
 } from "st-peter-ui";
 
-import { RowItem } from "../ui/row-item";
+import { RowItem } from "@/components/ui/row-item";
 import { IBeneficiary } from "@/types/planholder";
 import {
   createEmptyApplicationData,
   loadApplicationDataFromLocalStorage,
   saveApplicationDataToLocalStorage,
 } from "@/lib/utils/applicationDataFactory";
-import { FloatingLabelInput } from "../ui/FloatingLabelInput";
+import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
 
 const beneficiaryTypes = createListCollection({
   items: [

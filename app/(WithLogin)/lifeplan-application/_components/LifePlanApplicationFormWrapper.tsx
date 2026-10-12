@@ -20,8 +20,8 @@ import {
   saveApplicationDataToLocalStorage,
 } from "@/lib/utils/applicationDataFactory";
 import { STANDARD_SPACING } from "@/lib/theme/standard-design-tokens";
-import { InfoCard } from "../ui/info-card";
-import { InputCardAccordion } from "../ui/input-card-accordion";
+import { InfoCard } from "@/components/ui/info-card";
+import { InputCardAccordion } from "@/components/ui/input-card-accordion";
 import { TertiarySmButton } from "st-peter-ui";
 
 const hasText = (value: unknown) => String(value ?? "").trim() !== "";
