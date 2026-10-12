@@ -23,8 +23,10 @@ import Container from "@/components/ui/container";
 import InfoCard from "@/components/ui/info-card";
 import {
   DocumentUploadCard,
+  type DocumentStatus,
   type DocumentTypeConfig,
 } from "@/components/ui/DocumentUploadCard";
+import { toast } from "sonner";
 
 const GOVERNMENT_ID_CONFIG: DocumentTypeConfig = {
   id: "government-id",
@@ -54,6 +56,8 @@ const GetStarted = () => {
   const router = useRouter();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [referralDialogOpen, setReferralDialogOpen] = useState(false);
+  const [governmentIdStatus, setGovernmentIdStatus] =
+    useState<DocumentStatus>("idle");
 
   const handleDummyRequirementsUpload = async () => {
     localStorage.setItem(
@@ -186,7 +190,10 @@ const GetStarted = () => {
                         To continue, please upload a valid ID. The system will
                         use it to populate your information automatically.
                       </InfoCard>
-                      <DocumentUploadCard config={GOVERNMENT_ID_CONFIG} />
+                      <DocumentUploadCard
+                        config={GOVERNMENT_ID_CONFIG}
+                        onStatusChange={setGovernmentIdStatus}
+                      />
 
                       <DocumentUploadCard config={SIGNATURE_CONFIG} />
                     </VStack>
@@ -209,6 +216,15 @@ const GetStarted = () => {
                     </Dialog.ActionTrigger>
                     <NextButton
                       onClick={async () => {
+                        // Block "Next" until a government ID has been uploaded.
+                        if (
+                          governmentIdStatus === "idle" ||
+                          governmentIdStatus === "failed"
+                        ) {
+                          toast.error("Please upload a government-issued ID.");
+                          return;
+                        }
+
                         const result = await handleDummyRequirementsUpload();
                         if (!result.success) return;
 

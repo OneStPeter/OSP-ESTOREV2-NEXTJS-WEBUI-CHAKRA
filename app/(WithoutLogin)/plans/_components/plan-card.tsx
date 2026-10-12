@@ -5,7 +5,7 @@ import { Badge, Box, Flex, Text, VStack } from "@chakra-ui/react";
 import NextImage from "next/image";
 import { FaCheck } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
-import { PrimaryMdButton, SecondaryMdButton } from "st-peter-ui";
+import { PrimaryMdButton, SecondaryMdButton } from "osp-ui-kit";
 
 export type GroupedPlan = {
   planDesc: string;
@@ -208,35 +208,16 @@ const PlanCard = ({
           <Flex mt="auto" pt={5} w="full" gap={3}>
             <SecondaryMdButton
               flex="1"
-              h="42px"
-              borderRadius="full"
-              border="1px solid"
-              borderColor="green.700"
-              bg="white"
-              color="green.800"
-              fontSize="xs"
-              fontWeight="800"
-              letterSpacing="wide"
               disabled={compareDisabled}
               onClick={() => onToggleCompare(group.planDesc)}
-              _hover={{ bg: "green.50" }}
             >
               {isInCompare ? <FaCheck /> : <IoMdAdd />}
               <span>{isInCompare ? "ADDED" : "COMPARE"}</span>
             </SecondaryMdButton>
             <PrimaryMdButton
+              //color="white"
               flex="1"
-              h="42px"
-              borderRadius="full"
-              borderWidth="1px"
-              borderColor="green.700"
-              bg="white"
-              color="green.800"
-              fontSize="xs"
-              fontWeight="800"
-              letterSpacing="wide"
               onClick={() => onOpen(group.planDesc)}
-              _hover={{ bg: "green.700", color: "white" }}
             >
               BUY NOW
             </PrimaryMdButton>
@@ -351,36 +332,13 @@ const PlanCard = ({
           >
             <SecondaryMdButton
               flex="1"
-              h="42px"
-              borderRadius="full"
-              border="1px solid"
-              borderColor="green.700"
-              bg="white"
-              color="green.800"
-              fontSize="xs"
-              fontWeight="800"
-              letterSpacing="wide"
               disabled={compareDisabled}
               onClick={() => onToggleCompare(group.planDesc)}
-              _hover={{ bg: "green.50" }}
             >
               {isInCompare ? <FaCheck /> : <IoMdAdd />}
               <span>{isInCompare ? "ADDED" : "COMPARE"}</span>
             </SecondaryMdButton>
-            <PrimaryMdButton
-              flex="1"
-              h="42px"
-              borderWidth="1px"
-              borderRadius="full"
-              borderColor="green.700"
-              bg="white"
-              color="green.800"
-              fontSize="xs"
-              fontWeight="800"
-              letterSpacing="wide"
-              onClick={() => onOpen(group.planDesc)}
-              _hover={{ bg: "green.700", color: "white" }}
-            >
+            <PrimaryMdButton flex="1" onClick={() => onOpen(group.planDesc)}>
               BUY NOW
             </PrimaryMdButton>
           </Flex>

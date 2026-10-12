@@ -1,14 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Box, Flex, Grid, Icon, SimpleGrid } from "@chakra-ui/react";
 import {
-  Box,
-  Flex,
-  Grid,
-  Icon,
-  SimpleGrid,
-} from "@chakra-ui/react";
-import { H1, Body, Small, PrimaryMdButton, SecondaryMdButton } from "st-peter-ui";
+  H1,
+  Body,
+  Small,
+  PrimaryMdButton,
+  SecondaryMdButton,
+} from "st-peter-ui";
 import {
   FiArrowRight,
   FiShield,
@@ -175,7 +175,7 @@ export default function Hero() {
                     <Box
                       boxSize="32px"
                       borderRadius={STANDARD_RADIUS.md}
-                      bg={BRAND_COLORS.successBg}
+                      // bg={BRAND_COLORS.successBg}
                       color={BRAND_COLORS.darkGreen}
                       display="flex"
                       alignItems="center"

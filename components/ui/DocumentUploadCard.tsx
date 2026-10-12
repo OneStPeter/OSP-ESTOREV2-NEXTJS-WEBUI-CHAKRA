@@ -14,7 +14,7 @@
  * if you need cross-component state.
  */
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Flex, Spinner, Text, useBreakpointValue } from "@chakra-ui/react";
 import {
   LuUpload,
@@ -65,7 +65,7 @@ export interface DocumentTypeConfig {
   icon: React.ElementType;
 }
 
-type DocumentStatus =
+export type DocumentStatus =
   | "idle"
   | "uploading"
   | "processing"
@@ -393,10 +393,21 @@ const GhostBtn = ({
 /* Card                                                                */
 /* ------------------------------------------------------------------ */
 
-export function DocumentUploadCard({ config }: { config: DocumentTypeConfig }) {
+export function DocumentUploadCard({
+  config,
+  onStatusChange,
+}: {
+  config: DocumentTypeConfig;
+  /** Tells the parent when this slot's upload status changes. */
+  onStatusChange?: (status: DocumentStatus) => void;
+}) {
   const { slot, uploadDocument, retryDocument, removeDocument } =
     useDocumentSlot(config);
   const status = slot?.status ?? "idle";
+
+  useEffect(() => {
+    onStatusChange?.(status);
+  }, [status, onStatusChange]);
 
   const browseRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);

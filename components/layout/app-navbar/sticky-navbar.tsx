@@ -36,7 +36,7 @@ export const StickyNavbar = ({ children }: { children: ReactNode }) => {
   return (
     <Box
       position="fixed"
-      bottom={"-10px"}
+      bottom={0}
       pt={"5px"}
       left={0}
       right={0}
@@ -45,15 +45,27 @@ export const StickyNavbar = ({ children }: { children: ReactNode }) => {
       borderTop="1px solid"
       borderColor="gray.200"
       _dark={{ bg: "gray.900", borderColor: "gray.700" }}
+      // The spring easing overshoots upward when the bar slides back in.
+      // This strip paints the same background just below the bar so no gap
+      // shows during that bounce (replaces the old bottom="-10px" trick).
+      _after={{
+        content: '""',
+        position: "absolute",
+        top: "100%",
+        left: 0,
+        right: 0,
+        height: "24px",
+        bg: "inherit",
+      }}
       style={{
-        paddingBottom: "calc(env(safe-area-inset-bottom) + 30px)",
+        //paddingBottom: "calc(env(safe-area-inset-bottom)",
         paddingLeft: "env(safe-area-inset-left)",
         paddingRight: "env(safe-area-inset-right)",
         transform: minimized ? "translateY(100%)" : "translateY(0)",
         transition: `transform ${minimized ? EASE_OUT : SPRING}`,
       }}
     >
-      <Flex h="56px" px={2} gap={1} align="center" justify="center">
+      <Flex h="56px" px={2} gap={1} align="center" justify="space-between">
         {children}
       </Flex>
     </Box>

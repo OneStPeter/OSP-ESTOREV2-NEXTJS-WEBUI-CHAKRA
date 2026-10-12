@@ -1,13 +1,8 @@
-import { Box, Flex, Icon } from "@chakra-ui/react";
+import { Box, Icon } from "@chakra-ui/react";
 import React from "react";
 
-const ACTIVE_BG =
-  "linear-gradient(160deg, rgba(255,255,255,0.38) 0%, rgba(255,255,255,0.10) 100%), var(--chakra-colors-primary-disabled)/50";
-const ACTIVE_SHADOW =
-  "inset 0 1.5px 0 rgba(255,255,255,0.80), inset 0 -0.5px 0 rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.10)";
-const ACTIVE_BORDER = "rgba(255,255,255,0.55)";
-const ICON_SPRING = "0.22s cubic-bezier(0.34, 1.56, 0.64, 1)";
-const LABEL_SPRING = "0.24s cubic-bezier(0.34, 1.56, 0.64, 1)";
+const ACTIVE_COLOR = "var(--chakra-colors-primary)";
+const INACTIVE_COLOR = "#4a4a4a";
 
 export const StickyNavbarBtn = (params: {
   btnChildren?: React.ElementType;
@@ -29,63 +24,40 @@ export const StickyNavbarBtn = (params: {
     <Box
       as="button"
       onClick={onClickEvent}
-      px="10px"
-      py="6px"
-      borderRadius="xl"
-      position="relative"
-      border={isActive ? "1px solid" : "1px solid transparent"}
-      borderColor={isActive ? ACTIVE_BORDER : "transparent"}
-      color={isActive ? "var(--chakra-colors-primary)" : "#808080"}
+      aria-current={isActive ? "page" : undefined}
+      // Every button takes an equal share of the bar's width
+      flex="1"
+      minW={0}
+      h="100%"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      gap="4px"
+      bg="transparent"
+      border="none"
+      color={isActive ? ACTIVE_COLOR : INACTIVE_COLOR}
       cursor="pointer"
       outline="none"
       userSelect="none"
-      style={{
-        background: isActive ? ACTIVE_BG : "transparent",
-        boxShadow: isActive ? ACTIVE_SHADOW : "none",
-        backdropFilter: isActive ? "blur(12px) saturate(160%)" : "none",
-        WebkitBackdropFilter: isActive ? "blur(12px) saturate(160%)" : "none",
-        transition:
-          "background 0.32s cubic-bezier(0.4,0,0.2,1), box-shadow 0.32s ease, border-color 0.32s ease, color 0.2s ease, transform 0.14s ease",
-      }}
-      _hover={{
-        color: isActive ? "var(--chakra-colors-primary)" : "fg",
-        bg: isActive ? undefined : "rgba(0,0,0,0.04)",
-      }}
-      _active={{ transform: "scale(0.88)" }}
-      _dark={{
-        color: isActive ? "var(--chakra-colors-primary)" : "gray.400",
-        borderColor: isActive ? "rgba(255,255,255,0.14)" : "transparent",
-      }}
+      transition="color 0.2s ease, transform 0.14s ease"
+      _active={{ transform: "scale(0.92)" }}
+      _focusVisible={{ boxShadow: "0 0 0 2px var(--chakra-colors-primary)" }}
+      _dark={{ color: isActive ? ACTIVE_COLOR : "gray.400" }}
     >
-      <Flex direction="column" align="center" gap="3px">
-        <Icon
-          as={DisplayIcon}
-          style={{
-            width: "24px",
-            height: "24px",
-            transition: "filter 0.3s ease",
-          }}
-        />
-        <Box
-          fontSize="2xs"
-          fontWeight={isActive ? "700" : "500"}
-          letterSpacing="0.06em"
-          // lineHeight="1"
-          mb={"-5px"}
-          maxW="60px"
-          minW={"50px"}
-          overflow="hidden"
-          whiteSpace="nowrap"
-          textOverflow="ellipsis"
-          style={{
-            // opacity: isActive ? 1 : 0.75,
-            transform: isActive ? "translateY(0)" : "translateY(2px)",
-            transition: `opacity 0.2s ease, transform ${LABEL_SPRING}`,
-          }}
-        >
-          {title}
-        </Box>
-      </Flex>
+      <Icon as={DisplayIcon} boxSize="22px" />
+      <Box
+        as="span"
+        fontSize="11px"
+        lineHeight="1"
+        fontWeight={isActive ? "600" : "500"}
+        maxW="100%"
+        overflow="hidden"
+        whiteSpace="nowrap"
+        textOverflow="ellipsis"
+      >
+        {title}
+      </Box>
     </Box>
   );
 };

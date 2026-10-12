@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { StPeterProvider } from "st-peter-ui";
+import { StPeterProvider } from "osp-ui-kit";
 import "./globals.css";
 import Footer from "@/components/ui/footer";
 import ServiceWorkerRegister from "@/components/service-worker";
