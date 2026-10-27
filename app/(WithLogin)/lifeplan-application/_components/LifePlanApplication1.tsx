@@ -8,7 +8,8 @@ import {
   createListCollection,
 } from "@chakra-ui/react";
 import { STANDARD_SPACING } from "@/lib/theme/standard-design-tokens";
-import { useOcr } from "@/hooks/useOCR";
+import { markOcrApplied, readOcrResult } from "@/hooks/useOCR";
+import { IOcrValue } from "@/types/ocrResponse";
 import { useEffect, useState } from "react";
 import { IPersonalInfo } from "@/types/planholder";
 import { FloatingLabelInput } from "@/components/ui/FloatingLabelInput";
@@ -44,13 +45,24 @@ const civilStatusCollection = createListCollection({
   ],
 });
 
+const applyOcr = (data: IPersonalInfo, ocr: IOcrValue | null): IPersonalInfo =>
+  ocr
+    ? {
+        ...data,
+        firstName: ocr.firstName || data.firstName,
+        middleName: ocr.middleName || data.middleName,
+        lastName: ocr.lastName || data.lastName,
+        birthDate: ocr.birthDate || data.birthDate,
+        idType: ocr.idType || data.idType,
+        idNumber: ocr.idNumber || data.idNumber,
+      }
+    : data;
+
 const LifePlanApplication1 = ({
   initialData,
   onUpdate,
 }: LifePlanApplication1Props) => {
-  //const { runOCR } = useOcr();
-
-  const [formData, setFormData] = useState<IPersonalInfo>({
+  const [formData, setFormData] = useState<IPersonalInfo>(() => applyOcr({
     firstName: initialData?.firstName ?? "Juan",
     middleName: initialData?.middleName ?? "Santos",
     lastName: initialData?.lastName ?? "Dela Cruz",
@@ -69,69 +81,16 @@ const LifePlanApplication1 = ({
       initialData?.mailingAddress ??
       "123 Mabini Street, Barangay San Antonio, Makati City",
     landLineNumber: initialData?.landLineNumber ?? "02-8123-4567",
-  });
+  }, readOcrResult("personal")));
 
   const updateFormData = (nextData: IPersonalInfo) => {
     setFormData(nextData);
     onUpdate?.(nextData);
   };
 
-  // useEffect(() => {
-  //   runOCR();
-  // }, []);
-
   useEffect(() => {
-    const OCRValue =
-      typeof window === "undefined" ? null : localStorage.getItem("ocrResult");
-
-    if (OCRValue != null) {
-      try {
-        const ocrData = JSON.parse(OCRValue);
-
-        let formattedBirthDate = "";
-        if (typeof ocrData?.birthDate === "string") {
-          const [month, day, year] = ocrData.birthDate
-            .split("/")
-            .map((part: string) => part.trim());
-
-          if (month && day && year) {
-            formattedBirthDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-          }
-        }
-
-        let mappedIdType = "";
-        if (ocrData?.idType) {
-          const normalizedIdType = ocrData.idType
-            .toLowerCase()
-            .replace(/\s+/g, "_")
-            .replace(/'/g, "");
-          if (normalizedIdType.includes("passport")) {
-            mappedIdType = "passport";
-          } else if (normalizedIdType.includes("driver")) {
-            mappedIdType = "driver_license";
-          } else if (
-            normalizedIdType.includes("national") ||
-            normalizedIdType.includes("id")
-          ) {
-            mappedIdType = "national_id";
-          }
-        }
-
-        const updatedData = {
-          ...formData,
-          firstName: ocrData?.firstName || "",
-          lastName: ocrData?.lastName || "",
-          middleName: ocrData?.middleName || "",
-          birthDate: formattedBirthDate || "",
-          idType: mappedIdType || "",
-        };
-        updateFormData(updatedData);
-      } catch (e) {
-        console.error("Failed to parse OCR value:", e);
-        localStorage.removeItem("ocrResult");
-      }
-    }
-  }, []);
+    if (markOcrApplied("personal")) onUpdate?.(formData);
+  }, [formData, onUpdate]);
 
   return (
     <Grid

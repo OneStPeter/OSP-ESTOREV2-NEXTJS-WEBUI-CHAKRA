@@ -1,16 +1,28 @@
-import { createAPIClient } from "@/services/API/APIClient";
+import { api } from "@/services/API/MainAPIClient";
 
-const geoAddressClient = createAPIClient("/address");
+export interface IParsedAddress {
+  lot: string;
+  street: string;
+  barangay: string;
+  district: string;
+  city: string;
+  province: string;
+  zipCode: string;
+  barangayCandidates: string[];
+  districtCandidates: string[];
+  cityCandidates: string[];
+  provinceCandidates: string[];
+  geoapifyUsed: boolean;
+}
+
+const ENDPOINTS = {
+  parse: "/Address/Parse",
+};
 
 export const GeoApifyService = {
-  async autocompleteAddress(address: string) {
-    address = "B15 L15, Triumph St. Diamond Crest Village, San Jose Del Monte";
-
-    const data = await geoAddressClient.post<any, { address: string }>({ address });
-
-    console.log("SERVICE RESPONSE:", data);
-    console.log("request address", address);
-
-    return data;
+  async parseAddress(text: string): Promise<IParsedAddress> {
+    return api.get<IParsedAddress>(ENDPOINTS.parse, {
+      text: text.replace(/\s+/g, " ").trim(),
+    });
   },
 };

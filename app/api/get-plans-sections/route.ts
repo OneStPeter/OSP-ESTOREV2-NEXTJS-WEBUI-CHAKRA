@@ -3,7 +3,7 @@ import dummyPlans from "@/data/plansection_dummy.json";
 
 export async function GET() {
   // --- Original live API call (commented out — internal IP breaks Vercel builds) ---
-  // import { url } from "../";
+  // import { url } from "@/services/API";
   // try {
   //   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
   //   const res = await fetch(`${url}/GetPlansSection`, { method: "GET" });

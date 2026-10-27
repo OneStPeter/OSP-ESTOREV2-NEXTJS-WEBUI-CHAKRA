@@ -10,7 +10,7 @@ import {
   Field,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-// import { useOcr } from "@/hooks/useOCR";
+import { markOcrApplied, readOcrResult } from "@/hooks/useOCR";
 import { GeoApifyService } from "@/services/API/GeoApifyService";
 import { IAddress } from "@/types/planholder";
 import { BRAND_COLORS } from "@/lib/theme/brand-colors";
@@ -215,13 +215,33 @@ const cityOptions = [
   "Ipil",
 ].map((city) => ({ label: city, value: city }));
 
-const districtOptions = cityOptions;
-const barangayOptions = cityOptions;
 
 const provinceCollection = createListCollection({ items: provinceOptions });
 const cityCollection = createListCollection({ items: cityOptions });
-const districtCollection = createListCollection({ items: districtOptions });
-const barangayCollection = createListCollection({ items: barangayOptions });
+
+const normalizePlace = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/^city of\s+/, "")
+    .replace(/\s+city$/, "")
+    .replace(/[^a-z0-9]/g, "");
+
+const matchOption = (
+  candidates: string[] | undefined,
+  options: { value: string }[],
+) => {
+  for (const candidate of candidates ?? []) {
+    const key = normalizePlace(candidate);
+    const match = options.find(
+      (option) => normalizePlace(option.value) === key,
+    );
+    if (match) return match.value;
+  }
+  return "";
+};
 
 interface LifePlanApplication2Props {
   onAddressUpdate?: (address: IAddress) => void;
@@ -230,42 +250,32 @@ interface LifePlanApplication2Props {
 const LifePlanApplication2 = ({
   onAddressUpdate,
 }: LifePlanApplication2Props) => {
-  const OCRValue =
-    typeof window === "undefined" ? null : localStorage.getItem("ocrResult");
-  // const { runOCR, data } = useOcr();
-  const [lot, setLot] = useState("123");
-  const [street, setStreet] = useState("Mabini Street");
-  const [city, setCity] = useState("Makati");
-  const [province, setProvince] = useState("Metro Manila");
-  const [district, setDistrict] = useState("Taguig");
-  const [barangay, setBarangay] = useState("San Juan");
+  const [lot, setLot] = useState("");
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [province, setProvince] = useState("");
+  const [district, setDistrict] = useState("");
+  const [barangay, setBarangay] = useState("");
 
-  const parseAddress = async (address: string) => {
-    if (!address) return;
+  useEffect(() => {
+    const ocr = readOcrResult("address");
+    if (!ocr?.addressLine) return;
 
-    try {
-      const result = await GeoApifyService.autocompleteAddress(address);
-
-      setLot(result.houseNumber ?? "");
-      setStreet(result.street ?? "");
-      setCity(result.city ?? "");
-      setDistrict(result.suburb ?? "");
-      setProvince(result.province ?? "");
-    } catch (error) {
-      console.error("Error parsing address:", error);
-    }
-  };
-
-  // useEffect(() => {
-  //   if (OCRValue != null) {
-  //     const ocrData = JSON.parse(OCRValue);
-  //     const address = ocrData.addressLine || "";
-  //     parseAddress(address);
-  //   } else if (data?.response) {
-  //     const address = data.response.addressLine || "";
-  //     parseAddress(address);
-  //   }
-  // }, [OCRValue, data]);
+    markOcrApplied("address");
+    GeoApifyService.parseAddress(ocr.addressLine)
+      .then((result) => {
+        setLot(result.lot ?? "");
+        setStreet(result.street ?? "");
+        setProvince(matchOption(result.provinceCandidates, provinceOptions));
+        setCity(matchOption(result.cityCandidates, cityOptions));
+        setDistrict(result.district ?? "");
+        setBarangay(result.barangay ?? "");
+        console.log("Parsed address:", result);
+      })
+      .catch((error) => {
+        console.error("Error parsing address:", error);
+      });
+  }, []);
 
   useEffect(() => {
     onAddressUpdate?.({
@@ -277,10 +287,6 @@ const LifePlanApplication2 = ({
       province,
     });
   }, [lot, street, barangay, city, province, district]);
-
-  // useEffect(() => {
-  //   runOCR();
-  // }, []);
 
   return (
     <Box
@@ -367,65 +373,21 @@ const LifePlanApplication2 = ({
           </Field.Root>
 
           <Field.Root>
-            <Select.Root
-              value={[district]}
-              onValueChange={(e) => setDistrict(e.value[0])}
-              collection={districtCollection}
-              width="100%"
-            >
-              <Select.HiddenSelect />
-              <Select.Control>
-                <Select.Trigger>
-                  <Select.ValueText placeholder="Select District" />
-                </Select.Trigger>
-                <Select.IndicatorGroup>
-                  <Select.Indicator />
-                </Select.IndicatorGroup>
-              </Select.Control>
-              <Portal>
-                <Select.Positioner>
-                  <Select.Content>
-                    {districtOptions.map((item) => (
-                      <Select.Item item={item} key={item.value}>
-                        {item.label}
-                        <Select.ItemIndicator />
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
-                </Select.Positioner>
-              </Portal>
-            </Select.Root>
+            <FloatingLabelInput
+              id="district"
+              label="District"
+              value={district}
+              onChange={(e) => setDistrict(e.target.value)}
+            />
           </Field.Root>
 
           <Field.Root>
-            <Select.Root
-              value={[barangay]}
-              onValueChange={(e) => setBarangay(e.value[0])}
-              collection={barangayCollection}
-              width="100%"
-            >
-              <Select.HiddenSelect />
-              <Select.Control>
-                <Select.Trigger>
-                  <Select.ValueText placeholder="Select Barangay" />
-                </Select.Trigger>
-                <Select.IndicatorGroup>
-                  <Select.Indicator />
-                </Select.IndicatorGroup>
-              </Select.Control>
-              <Portal>
-                <Select.Positioner>
-                  <Select.Content>
-                    {barangayOptions.map((item) => (
-                      <Select.Item item={item} key={item.value}>
-                        {item.label}
-                        <Select.ItemIndicator />
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
-                </Select.Positioner>
-              </Portal>
-            </Select.Root>
+            <FloatingLabelInput
+              id="barangay"
+              label="Barangay"
+              value={barangay}
+              onChange={(e) => setBarangay(e.target.value)}
+            />
           </Field.Root>
 
           <Field.Root>

@@ -22,7 +22,7 @@ export async function GET(req: Request) {
   }
 
   // --- Original live API call (commented out — internal IP breaks Vercel builds) ---
-  // import { url } from "../..";
+  // import { url } from "@/services/API";
   // try {
   //   const backendResponse = await fetch(
   //     `${url}/GetModeAndName?planDesc=${encodeURIComponent(planDesc)}&mode=${encodeURIComponent(mode)}`,

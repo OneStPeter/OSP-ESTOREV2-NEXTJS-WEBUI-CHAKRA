@@ -17,5 +17,6 @@ export interface IOcrValue {
   lastName?: string;
   birthDate?: string;
   idType?: string;
-  addressLine1?: string;
+  idNumber?: string;
+  addressLine?: string;
 }

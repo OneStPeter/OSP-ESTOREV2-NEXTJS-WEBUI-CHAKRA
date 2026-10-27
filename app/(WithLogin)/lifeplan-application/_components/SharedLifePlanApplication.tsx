@@ -5,10 +5,8 @@ import HorizontalStepper from "@/components/ui/horizontal-stepper";
 import { createLifePlanSteps } from "@/data/lifePlanSteps";
 import { useState } from "react";
 import { CartItem } from "@/types/cartItem";
-import {
-  TransactionService,
-  PayMongoService,
-} from "@/services/API/PayMongoService";
+import { PayMongoService } from "@/services/API/PayMongoService";
+import { TransactionService } from "@/services/API/TransactionService";
 import {
   createEmptyApplicationData,
   loadApplicationDataFromLocalStorage,
@@ -82,7 +80,7 @@ const SharedLifePlanApplication = ({
       const applicationData =
         loadApplicationDataFromLocalStorage() ?? createEmptyApplicationData();
 
-      await TransactionService.insert(applicationData);
+      // await TransactionService.insert(applicationData);
 
       const checkoutPayload = items.map((item) => ({
         planDesc: item.planDesc,

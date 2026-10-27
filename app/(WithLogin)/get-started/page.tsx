@@ -27,15 +27,16 @@ import {
   type DocumentTypeConfig,
 } from "@/components/ui/DocumentUploadCard";
 import { toast } from "sonner";
+import { useOcr } from "@/hooks/useOCR";
 
 const GOVERNMENT_ID_CONFIG: DocumentTypeConfig = {
   id: "government-id",
   label: "Government-issued ID",
   description: "Current and valid ID",
-  accept: "image/png,image/jpeg,application/pdf",
+  accept: "image/*",
   maxSizeMB: 5,
   required: true,
-  hint: "JPG, PNG or PDF · up to 5MB",
+  hint: "Any image · up to 5MB",
   processor: "extraction",
   icon: LuIdCard,
 };
@@ -59,33 +60,7 @@ const GetStarted = () => {
   const [governmentIdStatus, setGovernmentIdStatus] =
     useState<DocumentStatus>("idle");
 
-  const handleDummyRequirementsUpload = async () => {
-    localStorage.setItem(
-      "ocrResult",
-      JSON.stringify({
-        success: true,
-        source: "dummy",
-        uploadedAt: new Date().toISOString(),
-        file: {
-          name: "sample-government-id.jpg",
-          size: 245760,
-          type: "image/jpeg",
-        },
-        extractedData: {
-          firstName: "Juan",
-          middleName: "Santos",
-          lastName: "Dela Cruz",
-          birthDate: "1990-01-01",
-          nationality: "Filipino",
-          mobileNumber: "09171234567",
-          emailAddress: "juan.delacruz@example.com",
-          completeAddress: "123 Sample Street, Quezon City",
-        },
-      }),
-    );
-
-    return { success: true };
-  };
+  const { scanId } = useOcr();
 
   return (
     <Container>
@@ -193,6 +168,7 @@ const GetStarted = () => {
                       <DocumentUploadCard
                         config={GOVERNMENT_ID_CONFIG}
                         onStatusChange={setGovernmentIdStatus}
+                        onProcess={scanId}
                       />
 
                       <DocumentUploadCard config={SIGNATURE_CONFIG} />
@@ -215,18 +191,19 @@ const GetStarted = () => {
                       <CancelButton />
                     </Dialog.ActionTrigger>
                     <NextButton
-                      onClick={async () => {
-                        // Block "Next" until a government ID has been uploaded.
+                      onClick={() => {
                         if (
-                          governmentIdStatus === "idle" ||
-                          governmentIdStatus === "failed"
+                          governmentIdStatus === "uploading" ||
+                          governmentIdStatus === "processing"
                         ) {
-                          toast.error("Please upload a government-issued ID.");
+                          toast.info("Please wait while we read your ID.");
                           return;
                         }
 
-                        const result = await handleDummyRequirementsUpload();
-                        if (!result.success) return;
+                        if (governmentIdStatus !== "completed") {
+                          toast.error("Please upload a government-issued ID.");
+                          return;
+                        }
 
                         setUploadDialogOpen(false);
                         setReferralDialogOpen(true);

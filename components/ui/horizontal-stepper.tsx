@@ -79,7 +79,12 @@ const HorizontalStepper = ({
     >
       {/* Scroll anchor — always rendered so "Next"/"Back" can reset the
           viewport to the top of the stepper even without a title/description. */}
-      <Box ref={formTopRef} h="0" w="full" scrollMarginTop={{ base: 4, md: 6 }} />
+      <Box
+        ref={formTopRef}
+        h="0"
+        w="full"
+        scrollMarginTop={{ base: 4, md: 6 }}
+      />
 
       {/* Header */}
       {(title || description) && (

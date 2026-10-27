@@ -106,6 +106,9 @@ const validate = (file: File, config: DocumentTypeConfig): string | null => {
   const okType =
     accepted.includes(file.type) ||
     accepted.some(
+      (a) => a.endsWith("/*") && file.type.startsWith(a.slice(0, -1)),
+    ) ||
+    accepted.some(
       (a) => a.startsWith(".") && file.name.toLowerCase().endsWith(a),
     );
   if (!okType) return "Unsupported file type. Please upload a JPG, PNG or PDF.";
@@ -118,17 +121,51 @@ const validate = (file: File, config: DocumentTypeConfig): string | null => {
 /* Local slot hook (replaces the ApplicationProvider context)          */
 /* ------------------------------------------------------------------ */
 
-const useDocumentSlot = (config: DocumentTypeConfig) => {
+const useDocumentSlot = (
+  config: DocumentTypeConfig,
+  onProcess?: (file: File) => Promise<unknown>,
+) => {
   const [slot, setSlot] = useState<DocumentSlot>({ status: "idle" });
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const runId = useRef(0);
 
   const clearTimers = () => {
     timers.current.forEach(clearTimeout);
     timers.current = [];
   };
 
+  const processFile = (file: File, currentRun: number, isSignature: boolean) => {
+    if (!onProcess) return false;
+
+    onProcess(file)
+      .then((result) => {
+        if (runId.current !== currentRun) return;
+        setSlot((prev) => ({
+          ...prev,
+          status: "completed",
+          cleanedImageUrl: isSignature ? prev.previewUrl : undefined,
+          extraction:
+            !isSignature && result && typeof result === "object"
+              ? (result as Record<string, unknown>)
+              : undefined,
+        }));
+      })
+      .catch((err: unknown) => {
+        if (runId.current !== currentRun) return;
+        const message =
+          err instanceof Error && err.message
+            ? err.message
+            : "We couldn't process this document. Please try again.";
+        setSlot((prev) => ({ ...prev, status: "failed", error: message }));
+        notifyError(message);
+      });
+
+    return true;
+  };
+
   const runLifecycle = (file: File) => {
     clearTimers();
+    const currentRun = ++runId.current;
     const previewUrl = URL.createObjectURL(file);
     const isSignature = config.processor === "signature";
 
@@ -154,6 +191,7 @@ const useDocumentSlot = (config: DocumentTypeConfig) => {
         timers.current.push(
           setTimeout(() => {
             setSlot((prev) => ({ ...prev, status: "processing" }));
+            if (processFile(file, currentRun, isSignature)) return;
             // Then complete.
             timers.current.push(
               setTimeout(() => {
@@ -182,6 +220,7 @@ const useDocumentSlot = (config: DocumentTypeConfig) => {
 
   const removeDocument = () => {
     clearTimers();
+    runId.current++;
     if (slot.previewUrl) URL.revokeObjectURL(slot.previewUrl);
     setSlot({ status: "idle" });
   };
@@ -396,13 +435,15 @@ const GhostBtn = ({
 export function DocumentUploadCard({
   config,
   onStatusChange,
+  onProcess,
 }: {
   config: DocumentTypeConfig;
   /** Tells the parent when this slot's upload status changes. */
   onStatusChange?: (status: DocumentStatus) => void;
+  onProcess?: (file: File) => Promise<unknown>;
 }) {
   const { slot, uploadDocument, retryDocument, removeDocument } =
-    useDocumentSlot(config);
+    useDocumentSlot(config, onProcess);
   const status = slot?.status ?? "idle";
 
   useEffect(() => {
