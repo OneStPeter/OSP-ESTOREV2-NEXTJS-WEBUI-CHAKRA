@@ -1,6 +1,7 @@
 import { api, APIError } from "@/services/API/MainAPIClient";
 import { IOcrValue } from "@/types/ocrResponse";
 
+//OCR FUNCTION
 const ENDPOINTS = {
   scan: "/Ocr/Scan",
 };
