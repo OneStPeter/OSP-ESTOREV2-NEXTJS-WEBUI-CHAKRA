@@ -1,4 +1,5 @@
 import { api } from "@/services/API/MainAPIClient";
+import { ITransactionData } from "@/types/planholder";
 
 /**
  * PayMongoService
@@ -50,8 +51,49 @@ export interface ICheckoutResult {
   checkoutUrl?: string;
 }
 
+export interface INewSalesCheckoutItem {
+  planDesc: string;
+  mode: string;
+  ipInstAmt: number;
+  quantity: number;
+  planTerm?: string | number;
+}
+
+interface INewSalesCheckoutApiItem {
+  planDesc: string;
+  mode: string;
+  ipInstAmt: number;
+  quantity: number;
+  planTerm?: number;
+}
+
+export interface INewSalesCheckoutRequest {
+  items: INewSalesCheckoutItem[];
+  application: ITransactionData;
+  accountNo?: string;
+  empCode?: string;
+}
+
+interface INewSalesCheckoutApiRequest {
+  items: INewSalesCheckoutApiItem[];
+  application: ITransactionData;
+  accountNo: string;
+  empCode: string;
+}
+
+interface INewSalesCheckoutApiResponse {
+  checkoutUrl?: string;
+  requestId?: string;
+}
+
+export interface INewSalesCheckoutResult {
+  checkoutUrl?: string;
+  requestId?: string;
+}
+
 const ENDPOINTS = {
   checkout: "/PayMongoAPI/CreateCheckout",
+  newSalesCheckout: "/PayMongoAPI/CreateNewSalesCheckout",
 };
 
 // C# uses whole numbers for planTerm/quantity: "5" -> 5. Anything that isn't a number is left out.
@@ -79,5 +121,28 @@ export const PayMongoService = {
     const res = await api.post<ICheckoutApiResponse, ICheckoutApiRequest>(ENDPOINTS.checkout, body);
 
     return { checkoutUrl: res?.checkoutUrl };
+  },
+
+  async createNewSalesCheckout(request: INewSalesCheckoutRequest): Promise<INewSalesCheckoutResult> {
+    const body: INewSalesCheckoutApiRequest = {
+      items: request.items.map((item) => ({
+        planDesc: item.planDesc,
+        mode: item.mode,
+        ipInstAmt: Number(item.ipInstAmt),
+        quantity: toWholeNumber(item.quantity) ?? 1,
+        planTerm: toWholeNumber(item.planTerm),
+      })),
+      application: request.application,
+      accountNo: request.accountNo ?? "",
+      empCode: request.empCode ?? "",
+    };
+
+    const res = await api.post<INewSalesCheckoutApiResponse, INewSalesCheckoutApiRequest>(
+      ENDPOINTS.newSalesCheckout,
+      body,
+      { timeout: 60000 },
+    );
+
+    return { checkoutUrl: res?.checkoutUrl, requestId: res?.requestId };
   },
 };

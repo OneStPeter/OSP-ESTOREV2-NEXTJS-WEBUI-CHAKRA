@@ -13,6 +13,8 @@ import {
 } from "@/lib/utils/applicationDataFactory";
 import Page from "@/components/layout/page/Page";
 
+const TEST_ACCOUNT_NO = "SPLPI-22-000021";
+
 type SharedLifePlanApplicationProps = {
   title?: string;
   description?: string;
@@ -84,12 +86,16 @@ const SharedLifePlanApplication = ({
 
       const checkoutPayload = items.map((item) => ({
         planDesc: item.planDesc,
+        mode: item.mode,
         ipInstAmt: Number(item.price),
         planTerm: item.planTerm,
         quantity: item.quantity ?? 1,
       }));
-      const { checkoutUrl } =
-        await PayMongoService.createCheckout(checkoutPayload);
+      const { checkoutUrl } = await PayMongoService.createNewSalesCheckout({
+        items: checkoutPayload,
+        application: applicationData,
+        accountNo: TEST_ACCOUNT_NO,
+      });
 
       if (!checkoutUrl) throw new Error("Checkout URL not found");
 
